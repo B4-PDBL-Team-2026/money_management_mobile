@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'verification_page.dart'; // Import halaman verifikasi untuk navigasi
+import 'package:money_management_mobile/pages/login_page.dart';
+import 'verification_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -9,19 +10,55 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // Controller untuk menangkap inputan user
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  // State untuk kontrol show/hide password
   bool _isPasswordObscured = true;
+  bool _isConfirmPasswordObscured = true;
 
-  // Fungsi untuk validasi email (ada @ dan .)
   bool _isValidEmail(String email) {
     return RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
     ).hasMatch(email);
+  }
+
+  void _handleRegister() {
+    String name = _nameController.text.trim();
+    String email = _emailController.text.trim();
+    String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    if (name.isEmpty) {
+      _showError("Nama lengkap wajib diisi.");
+      return;
+    }
+    if (!_isValidEmail(email)) {
+      _showError("Format email tidak valid.");
+      return;
+    }
+    if (password.length < 8) {
+      _showError("Password minimal 8 karakter.");
+      return;
+    }
+    if (password != confirmPassword) {
+      _showError("Konfirmasi password tidak cocok.");
+      return;
+    }
+
+    debugPrint("User mendaftar: $name. Menuju verifikasi...");
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const VerificationPage()),
+    );
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
+    );
   }
 
   @override
@@ -37,84 +74,84 @@ class _RegisterPageState extends State<RegisterPage> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 40.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Kotak Placeholder Logo
-              Container(width: 150, height: 150, color: Colors.grey[300]),
-              const SizedBox(height: 40),
-
+              Image.asset('assets/images/Logo.png', width: 150, height: 150),
+              const SizedBox(height: 20),
               const Text(
                 "Register",
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 30),
-
-              // Input Nama
-              _buildInput(hint: "Nama", controller: _nameController),
+              _buildInput(hint: "Nama Lengkap", controller: _nameController),
               const SizedBox(height: 20),
-
-              // Input Email
               _buildInput(
                 hint: "Email",
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 20),
-
-              // Input Password
               _buildInput(
                 hint: "Password",
                 controller: _passwordController,
                 isPassword: true,
                 obscureText: _isPasswordObscured,
-                onSuffixIconPressed: () {
-                  setState(() {
-                    _isPasswordObscured = !_isPasswordObscured;
-                  });
-                },
+                onSuffixIconPressed: () =>
+                    setState(() => _isPasswordObscured = !_isPasswordObscured),
               ),
-
-              const SizedBox(height: 40),
-
-              // Tombol Submit
-              SizedBox(
-                width: 100,
-                height: 40,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Validasi Email sebelum memproses
-                    if (!_isValidEmail(_emailController.text)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Harus format email valid (@gmail.com, dll).",
-                          ),
-                          backgroundColor: Colors.redAccent,
-                        ),
-                      );
-                      return;
-                    }
-
-                    // Jika valid, navigasi ke halaman verifikasi
-                    debugPrint("User mendaftar: ${_nameController.text}");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const VerificationPage(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[300],
-                    foregroundColor: Colors.black,
-                    elevation: 0,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                  child: const Text("Login"),
+              const SizedBox(height: 20),
+              _buildInput(
+                hint: "Konfirmasi Password",
+                controller: _confirmPasswordController,
+                isPassword: true,
+                obscureText: _isConfirmPasswordObscured,
+                onSuffixIconPressed: () => setState(
+                  () =>
+                      _isConfirmPasswordObscured = !_isConfirmPasswordObscured,
                 ),
               ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _handleRegister,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2E5AA7),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    "Daftar",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+
+              // --- PERUBAHAN DI SINI ---
+              const SizedBox(height: 20), // Memberikan jarak yang sama
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Sudah punya akun?"),
+                  TextButton(
+                    onPressed: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      ),
+                    },
+                    child: const Text(
+                      "Login di sini",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              // -------------------------
             ],
           ),
         ),
@@ -122,7 +159,6 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // Widget Input Reusable
   Widget _buildInput({
     required String hint,
     required TextEditingController controller,
@@ -134,8 +170,9 @@ class _RegisterPageState extends State<RegisterPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(5),
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey[300]!),
       ),
       child: TextField(
         controller: controller,
@@ -148,7 +185,6 @@ class _RegisterPageState extends State<RegisterPage> {
               ? IconButton(
                   icon: Icon(
                     obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.black54,
                   ),
                   onPressed: onSuffixIconPressed,
                 )

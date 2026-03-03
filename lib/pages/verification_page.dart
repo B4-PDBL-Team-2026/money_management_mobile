@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'login_success_page.dart'; // Import halaman sukses untuk navigasi setelah verifikasi
+// PERUBAHAN: Pastikan import ke file sukses registrasi, bukan login
+import 'registration_success_page.dart';
 
 class VerificationPage extends StatefulWidget {
   const VerificationPage({super.key});
@@ -40,6 +41,7 @@ class _VerificationPageState extends State<VerificationPage> {
           padding: const EdgeInsets.symmetric(horizontal: 40.0),
           child: Column(
             children: [
+              // Logo Placeholder
               Container(width: 150, height: 150, color: Colors.grey[300]),
               const SizedBox(height: 50),
               const Text(
@@ -47,27 +49,29 @@ class _VerificationPageState extends State<VerificationPage> {
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 40),
+
+              // Input OTP Box
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(4, (index) => _buildOtpBox(index)),
               ),
               const SizedBox(height: 50),
 
-              // --- BAGIAN TOMBOL VERIFY YANG SUDAH DIBENARKAN ---
+              // --- TOMBOL VERIFY ---
               SizedBox(
                 width: 100,
                 height: 40,
                 child: ElevatedButton(
                   onPressed: () {
-                    // 1. Menggabungkan angka dari 4 kotak menjadi satu teks
+                    // 1. Mengambil kode OTP
                     String code = _controllers.map((e) => e.text).join();
                     debugPrint("Kode Verifikasi yang dimasukkan: $code");
 
-                    // 2. Navigasi ke halaman LoginSuccessPage
+                    // 2. Navigasi ke RegistrationSuccessPage (Bukan LoginSuccessPage)
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginSuccessPage(),
+                        builder: (context) => const RegistrationSuccessPage(),
                       ),
                     );
                   },
