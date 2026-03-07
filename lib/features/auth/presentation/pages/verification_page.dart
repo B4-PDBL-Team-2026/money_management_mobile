@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
+import 'package:money_management_mobile/core/theme/app_colors.dart';
+import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
 class VerificationPage extends StatefulWidget {
   const VerificationPage({super.key});
@@ -30,37 +32,41 @@ class _VerificationPageState extends State<VerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.spacing8),
           child: Column(
             children: [
               // Logo Placeholder
-              Container(width: 150, height: 150, color: Colors.grey[300]),
-              const SizedBox(height: 50),
-              const Text(
-                "Verification",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  color: AppColors.beerus,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSizes.spacing9),
+              Text(
+                "Verification",
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              const SizedBox(height: AppSizes.spacing8),
 
               // Input OTP Box
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(4, (index) => _buildOtpBox(index)),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: AppSizes.spacing9),
 
               // --- TOMBOL VERIFY ---
               SizedBox(
                 width: 100,
-                height: 40,
+                height: AppSizes.spacing8,
                 child: ElevatedButton(
                   onPressed: () {
                     // 1. Mengambil kode OTP
@@ -71,14 +77,17 @@ class _VerificationPageState extends State<VerificationPage> {
                     context.go(AppRouter.registrationSuccess);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[300],
-                    foregroundColor: Colors.black,
+                    backgroundColor: AppColors.beerus,
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
                     elevation: 0,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
                   ),
-                  child: const Text("Verify"),
+                  child: Text(
+                    "Verify",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
               ),
             ],
@@ -93,8 +102,8 @@ class _VerificationPageState extends State<VerificationPage> {
       width: 50,
       height: 50,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(5),
+        color: AppColors.beerus,
+        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
       ),
       child: TextField(
         controller: _controllers[index],

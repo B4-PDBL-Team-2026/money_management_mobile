@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
+import 'package:money_management_mobile/core/theme/app_colors.dart';
+import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
 class RegistrationSuccessPage extends StatelessWidget {
   const RegistrationSuccessPage({super.key});
@@ -8,15 +10,14 @@ class RegistrationSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: Container(
           width: 300,
           height: 300,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSizes.spacing5),
           decoration: BoxDecoration(
-            color: Colors.grey[300], // Background kotak abu-abu
-            borderRadius: BorderRadius.circular(20),
+            color: AppColors.beerus,
+            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -25,38 +26,45 @@ class RegistrationSuccessPage extends StatelessWidget {
               Container(
                 width: 100,
                 height: 100,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE0E0E0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.tertiary,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check, size: 60, color: Colors.black),
+                child: Icon(
+                  Icons.check,
+                  size: 60,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizes.spacing5),
 
               // Teks Notifikasi (Diubah menjadi Registration)
-              const Text(
+              Text(
                 'Registration Successful',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: AppSizes.spacing7),
 
               // Tombol Continue
               SizedBox(
                 width: double.infinity,
-                height: 45,
+                height: AppSizes.spacing9,
                 child: ElevatedButton(
                   onPressed: () {
                     context.go(AppRouter.dashboard);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[400],
-                    foregroundColor: Colors.black,
+                    backgroundColor: AppColors.trunks,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     elevation: 0,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
                   ),
-                  child: const Text('Continue'),
+                  child: Text(
+                    'Continue',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
               ),
             ],

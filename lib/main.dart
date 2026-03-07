@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/injection_container.dart';
-
+import 'package:money_management_mobile/core/theme/app_theme.dart';
 import 'pages/onboarding.dart'; // Import file yang baru diganti namanya
 
 void main() async {
@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
 //       debugShowCheckedModeBanner: false,
 //       title: 'Moco',
 //       routerConfig: AppRouter.router,
+//       theme: AppTheme.lightTheme,
 //     );
 //   }
 // }

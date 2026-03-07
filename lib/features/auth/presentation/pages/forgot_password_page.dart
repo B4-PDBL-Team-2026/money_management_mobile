@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_mobile/core/theme/app_colors.dart';
+import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -13,16 +15,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      // AppBar untuk tombol back manual jika user ingin kembali sebelum 5x salah
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.spacing8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -31,29 +29,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 width: 150,
                 height: 150,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.beerus,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSizes.spacing8),
 
               // 2. Judul Halaman
-              const Text(
+              Text(
                 "Forgot Password",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: AppSizes.spacing7),
 
               // 3. Input Email (Gaya Minimalis sesuai gambar)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: AppSizes.spacing5),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0), // Abu-abu terang
-                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.beerus,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 ),
                 child: TextField(
                   controller: _emailController,
@@ -64,7 +58,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: AppSizes.spacing7),
 
               // 4. Tombol Confirm
               SizedBox(
@@ -75,16 +69,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     _showResetDialog(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD9D9D9), // Abu-abu tombol
-                    foregroundColor: Colors.black,
+                    backgroundColor: AppColors.beerus,
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Confirm",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -100,9 +96,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Email Terkirim"),
+        title: Text("Email Terkirim", style: Theme.of(context).textTheme.headlineMedium),
         content: Text(
           "Instruksi reset password telah dikirim ke ${_emailController.text}",
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         actions: [
           TextButton(
@@ -110,7 +107,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               Navigator.pop(context); // Tutup dialog
               Navigator.pop(context); // Kembali ke Login
             },
-            child: const Text("Kembali ke Login"),
+            child: Text(
+              "Kembali ke Login",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
           ),
         ],
       ),

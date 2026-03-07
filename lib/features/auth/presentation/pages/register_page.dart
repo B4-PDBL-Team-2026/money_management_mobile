@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
+import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -54,39 +55,36 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.spacing8),
           child: Column(
             children: [
               Image.asset('assets/images/Logo.png', width: 150, height: 150),
-              const SizedBox(height: 20),
-              const Text(
+              const SizedBox(height: AppSizes.spacing5),
+              Text(
                 "Register",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: AppSizes.spacing7),
               _buildInput(hint: "Nama Lengkap", controller: _nameController),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizes.spacing5),
               _buildInput(
                 hint: "Email",
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizes.spacing5),
               _buildInput(
                 hint: "Password",
                 controller: _passwordController,
@@ -95,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 onSuffixIconPressed: () =>
                     setState(() => _isPasswordObscured = !_isPasswordObscured),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizes.spacing5),
               _buildInput(
                 hint: "Konfirmasi Password",
                 controller: _confirmPasswordController,
@@ -106,37 +104,35 @@ class _RegisterPageState extends State<RegisterPage> {
                       _isConfirmPasswordObscured = !_isConfirmPasswordObscured,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppSizes.spacing8),
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: AppSizes.spacing9,
                 child: ElevatedButton(
                   onPressed: _handleRegister,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E5AA7),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    "Daftar",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: const Text("Daftar"),
                 ),
               ),
 
               // --- PERUBAHAN DI SINI ---
-              const SizedBox(height: 20), // Memberikan jarak yang sama
+              const SizedBox(
+                height: AppSizes.spacing5,
+              ), // Memberikan jarak yang sama
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Sudah punya akun?"),
+                  Text(
+                    "Sudah punya akun?",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   TextButton(
                     onPressed: () => context.go(AppRouter.login),
-                    child: const Text(
+                    child: Text(
                       "Login di sini",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
                 ],
@@ -157,29 +153,21 @@ class _RegisterPageState extends State<RegisterPage> {
     VoidCallback? onSuffixIconPressed,
     TextInputType keyboardType = TextInputType.text,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          hintText: hint,
-          border: InputBorder.none,
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: onSuffixIconPressed,
-                )
-              : null,
-        ),
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      style: Theme.of(context).textTheme.bodyMedium,
+      decoration: InputDecoration(
+        hintText: hint,
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  obscureText ? Icons.visibility_off : Icons.visibility,
+                ),
+                onPressed: onSuffixIconPressed,
+              )
+            : null,
       ),
     );
   }

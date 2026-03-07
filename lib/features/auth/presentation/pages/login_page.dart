@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
+import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,41 +26,38 @@ class _LoginPageState extends State<LoginPage> {
 
   void _showErrorSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.spacing8),
           child: Column(
             children: [
               Image.asset('assets/images/Logo.png', width: 180, height: 180),
-              const SizedBox(height: 30),
-              const Align(
+              const SizedBox(height: AppSizes.spacing7),
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Login",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineLarge,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: AppSizes.spacing7),
 
               _buildInput(
                 hint: "Email",
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizes.spacing5),
 
               _buildInput(
                 hint: "Password",
@@ -79,18 +77,18 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     context.go(AppRouter.forgotPassword);
                   },
-                  child: const Text(
+                  child: Text(
                     "Lupa Password?",
-                    style: TextStyle(color: Colors.blueGrey),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: AppSizes.spacing7),
 
               // --- LOGIKA LOGIN YANG SUDAH DIPERBAIKI PRIORITASNYA ---
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: AppSizes.spacing9,
                 child: ElevatedButton(
                   onPressed: () {
                     String email = _emailController.text;
@@ -147,33 +145,29 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E5AA7),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    "Masuk",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: const Text("Masuk"),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizes.spacing5),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Belum punya akun?"),
+                  Text(
+                    "Belum punya akun?",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   TextButton(
                     onPressed: () {
                       context.go(AppRouter.registration);
                     },
-                    child: const Text(
+                    child: Text(
                       "Daftar Sekarang",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
                 ],
@@ -193,31 +187,21 @@ class _LoginPageState extends State<LoginPage> {
     VoidCallback? onSuffixIconPressed,
     TextInputType keyboardType = TextInputType.text,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        maxLength: isPassword ? 8 : null,
-        decoration: InputDecoration(
-          hintText: hint,
-          counterText: "",
-          border: InputBorder.none,
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: onSuffixIconPressed,
-                )
-              : null,
-        ),
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      style: Theme.of(context).textTheme.bodyMedium,
+      decoration: InputDecoration(
+        hintText: hint,
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  obscureText ? Icons.visibility_off : Icons.visibility,
+                ),
+                onPressed: onSuffixIconPressed,
+              )
+            : null,
       ),
     );
   }

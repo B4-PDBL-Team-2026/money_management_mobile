@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
+import 'package:money_management_mobile/core/theme/app_colors.dart';
+import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -8,13 +10,15 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.spacing8,
+            vertical: AppSizes.spacing5,
+          ),
           child: Column(
             children: [
-              const SizedBox(height: 60),
+              const SizedBox(height: AppSizes.spacing10),
 
               // --- PERUBAHAN LOGO: Menggunakan Image.asset ---
               Image.asset(
@@ -24,20 +28,13 @@ class WelcomePage extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
 
-              const SizedBox(height: 40),
-              const Text(
-                "Moco",
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
+              const SizedBox(height: AppSizes.spacing8),
+              Text(
                 "Master your money.\nControl your future.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey, height: 1.5),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppColors.trunks),
               ),
 
               const Spacer(),
@@ -46,30 +43,32 @@ class WelcomePage extends StatelessWidget {
               _buildButton(
                 context,
                 "Register",
-                const Color(0xFFFFA62B),
-                Colors.white,
+                Theme.of(context).colorScheme.secondary,
+                Theme.of(context).colorScheme.onSecondary,
                 () {
                   context.go(AppRouter.registration);
                 },
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: AppSizes.spacing4),
 
               // --- TOMBOL LOGIN (Warna: 2E5AA7) ---
               _buildButton(
                 context,
                 "Login",
-                const Color(0xFF2E5AA7),
-                Colors.white,
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.onPrimary,
                 () {
                   context.go(AppRouter.login);
                 },
               ),
 
-              const SizedBox(height: 20),
-              const Text(
+              const SizedBox(height: AppSizes.spacing5),
+              Text(
                 "By continuing you agree to our Terms of Service",
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.trunks,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -89,7 +88,7 @@ class WelcomePage extends StatelessWidget {
   ) {
     return SizedBox(
       width: double.infinity,
-      height: 55,
+      height: AppSizes.spacing9,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -97,12 +96,14 @@ class WelcomePage extends StatelessWidget {
           foregroundColor: textColor,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ), // Sudut lebih kotak sesuai gambar baru
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          ),
         ),
         child: Text(
           text,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(color: textColor),
         ),
       ),
     );
