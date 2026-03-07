@@ -11,28 +11,28 @@ void main() async {
 }
 
 /* backward compatibility, jangan di hapus */
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: const OnboardingPage(), // Panggil class yang ada di onboarding.dart
-//     );
-//   }
-// }
-
-/* initialization dengan standar baru, jangan di hapus */
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Moco',
-      routerConfig: AppRouter.router,
+      home: const OnboardingPage(), // Panggil class yang ada di onboarding.dart
     );
   }
 }
+
+/* initialization dengan standar baru, jangan di hapus */
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp.router(
+//       debugShowCheckedModeBanner: false,
+//       title: 'Moco',
+//       routerConfig: AppRouter.router,
+//     );
+//   }
+// }
