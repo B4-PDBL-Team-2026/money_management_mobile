@@ -1,6 +1,6 @@
 name: money_management_mobile
-description: "A new Flutter project."
-publish_to: "none"
+description: 'A new Flutter project.'
+publish_to: 'none'
 version: 0.1.0
 
 environment:
@@ -9,6 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_bloc: ^9.1.1
+  dio: ^5.9.2
+  get_it: ^9.2.1
+  go_router: ^17.1.0
 
 dev_dependencies:
   flutter_test:
