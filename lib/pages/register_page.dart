@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-// Import login_page dihapus untuk menghilangkan warning 'Unused import'
-import 'registration_success_page.dart'; // Import ini wajib ada agar bisa pindah halaman
+import 'registration_success_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -31,9 +30,8 @@ class _RegisterPageState extends State<RegisterPage> {
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
-    // Validasi tetap dipertahankan agar data yang masuk benar
-    if (name.isEmpty) {
-      _showError("Nama lengkap wajib diisi.");
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      _showError("Semua field wajib diisi.");
       return;
     }
     if (!_isValidEmail(email)) {
@@ -49,10 +47,6 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    debugPrint("User mendaftar: $name. Berhasil.");
-
-    // --- PERUBAHAN UTAMA: Pindah ke halaman sukses ---
-    // Menggunakan pushReplacement agar user tidak bisa kembali ke form register
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const RegistrationSuccessPage()),
@@ -72,54 +66,60 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        // Tombol kembali lebih kecil
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.white,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          // PADDING LUAR: Dikurangi agar blok putih punya ruang bernapas
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           child: Container(
-            padding: const EdgeInsets.all(30.0),
+            // PADDING DALAM: Dikurangi agar isi tidak terlalu jauh dari tepi
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 25.0,
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withOpacity(0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
                 ),
               ],
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize:
+                  MainAxisSize.min, // SANGAT PENTING: Agar tinggi mengikuti isi
               children: [
-                Image.asset('assets/images/Single_logo.png', height: 80),
-                const SizedBox(height: 20),
+                // Ukuran logo diperkecil agar tidak makan tempat
+                Image.asset('assets/images/Single_logo.png', height: 60),
+                const SizedBox(height: 15),
                 const Text(
                   "Daftar",
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF2E5AA7),
                   ),
                 ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Bergabunglah dengan Moco untuk mengelola keuangan Anda dengan lebih baik.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
                 _buildInput(
                   hint: "Nama Lengkap",
                   controller: _nameController,
                   label: "Nama Lengkap",
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 12),
                 _buildInput(
                   hint: "Email",
                   controller: _emailController,
@@ -127,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   icon: Icons.email_outlined,
                   label: "Email",
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 12),
                 _buildInput(
                   hint: "Password",
                   controller: _passwordController,
@@ -139,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     () => _isPasswordObscured = !_isPasswordObscured,
                   ),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 12),
                 _buildInput(
                   hint: "Konfirmasi Password",
                   controller: _confirmPasswordController,
@@ -152,20 +152,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         !_isConfirmPasswordObscured,
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 25),
 
                 SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: 48,
                   child: ElevatedButton(
                     onPressed: _handleRegister,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2E5AA7),
                       foregroundColor: Colors.white,
-                      elevation: 5,
-                      shadowColor: Colors.black.withOpacity(0.4),
+                      elevation: 2,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                     child: const Text(
@@ -183,13 +182,13 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 30.0),
+        padding: const EdgeInsets.only(bottom: 20.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               "Sudah punya akun? ",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontSize: 13),
             ),
             GestureDetector(
               onTap: () => Navigator.pop(context),
@@ -198,6 +197,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFFFA62B),
+                  fontSize: 13,
                 ),
               ),
             ),
@@ -218,7 +218,6 @@ class _RegisterPageState extends State<RegisterPage> {
     TextInputType keyboardType = TextInputType.text,
   }) {
     return Column(
-      // Perbaikan: Pakai .start agar tidak error
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -226,36 +225,38 @@ class _RegisterPageState extends State<RegisterPage> {
           style: const TextStyle(
             color: Color(0xFF2E5AA7),
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 13,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Container(
+          height: 45, // Tinggi input dibatasi agar lebih ramping
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF2E5AA7)),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFF2E5AA7).withOpacity(0.5)),
           ),
           child: TextField(
             controller: controller,
             obscureText: obscureText,
             keyboardType: keyboardType,
+            style: const TextStyle(fontSize: 14),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
               prefixIcon: icon != null
-                  ? Icon(icon, color: Colors.grey, size: 20)
+                  ? Icon(icon, color: Colors.grey, size: 18)
                   : null,
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 12,
+                horizontal: 10,
+                vertical: 10,
               ),
               suffixIcon: isPassword
                   ? IconButton(
                       icon: Icon(
                         obscureText ? Icons.visibility_off : Icons.visibility,
                         color: Colors.grey,
-                        size: 20,
+                        size: 18,
                       ),
                       onPressed: onSuffixIconPressed,
                     )

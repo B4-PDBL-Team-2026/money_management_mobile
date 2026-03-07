@@ -1,162 +1,100 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart';
+import 'register_page.dart';
 
-class OnboardingStep1Page extends StatefulWidget {
-  const OnboardingStep1Page({super.key});
-
-  @override
-  State<OnboardingStep1Page> createState() => _OnboardingStep1PageState();
-}
-
-class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
-  String _selectedCycle = "Bulanan"; // Nilai default
+class OnboardingPage extends StatelessWidget {
+  const OnboardingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              // Logo Moco
-              Center(child: Image.asset('assets/images/Logo.png', height: 100)),
-              const SizedBox(height: 20),
+              const SizedBox(height: 80),
 
-              // Progress Bar (Langkah 1 dari 3)
-              Column(
-                children: [
-                  LinearProgressIndicator(
-                    value: 0.33,
-                    backgroundColor: Colors.grey[200],
-                    color: const Color(0xFFFFA62B),
-                    minHeight: 8,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  const SizedBox(height: 10),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Langkah 1",
-                        style: TextStyle(
-                          color: Color(0xFFFFA62B),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text("Langkah 3", style: TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 30),
-              const Text(
-                "Siklus Keuangan",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2E5AA7),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Pilih siklus keuangan dan masukkan nominal uang saku Anda untuk memulai pencatatan.",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
-              ),
-
-              const SizedBox(height: 30),
-
-              // Card Pilihan Bulanan / Mingguan
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildCycleCard(
-                      "Bulanan",
-                      Icons.calendar_month_outlined,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: _buildCycleCard("Mingguan", Icons.wb_sunny_outlined),
-                  ),
-                ],
+              // 1. Logo Moco (Kembali ke BoxFit.cover sesuai permintaan)
+              SizedBox(
+                height: 300,
+                width: 300,
+                child: Image.asset('assets/images/Logo.png', fit: BoxFit.cover),
               ),
 
               const SizedBox(height: 25),
 
-              // Input Nominal
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: const TextField(
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
-                    hintText: "Rp. 0",
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 15),
+              // 2. Headline dengan RichText
+              RichText(
+                textAlign: TextAlign.center,
+                text: const TextSpan(
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Plus Jakarta Sans',
                   ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Box Info Biru
-              Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE3F2FD),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Row(
                   children: [
-                    Icon(Icons.info_outline, color: Color(0xFF2E5AA7)),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        "Memisahkan uang saku mingguan membantu lebih disiplin mengelola pengeluaran harian.",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF2E5AA7),
-                        ),
-                      ),
+                    TextSpan(
+                      text: "Kuasai ",
+                      style: TextStyle(color: Color(0xFF2E5AA7)),
+                    ),
+                    TextSpan(
+                      text: "Keuanganmu\n",
+                      style: TextStyle(color: Color(0xFFFFA62B)),
+                    ),
+                    TextSpan(
+                      text: "dengan Moco",
+                      style: TextStyle(color: Color(0xFF2E5AA7)),
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
-              // Tombol Lanjut ke Step 2
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Nantinya navigasi ke OnboardingStep2Page()
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E5AA7),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    "Lanjut Ke Pengeluaran Tetap",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
+              // 3. Deskripsi Sub-teks
+              const Text(
+                "Atur jatah harian, catat pengeluaran, dan capai tujuan finansialmu dengan mudah.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Colors.grey, height: 1.5),
               ),
+
+              const Spacer(),
+
+              // 4. Tombol Daftar dengan Shadow yang Dipertegas
+              _buildButton(
+                context,
+                "Daftar",
+                const Color(0xFFFFA62B),
+                Colors.white,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterPage(),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 15),
+
+              // 5. Tombol Masuk dengan Shadow yang Dipertegas
+              _buildButton(
+                context,
+                "Masuk",
+                const Color(0xFF2E5AA7),
+                Colors.white,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 50),
             ],
           ),
         ),
@@ -164,34 +102,32 @@ class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
     );
   }
 
-  // Widget Helper untuk Card Pilihan
-  Widget _buildCycleCard(String title, IconData icon) {
-    bool isSelected = _selectedCycle == title;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedCycle = title),
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF2E5AA7) : Colors.grey[300]!,
+  // --- WIDGET TOMBOL DENGAN SHADOW YANG LEBIH TERLIHAT ---
+  Widget _buildButton(
+    BuildContext context,
+    String text,
+    Color bgColor,
+    Color textColor,
+    VoidCallback onPressed,
+  ) {
+    return SizedBox(
+      width: double.infinity,
+      height: 55,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: bgColor,
+          foregroundColor: textColor,
+          // Menaikkan elevation dan mempergelap shadow agar lebih kontras
+          elevation: 8,
+          shadowColor: Colors.black.withOpacity(0.8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: Row(
-          children: [
-            Icon(icon, color: const Color(0xFF2E5AA7), size: 20),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-            const Spacer(),
-            Icon(
-              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-              size: 16,
-              color: isSelected ? const Color(0xFF2E5AA7) : Colors.grey,
-            ),
-          ],
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
     );
