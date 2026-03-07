@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_mobile/pages/login_page.dart';
-import 'verification_page.dart';
+// Import login_page dihapus untuk menghilangkan warning 'Unused import'
+import 'registration_success_page.dart'; // Import ini wajib ada agar bisa pindah halaman
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -31,6 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
+    // Validasi tetap dipertahankan agar data yang masuk benar
     if (name.isEmpty) {
       _showError("Nama lengkap wajib diisi.");
       return;
@@ -48,10 +49,13 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    debugPrint("User mendaftar: $name. Menuju verifikasi...");
-    Navigator.push(
+    debugPrint("User mendaftar: $name. Berhasil.");
+
+    // --- PERUBAHAN UTAMA: Pindah ke halaman sukses ---
+    // Menggunakan pushReplacement agar user tidak bisa kembali ke form register
+    Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const VerificationPage()),
+      MaterialPageRoute(builder: (context) => const RegistrationSuccessPage()),
     );
   }
 
@@ -64,96 +68,140 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF2E5AA7),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: SafeArea(
+      body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-          child: Column(
-            children: [
-              Image.asset('assets/images/Logo.png', width: 150, height: 150),
-              const SizedBox(height: 20),
-              const Text(
-                "Register",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 30),
-              _buildInput(hint: "Nama Lengkap", controller: _nameController),
-              const SizedBox(height: 20),
-              _buildInput(
-                hint: "Email",
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 20),
-              _buildInput(
-                hint: "Password",
-                controller: _passwordController,
-                isPassword: true,
-                obscureText: _isPasswordObscured,
-                onSuffixIconPressed: () =>
-                    setState(() => _isPasswordObscured = !_isPasswordObscured),
-              ),
-              const SizedBox(height: 20),
-              _buildInput(
-                hint: "Konfirmasi Password",
-                controller: _confirmPasswordController,
-                isPassword: true,
-                obscureText: _isConfirmPasswordObscured,
-                onSuffixIconPressed: () => setState(
-                  () =>
-                      _isConfirmPasswordObscured = !_isConfirmPasswordObscured,
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          child: Container(
+            padding: const EdgeInsets.all(30.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
                 ),
-              ),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _handleRegister,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E5AA7),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    "Daftar",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset('assets/images/Single_logo.png', height: 80),
+                const SizedBox(height: 20),
+                const Text(
+                  "Daftar",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2E5AA7),
                   ),
                 ),
-              ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Bergabunglah dengan Moco untuk mengelola keuangan Anda dengan lebih baik.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 30),
 
-              // --- PERUBAHAN DI SINI ---
-              const SizedBox(height: 20), // Memberikan jarak yang sama
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Sudah punya akun?"),
-                  TextButton(
-                    onPressed: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ),
+                _buildInput(
+                  hint: "Nama Lengkap",
+                  controller: _nameController,
+                  label: "Nama Lengkap",
+                ),
+                const SizedBox(height: 15),
+                _buildInput(
+                  hint: "Email",
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  icon: Icons.email_outlined,
+                  label: "Email",
+                ),
+                const SizedBox(height: 15),
+                _buildInput(
+                  hint: "Password",
+                  controller: _passwordController,
+                  isPassword: true,
+                  obscureText: _isPasswordObscured,
+                  icon: Icons.lock_outline,
+                  label: "Password",
+                  onSuffixIconPressed: () => setState(
+                    () => _isPasswordObscured = !_isPasswordObscured,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                _buildInput(
+                  hint: "Konfirmasi Password",
+                  controller: _confirmPasswordController,
+                  isPassword: true,
+                  obscureText: _isConfirmPasswordObscured,
+                  icon: Icons.verified_user_outlined,
+                  label: "Konfirmasi Password",
+                  onSuffixIconPressed: () => setState(
+                    () => _isConfirmPasswordObscured =
+                        !_isConfirmPasswordObscured,
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _handleRegister,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E5AA7),
+                      foregroundColor: Colors.white,
+                      elevation: 5,
+                      shadowColor: Colors.black.withOpacity(0.4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    },
+                    ),
                     child: const Text(
-                      "Login di sini",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      "Daftar",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                ],
-              ),
-              // -------------------------
-            ],
+                ),
+              ],
+            ),
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 30.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Sudah punya akun? ",
+              style: TextStyle(color: Colors.white),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const Text(
+                "Masuk di sini",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFFA62B),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -162,35 +210,60 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _buildInput({
     required String hint,
     required TextEditingController controller,
+    required String label,
+    IconData? icon,
     bool isPassword = false,
     bool obscureText = false,
     VoidCallback? onSuffixIconPressed,
     TextInputType keyboardType = TextInputType.text,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          hintText: hint,
-          border: InputBorder.none,
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: onSuffixIconPressed,
-                )
-              : null,
+    return Column(
+      // Perbaikan: Pakai .start agar tidak error
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF2E5AA7),
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
         ),
-      ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFF2E5AA7)),
+          ),
+          child: TextField(
+            controller: controller,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+              prefixIcon: icon != null
+                  ? Icon(icon, color: Colors.grey, size: 20)
+                  : null,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 12,
+              ),
+              suffixIcon: isPassword
+                  ? IconButton(
+                      icon: Icon(
+                        obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
+                      onPressed: onSuffixIconPressed,
+                    )
+                  : null,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

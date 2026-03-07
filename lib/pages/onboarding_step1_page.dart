@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// TAMBAHKAN IMPORT INI:
+import 'onboarding_step2_page.dart';
 
 class OnboardingStep1Page extends StatefulWidget {
   const OnboardingStep1Page({super.key});
@@ -8,7 +10,7 @@ class OnboardingStep1Page extends StatefulWidget {
 }
 
 class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
-  String _selectedCycle = "Bulanan"; // Nilai default
+  String _selectedCycle = "Bulanan";
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,6 @@ class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              // Logo Moco
               Center(child: Image.asset('assets/images/Logo.png', height: 100)),
               const SizedBox(height: 20),
 
@@ -66,10 +67,8 @@ class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.grey),
               ),
-
               const SizedBox(height: 30),
 
-              // Card Pilihan Bulanan / Mingguan
               Row(
                 children: [
                   Expanded(
@@ -87,7 +86,6 @@ class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
 
               const SizedBox(height: 25),
 
-              // Input Nominal
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -107,7 +105,6 @@ class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
 
               const SizedBox(height: 20),
 
-              // Box Info Biru
               Container(
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
@@ -133,13 +130,19 @@ class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
 
               const SizedBox(height: 40),
 
-              // Tombol Lanjut ke Step 2
+              // TOMBOL LANJUT (SUDAH DIPERBAIKI LOGIKANYA)
               SizedBox(
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Nantinya navigasi ke OnboardingStep2Page()
+                    // PINDAH KE STEP 2
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OnboardingStep2Page(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2E5AA7),
@@ -164,7 +167,6 @@ class _OnboardingStep1PageState extends State<OnboardingStep1Page> {
     );
   }
 
-  // Widget Helper untuk Card Pilihan
   Widget _buildCycleCard(String title, IconData icon) {
     bool isSelected = _selectedCycle == title;
     return GestureDetector(

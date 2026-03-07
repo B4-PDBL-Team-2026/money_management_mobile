@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/onboarding.dart'; // Import file yang baru diganti namanya
+import 'package:money_management_mobile/pages/onboarding.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const OnboardingPage(), // Panggil class yang ada di onboarding.dart
+      home:
+          OnboardingPage(), // Nama ini harus SAMA persis dengan di file onboarding.dart
     );
   }
 }
