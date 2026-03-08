@@ -14,4 +14,13 @@ class AuthRepositoryImpl implements AuthRepository {
       throw Exception("Gagal mendaftar: ${e.toString()}");
     }
   }
+
+  @override
+  Future<void> login(String email, String password) async {
+    try {
+      await remoteDataSource.login(email, password);
+    } catch (e) {
+      throw Exception("Gagal login: ${e.toString()}");
+    }
+  }
 }

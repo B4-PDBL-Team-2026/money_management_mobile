@@ -35,7 +35,10 @@ class AppRouter {
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => BlocProvider(
+          create: (_) => sl.get<AuthCubit>(),
+          child: const LoginPage(),
+        ),
         routes: [
           GoRoute(
             path: 'forgot-password',
