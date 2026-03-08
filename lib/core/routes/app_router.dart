@@ -1,4 +1,6 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/login_success_page.dart';
@@ -7,6 +9,7 @@ import 'package:money_management_mobile/features/auth/presentation/pages/registr
 import 'package:money_management_mobile/features/auth/presentation/pages/verification_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
+import 'package:money_management_mobile/injection_container.dart';
 
 class AppRouter {
   static const String dashboard = '/';
@@ -46,7 +49,10 @@ class AppRouter {
       ),
       GoRoute(
         path: '/registration',
-        builder: (context, state) => const RegisterPage(),
+        builder: (context, state) => BlocProvider(
+          create: (_) => sl.get<AuthCubit>(),
+          child: const RegisterPage(),
+        ),
         routes: [
           GoRoute(
             path: 'verification',
