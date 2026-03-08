@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/widgets/app_button.dart';
+import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,9 +19,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-
-  bool _isPasswordObscured = true;
-  bool _isConfirmPasswordObscured = true;
 
   bool _isValidEmail(String email) {
     return RegExp(
@@ -66,58 +66,47 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.spacing8),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSizes.spacing6),
           child: Column(
             children: [
-              Image.asset('assets/images/Logo.png', width: 150, height: 150),
-              const SizedBox(height: AppSizes.spacing5),
-              Text(
-                "Register",
-                style: Theme.of(context).textTheme.headlineLarge,
+              const Spacer(),
+              SvgPicture.asset(
+                'assets/svg/full-logo.svg',
+                height: 65,
+                width: double.infinity,
               ),
-              const SizedBox(height: AppSizes.spacing7),
-              _buildInput(hint: "Nama Lengkap", controller: _nameController),
-              const SizedBox(height: AppSizes.spacing5),
-              _buildInput(
+              const Spacer(),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Register",
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+              ),
+              const SizedBox(height: AppSizes.spacing6),
+              AppTextField(hint: "Nama Lengkap", controller: _nameController),
+              const SizedBox(height: AppSizes.spacing4),
+              AppTextField(
                 hint: "Email",
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: AppSizes.spacing5),
-              _buildInput(
+              const SizedBox(height: AppSizes.spacing4),
+              AppTextField(
                 hint: "Password",
                 controller: _passwordController,
                 isPassword: true,
-                obscureText: _isPasswordObscured,
-                onSuffixIconPressed: () =>
-                    setState(() => _isPasswordObscured = !_isPasswordObscured),
               ),
-              const SizedBox(height: AppSizes.spacing5),
-              _buildInput(
+              const SizedBox(height: AppSizes.spacing4),
+              AppTextField(
                 hint: "Konfirmasi Password",
                 controller: _confirmPasswordController,
                 isPassword: true,
-                obscureText: _isConfirmPasswordObscured,
-                onSuffixIconPressed: () => setState(
-                  () =>
-                      _isConfirmPasswordObscured = !_isConfirmPasswordObscured,
-                ),
               ),
-              const SizedBox(height: AppSizes.spacing8),
-              SizedBox(
-                width: double.infinity,
-                height: AppSizes.spacing9,
-                child: ElevatedButton(
-                  onPressed: _handleRegister,
-                  child: const Text("Daftar"),
-                ),
-              ),
-
-              // --- PERUBAHAN DI SINI ---
-              const SizedBox(
-                height: AppSizes.spacing5,
-              ), // Memberikan jarak yang sama
+              const Spacer(),
+              AppButton(text: "Daftar", onPressed: _handleRegister),
+              const SizedBox(height: AppSizes.spacing4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -137,37 +126,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ],
               ),
-              // -------------------------
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildInput({
-    required String hint,
-    required TextEditingController controller,
-    bool isPassword = false,
-    bool obscureText = false,
-    VoidCallback? onSuffixIconPressed,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      style: Theme.of(context).textTheme.bodyMedium,
-      decoration: InputDecoration(
-        hintText: hint,
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  obscureText ? Icons.visibility_off : Icons.visibility,
-                ),
-                onPressed: onSuffixIconPressed,
-              )
-            : null,
       ),
     );
   }

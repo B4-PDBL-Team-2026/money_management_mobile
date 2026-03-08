@@ -5,11 +5,19 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 class AppTextStyles {
   static final String? fontFamily = GoogleFonts.plusJakartaSans().fontFamily;
 
-  static final TextStyle display = GoogleFonts.plusJakartaSans(
+  static final TextStyle display1 = GoogleFonts.plusJakartaSans(
     fontSize: 40,
     fontWeight: FontWeight.w700,
     height: 1.2,
     letterSpacing: 40 * -0.03,
+    color: AppColors.bulma,
+  );
+
+  static final TextStyle display2 = GoogleFonts.plusJakartaSans(
+    fontSize: 32,
+    fontWeight: FontWeight.w700,
+    height: 1.2,
+    letterSpacing: 32 * -0.03,
     color: AppColors.bulma,
   );
 

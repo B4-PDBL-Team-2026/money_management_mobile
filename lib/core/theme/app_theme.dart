@@ -10,7 +10,8 @@ class AppTheme {
 
     fontFamily: AppTextStyles.fontFamily,
     textTheme: TextTheme(
-      displayLarge: AppTextStyles.display,
+      displayLarge: AppTextStyles.display1,
+      displayMedium: AppTextStyles.display2,
       headlineLarge: AppTextStyles.h1,
       headlineMedium: AppTextStyles.h2,
       titleLarge: AppTextStyles.subtitle,
@@ -30,7 +31,7 @@ class AppTheme {
       primaryContainer: AppColors.lightPrimary,
       secondary: AppColors.secondary,
       onSecondary: Colors.white,
-      secondaryContainer: AppColors.lightSecodary,
+      secondaryContainer: AppColors.lightSecondary,
       tertiary: AppColors.tertiary,
       error: AppColors.danger100,
       surface: AppColors.gohan,
