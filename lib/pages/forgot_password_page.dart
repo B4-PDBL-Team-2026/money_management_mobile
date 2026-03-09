@@ -13,106 +13,127 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      // AppBar untuk tombol back manual jika user ingin kembali sebelum 5x salah
+      backgroundColor: const Color(0xFF2E5AA7),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.white,
+            size: 22,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // 1. Placeholder Logo (Kotak Abu-abu sesuai gambar)
-              Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: Container(
+            padding: const EdgeInsets.only(
+              top: 80.0,
+              bottom: 80.0,
+              left: 25.0,
+              right: 25.0,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              // --- PERUBAHAN: Menambahkan shadow yang lebih pekat ---
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3), // Kepekatan bayangan
+                  spreadRadius: 5, // Sebaran bayangan
+                  blurRadius: 15, // Kehalusan bayangan
+                  offset: const Offset(0, 10), // Posisi bayangan (x, y)
                 ),
-              ),
-              const SizedBox(height: 40),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset('assets/images/Single_logo.png', height: 80),
+                const SizedBox(height: 30),
 
-              // 2. Judul Halaman
-              const Text(
-                "Forgot Password",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              // 3. Input Email (Gaya Minimalis sesuai gambar)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0), // Abu-abu terang
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    hintText: "Email Address",
-                    border: InputBorder.none,
+                const Text(
+                  "Lupa Password",
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2E5AA7),
                   ),
                 ),
-              ),
-              const SizedBox(height: 30),
+                const SizedBox(height: 10),
 
-              // 4. Tombol Confirm
-              SizedBox(
-                width: 120, // Ukuran tombol lebih kecil sesuai gambar
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Logika simulasi pengiriman email reset
-                    _showResetDialog(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD9D9D9), // Abu-abu tombol
-                    foregroundColor: Colors.black,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+                const Text(
+                  "Masukkan email Anda untuk menerima instruksi pemulihan akun.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 40),
+
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Email",
+                    style: TextStyle(
+                      color: Color(0xFF2E5AA7),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: const Text(
-                    "Confirm",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFF2E5AA7)),
+                  ),
+                  child: TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: Colors.grey,
+                      ),
+                      hintText: "hello@example.com",
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+                const SizedBox(height: 40),
 
-  // Notifikasi sederhana setelah menekan confirm
-  void _showResetDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Email Terkirim"),
-        content: Text(
-          "Instruksi reset password telah dikirim ke ${_emailController.text}",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Tutup dialog
-              Navigator.pop(context); // Kembali ke Login
-            },
-            child: const Text("Kembali ke Login"),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Logika reset password
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E5AA7),
+                      foregroundColor: Colors.white,
+                      elevation: 5, // Shadow pada tombol juga dipertegas
+                      shadowColor: Colors.black.withOpacity(0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Konfirmasi",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

@@ -15,9 +15,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordObscured = true;
-  int _failedAttempts = 0; // Counter untuk kesalahan input
+  int _failedAttempts = 0;
 
-  // Validasi format email
   bool _isEmailValid(String email) {
     return RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
@@ -37,36 +36,64 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF2E5AA7), 
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 40.0),
           child: Column(
             children: [
-              Image.asset('assets/images/Logo.png', width: 180, height: 180),
-              const SizedBox(height: 30),
+              SizedBox(
+                height: 300,
+                width: 300,
+                child: Image.asset(
+                  'assets/images/Logo.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+              const SizedBox(height: 50),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Login",
+                  "Masuk",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 30),
 
+              // --- INPUT EMAIL ---
               _buildInput(
                 hint: "Email",
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
+                icon: Icons.email_outlined,
               ),
               const SizedBox(height: 20),
 
+              // --- INPUT PASSWORD ---
               _buildInput(
                 hint: "Password",
                 controller: _passwordController,
                 isPassword: true,
                 obscureText: _isPasswordObscured,
+                icon: Icons.lock_outline,
                 onSuffixIconPressed: () {
                   setState(() {
                     _isPasswordObscured = !_isPasswordObscured;
@@ -86,14 +113,16 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   },
                   child: const Text(
-                    "Lupa Password?",
-                    style: TextStyle(color: Colors.blueGrey),
+                    "Lupa Password",
+                    style: TextStyle(
+                      color: Color(0xFF2E5AA7), // Warna Biru sesuai gambar
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 30),
 
-              // --- LOGIKA LOGIN YANG SUDAH DIPERBAIKI PRIORITASNYA ---
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -102,66 +131,38 @@ class _LoginPageState extends State<LoginPage> {
                     String email = _emailController.text;
                     String password = _passwordController.text;
 
-                    // 1. Validasi Input Kosong & Format Email
                     if (email.isEmpty || password.isEmpty) {
-                      _showErrorSnackbar(
-                        "Email atau password tidak boleh kosong",
-                      );
+                      _showErrorSnackbar("Email atau password tidak boleh kosong");
                       return;
                     }
 
                     if (!_isEmailValid(email)) {
-                      _showErrorSnackbar(
-                        "Harus format email valid (@gmail.com, dll)",
-                      );
+                      _showErrorSnackbar("Harus format email valid (@gmail.com, dll)");
                       return;
                     }
 
-                    // 2. CEK KECOCOKAN DATA (Prioritas Utama agar Sukses bisa muncul)
-                    bool isAuthSuccess =
-                        (email == "admin@gmail.com" && password == "12345678");
+                    bool isAuthSuccess = (email == "admin@gmail.com" && password == "12345678");
 
                     if (isAuthSuccess) {
-                      _failedAttempts = 0; // Reset percobaan jika sukses
-
-                      // Menuju Halaman LoginSuccessPage (Notifikasi Centang)
+                      _failedAttempts = 0;
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginSuccessPage(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const LoginSuccessPage()),
                       );
                     } else {
-                      // 3. JIKA DATA SALAH, baru jalankan logika error/penalti di sini
-                      setState(() {
-                        _failedAttempts++;
-                      });
+                      setState(() { _failedAttempts++; });
 
-                      // Cek apakah sisa percobaan sudah habis (Max 5x)
                       if (_failedAttempts >= 5) {
-                        _showErrorSnackbar(
-                          "Terlalu banyak percobaan. Silakan reset password.",
-                        );
-                        _failedAttempts =
-                            0; // Reset agar bisa mencoba lagi nanti
+                        _showErrorSnackbar("Terlalu banyak percobaan. Silakan reset password.");
+                        _failedAttempts = 0;
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordPage(),
-                          ),
+                          MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
                         );
-                      }
-                      // Cek syarat keamanan minimal karakter
-                      else if (password.length < 8) {
-                        _showErrorSnackbar(
-                          "Email atau password salah (Min. 8 Karakter)",
-                        );
-                      }
-                      // Pesan kesalahan standar dengan info sisa kesempatan
-                      else {
-                        _showErrorSnackbar(
-                          "Email atau password salah (${5 - _failedAttempts} kesempatan lagi)",
-                        );
+                      } else if (password.length < 8) {
+                        _showErrorSnackbar("Email atau password salah (Min. 8 Karakter)");
+                      } else {
+                        _showErrorSnackbar("Email atau password salah (${5 - _failedAttempts} kesempatan lagi)");
                       }
                     }
                   },
@@ -189,14 +190,15 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const RegisterPage(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const RegisterPage()),
                       );
                     },
                     child: const Text(
-                      "Daftar Sekarang",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      "Buat Sekarang",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFFFA62B),
+                      ),
                     ),
                   ),
                 ],
@@ -208,39 +210,42 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  // --- WIDGET INPUT DENGAN BORDER BIRU SESUAI GAMBAR ---
   Widget _buildInput({
     required String hint,
     required TextEditingController controller,
+    IconData? icon,
     bool isPassword = false,
     bool obscureText = false,
     VoidCallback? onSuffixIconPressed,
     TextInputType keyboardType = TextInputType.text,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        maxLength: isPassword ? 8 : null,
-        decoration: InputDecoration(
-          hintText: hint,
-          counterText: "",
-          border: InputBorder.none,
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: onSuffixIconPressed,
-                )
-              : null,
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      maxLength: isPassword ? 8 : null,
+      decoration: InputDecoration(
+        hintText: hint,
+        counterText: "",
+        prefixIcon: Icon(icon, color: const Color(0xFF2E5AA7)), // Icon Biru
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF2E5AA7), width: 1.5), // Border Biru
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF2E5AA7), width: 2), // Border Biru saat diklik
+        ),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey,
+                ),
+                onPressed: onSuffixIconPressed,
+              )
+            : null,
       ),
     );
   }

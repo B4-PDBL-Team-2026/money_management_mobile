@@ -1,64 +1,137 @@
 import 'package:flutter/material.dart';
 
-class LoginSuccessPage extends StatelessWidget {
+class LoginSuccessPage extends StatefulWidget {
   const LoginSuccessPage({super.key});
+
+  @override
+  State<LoginSuccessPage> createState() => _LoginSuccessPageState();
+}
+
+class _LoginSuccessPageState extends State<LoginSuccessPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+
+    _scaleAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // --- PERUBAHAN: Latar Belakang menjadi Biru Gelap sesuai tema Moco ---
+      backgroundColor: const Color(0xFF2E5AA7),
       body: Center(
-        child: Container(
-          width: 300,
-          height: 300,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.grey[300], // Background kotak abu-abu
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Ikon Centang dalam Lingkaran
-              Container(
-                width: 100,
-                height: 100,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE0E0E0),
-                  shape: BoxShape.circle,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: Container(
+            width: 320,
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              // --- SHADOW DIPERTEGAS agar kartu terlihat "timbul" ---
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 25,
+                  spreadRadius: 2,
+                  offset: const Offset(0, 15),
                 ),
-                child: const Icon(Icons.check, size: 60, color: Colors.black),
-              ),
-              const SizedBox(height: 20),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Ikon Centang Hijau Sukses
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF32B114),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.check, size: 80, color: Colors.white),
+                ),
+                const SizedBox(height: 30),
 
-              // Teks Notifikasi
-              const Text(
-                'Login Successfull',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 30),
+                // Teks Judul (Warna Biru agar kontras di kartu putih)
+                const Text(
+                  'Masuk Berhasil',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2E5AA7),
+                  ),
+                ),
+                const SizedBox(height: 15),
 
-              // Tombol Continue
-              SizedBox(
-                width: double.infinity,
-                height: 45,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Aksi untuk lanjut ke Dashboard/Home
-                    debugPrint("Pindah ke Dashboard");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[400],
-                    foregroundColor: Colors.black,
-                    elevation: 0,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero, // Persegi sesuai gambar
+                // Teks Deskripsi (Memberikan konteks pada user)
+                const Text(
+                  'Selamat datang kembali! Anda akan diarahkan ke dashboard utama.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 35),
+
+                // Tombol Lanjutkan
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // --- LOGIKA: Pindah ke Dashboard & Hapus stack login ---
+                      // Ganti 'DashboardPage()' dengan nama class Dashboard Anda
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Placeholder(),
+                        ), // Ganti Placeholder
+                        (route) => false,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E5AA7),
+                      foregroundColor: Colors.white,
+                      elevation: 8,
+                      shadowColor: Colors.black.withOpacity(0.4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Buka Dashboard',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  child: const Text('Continue'),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
