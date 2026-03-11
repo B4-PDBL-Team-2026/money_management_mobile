@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_mobile/pages/onboarding.dart';
+import 'package:money_management_mobile/core/routes/app_router.dart';
+import 'package:money_management_mobile/injection_container.dart';
+import 'package:money_management_mobile/core/theme/app_theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initInjectionContainer();
   runApp(const MyApp());
 }
 
@@ -10,10 +14,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home:
-          OnboardingPage(), // Nama ini harus SAMA persis dengan di file onboarding.dart
+      title: 'Moco',
+      routerConfig: AppRouter.router,
+      theme: AppTheme.lightTheme,
     );
   }
 }
