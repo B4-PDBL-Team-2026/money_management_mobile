@@ -7,7 +7,10 @@ import 'package:money_management_mobile/features/auth/presentation/pages/persona
 import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/pages/history_dummy_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/pages/setting_dummy_page.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
 class AppRouter {
@@ -24,9 +27,7 @@ class AppRouter {
   static final router = GoRouter(
     initialLocation: '/welcome',
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const HomePage()),
-
-      // auth routes
+      // auth module
       GoRoute(
         path: '/welcome',
         builder: (context, state) => const WelcomePage(),
@@ -63,7 +64,38 @@ class AppRouter {
           ),
         ],
       ),
+
+      // dashboard module
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return ShellContainer(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/history',
+                builder: (context, state) => const HistoryDummyPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const HomePage()),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsDummyPage(),
+              ),
+            ],
+          ),
+        ],
+      ),
     ],
+
     redirect: (context, state) {
       // Kamu bisa cek AuthCubit di sini nanti!
       return null;
