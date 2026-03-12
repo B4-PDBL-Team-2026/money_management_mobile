@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_confirm_dialog.dart';
 
@@ -114,7 +115,7 @@ class HomePage extends StatelessWidget {
                                   ),
                                   const SizedBox(height: AppSizes.spacing2),
                                   Text(
-                                    '32.000',
+                                    CurrencyFormatter.format(32000),
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge
@@ -155,7 +156,7 @@ class HomePage extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'Sisa 18.000',
+                                  'Sisa ${CurrencyFormatter.format(18000)}',
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
@@ -171,7 +172,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    'Limit 50.000',
+                                    'Limit ${CurrencyFormatter.format(50000)}',
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context).textTheme.bodySmall
                                         ?.copyWith(
@@ -212,7 +213,7 @@ class HomePage extends StatelessWidget {
                           child: _buildCard(
                             context,
                             'Sisa uang saku',
-                            '680.000',
+                            CurrencyFormatter.format(680000),
                           ),
                         ),
                         const SizedBox(width: AppSizes.spacing4),
@@ -302,7 +303,7 @@ class HomePage extends StatelessWidget {
                                   (currentTransaction['type'] == 'cash-out'
                                           ? '- '
                                           : '+ ') +
-                                      currentTransaction['amount'].toString(),
+                                      CurrencyFormatter.format(currentTransaction['amount']),
                                   style: Theme.of(context).textTheme.bodyLarge
                                       ?.copyWith(
                                         color:
