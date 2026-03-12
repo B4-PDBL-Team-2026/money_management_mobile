@@ -71,7 +71,8 @@ class _LoginPageState extends State<LoginPage> {
               behavior: SnackBarBehavior.floating,
             ),
           );
-          // context.go(AppRouter.dashboard);
+
+          context.go(AppRouter.dashboard);
         }
 
         if (state is AuthError) _showErrorSnackbar(state.message);
@@ -167,7 +168,9 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: AppSizes.spacing8),
                   AppButton(
                     text: 'Masuk',
-                    onPressed: _handleLogin,
+                    onPressed: () {
+                      context.go(AppRouter.dashboard);
+                    },
                     isLoading: state is AuthLoading,
                   ),
                 ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 
 class AppCurrencyTextField extends StatelessWidget {
   final String hint;
@@ -85,8 +85,6 @@ class AppCurrencyTextField extends StatelessWidget {
 }
 
 class CurrencyInputFormatter extends TextInputFormatter {
-  final NumberFormat _formatter = NumberFormat('#,##0', 'id_ID');
-
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -96,8 +94,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
       return newValue.copyWith(text: '');
     }
 
-    int value = int.parse(newValue.text);
-    String formatted = _formatter.format(value);
+    String formatted = CurrencyFormatter.formatString(newValue.text);
 
     return TextEditingValue(
       text: formatted,
