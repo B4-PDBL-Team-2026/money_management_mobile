@@ -29,6 +29,12 @@ class AppSizes {
   /// Spacing 56
   static const double spacing10 = 56.0;
 
+  /// Spacing 64
+  static const double spacing11 = 64.0;
+
+  /// Spacing 72
+  static const double spacing12 = 72.0;
+
   static const double radiusSm = 8.0;
   static const double radiusMd = 12.0;
   static const double radiusNm = 16.0;

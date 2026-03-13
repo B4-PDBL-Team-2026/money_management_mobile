@@ -69,7 +69,9 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthRegisterSuccess) context.go(AppRouter.step1Personalization);
+        if (state is AuthRegisterSuccess) {
+          context.go(AppRouter.step1Personalization);
+        }
         if (state is AuthError) _showError(state.message);
       },
       builder: (context, state) {
@@ -105,6 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(height: AppSizes.spacing2),
                   SvgPicture.asset(
                     'assets/svg/logo.svg',
                     height: 65,
@@ -171,33 +174,31 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: _handleRegister,
                     isLoading: state is AuthLoading,
                   ),
+                  const SizedBox(height: AppSizes.spacing6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sudah punya akun? ",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.trunks,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => context.go(AppRouter.login),
+                        child: Text(
+                          "Masuk di sini",
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.secondary,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-          ),
-
-          bottomNavigationBar: Padding(
-            padding: const EdgeInsets.only(bottom: AppSizes.spacing6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Sudah punya akun? ",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-                ),
-                GestureDetector(
-                  onTap: () => context.go(AppRouter.login),
-                  child: Text(
-                    "Masuk di sini",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.secondary,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ),
         );

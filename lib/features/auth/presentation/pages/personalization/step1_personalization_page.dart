@@ -32,73 +32,71 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
       appBar: AppBar(backgroundColor: Colors.transparent),
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.spacing6),
-          child: Column(
-            children: [
-              const StepProgressIndicator(
-                currentStep: 1,
-                totalSteps: 3,
-              ),
-
-              const SizedBox(height: AppSizes.spacing8),
-              Text(
-                "Siklus Keuangan",
-                style: Theme.of(
-                  context,
-                ).textTheme.displayMedium?.copyWith(color: AppColors.primary),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSizes.spacing3),
-              Text(
-                "Pilih siklus keuangan dan masukkan nominal uang saku Anda untuk memulai pencatatan.",
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-              ),
-              const SizedBox(height: AppSizes.spacing6),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildCycleCard(
-                      "Bulanan",
-                      Icons.calendar_month_outlined,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSizes.spacing6),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  children: [
+                    const StepProgressIndicator(currentStep: 1, totalSteps: 3),
+                    const SizedBox(height: AppSizes.spacing8),
+                    Text(
+                      "Siklus Keuangan",
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: AppColors.primary),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  const SizedBox(width: AppSizes.spacing4),
-                  Expanded(
-                    child: _buildCycleCard("Mingguan", Icons.wb_sunny_outlined),
-                  ),
-                ],
+                    const SizedBox(height: AppSizes.spacing3),
+                    Text(
+                      "Pilih siklus keuangan dan masukkan nominal uang saku Anda untuk memulai pencatatan.",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                    ),
+                    const SizedBox(height: AppSizes.spacing6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildCycleCard(
+                            "Bulanan",
+                            Icons.calendar_month_outlined,
+                          ),
+                        ),
+                        const SizedBox(width: AppSizes.spacing4),
+                        Expanded(
+                          child: _buildCycleCard(
+                            "Mingguan",
+                            Icons.wb_sunny_outlined,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSizes.spacing5),
+                    AppCurrencyTextField(
+                      controller: _amountController,
+                      hint: "Rp. 0",
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSizes.spacing5),
+                    const AppAlert(
+                      message:
+                          "Memisahkan uang saku mingguan membantu lebih disiplin mengelola pengeluaran harian.",
+                    ),
+                    const SizedBox(height: AppSizes.spacing8),
+                    AppButton(
+                      text: "Lanjut Ke Pengeluaran Tetap",
+                      onPressed: () {
+                        context.go(AppRouter.step2Personalization);
+                      },
+                    ),
+                  ],
+                ),
               ),
-
-              const SizedBox(height: AppSizes.spacing5),
-
-              AppCurrencyTextField(
-                controller: _amountController,
-                hint: "Rp. 0",
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: AppSizes.spacing5),
-
-              const AppAlert(
-                message:
-                    "Memisahkan uang saku mingguan membantu lebih disiplin mengelola pengeluaran harian.",
-              ),
-
-              const SizedBox(height: AppSizes.spacing8),
-
-              AppButton(
-                text: "Lanjut Ke Pengeluaran Tetap",
-                onPressed: () {
-                  context.go(AppRouter.step2Personalization);
-                },
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

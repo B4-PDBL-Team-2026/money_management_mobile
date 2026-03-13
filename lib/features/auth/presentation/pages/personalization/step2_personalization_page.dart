@@ -186,88 +186,83 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.spacing6),
-          child: Column(
-            children: [
-              const StepProgressIndicator(
-                currentStep: 2,
-                totalSteps: 3,
-              ),
-              const SizedBox(height: AppSizes.spacing6),
-              Text(
-                "Fixed Cost",
-                style: Theme.of(
-                  context,
-                ).textTheme.displayMedium?.copyWith(color: AppColors.primary),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              Text(
-                "Catat pengeluaran tetap bulananmu (kos, langganan, cicilan).",
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              const AppAlert(
-                messages: [
-                  "In: Memotong saldo di aplikasi.",
-                  "Out: Hanya catatan (tidak memotong saldo).",
-                ],
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              AppButton(
-                text: "Tambah Pengeluaran",
-                onPressed: () {
-                  _showAddExpenseBottomSheet();
-                },
-                variant: AppButtonVariant.outlined,
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _fixedCosts.length,
-                separatorBuilder: (context, index) =>
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSizes.spacing6),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  children: [
+                    const StepProgressIndicator(currentStep: 2, totalSteps: 3),
+                    const SizedBox(height: AppSizes.spacing6),
+                    Text(
+                      "Fixed Cost",
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: AppColors.primary),
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: AppSizes.spacing4),
-                itemBuilder: (context, index) {
-                  final item = _fixedCosts[index];
+                    Text(
+                      "Catat pengeluaran tetap bulananmu (kos, langganan, cicilan).",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                    ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    const AppAlert(
+                      messages: [
+                        "In: Memotong saldo di aplikasi.",
+                        "Out: Hanya catatan (tidak memotong saldo).",
+                      ],
+                    ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    AppButton(
+                      text: "Tambah Pengeluaran",
+                      onPressed: () {
+                        _showAddExpenseBottomSheet();
+                      },
+                      variant: AppButtonVariant.outlined,
+                    ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _fixedCosts.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: AppSizes.spacing4),
+                      itemBuilder: (context, index) {
+                        final item = _fixedCosts[index];
 
-                  return _buildFixedCostItem(
-                    item["name"],
-                    item["amount"],
-                    item["isIn"],
-                    () => _deleteItem(index),
-                  );
-                },
+                        return _buildFixedCostItem(
+                          item["name"],
+                          item["amount"],
+                          item["isIn"],
+                          () => _deleteItem(index),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: AppSizes.spacing8),
+                    AppButton(
+                      text: "Lanjut Ke Langkah 3",
+                      onPressed: () {
+                        context.go(AppRouter.dashboard);
+                      },
+                    ),
+                    const SizedBox(height: AppSizes.spacing3),
+                    AppButton(
+                      text: "Lewatkan",
+                      onPressed: () {
+                        context.go(AppRouter.dashboard);
+                      },
+                      variant: AppButtonVariant.ghost,
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(AppSizes.spacing6),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppButton(
-              text: "Lanjut Ke Langkah 3",
-              onPressed: () {
-                context.go(AppRouter.dashboard);
-              },
-            ),
-            const SizedBox(height: AppSizes.spacing3),
-            AppButton(
-              text: "Lewatkan",
-              onPressed: () {
-                context.go(AppRouter.dashboard);
-              },
-              variant: AppButtonVariant.ghost,
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -301,7 +296,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                 icon: const Icon(
                   Icons.delete_outline,
                   color: AppColors.danger100,
-                  size: 20,
+                  size: AppSizes.spacing6,
                 ),
                 onPressed: onDelete,
                 padding: EdgeInsets.zero,
