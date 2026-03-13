@@ -20,7 +20,12 @@ class Step2PersonalizationPage extends StatefulWidget {
 
 class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
   final List<Map<String, dynamic>> _fixedCosts = [
-    {"name": "Kos Bulanan", "amount": "Rp 1.500.000", "isIn": true},
+    {
+      "name": "Kos Bulanan",
+      "amount": "Rp 1.500.000",
+      "isIn": true,
+      "frequency": "Bulanan",
+    },
   ];
 
   void _deleteItem(int index) {
@@ -33,6 +38,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController amountController = TextEditingController();
     bool isIn = true;
+    String frequency = 'Bulanan';
 
     showModalBottomSheet(
       context: context,
@@ -91,6 +97,44 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                   ),
                 ),
                 const SizedBox(height: AppSizes.spacing4),
+                DropdownButtonFormField<String>(
+                  initialValue: frequency,
+                  decoration: InputDecoration(
+                    labelText: 'Frekuensi',
+                    labelStyle: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                    filled: true,
+                    fillColor: AppColors.gohan,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                      borderSide: BorderSide(color: AppColors.beerus, width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                      borderSide: BorderSide(color: AppColors.bulma, width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.spacing4,
+                      vertical: AppSizes.spacing4,
+                    ),
+                  ),
+                  dropdownColor: Colors.white,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Mingguan',
+                      child: Text('Mingguan'),
+                    ),
+                    DropdownMenuItem(value: 'Bulanan', child: Text('Bulanan')),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setModalState(() => frequency = value);
+                  },
+                ),
+                const SizedBox(height: AppSizes.spacing4),
                 Text(
                   "Status",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -137,6 +181,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                           "name": nameController.text,
                           "amount": amountController.text,
                           "isIn": isIn,
+                          "frequency": frequency,
                         });
                       });
                       Navigator.pop(context);
@@ -239,6 +284,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                           item["name"],
                           item["amount"],
                           item["isIn"],
+                          item["frequency"] ?? 'Bulanan',
                           () => _deleteItem(index),
                         );
                       },
@@ -272,6 +318,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
     String name,
     String price,
     bool isIn,
+    String frequency,
     VoidCallback onDelete,
   ) {
     return Container(
@@ -321,6 +368,18 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                   ),
                   const SizedBox(height: AppSizes.spacing1),
                   Text(price, style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: AppSizes.spacing3),
+                  Text(
+                    'Frekuensi',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+                  ),
+                  const SizedBox(height: AppSizes.spacing1),
+                  Text(
+                    frequency,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                 ],
               ),
               Column(
