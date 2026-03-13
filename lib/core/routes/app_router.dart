@@ -1,6 +1,11 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password/forgot_password_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step1_personalization_page.dart';
@@ -23,9 +28,14 @@ class AppRouter {
   static const String registration = '/welcome/registration';
   static const String step1Personalization = '/personalization/step-1';
   static const String step2Personalization = '/personalization/step-1/step-2';
+  static const String history = '/history';
+  static const String settings = '/settings';
+
+  static final SessionCubit _sessionCubit = sl<SessionCubit>();
 
   static final router = GoRouter(
     initialLocation: '/welcome',
+    refreshListenable: GoRouterRefreshStream(_sessionCubit.stream),
     routes: [
       // auth module
       GoRoute(
@@ -74,20 +84,23 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/history',
+                path: history,
                 builder: (context, state) => const HistoryDummyPage(),
               ),
             ],
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(path: '/', builder: (context, state) => const HomePage()),
+              GoRoute(
+                path: dashboard,
+                builder: (context, state) => const HomePage(),
+              ),
             ],
           ),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/settings',
+                path: settings,
                 builder: (context, state) => const SettingsDummyPage(),
               ),
             ],
@@ -97,8 +110,37 @@ class AppRouter {
     ],
 
     redirect: (context, state) {
-      // Kamu bisa cek AuthCubit di sini nanti!
+      final isAuthenticated = _sessionCubit.state is SessionAuthenticated;
+      final location = state.matchedLocation;
+      final isAuthRoute =
+          location == welcome || location.startsWith('$welcome/');
+      final isProtectedRoute =
+          location == dashboard || location == history || location == settings;
+
+      if (!isAuthenticated && isProtectedRoute) {
+        return welcome;
+      }
+
+      if (isAuthenticated && isAuthRoute) {
+        return dashboard;
+      }
+
       return null;
     },
   );
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
 }

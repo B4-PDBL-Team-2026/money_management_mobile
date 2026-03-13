@@ -69,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) context.go(AppRouter.step1Personalization);
+        if (state is AuthRegisterSuccess) context.go(AppRouter.step1Personalization);
         if (state is AuthError) _showError(state.message);
       },
       builder: (context, state) {

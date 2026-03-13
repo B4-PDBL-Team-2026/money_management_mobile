@@ -20,7 +20,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       await registerUseCase.execute(name, email, password);
       _log.info('Register completed successfully');
-      emit(AuthSuccess());
+      emit(AuthRegisterSuccess());
     } on ServerException catch (e) {
       _log.severe('Register failed with ServerException: ${e.message}', e);
       emit(AuthError(e.message));
@@ -41,9 +41,9 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
 
     try {
-      await loginUseCase.execute(email, password);
-      _log.info('Login completed successfully');
-      emit(AuthSuccess());
+      final (user, token) = await loginUseCase.execute(email, password);
+      _log.info('Login completed successfully for user: ${user.email}');
+      emit(AuthLoginSuccess(user: user, token: token));
     } on ServerException catch (e) {
       _log.severe('Login failed with ServerException: ${e.message}', e);
       emit(AuthError(e.message));
