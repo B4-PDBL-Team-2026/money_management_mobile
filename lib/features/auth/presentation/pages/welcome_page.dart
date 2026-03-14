@@ -13,49 +13,55 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSizes.spacing7),
-          child: Column(
-            children: [
-              const Spacer(),
-              SvgPicture.asset(
-                'assets/svg/full-logo.svg',
-                height: 65,
-                width: double.infinity,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSizes.spacing6),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/svg/full-logo.svg',
+                      height: 65,
+                      width: double.infinity,
+                    ),
+                    const SizedBox(height: AppSizes.spacing12),
+                    Text(
+                      "Kuasai Keuanganmu dengan Moco",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: AppColors.primary),
+                    ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    Text(
+                      "Atur jatah harian, catat pengeluaran, dan capai tujuan finansialmu dengan mudah.",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                    ),
+                    const SizedBox(height: AppSizes.spacing12),
+                    AppButton(
+                      text: 'Login',
+                      onPressed: () {
+                        context.go(AppRouter.login);
+                      },
+                    ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    AppButton(
+                      text: "Register",
+                      onPressed: () {
+                        context.go(AppRouter.registration);
+                      },
+                      type: AppButtonType.secondary,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSizes.spacing10),
-              Text(
-                "Kuasai Keuanganmu dengan Moco",
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.displayMedium?.copyWith(color: AppColors.primary),
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              Text(
-                "Atur jatah harian, catat pengeluaran, dan capai tujuan finansialmu dengan mudah.",
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-              ),
-              const Spacer(),
-              AppButton(
-                text: 'Login',
-                onPressed: () {
-                  context.go(AppRouter.login);
-                },
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              AppButton(
-                text: "Register",
-                onPressed: () {
-                  context.go(AppRouter.registration);
-                },
-                type: AppButtonType.secondary,
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

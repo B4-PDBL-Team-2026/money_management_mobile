@@ -46,58 +46,62 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.spacing6),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: AppSizes.spacing10),
-              SvgPicture.asset(
-                'assets/svg/logo.svg',
-                height: 65,
-                width: double.infinity,
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              Text(
-                "Lupa Password",
-                style: Theme.of(
-                  context,
-                ).textTheme.displayMedium?.copyWith(color: AppColors.primary),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              Text(
-                "Masukkan email Anda untuk menerima instruksi pemulihan akun.",
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-              ),
-              const SizedBox(height: AppSizes.spacing8),
-              AppTextField(
-                hint: "Email",
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                prefixIcon: const Icon(
-                  Icons.email_outlined,
-                  color: AppColors.trunks,
-                ),
-              ),
-              const SizedBox(height: AppSizes.spacing8),
-              AppButton(
-                text: 'Konfirmasi',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SendSuccessPage(),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSizes.spacing6),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: AppSizes.spacing12),
+                  SvgPicture.asset(
+                    'assets/svg/logo.svg',
+                    height: 65,
+                    width: double.infinity,
+                  ),
+                  const SizedBox(height: AppSizes.spacing4),
+                  Text(
+                    "Lupa Password",
+                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                      color: AppColors.primary,
                     ),
-                  );
-                },
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSizes.spacing4),
+                  Text(
+                    "Masukkan email Anda untuk menerima instruksi pemulihan akun.",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                  ),
+                  const SizedBox(height: AppSizes.spacing8),
+                  AppTextField(
+                    hint: "Email",
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: const Icon(
+                      Icons.email_outlined,
+                      color: AppColors.trunks,
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spacing8),
+                  AppButton(
+                    text: 'Konfirmasi',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SendSuccessPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

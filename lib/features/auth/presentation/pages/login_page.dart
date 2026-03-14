@@ -9,6 +9,7 @@ import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/auth_state.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -60,7 +61,12 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is AuthLoginSuccess) {
+          context.read<SessionCubit>().authenticate(
+            user: state.user,
+            token: state.token,
+          );
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -68,7 +74,6 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(color: AppColors.gohan),
               ),
               backgroundColor: AppColors.primary,
-              behavior: SnackBarBehavior.floating,
             ),
           );
 
@@ -105,100 +110,99 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSizes.spacing6),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/svg/logo.svg',
-                    height: 65,
-                    width: double.infinity,
-                  ),
-                  const SizedBox(height: AppSizes.spacing4),
-                  Text(
-                    "Selamat Datang Kembali",
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      color: AppColors.primary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSizes.spacing4),
-                  Text(
-                    "Kami senang melihat Anda lagi! Masuk untuk melanjutkan perjalanan keuangan Anda.",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-                  ),
-                  const SizedBox(height: AppSizes.spacing8),
-                  AppTextField(
-                    hint: "Email",
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    prefixIcon: const Icon(
-                      Icons.email_outlined,
-                      color: AppColors.trunks,
-                    ),
-                  ),
-                  const SizedBox(height: AppSizes.spacing4),
-                  AppTextField(
-                    hint: "Password",
-                    controller: _passwordController,
-                    isPassword: true,
-                    prefixIcon: const Icon(
-                      Icons.lock_outline,
-                      color: AppColors.trunks,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        context.go(AppRouter.forgotPassword);
-                      },
-                      child: Text(
-                        "Lupa Password?",
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppSizes.spacing6),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: AppSizes.spacing9),
+                      SvgPicture.asset(
+                        'assets/svg/logo.svg',
+                        height: 65,
+                        width: double.infinity,
+                      ),
+                      const SizedBox(height: AppSizes.spacing4),
+                      Text(
+                        "Selamat Datang Kembali",
+                        style: Theme.of(context).textTheme.displayMedium
+                            ?.copyWith(color: AppColors.primary),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSizes.spacing4),
+                      Text(
+                        "Kami senang melihat Anda lagi! Masuk untuk melanjutkan perjalanan keuangan Anda.",
+                        textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.trunks,
                         ),
                       ),
-                    ),
+                      const SizedBox(height: AppSizes.spacing8),
+                      AppTextField(
+                        hint: "Email",
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        prefixIcon: const Icon(
+                          Icons.email_outlined,
+                          color: AppColors.trunks,
+                        ),
+                      ),
+                      const SizedBox(height: AppSizes.spacing4),
+                      AppTextField(
+                        hint: "Password",
+                        controller: _passwordController,
+                        isPassword: true,
+                        prefixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: AppColors.trunks,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            context.go(AppRouter.forgotPassword);
+                          },
+                          child: Text(
+                            "Lupa Password?",
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: AppColors.trunks),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSizes.spacing9),
+                      AppButton(
+                        text: 'Masuk',
+                        onPressed: _handleLogin,
+                        isLoading: state is AuthLoading,
+                      ),
+                      const SizedBox(height: AppSizes.spacing6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Belum punya akun? ",
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: AppColors.trunks),
+                          ),
+                          GestureDetector(
+                            onTap: () => context.go(AppRouter.registration),
+                            child: Text(
+                              "Daftar di sini",
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.secondary,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: AppSizes.spacing8),
-                  AppButton(
-                    text: 'Masuk',
-                    onPressed: () {
-                      context.go(AppRouter.dashboard);
-                    },
-                    isLoading: state is AuthLoading,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          bottomNavigationBar: Padding(
-            padding: const EdgeInsets.only(bottom: AppSizes.spacing6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Belum punya akun? ",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-                ),
-                GestureDetector(
-                  onTap: () => context.go(AppRouter.registration),
-                  child: Text(
-                    "Daftar di sini",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.secondary,
-                    ),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ),
         );

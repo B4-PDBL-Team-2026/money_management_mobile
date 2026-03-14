@@ -20,7 +20,12 @@ class Step2PersonalizationPage extends StatefulWidget {
 
 class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
   final List<Map<String, dynamic>> _fixedCosts = [
-    {"name": "Kos Bulanan", "amount": "Rp 1.500.000", "isIn": true},
+    {
+      "name": "Kos Bulanan",
+      "amount": "Rp 1.500.000",
+      "isIn": true,
+      "frequency": "Bulanan",
+    },
   ];
 
   void _deleteItem(int index) {
@@ -33,6 +38,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController amountController = TextEditingController();
     bool isIn = true;
+    String frequency = 'Bulanan';
 
     showModalBottomSheet(
       context: context,
@@ -91,6 +97,44 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                   ),
                 ),
                 const SizedBox(height: AppSizes.spacing4),
+                DropdownButtonFormField<String>(
+                  initialValue: frequency,
+                  decoration: InputDecoration(
+                    labelText: 'Frekuensi',
+                    labelStyle: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                    filled: true,
+                    fillColor: AppColors.gohan,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                      borderSide: BorderSide(color: AppColors.beerus, width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                      borderSide: BorderSide(color: AppColors.bulma, width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.spacing4,
+                      vertical: AppSizes.spacing4,
+                    ),
+                  ),
+                  dropdownColor: Colors.white,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Mingguan',
+                      child: Text('Mingguan'),
+                    ),
+                    DropdownMenuItem(value: 'Bulanan', child: Text('Bulanan')),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setModalState(() => frequency = value);
+                  },
+                ),
+                const SizedBox(height: AppSizes.spacing4),
                 Text(
                   "Status",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -137,6 +181,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                           "name": nameController.text,
                           "amount": amountController.text,
                           "isIn": isIn,
+                          "frequency": frequency,
                         });
                       });
                       Navigator.pop(context);
@@ -186,88 +231,84 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.spacing6),
-          child: Column(
-            children: [
-              const StepProgressIndicator(
-                currentStep: 2,
-                totalSteps: 3,
-              ),
-              const SizedBox(height: AppSizes.spacing6),
-              Text(
-                "Fixed Cost",
-                style: Theme.of(
-                  context,
-                ).textTheme.displayMedium?.copyWith(color: AppColors.primary),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              Text(
-                "Catat pengeluaran tetap bulananmu (kos, langganan, cicilan).",
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              const AppAlert(
-                messages: [
-                  "In: Memotong saldo di aplikasi.",
-                  "Out: Hanya catatan (tidak memotong saldo).",
-                ],
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              AppButton(
-                text: "Tambah Pengeluaran",
-                onPressed: () {
-                  _showAddExpenseBottomSheet();
-                },
-                variant: AppButtonVariant.outlined,
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _fixedCosts.length,
-                separatorBuilder: (context, index) =>
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSizes.spacing6),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  children: [
+                    const StepProgressIndicator(currentStep: 2, totalSteps: 3),
+                    const SizedBox(height: AppSizes.spacing6),
+                    Text(
+                      "Fixed Cost",
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: AppColors.primary),
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: AppSizes.spacing4),
-                itemBuilder: (context, index) {
-                  final item = _fixedCosts[index];
+                    Text(
+                      "Catat pengeluaran tetap bulananmu (kos, langganan, cicilan).",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                    ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    const AppAlert(
+                      messages: [
+                        "In: Memotong saldo di aplikasi.",
+                        "Out: Hanya catatan (tidak memotong saldo).",
+                      ],
+                    ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    AppButton(
+                      text: "Tambah Pengeluaran",
+                      onPressed: () {
+                        _showAddExpenseBottomSheet();
+                      },
+                      variant: AppButtonVariant.outlined,
+                    ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _fixedCosts.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: AppSizes.spacing4),
+                      itemBuilder: (context, index) {
+                        final item = _fixedCosts[index];
 
-                  return _buildFixedCostItem(
-                    item["name"],
-                    item["amount"],
-                    item["isIn"],
-                    () => _deleteItem(index),
-                  );
-                },
+                        return _buildFixedCostItem(
+                          item["name"],
+                          item["amount"],
+                          item["isIn"],
+                          item["frequency"] ?? 'Bulanan',
+                          () => _deleteItem(index),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: AppSizes.spacing8),
+                    AppButton(
+                      text: "Lanjut Ke Langkah 3",
+                      onPressed: () {
+                        context.go(AppRouter.dashboard);
+                      },
+                    ),
+                    const SizedBox(height: AppSizes.spacing3),
+                    AppButton(
+                      text: "Lewatkan",
+                      onPressed: () {
+                        context.go(AppRouter.dashboard);
+                      },
+                      variant: AppButtonVariant.ghost,
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(AppSizes.spacing6),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppButton(
-              text: "Lanjut Ke Langkah 3",
-              onPressed: () {
-                context.go(AppRouter.dashboard);
-              },
-            ),
-            const SizedBox(height: AppSizes.spacing3),
-            AppButton(
-              text: "Lewatkan",
-              onPressed: () {
-                context.go(AppRouter.dashboard);
-              },
-              variant: AppButtonVariant.ghost,
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -277,6 +318,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
     String name,
     String price,
     bool isIn,
+    String frequency,
     VoidCallback onDelete,
   ) {
     return Container(
@@ -301,7 +343,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                 icon: const Icon(
                   Icons.delete_outline,
                   color: AppColors.danger100,
-                  size: 20,
+                  size: AppSizes.spacing6,
                 ),
                 onPressed: onDelete,
                 padding: EdgeInsets.zero,
@@ -326,6 +368,18 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                   ),
                   const SizedBox(height: AppSizes.spacing1),
                   Text(price, style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: AppSizes.spacing3),
+                  Text(
+                    'Frekuensi',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+                  ),
+                  const SizedBox(height: AppSizes.spacing1),
+                  Text(
+                    frequency,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                 ],
               ),
               Column(
