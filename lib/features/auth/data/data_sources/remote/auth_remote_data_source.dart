@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/features/auth/data/models/user_model.dart';
 
 class AuthRemoteDataSource {
@@ -21,6 +22,27 @@ class AuthRemoteDataSource {
   Future<(UserModel, String)> login(String email, String password) async {
     _log.fine('Sending login request for email: $email');
     _log.fine('Request payload: {email: $email, password: ***}');
+
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, returning dummy login response');
+      await Future.delayed(const Duration(seconds: 1));
+
+      final dummyUser = UserModel(
+        id: 1,
+        name: 'Development User',
+        email: email,
+        emailVerifiedAt: DateTime.now().toUtc(),
+        goal: 'Development Goal',
+        cycleType: 'monthly',
+        cycleStart: DateTime.now().toUtc(),
+        balance: 1250.5,
+        profileUrl: null,
+        createdAt: DateTime.now().toUtc(),
+        updatedAt: DateTime.now().toUtc(),
+      );
+
+      return (dummyUser, 'dev-token');
+    }
 
     final response = await dio.post(
       '/auth/login',
