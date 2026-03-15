@@ -29,8 +29,6 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent),
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -40,6 +38,7 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
                   children: [
+                    const SizedBox(height: AppSizes.spacing6),
                     const StepProgressIndicator(currentStep: 1, totalSteps: 3),
                     const SizedBox(height: AppSizes.spacing8),
                     Text(
@@ -87,9 +86,9 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                     ),
                     const SizedBox(height: AppSizes.spacing8),
                     AppButton(
-                      text: "Lanjut Ke Pengeluaran Tetap",
+                      text: "Selanjutnya",
                       onPressed: () {
-                        context.go(AppRouter.step2Personalization);
+                        context.push(AppRouter.step2Personalization);
                       },
                     ),
                   ],
