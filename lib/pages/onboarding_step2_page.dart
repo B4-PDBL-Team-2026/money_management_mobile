@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'onboarding_step3_page.dart';
 
 class OnboardingStep2Page extends StatefulWidget {
   const OnboardingStep2Page({super.key});
@@ -150,8 +151,12 @@ class _OnboardingStep2PageState extends State<OnboardingStep2Page> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Logika ke Langkah 3
-                    debugPrint("Lanjut ke Langkah 3");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OnboardingStep3Page(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2E5AA7),
