@@ -10,6 +10,7 @@ import 'package:money_management_mobile/features/auth/presentation/pages/forgot_
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step1_personalization_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step2_personalization_page.dart';
+import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
@@ -27,8 +28,10 @@ class AppRouter {
   static const String forgotPassword = '/welcome/login/forgot-password';
 
   static const String registration = '/welcome/registration';
-  static const String step1Personalization = '/personalization/step-1';
-  static const String step2Personalization = '/personalization/step-1/step-2';
+  static const String step1Personalization = '/welcome/personalization/step-1';
+  static const String step2Personalization = '/welcome/personalization/step-2';
+  static const String step3Personalization = '/welcome/personalization/step-3';
+
   static const String history = '/history';
   static const String settings = '/settings';
 
@@ -65,15 +68,17 @@ class AppRouter {
               child: const RegisterPage(),
             ),
           ),
-        ],
-      ),
-      GoRoute(
-        path: '/personalization/step-1',
-        builder: (context, state) => const Step1PersonalizationPage(),
-        routes: [
           GoRoute(
-            path: 'step-2',
+            path: 'personalization/step-1',
+            builder: (context, state) => const Step1PersonalizationPage(),
+          ),
+          GoRoute(
+            path: 'personalization/step-2',
             builder: (context, state) => const Step2PersonalizationPage(),
+          ),
+          GoRoute(
+            path: 'personalization/step-3',
+            builder: (context, state) => const Step3PersonalizationPage(),
           ),
         ],
       ),

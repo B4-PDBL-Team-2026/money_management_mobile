@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/widgets/app_alert.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
-import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
+import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/features/auth/presentation/widgets/fixed_cost_item_card.dart';
 import 'package:money_management_mobile/features/auth/presentation/widgets/step_progress_indicator.dart';
 
 class Step2PersonalizationPage extends StatefulWidget {
@@ -199,235 +199,90 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Transform.translate(
-          offset: const Offset(AppSizes.spacing4, 0),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSizes.spacing2),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(AppSizes.radiusNm),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: AppColors.gohan,
-                  size: 20,
-                ),
-                onPressed: () => context.pop(),
-              ),
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: AppSizes.spacing5),
-            child: SvgPicture.asset('assets/svg/single_logo.svg', height: 40),
-          ),
-        ],
-      ),
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSizes.spacing6),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Column(
-                  children: [
-                    const StepProgressIndicator(currentStep: 2, totalSteps: 3),
-                    const SizedBox(height: AppSizes.spacing6),
-                    Text(
-                      "Fixed Cost",
-                      style: Theme.of(context).textTheme.displayMedium
-                          ?.copyWith(color: AppColors.primary),
-                      textAlign: TextAlign.center,
-                    ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.spacing6),
+          child: Column(
+            children: [
+              const SizedBox(height: AppSizes.spacing6),
+              const StepProgressIndicator(currentStep: 2, totalSteps: 3),
+              const SizedBox(height: AppSizes.spacing6),
+              Text(
+                "Fixed Cost",
+                style: Theme.of(
+                  context,
+                ).textTheme.displayMedium?.copyWith(color: AppColors.primary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              Text(
+                "Catat pengeluaran tetap bulananmu (kos, langganan, cicilan).",
+                textAlign: TextAlign.center,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              const AppAlert(
+                messages: [
+                  "In: Memotong saldo di aplikasi.",
+                  "Out: Hanya catatan (tidak memotong saldo).",
+                ],
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              AppButton(
+                text: "Tambah Pengeluaran",
+                onPressed: () {
+                  _showAddExpenseBottomSheet();
+                },
+                variant: AppButtonVariant.outlined,
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _fixedCosts.length,
+                separatorBuilder: (context, index) =>
                     const SizedBox(height: AppSizes.spacing4),
-                    Text(
-                      "Catat pengeluaran tetap bulananmu (kos, langganan, cicilan).",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-                    ),
-                    const SizedBox(height: AppSizes.spacing4),
-                    const AppAlert(
-                      messages: [
-                        "In: Memotong saldo di aplikasi.",
-                        "Out: Hanya catatan (tidak memotong saldo).",
-                      ],
-                    ),
-                    const SizedBox(height: AppSizes.spacing4),
-                    AppButton(
-                      text: "Tambah Pengeluaran",
-                      onPressed: () {
-                        _showAddExpenseBottomSheet();
-                      },
-                      variant: AppButtonVariant.outlined,
-                    ),
-                    const SizedBox(height: AppSizes.spacing4),
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _fixedCosts.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: AppSizes.spacing4),
-                      itemBuilder: (context, index) {
-                        final item = _fixedCosts[index];
+                itemBuilder: (context, index) {
+                  final item = _fixedCosts[index];
 
-                        return _buildFixedCostItem(
-                          item["name"],
-                          item["amount"],
-                          item["isIn"],
-                          item["frequency"] ?? 'Bulanan',
-                          () => _deleteItem(index),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: AppSizes.spacing8),
-                    AppButton(
-                      text: "Lanjut Ke Langkah 3",
+                  return FixedCostItemCard(
+                    name: item["name"] as String,
+                    cycle: (item["frequency"] ?? 'Bulanan') as String,
+                    amount: item["amount"] as String,
+                    isIn: item["isIn"] as bool,
+                    showDeleteAction: true,
+                    onDelete: () => _deleteItem(index),
+                  );
+                },
+              ),
+              const SizedBox(height: AppSizes.spacing8),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      text: "Sebelumnya",
                       onPressed: () {
-                        context.go(AppRouter.dashboard);
-                      },
-                    ),
-                    const SizedBox(height: AppSizes.spacing3),
-                    AppButton(
-                      text: "Lewatkan",
-                      onPressed: () {
-                        context.go(AppRouter.dashboard);
+                        context.pop();
                       },
                       variant: AppButtonVariant.ghost,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: AppSizes.spacing2),
+                  Expanded(
+                    child: AppButton(
+                      text: "Selanjutnya",
+                      onPressed: () {
+                        context.push(AppRouter.step3Personalization);
+                      },
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFixedCostItem(
-    String name,
-    String price,
-    bool isIn,
-    String frequency,
-    VoidCallback onDelete,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(AppSizes.spacing4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSizes.radiusNm),
-        border: Border.all(color: AppColors.beerus),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Nama Pengeluaran",
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.delete_outline,
-                  color: AppColors.danger100,
-                  size: AppSizes.spacing6,
-                ),
-                onPressed: onDelete,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSizes.spacing1),
-          Text(name, style: Theme.of(context).textTheme.titleLarge),
-          const Divider(height: AppSizes.spacing5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Nominal (Rp)",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-                  ),
-                  const SizedBox(height: AppSizes.spacing1),
-                  Text(price, style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: AppSizes.spacing3),
-                  Text(
-                    'Frekuensi',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-                  ),
-                  const SizedBox(height: AppSizes.spacing1),
-                  Text(
-                    frequency,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "Status",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-                  ),
-                  const SizedBox(height: AppSizes.spacing1),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSizes.spacing3,
-                      vertical: AppSizes.spacing1,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isIn ? AppColors.primary : AppColors.gohan,
-                      borderRadius: BorderRadius.circular(AppSizes.spacing5),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          isIn ? "In" : "Out",
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: isIn
-                                    ? AppColors.gohan
-                                    : AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        const SizedBox(width: AppSizes.spacing1),
-                        Icon(
-                          Icons.check_circle,
-                          color: isIn ? AppColors.gohan : AppColors.primary,
-                          size: 14,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
