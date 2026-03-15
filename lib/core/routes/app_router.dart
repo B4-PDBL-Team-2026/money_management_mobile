@@ -12,10 +12,11 @@ import 'package:money_management_mobile/features/auth/presentation/pages/persona
 import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/history_dummy_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/setting_dummy_page.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
 class AppRouter {
@@ -30,6 +31,8 @@ class AppRouter {
   static const String step2Personalization = '/personalization/step-1/step-2';
   static const String history = '/history';
   static const String settings = '/settings';
+
+  static const String addTransaction = '/transaction/add';
 
   static final SessionCubit _sessionCubit = sl<SessionCubit>();
 
@@ -106,6 +109,12 @@ class AppRouter {
             ],
           ),
         ],
+      ),
+
+      // transaction module
+      GoRoute(
+        path: '/transaction/add',
+        builder: (context, state) => const AddTransactionPage(),
       ),
     ],
 
