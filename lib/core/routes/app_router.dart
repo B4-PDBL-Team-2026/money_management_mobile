@@ -17,6 +17,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/layouts/
 import 'package:money_management_mobile/features/dashboard/presentation/pages/history_dummy_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/setting_dummy_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
 class AppRouter {
@@ -33,6 +34,8 @@ class AppRouter {
 
   static const String history = '/history';
   static const String settings = '/settings';
+
+  static const String addTransaction = '/transaction/add';
 
   static final SessionCubit _sessionCubit = sl<SessionCubit>();
 
@@ -111,6 +114,12 @@ class AppRouter {
             ],
           ),
         ],
+      ),
+
+      // transaction module
+      GoRoute(
+        path: '/transaction/add',
+        builder: (context, state) => const AddTransactionPage(),
       ),
     ],
 

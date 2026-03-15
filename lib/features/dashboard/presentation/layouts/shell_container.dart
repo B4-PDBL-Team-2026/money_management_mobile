@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
@@ -58,7 +59,7 @@ class ShellContainer extends StatelessWidget {
       ),
       floatingActionButton: navigationShell.currentIndex == 1
           ? FloatingActionButton(
-              onPressed: () {},
+              onPressed: () => context.push(AppRouter.addTransaction),
               backgroundColor: AppColors.secondary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
