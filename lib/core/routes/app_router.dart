@@ -125,7 +125,11 @@ class AppRouter {
     ],
 
     redirect: (context, state) {
-      final isAuthenticated = _sessionCubit.state is SessionAuthenticated;
+      final sessionState = _sessionCubit.state;
+      final isAuthenticated = sessionState is SessionAuthenticated;
+      final requiresOnboarding =
+          sessionState is SessionAuthenticated &&
+          sessionState.requiresOnboarding;
       final location = state.matchedLocation;
       final isOnboardingRoute =
           location == step1Personalization ||
@@ -136,8 +140,20 @@ class AppRouter {
       final isProtectedRoute =
           location == dashboard || location == history || location == other;
 
+      if (!isAuthenticated && isOnboardingRoute) {
+        return welcome;
+      }
+
       if (!isAuthenticated && isProtectedRoute) {
         return welcome;
+      }
+
+      if (isAuthenticated && requiresOnboarding && !isOnboardingRoute) {
+        return step1Personalization;
+      }
+
+      if (isAuthenticated && !requiresOnboarding && isOnboardingRoute) {
+        return dashboard;
       }
 
       if (isAuthenticated && isAuthRoute && !isOnboardingRoute) {

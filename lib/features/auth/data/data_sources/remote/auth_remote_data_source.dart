@@ -9,6 +9,28 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource(this.dio);
 
+  bool _parseRequiresOnboarding(dynamic value, {required bool defaultValue}) {
+    if (value is bool) {
+      return value;
+    }
+
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      if (normalized == 'true' || normalized == '1') {
+        return true;
+      }
+      if (normalized == 'false' || normalized == '0') {
+        return false;
+      }
+    }
+
+    if (value is num) {
+      return value == 1;
+    }
+
+    return defaultValue;
+  }
+
   Future<(UserModel, String, bool)> register(
     String name,
     String email,
@@ -69,12 +91,15 @@ class AuthRemoteDataSource {
     final data = response.data['data'] as Map<String, dynamic>;
     final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
     final token = data['token'] as String;
-    final requiresOnboarding = data['requires_onboarding'] as bool? ?? true;
+    final requiresOnboarding = _parseRequiresOnboarding(
+      data['requires_onboarding'],
+      defaultValue: true,
+    );
 
     return (user, token, requiresOnboarding);
   }
 
-  Future<(UserModel, String)> login(String email, String password) async {
+  Future<(UserModel, String, bool)> login(String email, String password) async {
     _log.fine('Sending login request for email: $email');
     _log.fine('Request payload: {email: $email, password: ***}');
 
@@ -96,7 +121,7 @@ class AuthRemoteDataSource {
         updatedAt: DateTime.now().toUtc(),
       );
 
-      return (dummyUser, 'dev-token');
+      return (dummyUser, 'dev-token', false);
     }
 
     final response = await dio.post(
@@ -110,7 +135,11 @@ class AuthRemoteDataSource {
     final data = response.data['data'] as Map<String, dynamic>;
     final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
     final token = data['token'] as String;
+    final requiresOnboarding = _parseRequiresOnboarding(
+      data['requires_onboarding'],
+      defaultValue: false,
+    );
 
-    return (user, token);
+    return (user, token, requiresOnboarding);
   }
 }

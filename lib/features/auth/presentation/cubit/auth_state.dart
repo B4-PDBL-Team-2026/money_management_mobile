@@ -1,5 +1,3 @@
-import 'package:money_management_mobile/features/auth/domain/entities/user_entity.dart';
-
 sealed class AuthState {}
 
 final class AuthInitial extends AuthState {}
@@ -7,10 +5,9 @@ final class AuthInitial extends AuthState {}
 final class AuthLoading extends AuthState {}
 
 final class AuthLoginSuccess extends AuthState {
-  final UserEntity user;
-  final String token;
+  final bool requiresOnboarding;
 
-  AuthLoginSuccess({required this.user, required this.token});
+  AuthLoginSuccess({required this.requiresOnboarding});
 }
 
 final class AuthError extends AuthState {

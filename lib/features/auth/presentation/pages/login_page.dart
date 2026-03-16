@@ -9,7 +9,6 @@ import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/auth_state.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -62,12 +61,6 @@ class _LoginPageState extends State<LoginPage> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthLoginSuccess) {
-          context.read<SessionCubit>().authenticate(
-            user: state.user,
-            token: state.token,
-            requiresOnboarding: false,
-          );
-
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -78,7 +71,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
 
-          context.go(AppRouter.dashboard);
+          if (state.requiresOnboarding) {
+            context.go(AppRouter.step1Personalization);
+          } else {
+            context.go(AppRouter.dashboard);
+          }
         }
 
         if (state is AuthError) _showErrorSnackbar(state.message);

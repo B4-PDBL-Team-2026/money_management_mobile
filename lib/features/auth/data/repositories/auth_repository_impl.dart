@@ -41,12 +41,18 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<(UserEntity, String)> login(String email, String password) async {
+  Future<(UserEntity, String, bool)> login(
+    String email,
+    String password,
+  ) async {
     _log.info('Logging in: $email');
     try {
-      final (user, token) = await remoteDataSource.login(email, password);
+      final (user, token, requiresOnboarding) = await remoteDataSource.login(
+        email,
+        password,
+      );
       _log.info('Login successful for user: ${user.email}');
-      return (user, token);
+      return (user, token, requiresOnboarding);
     } on DioException catch (e) {
       ErrorHandler.handleRemoteException(e, _log, 'Login');
       rethrow;

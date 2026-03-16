@@ -7,7 +7,7 @@ abstract class AuthRepository {
     String password,
     String passwordConfirmation,
   );
-  Future<(UserEntity, String)> login(String email, String password);
+  Future<(UserEntity, String, bool)> login(String email, String password);
   Future<void> saveSession(
     UserEntity user,
     String token, {
