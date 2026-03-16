@@ -4,18 +4,18 @@ import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/login_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 
-import 'auth_state.dart';
+import 'login_state.dart';
 
-class AuthCubit extends Cubit<AuthState> {
+class LoginCubit extends Cubit<LoginState> {
   final LoginUseCase loginUseCase;
   final SessionCubit sessionCubit;
-  final _log = Logger('AuthCubit');
+  final _log = Logger('LoginCubit');
 
-  AuthCubit(this.loginUseCase, this.sessionCubit) : super(AuthInitial());
+  LoginCubit(this.loginUseCase, this.sessionCubit) : super(LoginInitial());
 
   Future<void> login(String email, String password) async {
     _log.info('Login initiated for email: $email');
-    emit(AuthLoading());
+    emit(LoginLoading());
 
     try {
       final (user, token, requiresOnboarding) = await loginUseCase.execute(
@@ -30,19 +30,19 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       _log.info('Login completed successfully for user: ${user.email}');
-      emit(AuthLoginSuccess(requiresOnboarding: requiresOnboarding));
+      emit(LoginSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {
       _log.severe('Login failed with ServerException: ${e.message}', e);
-      emit(AuthError(e.message));
+      emit(LoginError(e.message));
     } on NetworkException catch (e) {
       _log.warning('Login failed with NetworkException: ${e.message}', e);
-      emit(AuthError(e.message));
+      emit(LoginError(e.message));
     } on UnexpectedException catch (e) {
       _log.severe('Login failed with UnexpectedException: ${e.message}', e);
-      emit(AuthError(e.message));
+      emit(LoginError(e.message));
     } catch (e) {
       _log.severe('Login failed with unexpected error', e);
-      emit(AuthError("Terjadi kesalahan: ${e.toString()}"));
+      emit(LoginError("Terjadi kesalahan: ${e.toString()}"));
     }
   }
 }

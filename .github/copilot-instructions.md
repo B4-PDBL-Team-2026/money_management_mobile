@@ -43,7 +43,7 @@ Whenever generating a new feature, follow this exact dependency flow:
 
 - **NO `print()` STATEMENTS ALLOWED.**
 - **Logging**: Always use the `logging` package. Initialize a logger at the class level: `final _log = Logger('ClassName');`. Use appropriate log levels (`_log.fine`, `_log.info`, `_log.warning`, `_log.severe`) to trace requests, responses, and errors.
-- **Exceptions & Failures**: Catch errors in `RepositoryImpl` and map them to custom Exceptions or Failures defined in `lib/core/error/` (e.g., `ServerException`, `NetworkException`). Inside the Cubit, map these failures to user-friendly UI messages (`emit(AuthError(failure.message))`).
+- **Exceptions & Failures**: Catch errors in `RepositoryImpl` and map them to custom Exceptions or Failures defined in `lib/core/error/` (e.g., `ServerException`, `NetworkException`). Inside the Cubit, map these failures to user-friendly UI messages (`emit(LoginError(failure.message))`).
 
 ## 6. Mocking / Dummy Data Implementations (DEFAULT BEHAVIOR)
 

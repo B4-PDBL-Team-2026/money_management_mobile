@@ -377,8 +377,8 @@ We recommend naming classes for the architectural component they represent.
 For example, you may have the following classes:
 
 * HomePage
-* AuthState
-* AuthCubit
+* LoginState
+* LoginCubit
 * AppButton
 
 For clarity, we do not recommend using names that can be confused with objects from the Flutter SDK.

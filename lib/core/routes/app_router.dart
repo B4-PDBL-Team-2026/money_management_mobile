@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
@@ -52,7 +52,7 @@ class AppRouter {
           GoRoute(
             path: 'login',
             builder: (context, state) => BlocProvider(
-              create: (_) => sl.get<AuthCubit>(),
+              create: (_) => sl.get<LoginCubit>(),
               child: const LoginPage(),
             ),
             routes: [
