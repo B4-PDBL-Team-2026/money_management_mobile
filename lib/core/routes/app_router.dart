@@ -16,12 +16,11 @@ import 'package:money_management_mobile/features/auth/presentation/pages/welcome
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/history_dummy_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/pages/setting_dummy_page.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
 class AppRouter {
-  static const String dashboard = '/';
   static const String welcome = '/welcome';
 
   static const String login = '/welcome/login';
@@ -32,8 +31,9 @@ class AppRouter {
   static const String step2Personalization = '/welcome/personalization/step-2';
   static const String step3Personalization = '/welcome/personalization/step-3';
 
+  static const String dashboard = '/';
   static const String history = '/history';
-  static const String settings = '/settings';
+  static const String other = '/other';
 
   static const String addTransaction = '/transaction/add';
 
@@ -108,8 +108,8 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: settings,
-                builder: (context, state) => const SettingsDummyPage(),
+                path: other,
+                builder: (context, state) => const OtherPage(),
               ),
             ],
           ),
@@ -129,7 +129,7 @@ class AppRouter {
       final isAuthRoute =
           location == welcome || location.startsWith('$welcome/');
       final isProtectedRoute =
-          location == dashboard || location == history || location == settings;
+          location == dashboard || location == history || location == other;
 
       if (!isAuthenticated && isProtectedRoute) {
         return welcome;

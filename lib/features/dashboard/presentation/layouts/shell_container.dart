@@ -32,26 +32,20 @@ class ShellContainer extends StatelessWidget {
           unselectedFontSize: 12,
           items: const [
             BottomNavigationBarItem(
-              icon: PhosphorIcon(PhosphorIconsRegular.receipt, size: 28),
-              activeIcon: PhosphorIcon(PhosphorIconsFill.receipt, size: 28),
+              icon: PhosphorIcon(PhosphorIconsRegular.receipt),
+              activeIcon: PhosphorIcon(PhosphorIconsFill.receipt),
               label: 'Riwayat',
               tooltip: 'Riwayat transaksi',
             ),
             BottomNavigationBarItem(
-              icon: PhosphorIcon(PhosphorIconsRegular.house, size: 28),
-              activeIcon: PhosphorIcon(PhosphorIconsFill.house, size: 28),
+              icon: PhosphorIcon(PhosphorIconsRegular.house),
+              activeIcon: PhosphorIcon(PhosphorIconsFill.house),
               label: 'Beranda',
               tooltip: 'Beranda',
             ),
             BottomNavigationBarItem(
-              icon: PhosphorIcon(
-                PhosphorIconsRegular.dotsThreeCircle,
-                size: 28,
-              ),
-              activeIcon: PhosphorIcon(
-                PhosphorIconsFill.dotsThreeCircle,
-                size: 28,
-              ),
+              icon: PhosphorIcon(PhosphorIconsRegular.dotsThreeCircle),
+              activeIcon: PhosphorIcon(PhosphorIconsFill.dotsThreeCircle),
               label: 'Lainnya',
               tooltip: 'Profil dan pengaturan',
             ),
