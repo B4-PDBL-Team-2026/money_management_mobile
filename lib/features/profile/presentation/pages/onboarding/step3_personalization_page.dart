@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
-import 'package:money_management_mobile/features/auth/presentation/widgets/fixed_cost_item_card.dart';
-import 'package:money_management_mobile/features/auth/presentation/widgets/step_progress_indicator.dart';
+import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_card.dart';
+import 'package:money_management_mobile/features/profile/presentation/widgets/step_progress_indicator.dart';
 
 class Step3PersonalizationPage extends StatelessWidget {
   const Step3PersonalizationPage({super.key});

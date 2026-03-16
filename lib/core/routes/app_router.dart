@@ -8,15 +8,15 @@ import 'package:money_management_mobile/features/auth/presentation/cubit/session
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password/forgot_password_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
-import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step1_personalization_page.dart';
-import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step2_personalization_page.dart';
-import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/history_dummy_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 

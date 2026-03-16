@@ -6,7 +6,7 @@ import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/widgets/app_alert.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
-import 'package:money_management_mobile/features/auth/presentation/widgets/step_progress_indicator.dart';
+import 'package:money_management_mobile/features/profile/presentation/widgets/step_progress_indicator.dart';
 
 class Step1PersonalizationPage extends StatefulWidget {
   const Step1PersonalizationPage({super.key});
@@ -17,7 +17,7 @@ class Step1PersonalizationPage extends StatefulWidget {
 }
 
 class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
-  String _selectedCycle = "Bulanan";
+  String _selectedCycle = 'Bulanan';
   final TextEditingController _amountController = TextEditingController();
 
   @override
@@ -42,14 +42,14 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                     const StepProgressIndicator(currentStep: 1, totalSteps: 3),
                     const SizedBox(height: AppSizes.spacing8),
                     Text(
-                      "Siklus Keuangan",
+                      'Siklus Keuangan',
                       style: Theme.of(context).textTheme.displayMedium
                           ?.copyWith(color: AppColors.primary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSizes.spacing3),
                     Text(
-                      "Pilih siklus keuangan dan masukkan nominal uang saku Anda untuk memulai pencatatan.",
+                      'Pilih siklus keuangan dan masukkan nominal uang saku Anda untuk memulai pencatatan.',
                       textAlign: TextAlign.center,
                       style: Theme.of(
                         context,
@@ -60,14 +60,14 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                       children: [
                         Expanded(
                           child: _buildCycleCard(
-                            "Bulanan",
+                            'Bulanan',
                             Icons.calendar_month_outlined,
                           ),
                         ),
                         const SizedBox(width: AppSizes.spacing4),
                         Expanded(
                           child: _buildCycleCard(
-                            "Mingguan",
+                            'Mingguan',
                             Icons.wb_sunny_outlined,
                           ),
                         ),
@@ -76,17 +76,17 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                     const SizedBox(height: AppSizes.spacing5),
                     AppCurrencyTextField(
                       controller: _amountController,
-                      hint: "Rp. 0",
+                      hint: 'Rp. 0',
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSizes.spacing5),
                     const AppAlert(
                       message:
-                          "Memisahkan uang saku mingguan membantu lebih disiplin mengelola pengeluaran harian.",
+                          'Memisahkan uang saku mingguan membantu lebih disiplin mengelola pengeluaran harian.',
                     ),
                     const SizedBox(height: AppSizes.spacing8),
                     AppButton(
-                      text: "Selanjutnya",
+                      text: 'Selanjutnya',
                       onPressed: () {
                         context.push(AppRouter.step2Personalization);
                       },
@@ -102,7 +102,7 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
   }
 
   Widget _buildCycleCard(String title, IconData icon) {
-    bool isSelected = _selectedCycle == title;
+    final isSelected = _selectedCycle == title;
     return GestureDetector(
       onTap: () => setState(() => _selectedCycle = title),
       child: Container(

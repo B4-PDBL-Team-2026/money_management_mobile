@@ -7,8 +7,8 @@ import 'package:money_management_mobile/core/widgets/app_alert.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
-import 'package:money_management_mobile/features/auth/presentation/widgets/fixed_cost_item_card.dart';
-import 'package:money_management_mobile/features/auth/presentation/widgets/step_progress_indicator.dart';
+import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_card.dart';
+import 'package:money_management_mobile/features/profile/presentation/widgets/step_progress_indicator.dart';
 
 class Step2PersonalizationPage extends StatefulWidget {
   const Step2PersonalizationPage({super.key});
@@ -21,10 +21,10 @@ class Step2PersonalizationPage extends StatefulWidget {
 class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
   final List<Map<String, dynamic>> _fixedCosts = [
     {
-      "name": "Kos Bulanan",
-      "amount": "Rp 1.500.000",
-      "isIn": true,
-      "frequency": "Bulanan",
+      'name': 'Kos Bulanan',
+      'amount': 'Rp 1.500.000',
+      'isIn': true,
+      'frequency': 'Bulanan',
     },
   ];
 
@@ -73,14 +73,14 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                 ),
                 const SizedBox(height: AppSizes.spacing4),
                 Text(
-                  "Tambah Pengeluaran Tetap",
+                  'Tambah Pengeluaran Tetap',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: AppColors.primary,
                   ),
                 ),
                 const SizedBox(height: AppSizes.spacing5),
                 AppTextField(
-                  hint: "Nama Pengeluaran",
+                  hint: 'Nama Pengeluaran',
                   controller: nameController,
                   prefixIcon: const Icon(
                     Icons.receipt_outlined,
@@ -90,7 +90,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                 const SizedBox(height: AppSizes.spacing4),
                 AppCurrencyTextField(
                   controller: amountController,
-                  hint: "Nominal (RP)",
+                  hint: 'Nominal (RP)',
                   prefixIcon: const Icon(
                     Icons.attach_money,
                     color: AppColors.trunks,
@@ -136,7 +136,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                 ),
                 const SizedBox(height: AppSizes.spacing4),
                 Text(
-                  "Status",
+                  'Status',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 14,
                     color: AppColors.trunks,
@@ -148,7 +148,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                     Expanded(
                       child: _buildStatusButton(
                         context: context,
-                        label: "In",
+                        label: 'In',
                         isSelected: isIn,
                         onTap: () => setModalState(() => isIn = true),
                       ),
@@ -157,7 +157,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                     Expanded(
                       child: _buildStatusButton(
                         context: context,
-                        label: "Out",
+                        label: 'Out',
                         isSelected: !isIn,
                         onTap: () => setModalState(() => isIn = false),
                       ),
@@ -166,22 +166,22 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                 ),
                 const SizedBox(height: AppSizes.spacing3),
                 const AppAlert(
-                  message: "In akan memotong saldo, Out hanya catatan",
+                  message: 'In akan memotong saldo, Out hanya catatan',
                   padding: EdgeInsets.all(AppSizes.spacing3),
                   iconSize: 16,
                 ),
                 const SizedBox(height: AppSizes.spacing5),
                 AppButton(
-                  text: "Simpan",
+                  text: 'Simpan',
                   onPressed: () {
                     if (nameController.text.isNotEmpty &&
                         amountController.text.isNotEmpty) {
                       setState(() {
                         _fixedCosts.add({
-                          "name": nameController.text,
-                          "amount": amountController.text,
-                          "isIn": isIn,
-                          "frequency": frequency,
+                          'name': nameController.text,
+                          'amount': amountController.text,
+                          'isIn': isIn,
+                          'frequency': frequency,
                         });
                       });
                       Navigator.pop(context);
@@ -208,7 +208,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
               const StepProgressIndicator(currentStep: 2, totalSteps: 3),
               const SizedBox(height: AppSizes.spacing6),
               Text(
-                "Fixed Cost",
+                'Fixed Cost',
                 style: Theme.of(
                   context,
                 ).textTheme.displayMedium?.copyWith(color: AppColors.primary),
@@ -216,7 +216,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
               ),
               const SizedBox(height: AppSizes.spacing4),
               Text(
-                "Catat pengeluaran tetap bulananmu (kos, langganan, cicilan).",
+                'Catat pengeluaran tetap bulananmu (kos, langganan, cicilan).',
                 textAlign: TextAlign.center,
                 style: Theme.of(
                   context,
@@ -225,16 +225,14 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
               const SizedBox(height: AppSizes.spacing4),
               const AppAlert(
                 messages: [
-                  "In: Memotong saldo di aplikasi.",
-                  "Out: Hanya catatan (tidak memotong saldo).",
+                  'In: Memotong saldo di aplikasi.',
+                  'Out: Hanya catatan (tidak memotong saldo).',
                 ],
               ),
               const SizedBox(height: AppSizes.spacing4),
               AppButton(
-                text: "Tambah Pengeluaran",
-                onPressed: () {
-                  _showAddExpenseBottomSheet();
-                },
+                text: 'Tambah Pengeluaran',
+                onPressed: _showAddExpenseBottomSheet,
                 variant: AppButtonVariant.outlined,
               ),
               const SizedBox(height: AppSizes.spacing4),
@@ -248,10 +246,10 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                   final item = _fixedCosts[index];
 
                   return FixedCostItemCard(
-                    name: item["name"] as String,
-                    cycle: (item["frequency"] ?? 'Bulanan') as String,
-                    amount: item["amount"] as String,
-                    isIn: item["isIn"] as bool,
+                    name: item['name'] as String,
+                    cycle: (item['frequency'] ?? 'Bulanan') as String,
+                    amount: item['amount'] as String,
+                    isIn: item['isIn'] as bool,
                     showDeleteAction: true,
                     onDelete: () => _deleteItem(index),
                   );
@@ -262,7 +260,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                 children: [
                   Expanded(
                     child: AppButton(
-                      text: "Sebelumnya",
+                      text: 'Sebelumnya',
                       onPressed: () {
                         context.pop();
                       },
@@ -272,7 +270,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                   const SizedBox(width: AppSizes.spacing2),
                   Expanded(
                     child: AppButton(
-                      text: "Selanjutnya",
+                      text: 'Selanjutnya',
                       onPressed: () {
                         context.push(AppRouter.step3Personalization);
                       },
