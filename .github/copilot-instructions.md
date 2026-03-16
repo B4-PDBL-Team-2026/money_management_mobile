@@ -50,3 +50,100 @@ By default, ALWAYS implement mock/dummy data for all new features unless explici
 - Write code in Dart 3.0+ style (use modern features like records, pattern matching, and exhaustive switch where applicable).
 - Include standard error snackbars matching the project's styling (`AppColors.danger100` for errors) when handling state failures in the UI.
 - Ensure all imports use absolute package paths (e.g., `import 'package:money_management_mobile/features/...'`) rather than relative paths (`../../`).
+
+## 8. Dependency Rules and Cross-Feature Collaboration
+
+Follow these dependency rules for all new code and refactors.
+
+### 8.1 Allowed dependency direction
+- `presentation -> domain` (same feature)
+- `data -> domain` (same feature)
+- Composition root (`lib/injection_container.dart`, `lib/core/routes/app_router.dart`) can import all features for wiring.
+
+### 8.2 Forbidden dependency direction
+- `domain -> data`
+- `domain -> presentation`
+- Direct cross-feature access to implementation details (e.g., using another feature's `RemoteDataSource` or repository implementation class).
+
+### 8.3 Cross-feature collaboration contract
+- Use **Router** for navigation between feature flows.
+- Use **DI** only for composition/wiring, not as a shortcut to bypass architecture boundaries.
+- Use **app-level state** (for example, session/auth state) for read-only cross-feature UI needs.
+- Use **domain contracts** (repository interfaces/use cases) for business-level integration.
+
+### 8.4 UI component sharing rule
+- A widget from another feature may be reused only if it is pure presentation.
+- Shared widget must not depend on the source feature's cubit/use case/repository.
+- If reused in multiple features and business-agnostic, move it to `lib/core/widgets/`.
+
+### 8.5 Session ownership rule
+- Session status and lightweight user identity can be read by any feature at presentation level.
+- Session persistence mutations (`login`, `logout`, `restore`, token save/clear) are owned by Auth and must remain in Auth use cases/repositories.
+
+### 8.6 Concrete collaboration examples
+
+#### Example A: Transaction feature needs active user
+**Valid approach**:
+- Read authenticated user id from app-level session state in presentation.
+- Pass `userId` into Transaction use case/cubit.
+
+**Invalid approach**:
+- Transaction feature directly calls Auth remote/local data source.
+- Transaction feature imports Auth repository implementation.
+
+```dart
+final userId = context.select((SessionCubit c) {
+  final state = c.state;
+  return state is SessionAuthenticated ? state.user.id : null;
+});
+
+if (userId != null) {
+  context.read<TransactionCubit>().loadRecent(userId: userId);
+}
+```
+
+#### Example B: Other page needs user profile summary
+**Valid approach**:
+- Read name/email from session state for lightweight UI rendering.
+- If rich profile data is needed, call Profile use case (when profile feature exists).
+
+**Invalid approach**:
+- Other page reads Auth local data source directly.
+
+```dart
+final sessionState = context.watch<SessionCubit>().state;
+if (sessionState is SessionAuthenticated) {
+  final displayName = sessionState.user.name;
+  final email = sessionState.user.email;
+  // render header UI
+}
+```
+
+#### Example C: Dashboard needs latest transactions
+**Valid approach**:
+- Dashboard uses a Dashboard/Transaction use case contract to fetch recent transactions.
+- Transaction feature remains the owner of transaction data retrieval logic.
+
+**Invalid approach**:
+- Dashboard directly calls transaction data source or uses transaction data models from data layer.
+
+```dart
+class DashboardCubit extends Cubit<DashboardState> {
+  DashboardCubit(this.getRecentTransactionsUseCase)
+      : super(const DashboardInitial());
+
+  final GetRecentTransactionsUseCase getRecentTransactionsUseCase;
+
+  Future<void> loadRecent({required String userId}) async {
+    emit(const DashboardLoading());
+    final items = await getRecentTransactionsUseCase.execute(userId: userId);
+    emit(DashboardLoaded(recentTransactions: items));
+  }
+}
+```
+
+### 8.7 PR review checklist for dependency safety
+- No feature imports another feature's implementation classes in data/domain layers.
+- No domain layer imports Flutter/UI/framework classes.
+- Cross-feature collaboration happens via router, app-level state, or domain contracts.
+- Shared components are presentation-only or moved to core shared modules.
