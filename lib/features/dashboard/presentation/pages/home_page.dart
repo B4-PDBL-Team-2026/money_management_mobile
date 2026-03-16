@@ -285,6 +285,7 @@ class HomePage extends StatelessWidget {
                                 width: 1,
                               ),
                             ),
+                            tileColor: Colors.white,
                             title: Text(
                               currentTransaction['title'],
                               style: Theme.of(context).textTheme.bodyLarge,
