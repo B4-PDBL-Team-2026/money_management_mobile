@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password/forgot_password_page.dart';
@@ -64,7 +65,7 @@ class AppRouter {
           GoRoute(
             path: 'registration',
             builder: (context, state) => BlocProvider(
-              create: (_) => sl.get<AuthCubit>(),
+              create: (_) => sl.get<RegisterCubit>(),
               child: const RegisterPage(),
             ),
           ),
@@ -126,6 +127,10 @@ class AppRouter {
     redirect: (context, state) {
       final isAuthenticated = _sessionCubit.state is SessionAuthenticated;
       final location = state.matchedLocation;
+      final isOnboardingRoute =
+          location == step1Personalization ||
+          location == step2Personalization ||
+          location == step3Personalization;
       final isAuthRoute =
           location == welcome || location.startsWith('$welcome/');
       final isProtectedRoute =
@@ -135,7 +140,7 @@ class AppRouter {
         return welcome;
       }
 
-      if (isAuthenticated && isAuthRoute) {
+      if (isAuthenticated && isAuthRoute && !isOnboardingRoute) {
         return dashboard;
       }
 

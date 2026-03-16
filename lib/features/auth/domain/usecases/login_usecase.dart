@@ -8,7 +8,7 @@ class LoginUseCase {
 
   Future<(UserEntity, String)> execute(String email, String password) async {
     final (user, token) = await repository.login(email, password);
-    await repository.saveSession(user, token);
+    await repository.saveSession(user, token, requiresOnboarding: false);
     return (user, token);
   }
 }

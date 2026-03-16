@@ -9,6 +9,7 @@ import 'package:money_management_mobile/features/auth/domain/usecases/logout_use
 import 'package:money_management_mobile/features/auth/domain/usecases/register_usecase.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/restore_session_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,19 +22,22 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSource(sl()),
   );
-  sl.registerLazySingleton(
-    () => createDioClient(sl<AuthLocalDataSource>()),
-  );
+  sl.registerLazySingleton(() => createDioClient(sl<AuthLocalDataSource>()));
 
   // Features - Auth
-  sl.registerFactory<AuthCubit>(() => AuthCubit(sl(), sl()));
+  sl.registerFactory<AuthCubit>(() => AuthCubit(sl()));
   sl.registerLazySingleton<SessionCubit>(() => SessionCubit(sl(), sl()));
+  sl.registerFactory<RegisterCubit>(() => RegisterCubit(sl(), sl()));
   sl.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(sl()));
   sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl()));
   sl.registerLazySingleton<RestoreSessionUseCase>(
     () => RestoreSessionUseCase(sl()),
   );
   sl.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(sl()));
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl(), sl()));
-  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource(sl()));
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(sl(), sl()),
+  );
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSource(sl()),
+  );
 }

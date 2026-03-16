@@ -9,14 +9,69 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource(this.dio);
 
-  Future<void> register(String name, String email, String password) async {
+  Future<(UserModel, String, bool)> register(
+    String name,
+    String email,
+    String password,
+    String passwordConfirmation,
+  ) async {
     _log.fine('Sending register request for email: $email');
-    _log.fine('Request payload: {name: $name, email: $email, password: ***}');
+    _log.fine(
+      'Request payload: {name: $name, email: $email, password: ***, password_confirmation: ***}',
+    );
 
-    // TODO: Implement API call to register user
-    await Future.delayed(const Duration(seconds: 2));
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, returning dummy register response');
+      await Future.delayed(const Duration(seconds: 1));
+
+      final now = DateTime.now().toUtc();
+      final dummyUser = UserModel(
+        id: 1,
+        name: name,
+        email: email,
+        emailVerifiedAt: null,
+        goal: null,
+        cycleType: null,
+        cycleStart: null,
+        balance: null,
+        profileUrl: null,
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      return (dummyUser, 'dev-register-token', true);
+    }
+
+    final response = await dio.post(
+      '/auth/register',
+      data: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      },
+    );
+
+    _log.fine('Register response received: ${response.statusCode}');
+    _log.fine('Register response data: ${response.data}');
+
+    if (response.statusCode != 201) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        message: 'Unexpected register status code: ${response.statusCode}',
+      );
+    }
 
     _log.fine('Register response received successfully');
+
+    final data = response.data['data'] as Map<String, dynamic>;
+    final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+    final token = data['token'] as String;
+    final requiresOnboarding = data['requires_onboarding'] as bool? ?? true;
+
+    return (user, token, requiresOnboarding);
   }
 
   Future<(UserModel, String)> login(String email, String password) async {

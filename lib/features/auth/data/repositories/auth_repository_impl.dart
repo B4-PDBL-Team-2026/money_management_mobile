@@ -15,13 +15,25 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.remoteDataSource, this.localDataSource);
 
   @override
-  Future<void> register(String name, String email, String password) async {
+  Future<(UserEntity, String, bool)> register(
+    String name,
+    String email,
+    String password,
+    String passwordConfirmation,
+  ) async {
     _log.info('Registering: $email');
     try {
-      await remoteDataSource.register(name, email, password);
+      final (user, token, requiresOnboarding) = await remoteDataSource.register(
+        name,
+        email,
+        password,
+        passwordConfirmation,
+      );
       _log.info('Register successful');
+      return (user, token, requiresOnboarding);
     } on DioException catch (e) {
       ErrorHandler.handleRemoteException(e, _log, 'Register');
+      rethrow;
     } catch (e) {
       _log.severe('Unexpected register error', e);
       throw UnexpectedException(e.toString());
@@ -45,12 +57,20 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> saveSession(UserEntity user, String token) {
-    return localDataSource.saveSession(user, token);
+  Future<void> saveSession(
+    UserEntity user,
+    String token, {
+    required bool requiresOnboarding,
+  }) {
+    return localDataSource.saveSession(
+      user,
+      token,
+      requiresOnboarding: requiresOnboarding,
+    );
   }
 
   @override
-  (UserEntity, String)? getSavedSession() => localDataSource.getSession();
+  (UserEntity, String, bool)? getSavedSession() => localDataSource.getSession();
 
   @override
   String? getToken() => localDataSource.getToken();

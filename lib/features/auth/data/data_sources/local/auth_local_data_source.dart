@@ -11,10 +11,15 @@ class AuthLocalDataSource {
 
   static const _keyToken = 'auth_token';
   static const _keyUser = 'auth_user';
+  static const _keyRequiresOnboarding = 'auth_requires_onboarding';
 
   AuthLocalDataSource(this.sharedPreferences);
 
-  Future<void> saveSession(UserEntity user, String token) async {
+  Future<void> saveSession(
+    UserEntity user,
+    String token, {
+    required bool requiresOnboarding,
+  }) async {
     _log.fine('Saving auth session to local storage');
 
     final userModel = UserModel.fromEntity(user);
@@ -22,6 +27,7 @@ class AuthLocalDataSource {
     await Future.wait([
       sharedPreferences.setString(_keyToken, token),
       sharedPreferences.setString(_keyUser, userModel.toRawJson()),
+      sharedPreferences.setBool(_keyRequiresOnboarding, requiresOnboarding),
     ]);
 
     _log.fine('Auth session saved successfully');
@@ -49,16 +55,21 @@ class AuthLocalDataSource {
     return UserModel.fromJson(jsonDecode(rawUser) as Map<String, dynamic>);
   }
 
-  (UserEntity, String)? getSession() {
+  bool? getRequiresOnboarding() {
+    return sharedPreferences.getBool(_keyRequiresOnboarding);
+  }
+
+  (UserEntity, String, bool)? getSession() {
     final user = getUser();
     final token = getToken();
+    final requiresOnboarding = getRequiresOnboarding() ?? false;
 
     if (user == null || token == null) {
       _log.fine('Auth session is incomplete in local storage');
       return null;
     }
 
-    return (user, token);
+    return (user, token, requiresOnboarding);
   }
 
   Future<void> clearSession() async {
@@ -67,6 +78,7 @@ class AuthLocalDataSource {
     await Future.wait([
       sharedPreferences.remove(_keyToken),
       sharedPreferences.remove(_keyUser),
+      sharedPreferences.remove(_keyRequiresOnboarding),
     ]);
 
     _log.fine('Auth session cleared successfully');

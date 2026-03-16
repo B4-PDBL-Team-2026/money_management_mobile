@@ -24,14 +24,30 @@ class SessionCubit extends Cubit<SessionState> {
       return;
     }
 
-    final (user, token) = session;
+    final (user, token, requiresOnboarding) = session;
     _log.info('Auth session restored for user: ${user.email}');
-    emit(SessionAuthenticated(user: user, token: token));
+    emit(
+      SessionAuthenticated(
+        user: user,
+        token: token,
+        requiresOnboarding: requiresOnboarding,
+      ),
+    );
   }
 
-  void authenticate({required UserEntity user, required String token}) {
+  void authenticate({
+    required UserEntity user,
+    required String token,
+    required bool requiresOnboarding,
+  }) {
     _log.info('Session authenticated for user: ${user.email}');
-    emit(SessionAuthenticated(user: user, token: token));
+    emit(
+      SessionAuthenticated(
+        user: user,
+        token: token,
+        requiresOnboarding: requiresOnboarding,
+      ),
+    );
   }
 
   Future<void> logout() async {

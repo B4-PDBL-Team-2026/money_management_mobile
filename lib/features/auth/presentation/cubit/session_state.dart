@@ -7,6 +7,11 @@ final class SessionUnauthenticated extends SessionState {}
 final class SessionAuthenticated extends SessionState {
   final UserEntity user;
   final String token;
+  final bool requiresOnboarding;
 
-  SessionAuthenticated({required this.user, required this.token});
+  SessionAuthenticated({
+    required this.user,
+    required this.token,
+    required this.requiresOnboarding,
+  });
 }

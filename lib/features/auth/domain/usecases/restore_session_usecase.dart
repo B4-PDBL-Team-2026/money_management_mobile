@@ -6,7 +6,7 @@ class RestoreSessionUseCase {
 
   RestoreSessionUseCase(this.repository);
 
-  (UserEntity, String)? execute() {
+  (UserEntity, String, bool)? execute() {
     return repository.getSavedSession();
   }
 }

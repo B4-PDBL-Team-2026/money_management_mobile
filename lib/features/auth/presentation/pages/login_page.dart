@@ -65,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
           context.read<SessionCubit>().authenticate(
             user: state.user,
             token: state.token,
+            requiresOnboarding: false,
           );
 
           ScaffoldMessenger.of(context).showSnackBar(
