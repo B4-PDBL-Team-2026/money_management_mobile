@@ -188,3 +188,55 @@ class DashboardCubit extends Cubit<DashboardState> {
 - Cross-feature collaboration happens via router, app-level state, or domain contracts.
 - Shared components are presentation-only or moved to core shared modules.
 - Cross-feature UseCase calls strictly exchange Domain Entities, never Data Models.
+
+## 9. Presentation Layer Responsibilities (The "Dumb UI" Rule)
+
+The UI (Widgets) must remain strictly presentation-focused and free of business logic or cross-feature orchestration.
+
+### 9.1 Widget Duties
+
+- **Trigger Actions:** Capture user inputs (taps, text changes) and directly call the relevant Cubit method (e.g., `context.read<LoginCubit>().login()`).
+- **Render State:** Listen to Cubit states and update the UI accordingly (e.g., show a spinner on `Loading`, a SnackBar on `Error`, or a list on `Success`).
+
+### 9.2 Forbidden UI Actions
+
+- The UI MUST NOT read a value from one Cubit just to pass it as a parameter to another Cubit. (Cross-cubit data passing must happen via Dependency Injection in the Cubit/UseCase layer).
+- The UI MUST NOT contain conditional business logic.
+
+## 10. State Management Paradigm (Screen vs. Global State)
+
+Strictly differentiate between Ephemeral (Screen) State and App (Global) State. Do not mix their responsibilities.
+
+### 10.1 Ephemeral State (Screen-Level Cubits)
+
+- **Purpose:** Manages the lifecycle and interactions of a single specific screen.
+- **Examples:** `LoginCubit`, `RegisterCubit`, `DashboardCubit`, `AddTransactionCubit`.
+- **Characteristics:** - Highly reactive. Must include `Loading`, `Success`, and `Error` states.
+  - Injected locally (e.g., via `BlocProvider` in the router for that specific route).
+  - Destroyed when the user leaves the screen.
+- **Rule:** Never combine states of multiple screens into one Cubit (e.g., do not put Dashboard and Transaction History logic into a single `TransactionCubit`).
+
+### 10.2 App State (Global-Level Cubits)
+
+- **Purpose:** Holds app-wide factual data ("Source of Truth").
+- **Examples:** `SessionCubit`, `ThemeCubit`.
+- **Characteristics:**
+  - Long-lived (injected globally above `MaterialApp`).
+  - Contains factual states (e.g., `Authenticated`, `Unauthenticated`) without complex loading/error handling for every interaction.
+  - Can be safely read by any feature or router without triggering API calls.
+
+## 11. Two-Tier Validation Strategy
+
+Follow a strict two-layer validation approach to prevent malformed data from reaching the Domain layer.
+
+### 11.1 Tier 1: Form Validation (Presentation Layer)
+
+- **Where:** Handled in the Widget layer (e.g., `TextFormField`'s `validator`) or UI State (e.g., using `formz` in Cubits).
+- **What to validate:** Formatting and syntax rules (e.g., field is not empty, valid email pattern, minimum password length, numbers only).
+- **Rule:** Data that fails Tier 1 validation must be blocked at the UI level. It MUST NOT be passed to the Use Case.
+
+### 11.2 Tier 2: Business Validation (Domain Layer)
+
+- **Where:** Handled entirely inside the **Use Case**.
+- **What to validate:** Business rules that require logic, calculations, or data checks (e.g., "Sufficient balance for transaction", "Username already exists in DB").
+- **Rule:** If a business rule fails, the Use Case must throw a specific Exception (e.g., `InsufficientBalanceException`). The corresponding screen Cubit will catch this Exception and emit an `Error` state to update the UI.
