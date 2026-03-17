@@ -30,20 +30,26 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   final _noteController = TextEditingController();
 
   final _expenseIconCategory = {
-    'Food': PhosphorIconsRegular.bowlFood,
-    'Transport': PhosphorIconsRegular.carSimple,
-    'Entertainment': PhosphorIconsRegular.gameController,
-    'Shopping': PhosphorIconsRegular.shoppingBag,
-    'Health': PhosphorIconsRegular.heart,
-    'Education': PhosphorIconsRegular.book,
-    'Other': PhosphorIconsRegular.tag,
+    'bowl_food': PhosphorIconsRegular.bowlFood, // Makan
+    'taxi': PhosphorIconsRegular.taxi, // Transportasi
+    'invoice': PhosphorIconsRegular.invoice, // Tagihan
+    'student': PhosphorIconsRegular.student, // Edukasi
+    'film_reel': PhosphorIconsRegular.filmReel, // Hiburan
+    'shopping_bag': PhosphorIconsRegular.shoppingBag, // Belanja
+    'heart_beat': PhosphorIconsRegular.heartbeat, // Kesehatan
+    'hand_heart': PhosphorIconsRegular.handHeart, // Donasi
+    'tag': PhosphorIconsRegular.tag, // Lainnya
   };
 
   final _incomeIconCategory = {
-    'Salary': PhosphorIconsRegular.wallet,
-    'Gift': PhosphorIconsRegular.gift,
-    'Investment': PhosphorIconsRegular.chartLineUp,
-    'Other': PhosphorIconsRegular.tag,
+    'money': PhosphorIconsRegular.money, // Uang Saku
+    'wallet': PhosphorIconsRegular.wallet, // Gaji
+    'hand_coins': PhosphorIconsRegular.handCoins, // Refund
+    'gift': PhosphorIconsRegular.gift, // Hadiah
+    'chart_line_up': PhosphorIconsRegular.chartLineUp, // Investasi
+    'arrow_circle_down': PhosphorIconsRegular.arrowCircleDown, // Pinjaman
+    'arrow_circle_right': PhosphorIconsRegular.arrowCircleRight, // Transfer masuk
+    'tag': PhosphorIconsRegular.tag, // Lainnya
   };
 
   final _expenseCategoryIds = {
