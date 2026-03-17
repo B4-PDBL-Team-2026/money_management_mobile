@@ -4,6 +4,7 @@ import 'package:money_management_mobile/features/auth/data/data_sources/local/au
 import 'package:money_management_mobile/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
 import 'package:money_management_mobile/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:money_management_mobile/features/auth/domain/repositories/auth_repository.dart';
+import 'package:money_management_mobile/features/auth/domain/usecases/complete_onboarding_usecase.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/login_usecase.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/register_usecase.dart';
@@ -11,6 +12,13 @@ import 'package:money_management_mobile/features/auth/domain/usecases/restore_se
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/profile/data/data_sources/remote/onboarding_remote_data_source.dart';
+import 'package:money_management_mobile/features/profile/data/repositories/onboarding_repository_impl.dart';
+import 'package:money_management_mobile/features/profile/domain/repositories/onboarding_repository.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/calculate_onboarding_budget_usecase.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/submit_onboarding_usecase.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
@@ -34,10 +42,33 @@ Future<void> initInjectionContainer() async {
     () => RestoreSessionUseCase(sl()),
   );
   sl.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(sl()));
+  sl.registerLazySingleton<CompleteOnboardingUseCase>(
+    () => CompleteOnboardingUseCase(sl()),
+  );
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(sl(), sl()),
   );
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSource(sl()),
+  );
+
+  // Features - Profile (Onboarding)
+  sl.registerLazySingleton<FinancialProfileDraftCubit>(
+    () => FinancialProfileDraftCubit(sl()),
+  );
+  sl.registerLazySingleton<SubmitFinancialProfileCubit>(
+    () => SubmitFinancialProfileCubit(sl(), sl(), sl()),
+  );
+  sl.registerLazySingleton<CalculateOnboardingBudgetUseCase>(
+    () => CalculateOnboardingBudgetUseCase(),
+  );
+  sl.registerLazySingleton<SubmitOnboardingUseCase>(
+    () => SubmitOnboardingUseCase(sl()),
+  );
+  sl.registerLazySingleton<OnboardingRepository>(
+    () => OnboardingRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<OnboardingRemoteDataSource>(
+    () => OnboardingRemoteDataSource(sl()),
   );
 }

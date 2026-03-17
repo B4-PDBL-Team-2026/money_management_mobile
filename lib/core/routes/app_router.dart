@@ -15,9 +15,12 @@ import 'package:money_management_mobile/features/dashboard/presentation/layouts/
 import 'package:money_management_mobile/features/dashboard/presentation/pages/history_dummy_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
@@ -31,6 +34,7 @@ class AppRouter {
   static const String step1Personalization = '/welcome/personalization/step-1';
   static const String step2Personalization = '/welcome/personalization/step-2';
   static const String step3Personalization = '/welcome/personalization/step-3';
+  static const String step4Personalization = '/welcome/personalization/step-4';
 
   static const String dashboard = '/';
   static const String history = '/history';
@@ -71,15 +75,43 @@ class AppRouter {
           ),
           GoRoute(
             path: 'personalization/step-1',
-            builder: (context, state) => const Step1PersonalizationPage(),
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+              ],
+              child: const Step1PersonalizationPage(),
+            ),
           ),
           GoRoute(
             path: 'personalization/step-2',
-            builder: (context, state) => const Step2PersonalizationPage(),
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+              ],
+              child: const Step2PersonalizationPage(),
+            ),
           ),
           GoRoute(
             path: 'personalization/step-3',
-            builder: (context, state) => const Step3PersonalizationPage(),
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+              ],
+              child: const Step3PersonalizationPage(),
+            ),
+          ),
+          GoRoute(
+            path: 'personalization/step-4',
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+              ],
+              child: const Step4PersonalizationPage(),
+            ),
           ),
         ],
       ),
@@ -134,7 +166,8 @@ class AppRouter {
       final isOnboardingRoute =
           location == step1Personalization ||
           location == step2Personalization ||
-          location == step3Personalization;
+          location == step3Personalization ||
+          location == step4Personalization;
       final isAuthRoute =
           location == welcome || location.startsWith('$welcome/');
       final isProtectedRoute =

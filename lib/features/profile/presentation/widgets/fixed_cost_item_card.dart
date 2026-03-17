@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_detail_value.dart';
 
 class FixedCostItemCard extends StatelessWidget {
   const FixedCostItemCard({
     super.key,
     required this.name,
+    required this.category,
     required this.cycle,
+    required this.dueLabel,
     required this.amount,
-    required this.isIn,
     this.showDeleteAction = false,
     this.onDelete,
   });
 
   final String name;
+  final String category;
   final String cycle;
+  final String dueLabel;
   final String amount;
-  final bool isIn;
   final bool showDeleteAction;
   final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
-    final statusLabel = isIn ? 'In' : 'Out';
-    final statusColor = isIn ? AppColors.primary : AppColors.danger100;
-
     return Container(
       padding: const EdgeInsets.all(AppSizes.spacing4),
       decoration: BoxDecoration(
@@ -50,13 +50,13 @@ class FixedCostItemCard extends StatelessWidget {
                   vertical: AppSizes.spacing1,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.12),
+                  color: AppColors.lightPrimary,
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 ),
                 child: Text(
-                  statusLabel,
+                  category,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: statusColor,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -80,10 +80,16 @@ class FixedCostItemCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _DetailValue(label: 'Siklus', value: cycle),
+                child: FixedCostItemDetailValue(label: 'Siklus', value: cycle),
               ),
               Expanded(
-                child: _DetailValue(
+                child: FixedCostItemDetailValue(
+                  label: 'Jatuh Tempo',
+                  value: dueLabel,
+                ),
+              ),
+              Expanded(
+                child: FixedCostItemDetailValue(
                   label: 'Nominal',
                   value: amount,
                   textAlign: TextAlign.end,
@@ -93,44 +99,6 @@ class FixedCostItemCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _DetailValue extends StatelessWidget {
-  const _DetailValue({
-    required this.label,
-    required this.value,
-    this.textAlign = TextAlign.start,
-  });
-
-  final String label;
-  final String value;
-  final TextAlign textAlign;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: textAlign == TextAlign.end
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          textAlign: textAlign,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-        ),
-        const SizedBox(height: AppSizes.spacing1),
-        Text(
-          value,
-          textAlign: textAlign,
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-        ),
-      ],
     );
   }
 }
