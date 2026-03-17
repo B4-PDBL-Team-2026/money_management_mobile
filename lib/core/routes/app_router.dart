@@ -17,6 +17,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/layouts/
 import 'package:money_management_mobile/features/dashboard/presentation/pages/history_dummy_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
@@ -119,7 +120,10 @@ class AppRouter {
       // transaction module
       GoRoute(
         path: '/transaction/add',
-        builder: (context, state) => const AddTransactionPage(),
+        builder: (context, state) => BlocProvider<AddTransactionCubit>(
+          create: (_) => sl<AddTransactionCubit>(),
+          child: const AddTransactionPage(),
+        ),
       ),
     ],
 

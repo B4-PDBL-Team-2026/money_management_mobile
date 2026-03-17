@@ -10,6 +10,11 @@ import 'package:money_management_mobile/features/auth/domain/usecases/register_u
 import 'package:money_management_mobile/features/auth/domain/usecases/restore_session_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/transaction/data/data_sources/remote/transaction_remote_data_source.dart';
+import 'package:money_management_mobile/features/transaction/data/repositories/transaction_repository_impl.dart';
+import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
+import 'package:money_management_mobile/features/transaction/domain/usecases/add_transaction_usecase.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
@@ -36,4 +41,14 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(sl()));
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl(), sl()));
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource(sl()));
+
+  // Features - Transaction
+  sl.registerFactory<AddTransactionCubit>(() => AddTransactionCubit(sl()));
+  sl.registerLazySingleton<AddTransactionUseCase>(() => AddTransactionUseCase(sl()));
+  sl.registerLazySingleton<TransactionRepository>(
+    () => TransactionRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<TransactionRemoteDataSource>(
+    () => TransactionRemoteDataSource(sl()),
+  );
 }
