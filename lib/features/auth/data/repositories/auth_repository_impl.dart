@@ -82,5 +82,22 @@ class AuthRepositoryImpl implements AuthRepository {
   String? getToken() => localDataSource.getToken();
 
   @override
-  Future<void> clearSession() => localDataSource.clearSession();
+  Future<void> clearSession() async {
+    _log.info('Logging out current session from backend');
+    final hasToken = localDataSource.getToken()?.isNotEmpty ?? false;
+
+    try {
+      await remoteDataSource.logout(hasToken: hasToken);
+      _log.info('Backend logout successful');
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        _log.warning('Logout returned 401, proceeding to clear local session');
+      } else {
+        ErrorHandler.handleRemoteException(e, _log, 'Logout');
+      }
+    }
+
+    await localDataSource.clearSession();
+    _log.info('Local auth session cleared');
+  }
 }
