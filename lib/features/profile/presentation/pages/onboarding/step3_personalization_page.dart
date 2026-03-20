@@ -5,7 +5,6 @@ import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
-import 'package:money_management_mobile/core/widgets/app_alert.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
@@ -53,11 +52,16 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
         draftCubit.state.budgetCycle == BudgetCycle.weekly;
     final TextEditingController nameController = TextEditingController();
     final TextEditingController amountController = TextEditingController();
+    final TextEditingController dueDateController = TextEditingController();
     String frequency = isMainCycleWeekly ? 'weekly' : 'monthly';
     String category = _expenseCategories.first;
 
     List<MapEntry<int, String>> dueOptions = _buildDueOptions(frequency);
     int selectedDueValue = dueOptions.first.key;
+    if (!isMainCycleWeekly) {
+      selectedDueValue = DateTime.now().day;
+      dueDateController.text = _monthlyDueText(selectedDueValue);
+    }
 
     showModalBottomSheet(
       context: context,
@@ -96,9 +100,9 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                   style: Theme.of(modalContext).textTheme.headlineMedium
                       ?.copyWith(color: AppColors.primary),
                 ),
-                const SizedBox(height: AppSizes.spacing5),
+                const SizedBox(height: AppSizes.spacing4),
                 AppTextField(
-                  hint: 'Nama Pengeluaran',
+                  hint: 'Nama biaya (contoh: WiFi)',
                   controller: nameController,
                   prefixIcon: const Icon(
                     Icons.receipt_outlined,
@@ -108,7 +112,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                 const SizedBox(height: AppSizes.spacing4),
                 AppCurrencyTextField(
                   controller: amountController,
-                  hint: 'Nominal (RP)',
+                  hint: 'Nominal',
                   prefixIcon: const Icon(
                     Icons.attach_money,
                     color: AppColors.trunks,
@@ -131,15 +135,8 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                     setModalState(() => category = value);
                   },
                 ),
-                const SizedBox(height: AppSizes.spacing4),
-                if (isMainCycleWeekly)
-                  const AppAlert(
-                    message:
-                        'Siklus utama Anda mingguan, jadi frekuensi fixed cost otomatis dikunci ke Mingguan.',
-                    padding: EdgeInsets.all(AppSizes.spacing3),
-                    iconSize: 16,
-                  )
-                else
+                if (!isMainCycleWeekly) ...[
+                  const SizedBox(height: AppSizes.spacing4),
                   DropdownButtonFormField<String>(
                     initialValue: frequency,
                     decoration: _dropdownDecoration(
@@ -164,39 +161,85 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                         frequency = value;
                         dueOptions = _buildDueOptions(frequency);
                         selectedDueValue = dueOptions.first.key;
+                        if (frequency == 'monthly') {
+                          selectedDueValue = DateTime.now().day;
+                          dueDateController.text = _monthlyDueText(
+                            selectedDueValue,
+                          );
+                        }
                       });
                     },
                   ),
+                ],
                 const SizedBox(height: AppSizes.spacing4),
-                DropdownButtonFormField<int>(
-                  initialValue: selectedDueValue,
-                  decoration: _dropdownDecoration(
-                    modalContext,
-                    frequency == 'weekly'
-                        ? 'Jatuh Tempo (Hari)'
-                        : 'Jatuh Tempo (Tanggal)',
+                if (frequency == 'weekly')
+                  DropdownButtonFormField<int>(
+                    initialValue: selectedDueValue,
+                    decoration: _dropdownDecoration(
+                      modalContext,
+                      'Jatuh Tempo (Hari)',
+                    ),
+                    items: dueOptions
+                        .map(
+                          (item) => DropdownMenuItem(
+                            value: item.key,
+                            child: Text(item.value),
+                          ),
+                        )
+                        .toList(growable: false),
+                    onChanged: (value) {
+                      if (value == null) {
+                        return;
+                      }
+                      setModalState(() => selectedDueValue = value);
+                    },
+                  )
+                else
+                  AppTextField(
+                    hint: 'Pilih tanggal jatuh tempo (bulan ini)',
+                    controller: dueDateController,
+                    readOnly: true,
+                    prefixIcon: const Icon(
+                      Icons.calendar_today_outlined,
+                      color: AppColors.trunks,
+                    ),
+                    onTap: () async {
+                      final pickedDate = await _pickDueDateInCurrentMonth(
+                        modalContext,
+                        selectedDueValue,
+                      );
+                      if (pickedDate == null) {
+                        return;
+                      }
+
+                      setModalState(() {
+                        selectedDueValue = pickedDate.day;
+                        dueDateController.text = _monthlyDueText(
+                          selectedDueValue,
+                        );
+                      });
+                    },
                   ),
-                  items: dueOptions
-                      .map(
-                        (item) => DropdownMenuItem(
-                          value: item.key,
-                          child: Text(item.value),
-                        ),
-                      )
-                      .toList(growable: false),
-                  onChanged: (value) {
-                    if (value == null) {
-                      return;
-                    }
-                    setModalState(() => selectedDueValue = value);
-                  },
-                ),
-                const SizedBox(height: AppSizes.spacing3),
-                const AppAlert(
-                  message:
-                      'Semua fixed cost diperlakukan sebagai pengeluaran. Item dengan jatuh tempo yang sudah lewat akan diabaikan pada perhitungan .',
-                  padding: EdgeInsets.all(AppSizes.spacing3),
-                  iconSize: 16,
+                const SizedBox(height: AppSizes.spacing2),
+                Row(
+                  children: [
+                    Text(
+                      'Jatuh tempo yang lewat akan diabaikan.',
+                      style: Theme.of(
+                        modalContext,
+                      ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+                    ),
+                    const SizedBox(width: AppSizes.spacing1),
+                    const Tooltip(
+                      message:
+                          'Jika tanggal sudah terlewat dalam siklus aktif, fixed cost tidak dihitung untuk proyeksi saat ini.',
+                      child: Icon(
+                        Icons.info_outline,
+                        size: 16,
+                        color: AppColors.trunks,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: AppSizes.spacing5),
                 AppButton(
@@ -220,7 +263,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                       dueValue: selectedDueValue,
                     );
 
-                    Navigator.of(modalContext).pop();
+                    modalContext.pop();
                   },
                 ),
               ],
@@ -228,7 +271,11 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
           ),
         ),
       ),
-    );
+    ).whenComplete(() {
+      nameController.dispose();
+      amountController.dispose();
+      dueDateController.dispose();
+    });
   }
 
   @override
@@ -245,64 +292,61 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
               padding: const EdgeInsets.all(AppSizes.spacing6),
               child: Column(
                 children: [
-                  const SizedBox(height: AppSizes.spacing6),
+                  const SizedBox(height: AppSizes.spacing4),
                   const StepProgressIndicator(currentStep: 3, totalSteps: 4),
-                  const SizedBox(height: AppSizes.spacing6),
+                  const SizedBox(height: AppSizes.spacing7),
                   Text(
-                    'Fixed Cost Configuration',
+                    'Biaya Rutin',
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: AppColors.primary,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: AppSizes.spacing4),
+                  const SizedBox(height: AppSizes.spacing2),
                   Text(
-                    'Tambahkan biaya rutin yang ingin diperhitungkan. Langkah ini opsional dan bisa dilewati.',
+                    'Tambahkan fixed cost agar proyeksi budget lebih akurat.',
                     textAlign: TextAlign.center,
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
                   ),
-                  const SizedBox(height: AppSizes.spacing4),
-                  AppAlert(
-                    messages: [
-                      'Siklus saat ini: $cycleLabel.',
-                      if (state.budgetCycle == BudgetCycle.monthly)
-                        'Cost mingguan diskalakan berdasarkan jumlah sisa minggu pada bulan berjalan.',
-                    ],
-                  ),
-                  const SizedBox(height: AppSizes.spacing4),
+                  const SizedBox(height: AppSizes.spacing3),
+                  _buildStepHint(cycleLabel, state.budgetCycle),
+                  const SizedBox(height: AppSizes.spacing5),
                   AppButton(
                     text: 'Tambah Fixed Cost',
                     onPressed: _showAddExpenseBottomSheet,
                     variant: AppButtonVariant.outlined,
                   ),
                   const SizedBox(height: AppSizes.spacing4),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.fixedCosts.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: AppSizes.spacing4),
-                    itemBuilder: (context, index) {
-                      final item = state.fixedCosts[index];
+                  if (state.fixedCosts.isEmpty)
+                    _buildEmptyState()
+                  else
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.fixedCosts.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: AppSizes.spacing4),
+                      itemBuilder: (context, index) {
+                        final item = state.fixedCosts[index];
 
-                      return FixedCostItemCard(
-                        name: item.name,
-                        category: item.category,
-                        cycle: _apiCycleToLabel(item.cycle),
-                        dueLabel: _buildDueLabel(
-                          dueValue: item.dueValue,
-                          frequency: item.cycle,
-                        ),
-                        amount:
-                            'Rp ${CurrencyFormatter.format(item.amount.toInt())}',
-                        showDeleteAction: true,
-                        onDelete: () => _deleteItem(index),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.spacing8),
+                        return FixedCostItemCard(
+                          name: item.name,
+                          category: item.category,
+                          cycle: _apiCycleToLabel(item.cycle),
+                          dueLabel: _buildDueLabel(
+                            dueValue: item.dueValue,
+                            frequency: item.cycle,
+                          ),
+                          amount:
+                              'Rp ${CurrencyFormatter.format(item.amount.toInt())}',
+                          showDeleteAction: true,
+                          onDelete: () => _deleteItem(index),
+                        );
+                      },
+                    ),
+                  const SizedBox(height: AppSizes.spacing7),
                   Row(
                     children: [
                       Expanded(
@@ -380,6 +424,94 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
     return List.generate(
       31,
       (index) => MapEntry(index + 1, 'Tanggal ${index + 1}'),
+    );
+  }
+
+  Future<DateTime?> _pickDueDateInCurrentMonth(
+    BuildContext context,
+    int selectedDay,
+  ) {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year, now.month, 1);
+    final lastDate = DateTime(now.year, now.month + 1, 0);
+    final initialDay = selectedDay.clamp(1, lastDate.day);
+
+    return showDatePicker(
+      context: context,
+      initialDate: DateTime(now.year, now.month, initialDay),
+      firstDate: firstDate,
+      lastDate: lastDate,
+      helpText: 'Pilih tanggal bulan ini',
+      cancelText: 'Batal',
+      confirmText: 'Pilih',
+    );
+  }
+
+  String _monthlyDueText(int day) {
+    return 'Tanggal $day bulan ini';
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSizes.spacing5),
+      decoration: BoxDecoration(
+        color: AppColors.gohan,
+        borderRadius: BorderRadius.circular(AppSizes.radiusNm),
+        border: Border.all(color: AppColors.beerus),
+      ),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.receipt_long_outlined,
+            size: AppSizes.spacing6,
+            color: AppColors.trunks,
+          ),
+          const SizedBox(height: AppSizes.spacing2),
+          Text(
+            'Belum ada fixed cost',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.bulma,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: AppSizes.spacing1),
+          Text(
+            'Anda bisa lewati langkah ini atau tambah satu biaya rutin terlebih dulu.',
+            textAlign: TextAlign.center,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepHint(String cycleLabel, BudgetCycle cycle) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Siklus aktif: $cycleLabel',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppColors.trunks,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(width: AppSizes.spacing1),
+        Tooltip(
+          message: cycle == BudgetCycle.monthly
+              ? 'Biaya mingguan akan disesuaikan dengan sisa minggu pada bulan berjalan.'
+              : 'Biaya rutin akan dihitung untuk sisa hari pada minggu berjalan.',
+          child: const Icon(
+            Icons.info_outline,
+            size: 16,
+            color: AppColors.trunks,
+          ),
+        ),
+      ],
     );
   }
 

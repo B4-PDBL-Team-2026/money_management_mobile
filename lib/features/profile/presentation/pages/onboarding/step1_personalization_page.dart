@@ -5,7 +5,6 @@ import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
-import 'package:money_management_mobile/core/widgets/app_alert.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
@@ -60,26 +59,26 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                     ),
                     child: Column(
                       children: [
-                        const SizedBox(height: AppSizes.spacing6),
+                        const SizedBox(height: AppSizes.spacing4),
                         const StepProgressIndicator(
                           currentStep: 1,
                           totalSteps: 4,
                         ),
-                        const SizedBox(height: AppSizes.spacing8),
+                        const SizedBox(height: AppSizes.spacing7),
                         Text(
                           'Saldo Awal & Siklus Budget',
                           style: Theme.of(context).textTheme.displayMedium
                               ?.copyWith(color: AppColors.primary),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: AppSizes.spacing3),
+                        const SizedBox(height: AppSizes.spacing2),
                         Text(
-                          'Tentukan saldo awal dan cara sistem membagi jatah harian sampai akhir siklus.',
+                          'Pilih siklus budget dan masukkan saldo awal Anda.',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(color: AppColors.trunks),
                         ),
-                        const SizedBox(height: AppSizes.spacing6),
+                        const SizedBox(height: AppSizes.spacing10),
                         Row(
                           children: [
                             Expanded(
@@ -118,16 +117,12 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                                 );
                           },
                         ),
-                        const SizedBox(height: AppSizes.spacing5),
-                        AppAlert(
-                          messages: [
-                            if (isWeekly)
-                              'Mingguan: Budget akan dibagi rata untuk sisa hari hingga akhir minggu ini.'
-                            else
-                              'Bulanan: Budget akan dibagi rata untuk sisa hari hingga akhir bulan ini.',
-                          ],
+                        const SizedBox(height: AppSizes.spacing3),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: _buildCycleHint(isWeekly),
                         ),
-                        const SizedBox(height: AppSizes.spacing8),
+                        const SizedBox(height: AppSizes.spacing10),
                         AppButton(
                           text: 'Selanjutnya',
                           onPressed: () {
@@ -154,6 +149,32 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: AppColors.danger100),
+    );
+  }
+
+  Widget _buildCycleHint(bool isWeekly) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          isWeekly ? 'Siklus Mingguan' : 'Siklus Bulanan',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: AppColors.trunks,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(width: AppSizes.spacing1),
+        Tooltip(
+          message: isWeekly
+              ? 'Budget dibagi untuk sisa hari sampai akhir minggu ini.'
+              : 'Budget dibagi untuk sisa hari sampai akhir bulan ini.',
+          child: const Icon(
+            Icons.info_outline,
+            size: 16,
+            color: AppColors.trunks,
+          ),
+        ),
+      ],
     );
   }
 

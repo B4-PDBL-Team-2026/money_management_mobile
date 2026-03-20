@@ -11,6 +11,7 @@ import 'package:money_management_mobile/features/profile/presentation/cubit/fina
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_state.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/calculate_onboarding_budget_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/final_preview_summary_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/step_progress_indicator.dart';
@@ -57,6 +58,7 @@ class Step4PersonalizationPage extends StatelessWidget {
           builder: (context, wizardState) {
             final draftCubit = context.read<FinancialProfileDraftCubit>();
             final calculation = draftCubit.calculateBudget();
+            final scenario = calculation.scenario;
 
             return Scaffold(
               body: SafeArea(
@@ -69,7 +71,7 @@ class Step4PersonalizationPage extends StatelessWidget {
                           minHeight: constraints.maxHeight,
                         ),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const SizedBox(height: AppSizes.spacing6),
                             const StepProgressIndicator(
@@ -78,26 +80,33 @@ class Step4PersonalizationPage extends StatelessWidget {
                             ),
                             const SizedBox(height: AppSizes.spacing8),
                             Text(
-                              'Final Preview & Proyeksi',
+                              'Ringkasan Akhir',
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.displayMedium
                                   ?.copyWith(color: AppColors.primary),
                             ),
                             const SizedBox(height: AppSizes.spacing3),
                             Text(
-                              'Ringkasan ini dihitung dinamis berdasarkan tanggal hari ini dan hanya menghitung fixed cost yang jatuh tempo di sisa siklus aktif.',
+                              _shortDescriptionByScenario(scenario),
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(color: AppColors.trunks),
                             ),
                             const SizedBox(height: AppSizes.spacing6),
                             FinalPreviewSummaryCard(
+                              scenario: scenario,
                               cycle: wizardState.budgetCycle,
                               initialBalance: wizardState.initialBalance,
                               safetyCeiling: wizardState.safetyCeiling,
+                              safetyFlooring: wizardState.safetyFlooring,
                               remainingDays: calculation.remainingDays,
                               totalFixedCost: calculation.totalFixedCost,
+                              deficitBalance: calculation.deficitBalance,
+                              daysCoveredAtSafetyFloor:
+                                  calculation.daysCoveredAtSafetyFloor,
                               dailyBudgetBruto: calculation.dailyBudgetBruto,
+                              recommendedDailyBudget:
+                                  calculation.recommendedDailyBudget,
                               projectedSavings: calculation.projectedSavings,
                             ),
                             const SizedBox(height: AppSizes.spacing6),
@@ -171,6 +180,8 @@ class Step4PersonalizationPage extends StatelessWidget {
                                                   wizardState.initialBalance,
                                               safetyCeiling:
                                                   wizardState.safetyCeiling,
+                                              safetyFlooring:
+                                                  wizardState.safetyFlooring,
                                               fixedCosts:
                                                   wizardState.fixedCosts,
                                             ),
@@ -200,5 +211,18 @@ class Step4PersonalizationPage extends StatelessWidget {
     }
 
     return 'Tanggal $dueValue';
+  }
+
+  String _shortDescriptionByScenario(BudgetHealthScenario scenario) {
+    return switch (scenario) {
+      BudgetHealthScenario.surplus =>
+        'Saldo aman, Anda berpotensi menabung di akhir siklus.',
+      BudgetHealthScenario.moderate =>
+        'Kondisi stabil, jaga pengeluaran tetap sesuai batas harian.',
+      BudgetHealthScenario.critical =>
+        'Saldo terbatas, atur pengeluaran harian lebih ketat.',
+      BudgetHealthScenario.deficit =>
+        'Defisit: total tagihan melebihi saldo sampai akhir siklus.',
+    };
   }
 }

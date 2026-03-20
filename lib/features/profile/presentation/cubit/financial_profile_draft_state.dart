@@ -5,12 +5,14 @@ class FinancialProfileDraftState {
   final BudgetCycle budgetCycle;
   final int initialBalance;
   final int safetyCeiling;
+  final int safetyFlooring;
   final List<FixedCostEntity> fixedCosts;
 
   const FinancialProfileDraftState({
     required this.budgetCycle,
     required this.initialBalance,
     required this.safetyCeiling,
+    required this.safetyFlooring,
     required this.fixedCosts,
   });
 
@@ -19,6 +21,7 @@ class FinancialProfileDraftState {
       budgetCycle: BudgetCycle.monthly,
       initialBalance: 0,
       safetyCeiling: 0,
+      safetyFlooring: 0,
       fixedCosts: [],
     );
   }
@@ -27,12 +30,14 @@ class FinancialProfileDraftState {
     BudgetCycle? budgetCycle,
     int? initialBalance,
     int? safetyCeiling,
+    int? safetyFlooring,
     List<FixedCostEntity>? fixedCosts,
   }) {
     return FinancialProfileDraftState(
       budgetCycle: budgetCycle ?? this.budgetCycle,
       initialBalance: initialBalance ?? this.initialBalance,
       safetyCeiling: safetyCeiling ?? this.safetyCeiling,
+      safetyFlooring: safetyFlooring ?? this.safetyFlooring,
       fixedCosts: fixedCosts ?? this.fixedCosts,
     );
   }

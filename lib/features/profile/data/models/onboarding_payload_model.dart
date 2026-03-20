@@ -6,6 +6,7 @@ class OnboardingPayloadModel extends FinancialProfileEntity {
     required super.budgetCycle,
     required super.initialBalance,
     required super.safetyCeiling,
+    required super.safetyFlooring,
     required super.fixedCosts,
   });
 
@@ -14,6 +15,7 @@ class OnboardingPayloadModel extends FinancialProfileEntity {
       budgetCycle: entity.budgetCycle,
       initialBalance: entity.initialBalance,
       safetyCeiling: entity.safetyCeiling,
+      safetyFlooring: entity.safetyFlooring,
       fixedCosts: entity.fixedCosts
           .map(FixedCostModel.fromEntity)
           .toList(growable: false),
@@ -25,6 +27,7 @@ class OnboardingPayloadModel extends FinancialProfileEntity {
       'budgetCycle': budgetCycle.name,
       'initialBalance': initialBalance,
       'safetyCeiling': safetyCeiling,
+      'safetyFlooring': safetyFlooring,
       'fixedCosts': fixedCosts
           .map((item) => FixedCostModel.fromEntity(item).toJson())
           .toList(growable: false),

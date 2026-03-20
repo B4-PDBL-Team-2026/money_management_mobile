@@ -26,6 +26,10 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     emit(state.copyWith(safetyCeiling: safetyCeiling));
   }
 
+  void updateSafetyFlooring(int safetyFlooring) {
+    emit(state.copyWith(safetyFlooring: safetyFlooring));
+  }
+
   void addFixedCost({
     required String name,
     required int amount,
@@ -67,6 +71,7 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
       budgetCycle: state.budgetCycle,
       initialBalance: state.initialBalance,
       safetyCeiling: state.safetyCeiling,
+      safetyFlooring: state.safetyFlooring,
       fixedCosts: state.fixedCosts,
     );
   }
