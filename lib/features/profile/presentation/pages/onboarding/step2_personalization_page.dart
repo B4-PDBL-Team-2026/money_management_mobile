@@ -124,6 +124,13 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                               return;
                             }
 
+                            if (state.safetyCeiling > state.initialBalance) {
+                              _showError(
+                                'Batas atas tidak boleh lebih besar dari saldo awal',
+                              );
+                              return;
+                            }
+
                             if (state.safetyFlooring <= 0) {
                               _showError('Batas bawah perhitungan wajib diisi');
                               return;
