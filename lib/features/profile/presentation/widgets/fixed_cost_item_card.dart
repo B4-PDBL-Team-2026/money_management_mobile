@@ -13,6 +13,8 @@ class FixedCostItemCard extends StatelessWidget {
     required this.amount,
     this.showDeleteAction = false,
     this.onDelete,
+    this.showEditAction = false,
+    this.onEdit,
   });
 
   final String name;
@@ -21,7 +23,9 @@ class FixedCostItemCard extends StatelessWidget {
   final String dueLabel;
   final String amount;
   final bool showDeleteAction;
+  final bool showEditAction;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +65,19 @@ class FixedCostItemCard extends StatelessWidget {
                   ),
                 ),
               ),
+              if (showEditAction) ...[
+                const SizedBox(width: AppSizes.spacing1),
+                IconButton(
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    color: AppColors.primary,
+                    size: AppSizes.spacing6,
+                  ),
+                  onPressed: onEdit,
+                  padding: const EdgeInsets.all(AppSizes.spacing1),
+                  constraints: const BoxConstraints(),
+                ),
+              ],
               if (showDeleteAction) ...[
                 const SizedBox(width: AppSizes.spacing1),
                 IconButton(

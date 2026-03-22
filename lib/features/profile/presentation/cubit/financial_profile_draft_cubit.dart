@@ -62,6 +62,30 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     emit(state.copyWith(fixedCosts: updatedFixedCosts));
   }
 
+  void updateFixedCostAt({
+    required int index,
+    required String name,
+    required int amount,
+    required String category,
+    required String cycle,
+    required int dueValue,
+  }) {
+    if (index < 0 || index >= state.fixedCosts.length) {
+      return;
+    }
+
+    final updatedFixedCosts = List<FixedCostEntity>.from(state.fixedCosts)
+      ..[index] = FixedCostEntity(
+        name: name,
+        amount: amount,
+        category: category,
+        cycle: cycle,
+        dueValue: dueValue,
+      );
+
+    emit(state.copyWith(fixedCosts: updatedFixedCosts));
+  }
+
   OnboardingBudgetCalculationResult calculateBudget({DateTime? now}) {
     return calculateOnboardingBudgetUseCase.execute(_currentProfile, now: now);
   }
