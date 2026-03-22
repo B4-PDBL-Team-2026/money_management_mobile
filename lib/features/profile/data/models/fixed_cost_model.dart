@@ -5,6 +5,9 @@ class FixedCostModel extends FixedCostEntity {
     required super.name,
     required super.amount,
     required super.category,
+    required super.categoryId,
+    super.categoryType = CategoryType.system,
+    super.isActive = true,
     required super.cycle,
     required super.dueValue,
   });
@@ -14,6 +17,9 @@ class FixedCostModel extends FixedCostEntity {
       name: entity.name,
       amount: entity.amount,
       category: entity.category,
+      categoryId: entity.categoryId,
+      categoryType: entity.categoryType,
+      isActive: entity.isActive,
       cycle: entity.cycle,
       dueValue: entity.dueValue,
     );
@@ -23,9 +29,11 @@ class FixedCostModel extends FixedCostEntity {
     return {
       'name': name,
       'amount': amount,
-      'category': category,
-      'cycle': cycle,
-      'dueValue': dueValue,
+      'cycleType': cycle,
+      'categoryId': categoryId,
+      'categoryType': categoryType.value,
+      'isActive': isActive,
+      'dueDay': dueValue,
     };
   }
 }

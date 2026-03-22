@@ -8,6 +8,7 @@ import 'package:money_management_mobile/core/widgets/app_currency_text_field.dar
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
 
 class AddFixedCostBottomSheet extends StatefulWidget {
   const AddFixedCostBottomSheet({
@@ -22,7 +23,7 @@ class AddFixedCostBottomSheet extends StatefulWidget {
 
   final FinancialProfileDraftCubit draftCubit;
   final bool isMainCycleWeekly;
-  final List<String> expenseCategories;
+  final List<Category> expenseCategories;
   final List<MapEntry<int, String>> weekdayOptions;
   final int? editingIndex;
   final FixedCostEntity? initialItem;
@@ -40,7 +41,7 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
   final TextEditingController _dueDateController = TextEditingController();
 
   late String _frequency;
-  late String _category;
+  late Category _category;
   late List<MapEntry<int, String>> _dueOptions;
   late int _selectedDueValue;
 
@@ -52,9 +53,10 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
       _nameController.text = initialItem.name;
       _amountController.text = CurrencyFormatter.format(initialItem.amount);
       _frequency = initialItem.cycle;
-      _category = widget.expenseCategories.contains(initialItem.category)
-          ? initialItem.category
-          : widget.expenseCategories.first;
+      _category = widget.expenseCategories.firstWhere(
+        (item) => item.id == initialItem.categoryId,
+        orElse: () => widget.expenseCategories.first,
+      );
       _dueOptions = _buildDueOptions(_frequency);
 
       final validDueValue =
@@ -142,12 +144,13 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
               ),
             ),
             const SizedBox(height: AppSizes.spacing4),
-            DropdownButtonFormField<String>(
+            DropdownButtonFormField<Category>(
               initialValue: _category,
               decoration: _dropdownDecoration(context, 'Kategori'),
               items: widget.expenseCategories
                   .map(
-                    (item) => DropdownMenuItem(value: item, child: Text(item)),
+                    (item) =>
+                        DropdownMenuItem(value: item, child: Text(item.name)),
                   )
                   .toList(growable: false),
               onChanged: (value) {
@@ -316,7 +319,8 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
         index: editingIndex,
         name: name,
         amount: amount,
-        category: _category,
+        category: _category.name,
+        categoryId: _category.id,
         cycle: _frequency,
         dueValue: _selectedDueValue,
       );
@@ -324,7 +328,8 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
       widget.draftCubit.addFixedCost(
         name: name,
         amount: amount,
-        category: _category,
+        category: _category.name,
+        categoryId: _category.id,
         cycle: _frequency,
         dueValue: _selectedDueValue,
       );

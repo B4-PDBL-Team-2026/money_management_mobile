@@ -1,3 +1,4 @@
+import 'package:timezone/timezone.dart' as tz;
 import 'package:money_management_mobile/features/profile/data/models/fixed_cost_model.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 
@@ -26,8 +27,9 @@ class OnboardingPayloadModel extends FinancialProfileEntity {
     return {
       'budgetCycle': budgetCycle.name,
       'initialBalance': initialBalance,
-      'safetyCeiling': safetyCeiling,
-      'safetyFlooring': safetyFlooring,
+      'flooringLimit': safetyFlooring,
+      'ceilingLimit': safetyCeiling,
+      'timezone': tz.local.name,
       'fixedCosts': fixedCosts
           .map((item) => FixedCostModel.fromEntity(item).toJson())
           .toList(growable: false),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_theme.dart';
 import 'package:money_management_mobile/core/utils/logger.dart';
@@ -10,6 +11,7 @@ import 'package:money_management_mobile/injection_container.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID');
+  tz.initializeTimeZones();
   AppLogger.init();
   await initInjectionContainer();
   await sl<SessionCubit>().restoreSession();

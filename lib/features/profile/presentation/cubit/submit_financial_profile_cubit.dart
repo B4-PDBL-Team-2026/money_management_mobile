@@ -24,8 +24,10 @@ class SubmitFinancialProfileCubit extends Cubit<SubmitFinancialProfileState> {
   }
 
   Future<void> submit(FinancialProfileEntity financialProfile) async {
-    if (financialProfile.initialBalance <= 0) {
-      emit(SubmitFinancialProfileFailure('Nominal saldo awal wajib diisi'));
+    if (financialProfile.initialBalance < 0) {
+      emit(
+        SubmitFinancialProfileFailure('Nominal saldo awal tidak boleh negatif'),
+      );
       return;
     }
 

@@ -14,6 +14,7 @@ import 'package:money_management_mobile/features/profile/presentation/cubit/fina
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_bottom_sheet.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/step_progress_indicator.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
 
 class Step3PersonalizationPage extends StatefulWidget {
   const Step3PersonalizationPage({super.key});
@@ -24,8 +25,7 @@ class Step3PersonalizationPage extends StatefulWidget {
 }
 
 class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
-  List<String> get _expenseCategories =>
-      DefaultCategories.expenses.map((category) => category.name).toList();
+  List<Category> get _expenseCategories => DefaultCategories.expenses;
 
   static const List<MapEntry<int, String>> _weekdayOptions = [
     MapEntry(1, 'Senin'),
@@ -135,31 +135,22 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                       itemBuilder: (context, index) {
                         final item = state.fixedCosts[index];
 
-                        return InkWell(
-                          onTap: () => _showEditExpenseBottomSheet(
+                        return FixedCostItemCard(
+                          name: item.name,
+                          category: item.category,
+                          cycle: _apiCycleToLabel(item.cycle),
+                          dueLabel: _buildDueLabel(
+                            dueValue: item.dueValue,
+                            frequency: item.cycle,
+                          ),
+                          amount:
+                              'Rp ${CurrencyFormatter.format(item.amount.toInt())}',
+                          showDeleteAction: true,
+                          onDelete: () => _deleteItem(index),
+                          showEditAction: true,
+                          onEdit: () => _showEditExpenseBottomSheet(
                             index: index,
                             item: item,
-                          ),
-                          borderRadius: BorderRadius.circular(
-                            AppSizes.radiusMd,
-                          ),
-                          child: FixedCostItemCard(
-                            name: item.name,
-                            category: item.category,
-                            cycle: _apiCycleToLabel(item.cycle),
-                            dueLabel: _buildDueLabel(
-                              dueValue: item.dueValue,
-                              frequency: item.cycle,
-                            ),
-                            amount:
-                                'Rp ${CurrencyFormatter.format(item.amount.toInt())}',
-                            showDeleteAction: true,
-                            onDelete: () => _deleteItem(index),
-                            showEditAction: true,
-                            onEdit: () => _showEditExpenseBottomSheet(
-                              index: index,
-                              item: item,
-                            ),
                           ),
                         );
                       },
