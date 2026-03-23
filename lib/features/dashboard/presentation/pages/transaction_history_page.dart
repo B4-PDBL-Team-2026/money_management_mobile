@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_mobile/core/theme/app_colors.dart';
+import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_components.dart';
 
@@ -29,113 +31,125 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      body: Column(
-        children: [
-          _buildFilterSection(),
-          _buildSummarySection(),
-          const SizedBox(height: 16),
-          Expanded(
-            child: transactionList.isNotEmpty
-                ? _buildDataList()
-                : const EmptyState(),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSizes.spacing6,
+            AppSizes.spacing6,
+            AppSizes.spacing6,
+            0,
           ),
-        ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Riwayat Transaksi',
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineLarge?.copyWith(color: AppColors.primary),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              _buildFilterSection(),
+              const SizedBox(height: AppSizes.spacing4),
+              _buildSummarySection(),
+              const SizedBox(height: AppSizes.spacing4),
+              Expanded(
+                child: transactionList.isNotEmpty
+                    ? _buildDataList()
+                    : const EmptyState(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildFilterSection() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0C000000),
-              blurRadius: 10,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Container(
-              height: 45,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const TextField(
-                decoration: InputDecoration(
-                  hintText: 'Cari nama transaksi...',
-                  hintStyle: TextStyle(color: Color(0xFFBDBDBD), fontSize: 14),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Color(0xFF9E9E9E),
-                    size: 20,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  flex: 10,
-                  child: FilterButton(
-                    icon: Icons.calendar_today,
-                    text: selectedMonthYear,
-                    onTap: _openMonthYearPicker,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 8,
-                  child: FilterButton(
-                    icon: Icons.grid_view_rounded,
-                    text: selectedCategory,
-                    onTap: _openCategoryPicker,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.all(AppSizes.spacing4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0C000000),
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildSummarySection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: SummaryCard(
-              title: 'Total Pengeluaran',
-              amount: '- Rp ${_formatRupiah(totalPengeluaran)}',
+          Container(
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const TextField(
+              decoration: InputDecoration(
+                hintText: 'Cari nama transaksi...',
+                hintStyle: TextStyle(color: Color(0xFFBDBDBD), fontSize: 14),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Color(0xFF9E9E9E),
+                  size: 20,
+                ),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(vertical: 12),
+              ),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: SummaryCard(
-              title: 'Total Pemasukan',
-              amount: '+ Rp ${_formatRupiah(totalPemasukan)}',
-            ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                flex: 10,
+                child: FilterButton(
+                  icon: Icons.calendar_today,
+                  text: selectedMonthYear,
+                  onTap: _openMonthYearPicker,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 8,
+                child: FilterButton(
+                  icon: Icons.grid_view_rounded,
+                  text: selectedCategory,
+                  onTap: _openCategoryPicker,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
+  Widget _buildSummarySection() {
+    return Row(
+      children: [
+        Expanded(
+          child: SummaryCard(
+            title: 'Total Pengeluaran',
+            amount: '- Rp ${_formatRupiah(totalPengeluaran)}',
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: SummaryCard(
+            title: 'Total Pemasukan',
+            amount: '+ Rp ${_formatRupiah(totalPemasukan)}',
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildDataList() {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
       physics: const BouncingScrollPhysics(),
       itemCount: transactionList.length + 2,
       itemBuilder: (context, index) {
