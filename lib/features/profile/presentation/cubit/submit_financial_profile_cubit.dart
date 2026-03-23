@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
-import 'package:money_management_mobile/features/auth/domain/usecases/complete_onboarding_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/submit_onboarding_usecase.dart';
@@ -9,15 +8,11 @@ import 'package:money_management_mobile/features/profile/presentation/cubit/subm
 
 class SubmitFinancialProfileCubit extends Cubit<SubmitFinancialProfileState> {
   final SubmitOnboardingUseCase submitOnboardingUseCase;
-  final CompleteOnboardingUseCase completeOnboardingUseCase;
   final SessionCubit sessionCubit;
   final _log = Logger('SubmitFinancialProfileCubit');
 
-  SubmitFinancialProfileCubit(
-    this.submitOnboardingUseCase,
-    this.completeOnboardingUseCase,
-    this.sessionCubit,
-  ) : super(SubmitFinancialProfileInitial());
+  SubmitFinancialProfileCubit(this.submitOnboardingUseCase, this.sessionCubit)
+    : super(SubmitFinancialProfileInitial());
 
   void reset() {
     emit(SubmitFinancialProfileInitial());
@@ -35,14 +30,7 @@ class SubmitFinancialProfileCubit extends Cubit<SubmitFinancialProfileState> {
 
     try {
       await submitOnboardingUseCase.execute(financialProfile);
-
-      final (user, token) = await completeOnboardingUseCase.execute();
-
-      sessionCubit.authenticate(
-        user: user,
-        token: token,
-        requiresOnboarding: false,
-      );
+      await sessionCubit.markOnboardingAsDone();
 
       emit(SubmitFinancialProfileSuccess());
     } on ServerException catch (e) {

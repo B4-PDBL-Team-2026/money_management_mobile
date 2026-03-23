@@ -14,4 +14,16 @@ final class SessionAuthenticated extends SessionState {
     required this.token,
     required this.requiresOnboarding,
   });
+
+  SessionAuthenticated copyWith({
+    UserEntity? user,
+    String? token,
+    bool? requiresOnboarding,
+  }) {
+    return SessionAuthenticated(
+      user: user ?? this.user,
+      token: token ?? this.token,
+      requiresOnboarding: requiresOnboarding ?? this.requiresOnboarding,
+    );
+  }
 }

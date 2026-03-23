@@ -34,7 +34,7 @@ Future<void> initInjectionContainer() async {
 
   // Features - Auth
   sl.registerFactory<LoginCubit>(() => LoginCubit(sl(), sl()));
-  sl.registerLazySingleton<SessionCubit>(() => SessionCubit(sl(), sl()));
+  sl.registerLazySingleton<SessionCubit>(() => SessionCubit(sl(), sl(), sl()));
   sl.registerFactory<RegisterCubit>(() => RegisterCubit(sl(), sl()));
   sl.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(sl()));
   sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl()));
@@ -57,7 +57,7 @@ Future<void> initInjectionContainer() async {
     () => FinancialProfileDraftCubit(sl()),
   );
   sl.registerLazySingleton<SubmitFinancialProfileCubit>(
-    () => SubmitFinancialProfileCubit(sl(), sl(), sl()),
+    () => SubmitFinancialProfileCubit(sl(), sl()),
   );
   sl.registerLazySingleton<CalculateOnboardingBudgetUseCase>(
     () => CalculateOnboardingBudgetUseCase(),

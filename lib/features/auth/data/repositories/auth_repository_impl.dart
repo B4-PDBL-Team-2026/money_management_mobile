@@ -68,18 +68,32 @@ class AuthRepositoryImpl implements AuthRepository {
     String token, {
     required bool requiresOnboarding,
   }) {
-    return localDataSource.saveSession(
-      user,
-      token,
-      requiresOnboarding: requiresOnboarding,
-    );
+    _log.info('Saving auth session for user: ${user.email} to local storage');
+
+    return Future.wait([
+      localDataSource.storeUser(user),
+      localDataSource.storeToken(token),
+      localDataSource.storeRequiresOnboarding(requiresOnboarding),
+    ]);
   }
 
   @override
-  (UserEntity, String, bool)? getSavedSession() => localDataSource.getSession();
+  (UserEntity, String, bool)? getSavedSession() =>
+      localDataSource.getToken() != null
+      ? (
+          localDataSource.getUser()!,
+          localDataSource.getToken()!,
+          localDataSource.getRequiresOnboarding() ?? false,
+        )
+      : null;
 
   @override
   String? getToken() => localDataSource.getToken();
+
+  @override
+  Future<void> updateRequiresOnboarding(bool requiresOnboarding) {
+    return localDataSource.storeRequiresOnboarding(requiresOnboarding);
+  }
 
   @override
   Future<void> clearSession() async {
@@ -97,7 +111,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
     }
 
-    await localDataSource.clearSession();
+    await localDataSource.clearAll();
     _log.info('Local auth session cleared');
   }
 }
