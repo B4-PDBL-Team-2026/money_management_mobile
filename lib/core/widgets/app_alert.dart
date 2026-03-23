@@ -40,6 +40,7 @@ class AppAlert extends StatelessWidget {
             child: messages != null && messages!.isNotEmpty
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: AppSizes.spacing2,
                     children: messages!
                         .map(
                           (msg) => Text(

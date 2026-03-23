@@ -7,8 +7,8 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/auth_state.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/register_state.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -53,26 +53,28 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    context.read<AuthCubit>().register(name, email, password);
+    context.read<RegisterCubit>().register(
+      name,
+      email,
+      password,
+      confirmPassword,
+    );
   }
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      ),
+      SnackBar(content: Text(message), backgroundColor: AppColors.danger100),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
+    return BlocConsumer<RegisterCubit, RegisterState>(
       listener: (context, state) {
-        if (state is AuthRegisterSuccess) {
+        if (state is RegisterSuccess) {
           context.go(AppRouter.step1Personalization);
         }
-        if (state is AuthError) _showError(state.message);
+        if (state is RegisterError) _showError(state.message);
       },
       builder: (context, state) {
         return Scaffold(
@@ -172,7 +174,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   AppButton(
                     text: "Daftar",
                     onPressed: _handleRegister,
-                    isLoading: state is AuthLoading,
+                    isLoading: state is RegisterLoading,
                   ),
                   const SizedBox(height: AppSizes.spacing6),
                   Row(

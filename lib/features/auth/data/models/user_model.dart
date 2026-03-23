@@ -18,6 +18,8 @@ class UserModel extends UserEntity {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final now = DateTime.now().toUtc();
+
     return UserModel(
       id: json['id'] as int,
       name: json['name'] as String,
@@ -30,10 +32,16 @@ class UserModel extends UserEntity {
       cycleStart: json['cycle_start'] != null
           ? DateTime.parse(json['cycle_start'] as String)
           : null,
-      balance: json['balance'] != null ? (json['balance'] as num).toDouble() : null,
+      balance: json['balance'] != null
+          ? (json['balance'] as num).toDouble()
+          : null,
       profileUrl: json['profile_url'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : now,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : now,
     );
   }
 

@@ -15,13 +15,25 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.remoteDataSource, this.localDataSource);
 
   @override
-  Future<void> register(String name, String email, String password) async {
+  Future<(UserEntity, String, bool)> register(
+    String name,
+    String email,
+    String password,
+    String passwordConfirmation,
+  ) async {
     _log.info('Registering: $email');
     try {
-      await remoteDataSource.register(name, email, password);
+      final (user, token, requiresOnboarding) = await remoteDataSource.register(
+        name,
+        email,
+        password,
+        passwordConfirmation,
+      );
       _log.info('Register successful');
+      return (user, token, requiresOnboarding);
     } on DioException catch (e) {
       ErrorHandler.handleRemoteException(e, _log, 'Register');
+      rethrow;
     } catch (e) {
       _log.severe('Unexpected register error', e);
       throw UnexpectedException(e.toString());
@@ -29,12 +41,18 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<(UserEntity, String)> login(String email, String password) async {
+  Future<(UserEntity, String, bool)> login(
+    String email,
+    String password,
+  ) async {
     _log.info('Logging in: $email');
     try {
-      final (user, token) = await remoteDataSource.login(email, password);
+      final (user, token, requiresOnboarding) = await remoteDataSource.login(
+        email,
+        password,
+      );
       _log.info('Login successful for user: ${user.email}');
-      return (user, token);
+      return (user, token, requiresOnboarding);
     } on DioException catch (e) {
       ErrorHandler.handleRemoteException(e, _log, 'Login');
       rethrow;
@@ -45,16 +63,55 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> saveSession(UserEntity user, String token) {
-    return localDataSource.saveSession(user, token);
+  Future<void> saveSession(
+    UserEntity user,
+    String token, {
+    required bool requiresOnboarding,
+  }) {
+    _log.info('Saving auth session for user: ${user.email} to local storage');
+
+    return Future.wait([
+      localDataSource.storeUser(user),
+      localDataSource.storeToken(token),
+      localDataSource.storeRequiresOnboarding(requiresOnboarding),
+    ]);
   }
 
   @override
-  (UserEntity, String)? getSavedSession() => localDataSource.getSession();
+  (UserEntity, String, bool)? getSavedSession() =>
+      localDataSource.getToken() != null
+      ? (
+          localDataSource.getUser()!,
+          localDataSource.getToken()!,
+          localDataSource.getRequiresOnboarding() ?? false,
+        )
+      : null;
 
   @override
   String? getToken() => localDataSource.getToken();
 
   @override
-  Future<void> clearSession() => localDataSource.clearSession();
+  Future<void> updateRequiresOnboarding(bool requiresOnboarding) {
+    return localDataSource.storeRequiresOnboarding(requiresOnboarding);
+  }
+
+  @override
+  Future<void> clearSession() async {
+    _log.info('Logging out current session from backend');
+    final hasToken = localDataSource.getToken()?.isNotEmpty ?? false;
+
+    try {
+      await remoteDataSource.logout(hasToken: hasToken);
+      _log.info('Backend logout successful');
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        _log.warning('Logout returned 401, proceeding to clear local session');
+      } else {
+        ErrorHandler.handleRemoteException(e, _log, 'Logout');
+      }
+    }
+
+    await localDataSource.clearAll();
+    _log.info('Local auth session cleared');
+  }
 }

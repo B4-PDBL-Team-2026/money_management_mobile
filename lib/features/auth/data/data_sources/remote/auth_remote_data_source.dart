@@ -9,17 +9,97 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource(this.dio);
 
-  Future<void> register(String name, String email, String password) async {
-    _log.fine('Sending register request for email: $email');
-    _log.fine('Request payload: {name: $name, email: $email, password: ***}');
+  bool _parseRequiresOnboarding(dynamic value, {required bool defaultValue}) {
+    if (value is bool) {
+      return value;
+    }
 
-    // TODO: Implement API call to register user
-    await Future.delayed(const Duration(seconds: 2));
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      if (normalized == 'true' || normalized == '1') {
+        return true;
+      }
+      if (normalized == 'false' || normalized == '0') {
+        return false;
+      }
+    }
 
-    _log.fine('Register response received successfully');
+    if (value is num) {
+      return value == 1;
+    }
+
+    return defaultValue;
   }
 
-  Future<(UserModel, String)> login(String email, String password) async {
+  Future<(UserModel, String, bool)> register(
+    String name,
+    String email,
+    String password,
+    String passwordConfirmation,
+  ) async {
+    _log.fine('Sending register request for email: $email');
+    _log.fine(
+      'Request payload: {name: $name, email: $email, password: ***, password_confirmation: ***}',
+    );
+
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, returning dummy register response');
+      await Future.delayed(const Duration(seconds: 1));
+
+      final now = DateTime.now().toUtc();
+      final dummyUser = UserModel(
+        id: 1,
+        name: name,
+        email: email,
+        emailVerifiedAt: null,
+        goal: null,
+        cycleType: null,
+        cycleStart: null,
+        balance: null,
+        profileUrl: null,
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      return (dummyUser, 'dev-register-token', true);
+    }
+
+    final response = await dio.post(
+      '/auth/register',
+      data: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      },
+    );
+
+    _log.fine('Register response received: ${response.statusCode}');
+    _log.fine('Register response data: ${response.data}');
+
+    if (response.statusCode != 201) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        message: 'Unexpected register status code: ${response.statusCode}',
+      );
+    }
+
+    _log.fine('Register response received successfully');
+
+    final data = response.data['data'] as Map<String, dynamic>;
+    final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+    final token = data['token'] as String;
+    final requiresOnboarding = _parseRequiresOnboarding(
+      data['requires_onboarding'],
+      defaultValue: true,
+    );
+
+    return (user, token, requiresOnboarding);
+  }
+
+  Future<(UserModel, String, bool)> login(String email, String password) async {
     _log.fine('Sending login request for email: $email');
     _log.fine('Request payload: {email: $email, password: ***}');
 
@@ -41,7 +121,7 @@ class AuthRemoteDataSource {
         updatedAt: DateTime.now().toUtc(),
       );
 
-      return (dummyUser, 'dev-token');
+      return (dummyUser, 'dev-token', false);
     }
 
     final response = await dio.post(
@@ -55,7 +135,55 @@ class AuthRemoteDataSource {
     final data = response.data['data'] as Map<String, dynamic>;
     final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
     final token = data['token'] as String;
+    final requiresOnboarding = _parseRequiresOnboarding(
+      data['requires_onboarding'],
+      defaultValue: false,
+    );
 
-    return (user, token);
+    return (user, token, requiresOnboarding);
+  }
+
+  Future<void> logout({required bool hasToken}) async {
+    _log.fine('Sending logout request');
+
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, simulating logout response');
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (!hasToken) {
+        throw DioException(
+          requestOptions: RequestOptions(
+            path: '/auth/logout',
+            method: 'DELETE',
+          ),
+          response: Response(
+            requestOptions: RequestOptions(
+              path: '/auth/logout',
+              method: 'DELETE',
+            ),
+            statusCode: 401,
+            data: {'message': 'Unauthorized'},
+          ),
+          type: DioExceptionType.badResponse,
+          message: 'Mock unauthorized logout',
+        );
+      }
+
+      return;
+    }
+
+    final response = await dio.delete('/auth/logout');
+
+    _log.fine('Logout response received: ${response.statusCode}');
+    _log.fine('Logout response data: ${response.data}');
+
+    if (response.statusCode != 200) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        message: 'Unexpected logout status code: ${response.statusCode}',
+      );
+    }
   }
 }
