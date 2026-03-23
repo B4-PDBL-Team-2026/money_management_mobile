@@ -169,6 +169,9 @@ class FinalPreviewSummaryCard extends StatelessWidget {
     }
 
     if (scenario == BudgetHealthScenario.critical) {
+      final bool doesRemainingBalanceLowerThanSafetyFlooring =
+          initialBalance - totalFixedCost < safetyFlooring;
+
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(AppSizes.spacing4),
@@ -192,17 +195,27 @@ class FinalPreviewSummaryCard extends StatelessWidget {
             FinalPreviewSummaryRow(
               label: 'Bertahan Hidup',
               value:
-                  'Rp ${CurrencyFormatter.format(recommendedDailyBudget)}/hari',
+                  'Rp ${CurrencyFormatter.format(doesRemainingBalanceLowerThanSafetyFlooring ? initialBalance - totalFixedCost : recommendedDailyBudget)}/hari',
               valueColor: AppColors.warning100,
               isLast: true,
             ),
             const SizedBox(height: AppSizes.spacing2),
-            Text(
-              'Konsekuensi: hanya bertahan $daysCoveredAtSafetyFloor hari, selanjutnya saldo akan defisit.',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-            ),
+            if (doesRemainingBalanceLowerThanSafetyFlooring ||
+                daysCoveredAtSafetyFloor == 1) ...[
+              Text(
+                'Konsekuensi: hanya bertahan hari ini, selanjutnya saldo akan defisit.',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+              ),
+            ] else ...[
+              Text(
+                'Konsekuensi: hanya bertahan $daysCoveredAtSafetyFloor hari selanjutnya saldo akan defisit.',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+              ),
+            ],
             const SizedBox(height: AppSizes.spacing3),
             FinalPreviewSummaryRow(
               label: 'Hemat Ekstrem',
