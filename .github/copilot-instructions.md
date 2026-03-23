@@ -3,15 +3,19 @@
 You are an Expert Flutter Software Architect assisting with the `money_management_mobile` project. Always strictly adhere to the following architectural patterns, coding standards, and libraries used in this project.
 
 ## 1. Architectural Pattern: Clean Architecture
+
 The project follows a strict feature-based Clean Architecture: `lib/features/<feature_name>/`.
 Each feature must be separated into three main layers:
+
 - **Domain (`domain/`)**: Contains `entities` (pure data objects), `repositories` (abstract interfaces), and `usecases`. The Domain layer MUST NOT depend on any Flutter-specific packages, JSON serialization, or Data layer implementations.
-- **Data (`data/`)**: Contains `data_sources` (remote/local), `models` (DTOs/JSON representations), and `repositories` (implementation of domain interfaces). 
-  - *Crucial Rule*: `Models` MUST be a subclass/implementation of the `Entity` from the Domain layer. The Data Repository implementation is responsible for mapping Models to Entities.
+- **Data (`data/`)**: Contains `data_sources` (remote/local), `models` (DTOs/JSON representations), and `repositories` (implementation of domain interfaces).
+  - _Crucial Rule_: `Models` MUST be a subclass/implementation of the `Entity` from the Domain layer. The Data Repository implementation is responsible for mapping Models to Entities.
 - **Presentation (`presentation/`)**: Contains `cubit`/`bloc` (state management), `pages`, and `widgets`.
 
 ## 2. Feature Implementation Flow (Reference: Login Feature)
+
 Whenever generating a new feature, follow this exact dependency flow:
+
 1. **Model**: Create a model in `data/models/` for JSON parsing (`fromJson`/`toJson`) that extends the Domain Entity.
 2. **Data Source**: Create functions in `RemoteDataSource` that return the `Model`.
 3. **Repository Impl**: Implement the Domain repository interface in `RepositoryImpl`. Call the Data Source, catch exceptions, and map the returned `Model` into an `Entity`.
@@ -20,12 +24,14 @@ Whenever generating a new feature, follow this exact dependency flow:
 6. **UI (Page)**: Listen to Cubit states using `BlocBuilder` or `BlocConsumer` and trigger Cubit functions from UI events.
 
 ## 3. Core Libraries & State Management
+
 - **State Management**: Use `flutter_bloc` (specifically `Cubit` for most cases). Always create separate `<feature>_state.dart` and `<feature>_cubit.dart` files. Do not mix business logic inside UI files.
 - **Dependency Injection**: Use `get_it`. Always remind the user to register new instances (UseCases, Repositories, DataSources, Cubits) in `lib/injection_container.dart`. Use `sl()` or `sl.get<T>()` to resolve dependencies.
 - **Routing**: Use `go_router`. Define all routes declaratively in `lib/core/routes/app_router.dart`. Use `context.go()` or `context.pop()`, NEVER use standard `Navigator.push()`.
 - **Networking**: Use `dio`.
 
 ## 4. UI and Styling Guidelines
+
 - **NEVER use hardcoded colors, padding, sizes, or text styles.**
 - **Colors**: Always use `AppColors` from `lib/core/theme/app_colors.dart` (e.g., `AppColors.primary`, `AppColors.gohan`, `AppColors.trunks`).
 - **Spacing/Radius**: Always use `AppSizes` from `lib/core/theme/app_sizes.dart` (e.g., `AppSizes.spacing4`, `AppSizes.radiusNm`).
@@ -34,12 +40,15 @@ Whenever generating a new feature, follow this exact dependency flow:
 - **Assets**: Use `flutter_svg` for vector graphics (`SvgPicture.asset`).
 
 ## 5. Error Handling & Logging
+
 - **NO `print()` STATEMENTS ALLOWED.**
 - **Logging**: Always use the `logging` package. Initialize a logger at the class level: `final _log = Logger('ClassName');`. Use appropriate log levels (`_log.fine`, `_log.info`, `_log.warning`, `_log.severe`) to trace requests, responses, and errors.
-- **Exceptions & Failures**: Catch errors in `RepositoryImpl` and map them to custom Exceptions or Failures defined in `lib/core/error/` (e.g., `ServerException`, `NetworkException`). Inside the Cubit, map these failures to user-friendly UI messages (`emit(AuthError(failure.message))`).
+- **Exceptions & Failures**: Catch errors in `RepositoryImpl` and map them to custom Exceptions or Failures defined in `lib/core/error/` (e.g., `ServerException`, `NetworkException`). Inside the Cubit, map these failures to user-friendly UI messages (`emit(LoginError(failure.message))`).
 
 ## 6. Mocking / Dummy Data Implementations (DEFAULT BEHAVIOR)
+
 By default, ALWAYS implement mock/dummy data for all new features unless explicitly instructed to integrate a real API.
+
 - **Implementation Layer**: Implement the mock logic directly inside the `RemoteDataSource` class.
 - **Simulate Latency**: Use `await Future.delayed(const Duration(seconds: 1));` to simulate network latency.
 - **Logging**: Log the simulated request payloads and responses using the `Logger`.
@@ -47,6 +56,187 @@ By default, ALWAYS implement mock/dummy data for all new features unless explici
 - **Seamless Integration**: Ensure the Repository, UseCase, and Cubit treat these dummy data sources exactly as they would treat a real network call, including graceful exception handling and state mapping.
 
 ## 7. General Code Generation Rules
+
 - Write code in Dart 3.0+ style (use modern features like records, pattern matching, and exhaustive switch where applicable).
 - Include standard error snackbars matching the project's styling (`AppColors.danger100` for errors) when handling state failures in the UI.
 - Ensure all imports use absolute package paths (e.g., `import 'package:money_management_mobile/features/...'`) rather than relative paths (`../../`).
+
+## 8. Dependency Rules and Cross-Feature Collaboration
+
+Follow these dependency rules for all new code and refactors.
+
+### 8.1 Allowed dependency direction
+
+- `presentation -> domain` (same feature)
+- `data -> domain` (same feature)
+- Composition root (`lib/injection_container.dart`, `lib/core/routes/app_router.dart`) can import all features for wiring.
+
+### 8.2 Forbidden dependency direction
+
+- `domain -> data`
+- `domain -> presentation`
+- Direct cross-feature access to implementation details (e.g., using another feature's `RemoteDataSource` or repository implementation class).
+
+### 8.3 Cross-feature collaboration contract
+
+- Use **Router** for navigation between feature flows.
+- Use **DI** only for composition/wiring, not as a shortcut to bypass architecture boundaries.
+- Use **app-level state** (for example, session/auth state) for read-only cross-feature UI needs.
+- Use **domain contracts** (repository interfaces/use cases) for business-level integration.
+- **Crucial:** When Feature A depends on Feature B's UseCase (e.g., Dashboard calling Transaction UseCase), Feature A must only consume the **Domain Entities** returned by that UseCase. Feature A must never import Feature B's Data Models, Repositories, or State/Cubit classes.
+
+### 8.4 UI component sharing rule
+
+- A widget from another feature may be reused only if it is pure presentation.
+- Shared widget must not depend on the source feature's cubit/use case/repository.
+- If reused in multiple features and business-agnostic, move it to `lib/core/widgets/`.
+
+### 8.5 Session ownership rule
+
+- Session status and lightweight user identity can be read by any feature at presentation level.
+- Session persistence mutations (`login`, `logout`, `restore`, token save/clear) are owned by Auth and must remain in Auth use cases/repositories.
+- **Strict Storage Rule:** No other feature is allowed to write or delete the Auth Token in local storage (e.g., SharedPreferences/SecureStorage). If an HTTP 401 Unauthorized occurs in another feature (e.g., Transaction), the network interceptor must trigger a global event (or call Auth Logout UseCase) rather than clearing the token directly.
+
+### 8.6 Concrete collaboration examples
+
+#### Example A: Transaction feature needs active user (The Mobile Way)
+
+**Valid approach**:
+
+- Inject `SessionCubit` or `AuthRepository` directly into `TransactionCubit` or its UseCase via Dependency Injection.
+- Let the Cubit/UseCase resolve the `userId` internally so the UI remains clean and dumb.
+
+**Invalid approach**:
+
+- The UI constantly reads the `userId` from app state and passes it as a parameter to the Cubit's methods.
+- Transaction feature directly calls Auth remote/local data source.
+
+```dart
+// Valid UI Trigger (Dumb UI):
+context.read<TransactionCubit>().loadRecent();
+
+// Valid Cubit Logic (Resolving User ID internally via DI):
+class TransactionCubit extends Cubit<TransactionState> {
+  final GetRecentTransactionsUseCase useCase;
+  final SessionCubit sessionCubit; // Injected via get_it
+
+  TransactionCubit(this.useCase, this.sessionCubit);
+
+  Future<void> loadRecent() async {
+    final session = sessionCubit.state;
+    if (session is SessionAuthenticated) {
+        emit(const TransactionLoading());
+        final items = await useCase.execute(userId: session.user.id);
+        emit(TransactionLoaded(items));
+    }
+  }
+}
+```
+
+#### Example B: Other page needs user profile summary
+
+**Valid approach:**
+
+- Read name/email from session state for lightweight UI rendering.
+- If rich profile data is needed, call Profile use case (when profile feature exists).
+
+**Invalid approach:**
+
+- Other page reads Auth local data source directly.
+
+```dart
+final sessionState = context.watch<SessionCubit>().state;
+if (sessionState is SessionAuthenticated) {
+  final displayName = sessionState.user.name;
+  final email = sessionState.user.email;
+  // render header UI
+}
+```
+
+#### Example C: Dashboard needs latest transactions
+
+**Valid approach:**
+
+- Dashboard uses a Dashboard/Transaction use case contract to fetch recent transactions.
+- Transaction feature remains the owner of transaction data retrieval logic.
+- Dashboard strictly uses the Entity returned by the Transaction UseCase.
+
+**Invalid approach:**
+
+- Dashboard directly calls transaction data source or uses transaction data models from data layer.
+
+```dart
+class DashboardCubit extends Cubit<DashboardState> {
+  DashboardCubit(this.getRecentTransactionsUseCase)
+      : super(const DashboardInitial());
+
+  final GetRecentTransactionsUseCase getRecentTransactionsUseCase;
+
+  Future<void> loadRecent({required String userId}) async {
+    emit(const DashboardLoading());
+    // Items returned MUST be Domain Entities, not Data Models
+    final items = await getRecentTransactionsUseCase.execute(userId: userId);
+    emit(DashboardLoaded(recentTransactions: items));
+  }
+}
+```
+
+### 8.7 PR review checklist for dependency safety
+
+- No feature imports another feature's implementation classes in data/domain layers.
+- No domain layer imports Flutter/UI/framework classes.
+- Cross-feature collaboration happens via router, app-level state, or domain contracts.
+- Shared components are presentation-only or moved to core shared modules.
+- Cross-feature UseCase calls strictly exchange Domain Entities, never Data Models.
+
+## 9. Presentation Layer Responsibilities (The "Dumb UI" Rule)
+
+The UI (Widgets) must remain strictly presentation-focused and free of business logic or cross-feature orchestration.
+
+### 9.1 Widget Duties
+
+- **Trigger Actions:** Capture user inputs (taps, text changes) and directly call the relevant Cubit method (e.g., `context.read<LoginCubit>().login()`).
+- **Render State:** Listen to Cubit states and update the UI accordingly (e.g., show a spinner on `Loading`, a SnackBar on `Error`, or a list on `Success`).
+
+### 9.2 Forbidden UI Actions
+
+- The UI MUST NOT read a value from one Cubit just to pass it as a parameter to another Cubit. (Cross-cubit data passing must happen via Dependency Injection in the Cubit/UseCase layer).
+- The UI MUST NOT contain conditional business logic.
+
+## 10. State Management Paradigm (Screen vs. Global State)
+
+Strictly differentiate between Ephemeral (Screen) State and App (Global) State. Do not mix their responsibilities.
+
+### 10.1 Ephemeral State (Screen-Level Cubits)
+
+- **Purpose:** Manages the lifecycle and interactions of a single specific screen.
+- **Examples:** `LoginCubit`, `RegisterCubit`, `DashboardCubit`, `AddTransactionCubit`.
+- **Characteristics:** - Highly reactive. Must include `Loading`, `Success`, and `Error` states.
+  - Injected locally (e.g., via `BlocProvider` in the router for that specific route).
+  - Destroyed when the user leaves the screen.
+- **Rule:** Never combine states of multiple screens into one Cubit (e.g., do not put Dashboard and Transaction History logic into a single `TransactionCubit`).
+
+### 10.2 App State (Global-Level Cubits)
+
+- **Purpose:** Holds app-wide factual data ("Source of Truth").
+- **Examples:** `SessionCubit`, `ThemeCubit`.
+- **Characteristics:**
+  - Long-lived (injected globally above `MaterialApp`).
+  - Contains factual states (e.g., `Authenticated`, `Unauthenticated`) without complex loading/error handling for every interaction.
+  - Can be safely read by any feature or router without triggering API calls.
+
+## 11. Two-Tier Validation Strategy
+
+Follow a strict two-layer validation approach to prevent malformed data from reaching the Domain layer.
+
+### 11.1 Tier 1: Form Validation (Presentation Layer)
+
+- **Where:** Handled in the Widget layer (e.g., `TextFormField`'s `validator`) or UI State (e.g., using `formz` in Cubits).
+- **What to validate:** Formatting and syntax rules (e.g., field is not empty, valid email pattern, minimum password length, numbers only).
+- **Rule:** Data that fails Tier 1 validation must be blocked at the UI level. It MUST NOT be passed to the Use Case.
+
+### 11.2 Tier 2: Business Validation (Domain Layer)
+
+- **Where:** Handled entirely inside the **Use Case**.
+- **What to validate:** Business rules that require logic, calculations, or data checks (e.g., "Sufficient balance for transaction", "Username already exists in DB").
+- **Rule:** If a business rule fails, the Use Case must throw a specific Exception (e.g., `InsufficientBalanceException`). The corresponding screen Cubit will catch this Exception and emit an `Error` state to update the UI.

@@ -28,17 +28,17 @@ class StepProgressIndicator extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Langkah $currentStep",
+              'Langkah $currentStep',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.secondary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: AppColors.secondary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Text(
-              "Langkah $totalSteps",
+              'Langkah $totalSteps',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.trunks,
-                  ),
+                color: AppColors.trunks,
+              ),
             ),
           ],
         ),

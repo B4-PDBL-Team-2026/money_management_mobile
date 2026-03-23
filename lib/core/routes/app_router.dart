@@ -3,33 +3,48 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:logging/logging.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password/forgot_password_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
-import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step1_personalization_page.dart';
-import 'package:money_management_mobile/features/auth/presentation/pages/personalization/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/history_dummy_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/pages/setting_dummy_page.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
+final _appRouterLogging = Logger('AppRouter');
+
 class AppRouter {
-  static const String dashboard = '/';
   static const String welcome = '/welcome';
 
   static const String login = '/welcome/login';
   static const String forgotPassword = '/welcome/login/forgot-password';
 
   static const String registration = '/welcome/registration';
+
   static const String step1Personalization = '/personalization/step-1';
-  static const String step2Personalization = '/personalization/step-1/step-2';
+  static const String step2Personalization = '/personalization/step-2';
+  static const String step3Personalization = '/personalization/step-3';
+  static const String step4Personalization = '/personalization/step-4';
+
+  static const String dashboard = '/';
   static const String history = '/history';
-  static const String settings = '/settings';
+  static const String other = '/other';
+
+  static const String addTransaction = '/transaction/add';
 
   static final SessionCubit _sessionCubit = sl<SessionCubit>();
 
@@ -45,7 +60,7 @@ class AppRouter {
           GoRoute(
             path: 'login',
             builder: (context, state) => BlocProvider(
-              create: (_) => sl.get<AuthCubit>(),
+              create: (_) => sl.get<LoginCubit>(),
               child: const LoginPage(),
             ),
             routes: [
@@ -58,21 +73,52 @@ class AppRouter {
           GoRoute(
             path: 'registration',
             builder: (context, state) => BlocProvider(
-              create: (_) => sl.get<AuthCubit>(),
+              create: (_) => sl.get<RegisterCubit>(),
               child: const RegisterPage(),
             ),
           ),
         ],
       ),
+
       GoRoute(
         path: '/personalization/step-1',
-        builder: (context, state) => const Step1PersonalizationPage(),
-        routes: [
-          GoRoute(
-            path: 'step-2',
-            builder: (context, state) => const Step2PersonalizationPage(),
-          ),
-        ],
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+            BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+          ],
+          child: const Step1PersonalizationPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/personalization/step-2',
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+            BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+          ],
+          child: const Step2PersonalizationPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/personalization/step-3',
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+            BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+          ],
+          child: const Step3PersonalizationPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/personalization/step-4',
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+            BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+          ],
+          child: const Step4PersonalizationPage(),
+        ),
       ),
 
       // dashboard module
@@ -100,31 +146,56 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: settings,
-                builder: (context, state) => const SettingsDummyPage(),
+                path: other,
+                builder: (context, state) => const OtherPage(),
               ),
             ],
           ),
         ],
       ),
+
+      // transaction module
+      GoRoute(
+        path: '/transaction/add',
+        builder: (context, state) => const AddTransactionPage(),
+      ),
     ],
 
     redirect: (context, state) {
-      final isAuthenticated = _sessionCubit.state is SessionAuthenticated;
-      final location = state.matchedLocation;
-      final isAuthRoute =
-          location == welcome || location.startsWith('$welcome/');
-      final isProtectedRoute =
-          location == dashboard || location == history || location == settings;
+      final sessionState = _sessionCubit.state;
+      final isAuthenticated = sessionState is SessionAuthenticated;
+      final requiresOnboarding =
+          isAuthenticated && sessionState.requiresOnboarding;
 
-      if (!isAuthenticated && isProtectedRoute) {
-        return welcome;
+      final location = state.matchedLocation;
+      _appRouterLogging.info('Attempting to navigate to: $location');
+
+      final isAuthRoute = location.startsWith(welcome);
+      final isOnboardingRoute = location.startsWith('/personalization');
+
+      if (!isAuthenticated) {
+        _appRouterLogging.info(
+          'User is not authenticated. Checking access for: $location',
+        );
+        return isAuthRoute ? null : welcome;
       }
 
-      if (isAuthenticated && isAuthRoute) {
+      if (requiresOnboarding) {
+        _appRouterLogging.info(
+          'User is authenticated but requires onboarding. Checking access for: $location',
+        );
+        return isOnboardingRoute ? null : step1Personalization;
+      }
+
+      if (isAuthRoute || isOnboardingRoute) {
+        _appRouterLogging.info(
+          'User is authenticated and completed onboarding. Checking access for: $location',
+        );
         return dashboard;
       }
-
+      _appRouterLogging.info(
+        'User is authenticated and accessing allowed route: $location',
+      );
       return null;
     },
   );

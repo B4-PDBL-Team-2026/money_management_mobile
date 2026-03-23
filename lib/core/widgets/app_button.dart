@@ -14,6 +14,9 @@ class AppButton extends StatelessWidget {
   final double? width;
   final AppButtonType type;
   final AppButtonVariant variant;
+  final IconData? leadingIcon;
+  final IconData? trailingIcon;
+  final double iconSize;
 
   const AppButton({
     super.key,
@@ -23,6 +26,9 @@ class AppButton extends StatelessWidget {
     this.width,
     this.type = AppButtonType.primary,
     this.variant = AppButtonVariant.filled,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.iconSize = 18,
   });
 
   Color get _backgroundColor {
@@ -63,6 +69,8 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = AppTextStyles.subtitle.copyWith(color: _foregroundColor);
+
     return SizedBox(
       width: width ?? double.infinity,
       height: AppSizes.spacing9,
@@ -93,9 +101,19 @@ class AppButton extends StatelessWidget {
                   color: _foregroundColor,
                 ),
               )
-            : Text(
-                text,
-                style: AppTextStyles.subtitle.copyWith(color: _foregroundColor),
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (leadingIcon != null) ...[
+                    Icon(leadingIcon, size: iconSize, color: _foregroundColor),
+                    const SizedBox(width: AppSizes.spacing2),
+                  ],
+                  Text(text, style: textStyle),
+                  if (trailingIcon != null) ...[
+                    const SizedBox(width: AppSizes.spacing2),
+                    Icon(trailingIcon, size: iconSize, color: _foregroundColor),
+                  ],
+                ],
               ),
       ),
     );

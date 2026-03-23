@@ -7,9 +7,8 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/auth_state.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/login_state.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -54,19 +53,14 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    context.read<AuthCubit>().login(email, password);
+    context.read<LoginCubit>().login(email, password);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
+    return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
-        if (state is AuthLoginSuccess) {
-          context.read<SessionCubit>().authenticate(
-            user: state.user,
-            token: state.token,
-          );
-
+        if (state is LoginSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -77,10 +71,14 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
 
-          context.go(AppRouter.dashboard);
+          if (state.requiresOnboarding) {
+            context.go(AppRouter.step1Personalization);
+          } else {
+            context.go(AppRouter.dashboard);
+          }
         }
 
-        if (state is AuthError) _showErrorSnackbar(state.message);
+        if (state is LoginError) _showErrorSnackbar(state.message);
       },
       builder: (context, state) {
         return Scaffold(
@@ -175,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                       AppButton(
                         text: 'Masuk',
                         onPressed: _handleLogin,
-                        isLoading: state is AuthLoading,
+                        isLoading: state is LoginLoading,
                       ),
                       const SizedBox(height: AppSizes.spacing6),
                       Row(

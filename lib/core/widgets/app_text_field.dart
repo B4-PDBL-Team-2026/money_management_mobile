@@ -7,12 +7,15 @@ class AppTextField extends StatefulWidget {
   final String hint;
   final TextEditingController controller;
   final bool isPassword;
+  final bool readOnly;
   final TextInputType keyboardType;
   final String? label;
   final String? Function(String?)? validator;
   final Widget? suffixIcon;
   final Widget? prefixIcon;
   final void Function(String)? onChanged;
+  final VoidCallback? onTap;
+  final int? maxLines;
 
   const AppTextField({
     super.key,
@@ -20,11 +23,14 @@ class AppTextField extends StatefulWidget {
     required this.controller,
     this.label,
     this.isPassword = false,
+    this.readOnly = false,
     this.keyboardType = TextInputType.text,
     this.validator,
     this.suffixIcon,
     this.prefixIcon,
     this.onChanged,
+    this.onTap,
+    this.maxLines = 1,
   });
 
   @override
@@ -60,10 +66,13 @@ class _AppTextFieldState extends State<AppTextField> {
         TextFormField(
           controller: widget.controller,
           obscureText: _obscureText,
+          readOnly: widget.readOnly,
           keyboardType: widget.keyboardType,
           validator: widget.validator,
           onChanged: widget.onChanged,
+          onTap: widget.onTap,
           style: Theme.of(context).textTheme.bodyMedium,
+          maxLines: widget.isPassword ? 1 : widget.maxLines,
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: Theme.of(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ShellContainer extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -23,42 +25,36 @@ class ShellContainer extends StatelessWidget {
             );
           },
           type: BottomNavigationBarType.fixed,
-          backgroundColor: AppColors.primary,
-          selectedItemColor: AppColors.gohan,
-          unselectedItemColor: AppColors.gohan.withValues(alpha: 0.4),
-          selectedLabelStyle: TextStyle(
-            color: AppColors.gohan,
-            fontWeight: FontWeight.bold,
-          ),
-          unselectedLabelStyle: TextStyle(
-            color: AppColors.gohan.withValues(alpha: 0.4),
-          ),
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
+          backgroundColor: Colors.white,
           showSelectedLabels: true,
           showUnselectedLabels: true,
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.history_outlined),
-              activeIcon: Icon(Icons.history),
+              icon: PhosphorIcon(PhosphorIconsRegular.receipt),
+              activeIcon: PhosphorIcon(PhosphorIconsFill.receipt),
               label: 'Riwayat',
+              tooltip: 'Riwayat transaksi',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home',
+              icon: PhosphorIcon(PhosphorIconsRegular.house),
+              activeIcon: PhosphorIcon(PhosphorIconsFill.house),
+              label: 'Beranda',
+              tooltip: 'Beranda',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings_outlined),
-              activeIcon: Icon(Icons.settings),
-              label: 'Settings',
+              icon: PhosphorIcon(PhosphorIconsRegular.dotsThreeCircle),
+              activeIcon: PhosphorIcon(PhosphorIconsFill.dotsThreeCircle),
+              label: 'Lainnya',
+              tooltip: 'Profil dan pengaturan',
             ),
           ],
         ),
       ),
       floatingActionButton: navigationShell.currentIndex == 1
           ? FloatingActionButton(
-              onPressed: () {},
+              onPressed: () => context.push(AppRouter.addTransaction),
               backgroundColor: AppColors.secondary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
