@@ -44,10 +44,6 @@ class _RegisterPageState extends State<RegisterPage> {
         if (state is RegisterError) {
           _showError(state.message);
         }
-
-        if (state is RegisterValidationError) {
-          _showError(state.message);
-        }
       },
       builder: (context, state) {
         final serverErrors = state is RegisterValidationError

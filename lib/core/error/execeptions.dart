@@ -23,11 +23,11 @@ class UnexpectedException implements Exception {
 }
 
 class ValidationException implements Exception {
-  final String message;
-  ValidationException([this.message = "Data yang diberikan tidak valid"]);
+  final Map<String, dynamic>? fieldErrors;
+  ValidationException([this.fieldErrors]);
 
   @override
-  String toString() => message;
+  String toString() => "Data yang diberikan tidak valid";
 }
 
 class UnauthorizedException implements Exception {

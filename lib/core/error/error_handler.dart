@@ -5,15 +5,16 @@ import 'package:money_management_mobile/core/error/execeptions.dart';
 class ErrorHandler {
   static String _extractMessage(dynamic responseData) {
     if (responseData is! Map<String, dynamic>) {
-      throw 'Terjadi kesalahan';
+      return 'Terjadi kesalahan'; // UBAH: dari throw menjadi return
     }
 
     final baseMessage =
         responseData['message']?.toString() ?? 'Terjadi kesalahan';
-    final errors = responseData['errors'];
+
+    final errors = responseData['data'] ?? responseData['errors'];
 
     if (errors is! Map) {
-      throw baseMessage;
+      return baseMessage;
     }
 
     final details = <String>[];
@@ -24,27 +25,30 @@ class ErrorHandler {
       if (value is List) {
         for (final item in value) {
           final text = item.toString().trim();
+
           if (text.isNotEmpty) {
             details.add(text);
           }
         }
+
         continue;
       }
 
       final text = value.toString().trim();
+
       if (text.isNotEmpty) {
         details.add(text);
       }
     }
 
     if (details.isEmpty) {
-      throw baseMessage;
+      return baseMessage;
     }
 
-    throw '$baseMessage ${details.join(' ')}'.trim();
+    return '$baseMessage ${details.join(' ')}'.trim();
   }
 
-  static Exception handleRemoteException(
+  static void handleRemoteException(
     DioException e,
     Logger log,
     String context,
@@ -63,6 +67,7 @@ class ErrorHandler {
 
     if (e.response != null) {
       final statusCode = e.response!.statusCode;
+
       final message = _extractMessage(e.response?.data);
 
       if (statusCode != null && statusCode >= 500) {
@@ -81,9 +86,23 @@ class ErrorHandler {
         );
       }
 
-      if (statusCode == 400) {
-        log.warning('$context failed: Validation error (400): $message', e);
-        throw ValidationException(message);
+      if (statusCode == 422 || statusCode == 400) {
+        log.warning(
+          '$context failed: Validation error ($statusCode): $message',
+          e,
+        );
+
+        Map<String, dynamic>? fieldErrors;
+        final responseData = e.response?.data;
+
+        if (responseData is Map<String, dynamic>) {
+          final rawData = responseData['data'] ?? responseData['errors'];
+          if (rawData is Map) {
+            fieldErrors = Map<String, dynamic>.from(rawData);
+          }
+        }
+
+        throw ValidationException(fieldErrors);
       }
 
       // client Error lainnya (402 - 499)
