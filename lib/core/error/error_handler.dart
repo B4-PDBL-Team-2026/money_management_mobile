@@ -5,14 +5,15 @@ import 'package:money_management_mobile/core/error/execeptions.dart';
 class ErrorHandler {
   static String _extractMessage(dynamic responseData) {
     if (responseData is! Map<String, dynamic>) {
-      return 'Terjadi kesalahan';
+      throw 'Terjadi kesalahan';
     }
 
-    final baseMessage = responseData['message']?.toString() ?? 'Terjadi kesalahan';
+    final baseMessage =
+        responseData['message']?.toString() ?? 'Terjadi kesalahan';
     final errors = responseData['errors'];
 
     if (errors is! Map) {
-      return baseMessage;
+      throw baseMessage;
     }
 
     final details = <String>[];
@@ -37,13 +38,13 @@ class ErrorHandler {
     }
 
     if (details.isEmpty) {
-      return baseMessage;
+      throw baseMessage;
     }
 
-    return '$baseMessage ${details.join(' ')}'.trim();
+    throw '$baseMessage ${details.join(' ')}'.trim();
   }
 
-  static void handleRemoteException(
+  static Exception handleRemoteException(
     DioException e,
     Logger log,
     String context,
@@ -66,14 +67,32 @@ class ErrorHandler {
 
       if (statusCode != null && statusCode >= 500) {
         log.severe('$context failed: Server error ($statusCode): $message', e);
-        throw ServerException("Error server: $message");
+        throw ServerException(
+          "Terjadi masalah pada server. Silakan coba lagi nanti.",
+        );
       }
 
+      if (statusCode == 401) {
+        log.warning('$context failed: Unauthorized (401)', e);
+        throw UnauthorizedException(
+          message.isNotEmpty
+              ? message
+              : "Sesi telah berakhir, silakan login kembali",
+        );
+      }
+
+      if (statusCode == 400) {
+        log.warning('$context failed: Validation error (400): $message', e);
+        throw ValidationException(message);
+      }
+
+      // client Error lainnya (402 - 499)
       log.warning('$context failed: Client error ($statusCode): $message', e);
       throw ServerException(message);
     }
 
-    log.warning('$context failed: Network issue', e);
+    // fallback untuk error Dio lainnya
+    log.warning('$context failed: Unknown network issue', e);
     throw NetworkException("Koneksi internet bermasalah");
   }
 }

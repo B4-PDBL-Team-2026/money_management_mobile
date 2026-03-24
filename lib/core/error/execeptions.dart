@@ -1,4 +1,3 @@
-/// Exception yang dilempar saat terjadi error di sisi Server/API
 class ServerException implements Exception {
   final String message;
   ServerException(this.message);
@@ -7,7 +6,6 @@ class ServerException implements Exception {
   String toString() => message;
 }
 
-/// Exception untuk masalah koneksi internet atau timeout
 class NetworkException implements Exception {
   final String message;
   NetworkException([this.message = "Koneksi internet bermasalah"]);
@@ -16,10 +14,25 @@ class NetworkException implements Exception {
   String toString() => message;
 }
 
-/// Exception untuk masalah yang tidak terduga, seperti error parsing data atau error lainnya yang tidak spesifik
 class UnexpectedException implements Exception {
   final String message;
   UnexpectedException([this.message = "Terjadi kesalahan yang tidak terduga"]);
+
+  @override
+  String toString() => message;
+}
+
+class ValidationException implements Exception {
+  final String message;
+  ValidationException([this.message = "Data yang diberikan tidak valid"]);
+
+  @override
+  String toString() => message;
+}
+
+class UnauthorizedException implements Exception {
+  final String message;
+  UnauthorizedException([this.message = "Akses tidak sah"]);
 
   @override
   String toString() => message;
