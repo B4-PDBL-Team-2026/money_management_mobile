@@ -1,3 +1,5 @@
+import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
+
 enum CategoryType {
   system('App\\Models\\SystemCategory'),
   custom('App\\Models\\CustomCategory');
@@ -14,7 +16,7 @@ class FixedCostEntity {
   final int categoryId;
   final CategoryType categoryType;
   final bool isActive;
-  final String cycle;
+  final FinancialCycle cycle;
   final int dueValue;
 
   const FixedCostEntity({

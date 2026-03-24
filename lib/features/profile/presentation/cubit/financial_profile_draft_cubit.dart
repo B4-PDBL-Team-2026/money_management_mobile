@@ -14,7 +14,7 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     emit(FinancialProfileDraftState.initial());
   }
 
-  void updateBudgetCycle(BudgetCycle budgetCycle) {
+  void updateFinancialCycle(FinancialCycle budgetCycle) {
     emit(state.copyWith(budgetCycle: budgetCycle));
   }
 
@@ -37,7 +37,7 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     required int categoryId,
     CategoryType categoryType = CategoryType.system,
     bool isActive = true,
-    required String cycle,
+    required FinancialCycle cycle,
     required int dueValue,
   }) {
     final updatedFixedCosts = List<FixedCostEntity>.from(state.fixedCosts)
@@ -76,7 +76,7 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     required int categoryId,
     CategoryType categoryType = CategoryType.system,
     bool isActive = true,
-    required String cycle,
+    required FinancialCycle cycle,
     required int dueValue,
   }) {
     if (index < 0 || index >= state.fixedCosts.length) {

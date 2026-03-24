@@ -29,7 +29,7 @@ class FixedCostModel extends FixedCostEntity {
     return {
       'name': name,
       'amount': amount,
-      'cycleType': cycle,
+      'cycleType': cycle.value,
       'categoryId': categoryId,
       'categoryType': categoryType.value,
       'isActive': isActive,

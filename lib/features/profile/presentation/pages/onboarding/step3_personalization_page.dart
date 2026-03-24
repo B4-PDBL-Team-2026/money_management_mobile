@@ -11,6 +11,7 @@ import 'package:money_management_mobile/features/profile/domain/entities/financi
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_state.dart';
+import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_bottom_sheet.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/step_progress_indicator.dart';
@@ -27,24 +28,10 @@ class Step3PersonalizationPage extends StatefulWidget {
 class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
   List<Category> get _expenseCategories => DefaultCategories.expenses;
 
-  static const List<MapEntry<int, String>> _weekdayOptions = [
-    MapEntry(1, 'Senin'),
-    MapEntry(2, 'Selasa'),
-    MapEntry(3, 'Rabu'),
-    MapEntry(4, 'Kamis'),
-    MapEntry(5, 'Jumat'),
-    MapEntry(6, 'Sabtu'),
-    MapEntry(7, 'Minggu'),
-  ];
-
-  void _deleteItem(int index) {
-    context.read<FinancialProfileDraftCubit>().removeFixedCostAt(index);
-  }
-
   void _showAddExpenseBottomSheet() {
     final draftCubit = context.read<FinancialProfileDraftCubit>();
     final isMainCycleWeekly =
-        draftCubit.state.budgetCycle == BudgetCycle.weekly;
+        draftCubit.state.budgetCycle == FinancialCycle.weekly;
 
     showModalBottomSheet(
       context: context,
@@ -54,7 +41,6 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
         draftCubit: draftCubit,
         isMainCycleWeekly: isMainCycleWeekly,
         expenseCategories: _expenseCategories,
-        weekdayOptions: _weekdayOptions,
       ),
     );
   }
@@ -65,7 +51,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
   }) {
     final draftCubit = context.read<FinancialProfileDraftCubit>();
     final isMainCycleWeekly =
-        draftCubit.state.budgetCycle == BudgetCycle.weekly;
+        draftCubit.state.budgetCycle == FinancialCycle.weekly;
 
     showModalBottomSheet(
       context: context,
@@ -75,7 +61,6 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
         draftCubit: draftCubit,
         isMainCycleWeekly: isMainCycleWeekly,
         expenseCategories: _expenseCategories,
-        weekdayOptions: _weekdayOptions,
         editingIndex: index,
         initialItem: item,
       ),
@@ -86,9 +71,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<FinancialProfileDraftCubit, FinancialProfileDraftState>(
       builder: (context, state) {
-        final cycleLabel = state.budgetCycle == BudgetCycle.weekly
-            ? 'Mingguan'
-            : 'Bulanan';
+        final cycleLabel = ProfileUtils.buildCycleLabel(state.budgetCycle);
 
         return Scaffold(
           body: SafeArea(
@@ -138,15 +121,17 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                         return FixedCostItemCard(
                           name: item.name,
                           category: item.category,
-                          cycle: _apiCycleToLabel(item.cycle),
-                          dueLabel: _buildDueLabel(
+                          cycle: ProfileUtils.buildCycleLabel(item.cycle),
+                          dueLabel: ProfileUtils.buildDueLabel(
                             dueValue: item.dueValue,
                             frequency: item.cycle,
                           ),
                           amount:
                               'Rp ${CurrencyFormatter.format(item.amount.toInt())}',
                           showDeleteAction: true,
-                          onDelete: () => _deleteItem(index),
+                          onDelete: () => context
+                              .read<FinancialProfileDraftCubit>()
+                              .removeFixedCostAt(index),
                           showEditAction: true,
                           onEdit: () => _showEditExpenseBottomSheet(
                             index: index,
@@ -190,18 +175,6 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
     );
   }
 
-  String _apiCycleToLabel(String cycle) {
-    return cycle == 'weekly' ? 'Mingguan' : 'Bulanan';
-  }
-
-  String _buildDueLabel({required int dueValue, required String frequency}) {
-    if (frequency == 'weekly') {
-      return _weekdayOptions.firstWhere((item) => item.key == dueValue).value;
-    }
-
-    return 'Tanggal $dueValue';
-  }
-
   Widget _buildEmptyState() {
     return Container(
       width: double.infinity,
@@ -240,7 +213,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
     );
   }
 
-  Widget _buildStepHint(String cycleLabel, BudgetCycle cycle) {
+  Widget _buildStepHint(String cycleLabel, FinancialCycle cycle) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -253,7 +226,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
         ),
         const SizedBox(width: AppSizes.spacing1),
         Tooltip(
-          message: cycle == BudgetCycle.monthly
+          message: cycle == FinancialCycle.monthly
               ? 'Biaya mingguan akan disesuaikan dengan sisa minggu pada bulan berjalan.'
               : 'Biaya rutin akan dihitung untuk sisa hari pada minggu berjalan.',
           child: const Icon(

@@ -25,7 +25,7 @@ class OnboardingPayloadModel extends FinancialProfileEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'budgetCycle': budgetCycle.name,
+      'budgetCycle': budgetCycle.value,
       'initialBalance': initialBalance,
       'flooringLimit': safetyFlooring,
       'ceilingLimit': safetyCeiling,

@@ -22,6 +22,8 @@ class Step1PersonalizationPage extends StatefulWidget {
 }
 
 class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _amountController = TextEditingController();
 
   @override
@@ -45,110 +47,105 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<FinancialProfileDraftCubit, FinancialProfileDraftState>(
       builder: (context, state) {
-        final isWeekly = state.budgetCycle == BudgetCycle.weekly;
+        final isWeekly = state.budgetCycle == FinancialCycle.weekly;
 
         return Scaffold(
           body: SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.all(AppSizes.spacing6),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSizes.spacing6),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: AppSizes.spacing4),
+                    const StepProgressIndicator(currentStep: 1, totalSteps: 4),
+                    const SizedBox(height: AppSizes.spacing7),
+                    Text(
+                      'Saldo Awal & Siklus Budget',
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: AppColors.primary),
+                      textAlign: TextAlign.center,
                     ),
-                    child: Column(
+                    const SizedBox(height: AppSizes.spacing2),
+                    Text(
+                      'Pilih siklus budget dan masukkan saldo awal Anda.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                    ),
+                    const SizedBox(height: AppSizes.spacing10),
+                    Row(
                       children: [
-                        const SizedBox(height: AppSizes.spacing4),
-                        const StepProgressIndicator(
-                          currentStep: 1,
-                          totalSteps: 4,
-                        ),
-                        const SizedBox(height: AppSizes.spacing7),
-                        Text(
-                          'Saldo Awal & Siklus Budget',
-                          style: Theme.of(context).textTheme.displayMedium
-                              ?.copyWith(color: AppColors.primary),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSizes.spacing2),
-                        Text(
-                          'Pilih siklus budget dan masukkan saldo awal Anda.',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: AppColors.trunks),
-                        ),
-                        const SizedBox(height: AppSizes.spacing10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildCycleCard(
-                                title: 'Bulanan',
-                                icon: Icons.calendar_month_outlined,
-                                isSelected: !isWeekly,
-                                onTap: () => context
-                                    .read<FinancialProfileDraftCubit>()
-                                    .updateBudgetCycle(BudgetCycle.monthly),
-                              ),
-                            ),
-                            const SizedBox(width: AppSizes.spacing4),
-                            Expanded(
-                              child: _buildCycleCard(
-                                title: 'Mingguan',
-                                icon: Icons.wb_sunny_outlined,
-                                isSelected: isWeekly,
-                                onTap: () => context
-                                    .read<FinancialProfileDraftCubit>()
-                                    .updateBudgetCycle(BudgetCycle.weekly),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSizes.spacing5),
-                        AppCurrencyTextField(
-                          controller: _amountController,
-                          hint: 'Rp. 0',
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            context
+                        Expanded(
+                          child: _buildCycleCard(
+                            title: 'Bulanan',
+                            icon: Icons.calendar_month_outlined,
+                            isSelected: !isWeekly,
+                            onTap: () => context
                                 .read<FinancialProfileDraftCubit>()
-                                .updateInitialBalance(
-                                  CurrencyFormatter.parse(value),
-                                );
-                          },
+                                .updateFinancialCycle(FinancialCycle.monthly),
+                          ),
                         ),
-                        const SizedBox(height: AppSizes.spacing3),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: _buildCycleHint(isWeekly),
-                        ),
-                        const SizedBox(height: AppSizes.spacing10),
-                        AppButton(
-                          text: 'Selanjutnya',
-                          onPressed: () {
-                            if (state.initialBalance <= 0) {
-                              _showError('Nominal saldo awal wajib diisi');
-                              return;
-                            }
-
-                            context.push(AppRouter.step2Personalization);
-                          },
+                        const SizedBox(width: AppSizes.spacing4),
+                        Expanded(
+                          child: _buildCycleCard(
+                            title: 'Mingguan',
+                            icon: Icons.wb_sunny_outlined,
+                            isSelected: isWeekly,
+                            onTap: () => context
+                                .read<FinancialProfileDraftCubit>()
+                                .updateFinancialCycle(FinancialCycle.weekly),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                );
-              },
+                    const SizedBox(height: AppSizes.spacing5),
+                    AppCurrencyTextField(
+                      controller: _amountController,
+                      hint: 'Rp. 0',
+                      textAlign: TextAlign.center,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Nominal saldo awal wajib diisi';
+                        }
+
+                        final amount = CurrencyFormatter.parse(value);
+
+                        if (amount <= 0) {
+                          return 'Nominal saldo awal harus lebih dari 0';
+                        }
+
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: AppSizes.spacing3),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: _buildCycleHint(isWeekly),
+                    ),
+                    const SizedBox(height: AppSizes.spacing10),
+                    AppButton(
+                      text: 'Selanjutnya',
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          context
+                              .read<FinancialProfileDraftCubit>()
+                              .updateInitialBalance(
+                                CurrencyFormatter.parse(_amountController.text),
+                              );
+
+                          context.push(AppRouter.step2Personalization);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         );
       },
-    );
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.danger100),
     );
   }
 

@@ -7,27 +7,18 @@ import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/calculate_onboarding_budget_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_state.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/calculate_onboarding_budget_usecase.dart';
+import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/final_preview_summary_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/step_progress_indicator.dart';
 
 class Step4PersonalizationPage extends StatelessWidget {
   const Step4PersonalizationPage({super.key});
-
-  static const List<MapEntry<int, String>> _weekdayOptions = [
-    MapEntry(1, 'Senin'),
-    MapEntry(2, 'Selasa'),
-    MapEntry(3, 'Rabu'),
-    MapEntry(4, 'Kamis'),
-    MapEntry(5, 'Jumat'),
-    MapEntry(6, 'Sabtu'),
-    MapEntry(7, 'Minggu'),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -137,11 +128,10 @@ class Step4PersonalizationPage extends StatelessWidget {
                                         child: FixedCostItemCard(
                                           name: item.fixedCost.name,
                                           category: item.fixedCost.category,
-                                          cycle:
-                                              item.fixedCost.cycle == 'weekly'
-                                              ? 'Mingguan'
-                                              : 'Bulanan',
-                                          dueLabel: _buildDueLabel(
+                                          cycle: ProfileUtils.buildCycleLabel(
+                                            item.fixedCost.cycle,
+                                          ),
+                                          dueLabel: ProfileUtils.buildDueLabel(
                                             dueValue: item.fixedCost.dueValue,
                                             frequency: item.fixedCost.cycle,
                                           ),
@@ -203,14 +193,6 @@ class Step4PersonalizationPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  String _buildDueLabel({required int dueValue, required String frequency}) {
-    if (frequency == 'weekly') {
-      return _weekdayOptions.firstWhere((item) => item.key == dueValue).value;
-    }
-
-    return 'Tanggal $dueValue';
   }
 
   String _shortDescriptionByScenario(BudgetHealthScenario scenario) {

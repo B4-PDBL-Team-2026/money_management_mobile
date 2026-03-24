@@ -24,7 +24,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
   });
 
   final BudgetHealthScenario scenario;
-  final BudgetCycle cycle;
+  final FinancialCycle cycle;
   final int initialBalance;
   final int safetyCeiling;
   final int safetyFlooring;
@@ -38,7 +38,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cycleLabel = cycle == BudgetCycle.weekly ? 'Mingguan' : 'Bulanan';
+    final cycleLabel = cycle == FinancialCycle.weekly ? 'Mingguan' : 'Bulanan';
 
     return Column(
       children: [

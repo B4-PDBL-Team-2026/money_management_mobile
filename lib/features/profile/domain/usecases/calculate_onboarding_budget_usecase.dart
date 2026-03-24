@@ -47,7 +47,7 @@ class CalculateOnboardingBudgetUseCase {
     final referenceDate = now ?? DateTime.now();
 
     // Sisa hari dihitung termasuk hari ini.
-    final dynamicRemainingDays = profile.budgetCycle == BudgetCycle.weekly
+    final dynamicRemainingDays = profile.budgetCycle == FinancialCycle.weekly
         ? _remainingDaysInWeek(referenceDate)
         : _remainingDaysInMonth(referenceDate);
 
@@ -180,7 +180,7 @@ class CalculateOnboardingBudgetUseCase {
     required DateTime now,
     required int remainingDays,
   }) {
-    if (item.cycle == 'weekly') {
+    if (item.cycle == FinancialCycle.weekly) {
       return _countWeekdayOccurrences(
         currentWeekday: now.weekday,
         targetWeekday: item.dueValue,

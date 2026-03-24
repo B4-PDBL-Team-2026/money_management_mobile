@@ -20,6 +20,8 @@ class Step2PersonalizationPage extends StatefulWidget {
 }
 
 class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _ceilingController = TextEditingController();
   final TextEditingController _flooringController = TextEditingController();
 
@@ -27,9 +29,11 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
   void initState() {
     super.initState();
     final state = context.read<FinancialProfileDraftCubit>().state;
+
     if (state.safetyCeiling > 0) {
       _ceilingController.text = CurrencyFormatter.format(state.safetyCeiling);
     }
+
     if (state.safetyFlooring > 0) {
       _flooringController.text = CurrencyFormatter.format(state.safetyFlooring);
     }
@@ -39,6 +43,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
   void dispose() {
     _ceilingController.dispose();
     _flooringController.dispose();
+
     super.dispose();
   }
 
@@ -50,117 +55,134 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(AppSizes.spacing6),
-              child: Column(
-                children: [
-                  const SizedBox(height: AppSizes.spacing4),
-                  const StepProgressIndicator(currentStep: 2, totalSteps: 4),
-                  const SizedBox(height: AppSizes.spacing7),
-                  Text(
-                    'Batas Atas dan Bawah',
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      color: AppColors.primary,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: AppSizes.spacing4),
+                    const StepProgressIndicator(currentStep: 2, totalSteps: 4),
+                    const SizedBox(height: AppSizes.spacing7),
+                    Text(
+                      'Batas Atas dan Bawah',
+                      style: Theme.of(context).textTheme.displayMedium
+                          ?.copyWith(color: AppColors.primary),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSizes.spacing2),
-                  Text(
-                    'Tetapkan rentang aman pengeluaran harian Anda.',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
-                  ),
-                  const SizedBox(height: AppSizes.spacing10),
-                  _buildFieldHeader(
-                    title: 'Batas Atas',
-                    tooltip:
-                        'Target pengeluaran harian maksimal agar tabungan tetap terjaga.',
-                  ),
-                  const SizedBox(height: AppSizes.spacing2),
-                  AppCurrencyTextField(
-                    controller: _ceilingController,
-                    hint: 'Rp. 0',
-                    textAlign: TextAlign.center,
-                    onChanged: (value) {
-                      context
-                          .read<FinancialProfileDraftCubit>()
-                          .updateSafetyCeiling(CurrencyFormatter.parse(value));
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.spacing6),
-                  _buildFieldHeader(
-                    title: 'Batas Bawah',
-                    tooltip:
-                        'Jatah harian minimum untuk kebutuhan dasar seperti makan dan transportasi.',
-                  ),
-                  const SizedBox(height: AppSizes.spacing2),
-                  AppCurrencyTextField(
-                    controller: _flooringController,
-                    hint: 'Rp. 0',
-                    textAlign: TextAlign.center,
-                    onChanged: (value) {
-                      context
-                          .read<FinancialProfileDraftCubit>()
-                          .updateSafetyFlooring(CurrencyFormatter.parse(value));
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.spacing10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppButton(
-                          text: 'Sebelumnya',
-                          onPressed: context.pop,
-                          variant: AppButtonVariant.ghost,
+                    const SizedBox(height: AppSizes.spacing2),
+                    Text(
+                      'Tetapkan rentang aman pengeluaran harian Anda.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                    ),
+                    const SizedBox(height: AppSizes.spacing10),
+                    _buildFieldHeader(
+                      title: 'Batas Atas',
+                      tooltip:
+                          'Target pengeluaran harian maksimal agar tabungan tetap terjaga.',
+                    ),
+                    const SizedBox(height: AppSizes.spacing2),
+                    AppCurrencyTextField(
+                      controller: _ceilingController,
+                      hint: 'Rp. 0',
+                      textAlign: TextAlign.center,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Batas atas wajib diisi';
+                        }
+
+                        final ceilingLimit = CurrencyFormatter.parse(value);
+
+                        if (ceilingLimit <= 0) {
+                          return 'Batas atas harus lebih dari 0';
+                        }
+
+                        if (ceilingLimit > state.initialBalance) {
+                          return 'Batas atas tidak boleh lebih besar dari saldo awal';
+                        }
+
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: AppSizes.spacing6),
+                    _buildFieldHeader(
+                      title: 'Batas Bawah',
+                      tooltip:
+                          'Jatah harian minimum untuk kebutuhan dasar seperti makan dan transportasi.',
+                    ),
+                    const SizedBox(height: AppSizes.spacing2),
+                    AppCurrencyTextField(
+                      controller: _flooringController,
+                      hint: 'Rp. 0',
+                      textAlign: TextAlign.center,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Batas bawah wajib diisi';
+                        }
+
+                        final flooringLimit = CurrencyFormatter.parse(value);
+
+                        if (flooringLimit <= 0) {
+                          return 'Batas bawah harus lebih dari 0';
+                        }
+
+                        final ceilingLimit = CurrencyFormatter.parse(
+                          _ceilingController.text,
+                        );
+
+                        if (flooringLimit > ceilingLimit) {
+                          return 'Batas bawah tidak boleh lebih tinggi dari batas atas';
+                        }
+
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: AppSizes.spacing10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppButton(
+                            text: 'Sebelumnya',
+                            onPressed: context.pop,
+                            variant: AppButtonVariant.ghost,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: AppSizes.spacing2),
-                      Expanded(
-                        child: AppButton(
-                          text: 'Selanjutnya',
-                          onPressed: () {
-                            if (state.safetyCeiling <= 0) {
-                              _showError('Batas atas perhitungan wajib diisi');
-                              return;
-                            }
+                        const SizedBox(width: AppSizes.spacing2),
+                        Expanded(
+                          child: AppButton(
+                            text: 'Selanjutnya',
+                            onPressed: () {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                final cubit = context
+                                    .read<FinancialProfileDraftCubit>();
 
-                            if (state.safetyCeiling > state.initialBalance) {
-                              _showError(
-                                'Batas atas tidak boleh lebih besar dari saldo awal',
-                              );
-                              return;
-                            }
+                                cubit.updateSafetyCeiling(
+                                  CurrencyFormatter.parse(
+                                    _ceilingController.text,
+                                  ),
+                                );
 
-                            if (state.safetyFlooring <= 0) {
-                              _showError('Batas bawah perhitungan wajib diisi');
-                              return;
-                            }
+                                cubit.updateSafetyFlooring(
+                                  CurrencyFormatter.parse(
+                                    _flooringController.text,
+                                  ),
+                                );
 
-                            if (state.safetyFlooring > state.safetyCeiling) {
-                              _showError(
-                                'Batas bawah tidak boleh lebih tinggi dari batas atas',
-                              );
-                              return;
-                            }
-
-                            context.push(AppRouter.step3Personalization);
-                          },
+                                context.push(AppRouter.step3Personalization);
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         );
       },
-    );
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.danger100),
     );
   }
 
