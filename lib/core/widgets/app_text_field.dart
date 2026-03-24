@@ -72,11 +72,14 @@ class _AppTextFieldState extends State<AppTextField> {
           keyboardType: widget.keyboardType,
           validator: widget.validator,
           onChanged: widget.onChanged,
-          forceErrorText: widget.errorText,
           onTap: widget.onTap,
           style: Theme.of(context).textTheme.bodyMedium,
           maxLines: widget.isPassword ? 1 : widget.maxLines,
           decoration: InputDecoration(
+            errorText: widget.errorText,
+            errorStyle: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.danger100),
             hintText: widget.hint,
             hintStyle: Theme.of(
               context,
