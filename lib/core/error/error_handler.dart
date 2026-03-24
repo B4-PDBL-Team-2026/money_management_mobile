@@ -5,7 +5,7 @@ import 'package:money_management_mobile/core/error/execeptions.dart';
 class ErrorHandler {
   static String _extractMessage(dynamic responseData) {
     if (responseData is! Map<String, dynamic>) {
-      return 'Terjadi kesalahan'; // UBAH: dari throw menjadi return
+      return 'Terjadi kesalahan'; // UBAH: dari return menjadi return
     }
 
     final baseMessage =
@@ -48,7 +48,7 @@ class ErrorHandler {
     return '$baseMessage ${details.join(' ')}'.trim();
   }
 
-  static void handleRemoteException(
+  static Exception handleRemoteException(
     DioException e,
     Logger log,
     String context,
@@ -57,12 +57,12 @@ class ErrorHandler {
         e.type == DioExceptionType.receiveTimeout ||
         e.type == DioExceptionType.sendTimeout) {
       log.warning('$context failed: Connection timeout', e);
-      throw NetworkException("Koneksi timeout, periksa internet Anda");
+      return NetworkException("Koneksi timeout, periksa internet Anda");
     }
 
     if (e.type == DioExceptionType.connectionError) {
       log.warning('$context failed: Connection error', e);
-      throw NetworkException("Tidak dapat terhubung ke server");
+      return NetworkException("Tidak dapat terhubung ke server");
     }
 
     if (e.response != null) {
@@ -72,14 +72,14 @@ class ErrorHandler {
 
       if (statusCode != null && statusCode >= 500) {
         log.severe('$context failed: Server error ($statusCode): $message', e);
-        throw ServerException(
+        return ServerException(
           "Terjadi masalah pada server. Silakan coba lagi nanti.",
         );
       }
 
       if (statusCode == 401) {
         log.warning('$context failed: Unauthorized (401)', e);
-        throw UnauthorizedException(
+        return UnauthorizedException(
           message.isNotEmpty
               ? message
               : "Sesi telah berakhir, silakan login kembali",
@@ -102,16 +102,16 @@ class ErrorHandler {
           }
         }
 
-        throw ValidationException(fieldErrors);
+        return ValidationException(fieldErrors);
       }
 
       // client Error lainnya (402 - 499)
       log.warning('$context failed: Client error ($statusCode): $message', e);
-      throw ServerException(message);
+      return ServerException(message);
     }
 
     // fallback untuk error Dio lainnya
     log.warning('$context failed: Unknown network issue', e);
-    throw NetworkException("Koneksi internet bermasalah");
+    return NetworkException("Koneksi internet bermasalah");
   }
 }

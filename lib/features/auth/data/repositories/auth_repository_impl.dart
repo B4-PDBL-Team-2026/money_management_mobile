@@ -21,23 +21,14 @@ class AuthRepositoryImpl implements AuthRepository {
     String password,
     String passwordConfirmation,
   ) async {
-    _log.info('Registering: $email');
-    try {
-      final (user, token, requiresOnboarding) = await remoteDataSource.register(
-        name,
-        email,
-        password,
-        passwordConfirmation,
-      );
-      _log.info('Register successful');
-      return (user, token, requiresOnboarding);
-    } on DioException catch (e) {
-      ErrorHandler.handleRemoteException(e, _log, 'Register');
-      rethrow;
-    } catch (e) {
-      _log.severe('Unexpected register error', e);
-      throw UnexpectedException(e.toString());
-    }
+    final (user, token, requiresOnboarding) = await remoteDataSource.register(
+      name,
+      email,
+      password,
+      passwordConfirmation,
+    );
+
+    return (user, token, requiresOnboarding);
   }
 
   @override
