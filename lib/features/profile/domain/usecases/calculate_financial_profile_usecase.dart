@@ -39,7 +39,7 @@ class OnboardingBudgetCalculationResult {
   });
 }
 
-class CalculateOnboardingBudgetUseCase {
+class CalculateFinancialProfileUseCase {
   OnboardingBudgetCalculationResult execute(
     FinancialProfileEntity profile, {
     DateTime? now,

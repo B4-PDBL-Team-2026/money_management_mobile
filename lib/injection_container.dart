@@ -12,11 +12,11 @@ import 'package:money_management_mobile/features/auth/domain/usecases/restore_se
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:money_management_mobile/features/profile/data/data_sources/remote/onboarding_remote_data_source.dart';
-import 'package:money_management_mobile/features/profile/data/repositories/onboarding_repository_impl.dart';
-import 'package:money_management_mobile/features/profile/domain/repositories/onboarding_repository.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/calculate_onboarding_budget_usecase.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/submit_onboarding_usecase.dart';
+import 'package:money_management_mobile/features/profile/data/data_sources/remote/profile_remote_data_source.dart';
+import 'package:money_management_mobile/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/submit_financial_profile_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,16 +59,16 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<SubmitFinancialProfileCubit>(
     () => SubmitFinancialProfileCubit(sl(), sl()),
   );
-  sl.registerLazySingleton<CalculateOnboardingBudgetUseCase>(
-    () => CalculateOnboardingBudgetUseCase(),
+  sl.registerLazySingleton<CalculateFinancialProfileUseCase>(
+    () => CalculateFinancialProfileUseCase(),
   );
-  sl.registerLazySingleton<SubmitOnboardingUseCase>(
-    () => SubmitOnboardingUseCase(sl()),
+  sl.registerLazySingleton<SubmitFinancialProfileUseCase>(
+    () => SubmitFinancialProfileUseCase(sl()),
   );
-  sl.registerLazySingleton<OnboardingRepository>(
-    () => OnboardingRepositoryImpl(sl()),
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(sl()),
   );
-  sl.registerLazySingleton<OnboardingRemoteDataSource>(
-    () => OnboardingRemoteDataSource(sl()),
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSource(sl()),
   );
 }
