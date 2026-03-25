@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
@@ -29,20 +30,25 @@ class LoginCubit extends Cubit<LoginState> {
         requiresOnboarding: requiresOnboarding,
       );
 
-      _log.info('Login completed successfully for user: ${user.email}');
       emit(LoginSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {
-      _log.severe('Login failed with ServerException: ${e.message}', e);
       emit(LoginError(e.message));
     } on NetworkException catch (e) {
-      _log.warning('Login failed with NetworkException: ${e.message}', e);
       emit(LoginError(e.message));
+    } on ValidationException catch (e) {
+      emit(LoginValidationError(e.fieldErrors));
     } on UnexpectedException catch (e) {
-      _log.severe('Login failed with UnexpectedException: ${e.message}', e);
       emit(LoginError(e.message));
     } catch (e) {
-      _log.severe('Login failed with unexpected error', e);
-      emit(LoginError("Terjadi kesalahan: ${e.toString()}"));
+      if (kDebugMode) {
+        emit(LoginError('Terjadi kesalahan: ${e.toString()}'));
+      } else {
+        emit(
+          LoginError(
+            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
+          ),
+        );
+      }
     }
   }
 }

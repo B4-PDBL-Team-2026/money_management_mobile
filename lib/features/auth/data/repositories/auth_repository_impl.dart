@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
-import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/data/data_sources/local/auth_local_data_source.dart';
 import 'package:money_management_mobile/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
 import 'package:money_management_mobile/features/auth/domain/entities/user_entity.dart';
@@ -36,21 +35,12 @@ class AuthRepositoryImpl implements AuthRepository {
     String email,
     String password,
   ) async {
-    _log.info('Logging in: $email');
-    try {
-      final (user, token, requiresOnboarding) = await remoteDataSource.login(
-        email,
-        password,
-      );
-      _log.info('Login successful for user: ${user.email}');
-      return (user, token, requiresOnboarding);
-    } on DioException catch (e) {
-      ErrorHandler.handleRemoteException(e, _log, 'Login');
-      rethrow;
-    } catch (e) {
-      _log.severe('Unexpected login error', e);
-      throw UnexpectedException(e.toString());
-    }
+    final (user, token, requiresOnboarding) = await remoteDataSource.login(
+      email,
+      password,
+    );
+
+    return (user, token, requiresOnboarding);
   }
 
   @override
@@ -59,8 +49,6 @@ class AuthRepositoryImpl implements AuthRepository {
     String token, {
     required bool requiresOnboarding,
   }) {
-    _log.info('Saving auth session for user: ${user.email} to local storage');
-
     return Future.wait([
       localDataSource.storeUser(user),
       localDataSource.storeToken(token),

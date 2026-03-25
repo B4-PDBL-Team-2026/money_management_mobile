@@ -14,3 +14,9 @@ final class LoginError extends LoginState {
   final String message;
   LoginError(this.message);
 }
+
+final class LoginValidationError extends LoginState {
+  final Map<String, dynamic>? errors;
+
+  LoginValidationError(this.errors);
+}

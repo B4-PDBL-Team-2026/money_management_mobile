@@ -90,9 +90,6 @@ class AuthRemoteDataSource {
   }
 
   Future<(UserModel, String, bool)> login(String email, String password) async {
-    _log.fine('Sending login request for email: $email');
-    _log.fine('Request payload: {email: $email, password: ***}');
-
     if (AppEnv.useMockApi) {
       _log.info('USE_MOCK_API enabled, returning dummy login response');
       await Future.delayed(const Duration(seconds: 1));
@@ -114,23 +111,27 @@ class AuthRemoteDataSource {
       return (dummyUser, 'dev-token', false);
     }
 
-    final response = await dio.post(
-      '/auth/login',
-      data: {'email': email, 'password': password},
-    );
+    try {
+      final response = await dio.post(
+        '/auth/login',
+        data: {'email': email, 'password': password},
+      );
 
-    _log.fine('Login response received: ${response.statusCode}');
-    _log.fine('Login response data: ${response.data}');
+      final data = response.data['data'] as Map<String, dynamic>;
+      final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      final token = data['token'] as String;
+      final requiresOnboarding = _parseRequiresOnboarding(
+        data['requires_onboarding'],
+        defaultValue: false,
+      );
 
-    final data = response.data['data'] as Map<String, dynamic>;
-    final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
-    final token = data['token'] as String;
-    final requiresOnboarding = _parseRequiresOnboarding(
-      data['requires_onboarding'],
-      defaultValue: false,
-    );
-
-    return (user, token, requiresOnboarding);
+      return (user, token, requiresOnboarding);
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Login');
+    } catch (e) {
+      _log.severe('Unexpected login error', e);
+      throw UnexpectedException('Terjadi kesalahan sistem saat login');
+    }
   }
 
   Future<void> logout({required bool hasToken}) async {
