@@ -26,7 +26,6 @@ class AuthLocalDataSource {
   }
 
   Future<void> storeToken(String token) async {
-    _log.fine('Storing auth token to local storage');
     await sharedPreferences.setString(_keyToken, token);
   }
 
@@ -43,13 +42,8 @@ class AuthLocalDataSource {
   }
 
   Future<void> storeUser(UserEntity user) async {
-    _log.fine('Storing auth user to local storage for: ${user.email}');
-
     final userModel = UserModel.fromEntity(user);
-
     await sharedPreferences.setString(_keyUser, userModel.toRawJson());
-
-    _log.fine('Auth user stored successfully for: ${user.email}');
   }
 
   bool? getRequiresOnboarding() {
@@ -57,21 +51,14 @@ class AuthLocalDataSource {
   }
 
   Future<void> storeRequiresOnboarding(bool requiresOnboarding) async {
-    _log.fine(
-      'Storing requiresOnboarding flag to local storage: $requiresOnboarding',
-    );
     await sharedPreferences.setBool(_keyRequiresOnboarding, requiresOnboarding);
   }
 
   Future<void> clearAll() async {
-    _log.fine('Clearing all auth data from local storage');
-
     await Future.wait([
       sharedPreferences.remove(_keyToken),
       sharedPreferences.remove(_keyUser),
       sharedPreferences.remove(_keyRequiresOnboarding),
     ]);
-
-    _log.fine('All auth data cleared successfully');
   }
 }

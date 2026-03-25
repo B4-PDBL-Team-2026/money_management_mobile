@@ -72,8 +72,8 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> logout() async {
-    _log.info('Logging out current session');
     await logoutUseCase.execute();
+
     emit(SessionUnauthenticated());
   }
 }

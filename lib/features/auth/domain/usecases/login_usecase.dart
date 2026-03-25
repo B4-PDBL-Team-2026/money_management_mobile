@@ -14,11 +14,13 @@ class LoginUseCase {
       email,
       password,
     );
+
     await repository.saveSession(
       user,
       token,
       requiresOnboarding: requiresOnboarding,
     );
+
     return (user, token, requiresOnboarding);
   }
 }

@@ -39,7 +39,7 @@ class OnboardingBudgetCalculationResult {
   });
 }
 
-class CalculateOnboardingBudgetUseCase {
+class CalculateFinancialProfileUseCase {
   OnboardingBudgetCalculationResult execute(
     FinancialProfileEntity profile, {
     DateTime? now,
@@ -47,7 +47,7 @@ class CalculateOnboardingBudgetUseCase {
     final referenceDate = now ?? DateTime.now();
 
     // Sisa hari dihitung termasuk hari ini.
-    final dynamicRemainingDays = profile.budgetCycle == BudgetCycle.weekly
+    final dynamicRemainingDays = profile.budgetCycle == FinancialCycle.weekly
         ? _remainingDaysInWeek(referenceDate)
         : _remainingDaysInMonth(referenceDate);
 
@@ -82,8 +82,8 @@ class CalculateOnboardingBudgetUseCase {
       (sum, item) => sum + item.scaledAmount,
     );
 
-    final dailyBudgetBruto =
-        (initialBalance - totalFixedCost) ~/ safeRemainingDays;
+    final disposableBalance = max(initialBalance - totalFixedCost, 0);
+    final dailyBudgetBruto = disposableBalance ~/ safeRemainingDays;
 
     final scenario = _resolveScenario(
       dailyBudgetBruto: dailyBudgetBruto,
@@ -92,7 +92,6 @@ class CalculateOnboardingBudgetUseCase {
     );
 
     final deficitBalance = max(totalFixedCost - initialBalance, 0);
-    final disposableBalance = max(initialBalance - totalFixedCost, 0);
     final daysCoveredAtSafetyFloor = _countCoveredDaysAtSafetyFloor(
       scenario: scenario,
       safetyFlooring: safetyFlooring,
@@ -109,7 +108,8 @@ class CalculateOnboardingBudgetUseCase {
     final recommendedDailyBudget = switch (scenario) {
       BudgetHealthScenario.surplus => safetyCeiling,
       BudgetHealthScenario.moderate => dailyBudgetBruto,
-      BudgetHealthScenario.critical => safetyFlooring,
+      BudgetHealthScenario.critical =>
+        disposableBalance < safetyFlooring ? disposableBalance : safetyFlooring,
       BudgetHealthScenario.deficit => safetyFlooring,
     };
 
@@ -139,7 +139,7 @@ class CalculateOnboardingBudgetUseCase {
       return BudgetHealthScenario.critical;
     }
 
-    if (dailyBudgetBruto >= safetyCeiling) {
+    if (dailyBudgetBruto > safetyCeiling) {
       return BudgetHealthScenario.surplus;
     }
 
@@ -180,7 +180,7 @@ class CalculateOnboardingBudgetUseCase {
     required DateTime now,
     required int remainingDays,
   }) {
-    if (item.cycle == 'weekly') {
+    if (item.cycle == FinancialCycle.weekly) {
       return _countWeekdayOccurrences(
         currentWeekday: now.weekday,
         targetWeekday: item.dueValue,
@@ -209,15 +209,18 @@ class CalculateOnboardingBudgetUseCase {
     // Jarak hari dari hari ini ke kemunculan pertama target weekday.
     final daysUntilFirst =
         (targetWeekday - currentWeekday) % DateTime.daysPerWeek;
+
     // Karena hari ini ikut dihitung, offset valid adalah [0..remainingDays-1].
     final maxOffset = remainingDays - 1;
+
     if (daysUntilFirst > maxOffset) {
       return 0;
     }
 
     // Setelah kemunculan pertama, weekday yang sama berulang tiap 7 hari.
     final daysAfterFirst = maxOffset - daysUntilFirst;
-    final extraOccurrences = (daysAfterFirst / DateTime.daysPerWeek).floor();
+    final extraOccurrences = daysAfterFirst ~/ DateTime.daysPerWeek;
+
     return 1 + extraOccurrences;
   }
 }

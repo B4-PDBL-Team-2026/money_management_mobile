@@ -24,6 +24,7 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
+import 'package:money_management_mobile/outer_shell.dart';
 
 final _appRouterLogging = Logger('AppRouter');
 
@@ -52,115 +53,119 @@ class AppRouter {
     initialLocation: '/welcome',
     refreshListenable: GoRouterRefreshStream(_sessionCubit.stream),
     routes: [
-      // auth module
-      GoRoute(
-        path: '/welcome',
-        builder: (context, state) => const WelcomePage(),
+      ShellRoute(
+        builder: (context, state, child) => OuterShell(child: child),
         routes: [
+          // auth module
           GoRoute(
-            path: 'login',
-            builder: (context, state) => BlocProvider(
-              create: (_) => sl.get<LoginCubit>(),
-              child: const LoginPage(),
-            ),
+            path: '/welcome',
+            builder: (context, state) => const WelcomePage(),
             routes: [
               GoRoute(
-                path: 'forgot-password',
-                builder: (context, state) => const ForgotPasswordPage(),
+                path: 'login',
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl.get<LoginCubit>(),
+                  child: const LoginPage(),
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'forgot-password',
+                    builder: (context, state) => const ForgotPasswordPage(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'registration',
+                builder: (context, state) => BlocProvider(
+                  create: (_) => sl.get<RegisterCubit>(),
+                  child: const RegisterPage(),
+                ),
               ),
             ],
           ),
+
           GoRoute(
-            path: 'registration',
-            builder: (context, state) => BlocProvider(
-              create: (_) => sl.get<RegisterCubit>(),
-              child: const RegisterPage(),
+            path: '/personalization/step-1',
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+              ],
+              child: const Step1PersonalizationPage(),
             ),
+          ),
+          GoRoute(
+            path: '/personalization/step-2',
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+              ],
+              child: const Step2PersonalizationPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/personalization/step-3',
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+              ],
+              child: const Step3PersonalizationPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/personalization/step-4',
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+              ],
+              child: const Step4PersonalizationPage(),
+            ),
+          ),
+
+          // dashboard module
+          StatefulShellRoute.indexedStack(
+            builder: (context, state, navigationShell) {
+              return ShellContainer(navigationShell: navigationShell);
+            },
+            branches: [
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: history,
+                    builder: (context, state) => const TransactionHistoryPage(),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: dashboard,
+                    builder: (context, state) => const HomePage(),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: other,
+                    builder: (context, state) => const OtherPage(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          // transaction module
+          GoRoute(
+            path: '/transaction/add',
+            builder: (context, state) => const AddTransactionPage(),
           ),
         ],
-      ),
-
-      GoRoute(
-        path: '/personalization/step-1',
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
-            BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
-          ],
-          child: const Step1PersonalizationPage(),
-        ),
-      ),
-      GoRoute(
-        path: '/personalization/step-2',
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
-            BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
-          ],
-          child: const Step2PersonalizationPage(),
-        ),
-      ),
-      GoRoute(
-        path: '/personalization/step-3',
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
-            BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
-          ],
-          child: const Step3PersonalizationPage(),
-        ),
-      ),
-      GoRoute(
-        path: '/personalization/step-4',
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
-            BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
-          ],
-          child: const Step4PersonalizationPage(),
-        ),
-      ),
-
-      // dashboard module
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return ShellContainer(navigationShell: navigationShell);
-        },
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: history,
-                builder: (context, state) => const TransactionHistoryPage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: dashboard,
-                builder: (context, state) => const HomePage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: other,
-                builder: (context, state) => const OtherPage(),
-              ),
-            ],
-          ),
-        ],
-      ),
-
-      // transaction module
-      GoRoute(
-        path: '/transaction/add',
-        builder: (context, state) => const AddTransactionPage(),
       ),
     ],
-
     redirect: (context, state) {
       final sessionState = _sessionCubit.state;
       final isAuthenticated = sessionState is SessionAuthenticated;

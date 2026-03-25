@@ -6,9 +6,11 @@ import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
+import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
 
 class AddFixedCostBottomSheet extends StatefulWidget {
   const AddFixedCostBottomSheet({
@@ -16,15 +18,13 @@ class AddFixedCostBottomSheet extends StatefulWidget {
     required this.draftCubit,
     required this.isMainCycleWeekly,
     required this.expenseCategories,
-    required this.weekdayOptions,
     this.editingIndex,
     this.initialItem,
   });
 
   final FinancialProfileDraftCubit draftCubit;
   final bool isMainCycleWeekly;
-  final List<Category> expenseCategories;
-  final List<MapEntry<int, String>> weekdayOptions;
+  final List<CategoryEntity> expenseCategories;
   final int? editingIndex;
   final FixedCostEntity? initialItem;
 
@@ -36,12 +36,14 @@ class AddFixedCostBottomSheet extends StatefulWidget {
 }
 
 class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _dueDateController = TextEditingController();
 
-  late String _frequency;
-  late Category _category;
+  late FinancialCycle _frequency;
+  late CategoryEntity _category;
   late List<MapEntry<int, String>> _dueOptions;
   late int _selectedDueValue;
 
@@ -49,6 +51,7 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
   void initState() {
     super.initState();
     final initialItem = widget.initialItem;
+
     if (initialItem != null) {
       _nameController.text = initialItem.name;
       _amountController.text = CurrencyFormatter.format(initialItem.amount);
@@ -65,13 +68,16 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
           : _dueOptions.first.key;
       _selectedDueValue = validDueValue;
 
-      if (_frequency == 'monthly') {
+      if (_frequency == FinancialCycle.monthly) {
         _dueDateController.text = _monthlyDueText(_selectedDueValue);
       }
+
       return;
     }
 
-    _frequency = widget.isMainCycleWeekly ? 'weekly' : 'monthly';
+    _frequency = widget.isMainCycleWeekly
+        ? FinancialCycle.weekly
+        : FinancialCycle.monthly;
     _category = widget.expenseCategories.first;
     _dueOptions = _buildDueOptions(_frequency);
     _selectedDueValue = _dueOptions.first.key;
@@ -87,6 +93,7 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
     _nameController.dispose();
     _amountController.dispose();
     _dueDateController.dispose();
+
     super.dispose();
   }
 
@@ -104,147 +111,230 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSizes.spacing6),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.beerus,
-                  borderRadius: BorderRadius.circular(2),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.beerus,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: AppSizes.spacing4),
-            Text(
-              widget.isEditing ? 'Edit Fixed Cost' : 'Tambah Fixed Cost',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineMedium?.copyWith(color: AppColors.primary),
-            ),
-            const SizedBox(height: AppSizes.spacing4),
-            AppTextField(
-              hint: 'Nama biaya (contoh: WiFi)',
-              controller: _nameController,
-              prefixIcon: const Icon(
-                Icons.receipt_outlined,
-                color: AppColors.trunks,
-              ),
-            ),
-            const SizedBox(height: AppSizes.spacing4),
-            AppCurrencyTextField(
-              controller: _amountController,
-              hint: 'Nominal',
-              prefixIcon: const Icon(
-                Icons.attach_money,
-                color: AppColors.trunks,
-              ),
-            ),
-            const SizedBox(height: AppSizes.spacing4),
-            DropdownButtonFormField<Category>(
-              initialValue: _category,
-              decoration: _dropdownDecoration(context, 'Kategori'),
-              items: widget.expenseCategories
-                  .map(
-                    (item) =>
-                        DropdownMenuItem(value: item, child: Text(item.name)),
-                  )
-                  .toList(growable: false),
-              onChanged: (value) {
-                if (value == null) {
-                  return;
-                }
-                setState(() => _category = value);
-              },
-            ),
-            if (!widget.isMainCycleWeekly) ...[
               const SizedBox(height: AppSizes.spacing4),
-              DropdownButtonFormField<String>(
-                initialValue: _frequency,
-                decoration: _dropdownDecoration(context, 'Frekuensi Cost'),
-                items: const [
-                  DropdownMenuItem(value: 'weekly', child: Text('Mingguan')),
-                  DropdownMenuItem(value: 'monthly', child: Text('Bulanan')),
-                ],
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
+              Text(
+                widget.isEditing ? 'Edit Fixed Cost' : 'Tambah Fixed Cost',
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineMedium?.copyWith(color: AppColors.primary),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              AppTextField(
+                hint: 'Nama biaya (contoh: WiFi)',
+                controller: _nameController,
+                prefixIcon: const Icon(
+                  Icons.receipt_outlined,
+                  color: AppColors.trunks,
+                ),
+                validator: (value) {
+                  final trimmedName = value?.trim() ?? '';
+
+                  if (trimmedName.isEmpty) {
+                    return 'Nama biaya wajib diisi';
                   }
-                  setState(() {
-                    _frequency = value;
-                    _dueOptions = _buildDueOptions(_frequency);
-                    _selectedDueValue = _dueOptions.first.key;
-                    if (_frequency == 'monthly') {
-                      _selectedDueValue = DateTime.now().day;
-                      _dueDateController.text = _monthlyDueText(
-                        _selectedDueValue,
-                      );
-                    }
-                  });
+
+                  return null;
                 },
               ),
-            ],
-            const SizedBox(height: AppSizes.spacing4),
-            if (_frequency == 'weekly')
-              DropdownButtonFormField<int>(
-                initialValue: _selectedDueValue,
-                decoration: _dropdownDecoration(context, 'Jatuh Tempo (Hari)'),
-                items: _dueOptions
+              const SizedBox(height: AppSizes.spacing4),
+              AppCurrencyTextField(
+                controller: _amountController,
+                hint: 'Nominal',
+                prefixIcon: const Icon(
+                  Icons.attach_money,
+                  color: AppColors.trunks,
+                ),
+                validator: (value) {
+                  final amount = CurrencyFormatter.parse(value ?? '');
+
+                  if (amount <= 0) {
+                    return 'Nominal harus lebih besar dari 0';
+                  }
+
+                  return null;
+                },
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              DropdownButtonFormField<CategoryEntity>(
+                initialValue: _category,
+                decoration: _dropdownDecoration(context, 'Kategori'),
+                items: widget.expenseCategories
                     .map(
-                      (item) => DropdownMenuItem(
-                        value: item.key,
-                        child: Text(item.value),
-                      ),
+                      (item) =>
+                          DropdownMenuItem(value: item, child: Text(item.name)),
                     )
                     .toList(growable: false),
                 onChanged: (value) {
                   if (value == null) {
                     return;
                   }
-                  setState(() => _selectedDueValue = value);
+                  setState(() => _category = value);
                 },
-              )
-            else
-              AppTextField(
-                hint: 'Pilih tanggal jatuh tempo (bulan ini)',
-                controller: _dueDateController,
-                readOnly: true,
-                prefixIcon: const Icon(
-                  Icons.calendar_today_outlined,
-                  color: AppColors.trunks,
-                ),
-                onTap: _handleDueDateTap,
               ),
-            const SizedBox(height: AppSizes.spacing2),
-            Row(
-              children: [
-                Text(
-                  'Jatuh tempo yang lewat akan diabaikan.',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-                ),
-                const SizedBox(width: AppSizes.spacing1),
-                const Tooltip(
-                  message:
-                      'Jika tanggal sudah terlewat dalam siklus aktif, fixed cost tidak dihitung untuk proyeksi saat ini.',
-                  child: Icon(
-                    Icons.info_outline,
-                    size: 16,
-                    color: AppColors.trunks,
-                  ),
+              if (!widget.isMainCycleWeekly) ...[
+                const SizedBox(height: AppSizes.spacing4),
+                DropdownButtonFormField<FinancialCycle>(
+                  initialValue: _frequency,
+                  decoration: _dropdownDecoration(context, 'Frekuensi Cost'),
+                  items: const [
+                    DropdownMenuItem(
+                      value: FinancialCycle.weekly,
+                      child: Text('Mingguan'),
+                    ),
+                    DropdownMenuItem(
+                      value: FinancialCycle.monthly,
+                      child: Text('Bulanan'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() {
+                      _frequency = value;
+                      _dueOptions = _buildDueOptions(_frequency);
+                      _selectedDueValue = _dueOptions.first.key;
+
+                      if (_frequency == FinancialCycle.monthly) {
+                        _selectedDueValue = DateTime.now().day;
+                        _dueDateController.text = _monthlyDueText(
+                          _selectedDueValue,
+                        );
+                      }
+                    });
+                  },
                 ),
               ],
-            ),
-            const SizedBox(height: AppSizes.spacing5),
-            AppButton(
-              text: widget.isEditing ? 'Simpan Perubahan' : 'Simpan',
-              onPressed: _handleSave,
-            ),
-          ],
+              const SizedBox(height: AppSizes.spacing4),
+              if (_frequency == FinancialCycle.weekly)
+                DropdownButtonFormField<int>(
+                  initialValue: _selectedDueValue,
+                  decoration: _dropdownDecoration(
+                    context,
+                    'Jatuh Tempo (Hari)',
+                  ),
+                  items: _dueOptions
+                      .map(
+                        (item) => DropdownMenuItem(
+                          value: item.key,
+                          child: Text(item.value),
+                        ),
+                      )
+                      .toList(growable: false),
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() => _selectedDueValue = value);
+                  },
+                )
+              else
+                AppTextField(
+                  hint: 'Pilih tanggal jatuh tempo (bulan ini)',
+                  controller: _dueDateController,
+                  readOnly: true,
+                  prefixIcon: const Icon(
+                    Icons.calendar_today_outlined,
+                    color: AppColors.trunks,
+                  ),
+                  onTap: () async {
+                    final pickedDate = await _pickDueDateInCurrentMonth(
+                      context,
+                      _selectedDueValue,
+                    );
+
+                    if (!mounted || pickedDate == null) {
+                      return;
+                    }
+
+                    setState(() {
+                      _selectedDueValue = pickedDate.day;
+                      _dueDateController.text = _monthlyDueText(
+                        _selectedDueValue,
+                      );
+                    });
+                  },
+                ),
+              const SizedBox(height: AppSizes.spacing2),
+              Row(
+                children: [
+                  Text(
+                    'Jatuh tempo yang lewat akan diabaikan.',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+                  ),
+                  const SizedBox(width: AppSizes.spacing1),
+                  const Tooltip(
+                    message:
+                        'Jika tanggal sudah terlewat dalam siklus aktif, fixed cost tidak dihitung untuk proyeksi saat ini.',
+                    child: Icon(
+                      Icons.info_outline,
+                      size: 16,
+                      color: AppColors.trunks,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSizes.spacing5),
+              AppButton(
+                text: widget.isEditing ? 'Simpan Perubahan' : 'Simpan',
+                onPressed: () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    final name = _nameController.text.trim();
+                    final amount = CurrencyFormatter.parse(
+                      _amountController.text,
+                    );
+
+                    final editingIndex = widget.editingIndex;
+
+                    if (widget.isEditing && editingIndex != null) {
+                      widget.draftCubit.updateFixedCostAt(
+                        index: editingIndex,
+                        name: name,
+                        amount: amount,
+                        category: _category.name,
+                        categoryId: _category.id,
+                        cycle: _frequency,
+                        dueValue: _selectedDueValue,
+                      );
+                    } else {
+                      widget.draftCubit.addFixedCost(
+                        name: name,
+                        amount: amount,
+                        category: _category.name,
+                        categoryId: _category.id,
+                        cycle: _frequency,
+                        dueValue: _selectedDueValue,
+                      );
+                    }
+
+                    if (!mounted) {
+                      return;
+                    }
+
+                    context.pop();
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -273,72 +363,15 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
     );
   }
 
-  List<MapEntry<int, String>> _buildDueOptions(String frequency) {
-    if (frequency == 'weekly') {
-      return widget.weekdayOptions;
+  List<MapEntry<int, String>> _buildDueOptions(FinancialCycle frequency) {
+    if (frequency == FinancialCycle.weekly) {
+      return ProfileUtils.weekdayOptions;
     }
 
     return List.generate(
       31,
       (index) => MapEntry(index + 1, 'Tanggal ${index + 1}'),
     );
-  }
-
-  Future<void> _handleDueDateTap() async {
-    final pickedDate = await _pickDueDateInCurrentMonth(
-      context,
-      _selectedDueValue,
-    );
-    if (!mounted || pickedDate == null) {
-      return;
-    }
-
-    setState(() {
-      _selectedDueValue = pickedDate.day;
-      _dueDateController.text = _monthlyDueText(_selectedDueValue);
-    });
-  }
-
-  void _handleSave() {
-    final name = _nameController.text.trim();
-    final amount = CurrencyFormatter.parse(_amountController.text);
-
-    if (name.isEmpty || amount <= 0) {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        const SnackBar(
-          content: Text('Nama dan nominal pengeluaran wajib diisi'),
-          backgroundColor: AppColors.danger100,
-        ),
-      );
-      return;
-    }
-
-    final editingIndex = widget.editingIndex;
-    if (widget.isEditing && editingIndex != null) {
-      widget.draftCubit.updateFixedCostAt(
-        index: editingIndex,
-        name: name,
-        amount: amount,
-        category: _category.name,
-        categoryId: _category.id,
-        cycle: _frequency,
-        dueValue: _selectedDueValue,
-      );
-    } else {
-      widget.draftCubit.addFixedCost(
-        name: name,
-        amount: amount,
-        category: _category.name,
-        categoryId: _category.id,
-        cycle: _frequency,
-        dueValue: _selectedDueValue,
-      );
-    }
-
-    if (!mounted) {
-      return;
-    }
-    context.pop();
   }
 
   Future<DateTime?> _pickDueDateInCurrentMonth(

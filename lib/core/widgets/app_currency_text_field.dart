@@ -12,6 +12,7 @@ class AppCurrencyTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final void Function(String)? onChanged;
   final TextAlign textAlign;
+  final String? errorText;
 
   const AppCurrencyTextField({
     super.key,
@@ -22,6 +23,7 @@ class AppCurrencyTextField extends StatelessWidget {
     this.prefixIcon,
     this.onChanged,
     this.textAlign = TextAlign.start,
+    this.errorText,
   });
 
   @override
@@ -33,9 +35,9 @@ class AppCurrencyTextField extends StatelessWidget {
           Text(
             label!,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontSize: 14,
-                  color: AppColors.trunks,
-                ),
+              fontSize: 14,
+              color: AppColors.trunks,
+            ),
           ),
           const SizedBox(height: 8),
         ],
@@ -50,12 +52,29 @@ class AppCurrencyTextField extends StatelessWidget {
             FilteringTextInputFormatter.digitsOnly,
             CurrencyInputFormatter(),
           ],
+          errorBuilder: (context, errorText) => switch (textAlign) {
+            TextAlign.center => Center(
+              child: Text(
+                errorText,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.danger100),
+                textAlign: textAlign,
+              ),
+            ),
+            _ => Text(
+              errorText,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.danger100),
+            ),
+          },
           decoration: InputDecoration(
+            errorText: errorText,
             hintText: hint,
-            hintStyle: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColors.trunks),
+            hintStyle: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
             prefixIcon: prefixIcon,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSizes.spacing5,

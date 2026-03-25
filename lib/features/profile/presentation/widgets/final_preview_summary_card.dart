@@ -3,7 +3,7 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/calculate_onboarding_budget_usecase.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/final_preview_summary_row.dart';
 
 class FinalPreviewSummaryCard extends StatelessWidget {
@@ -24,7 +24,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
   });
 
   final BudgetHealthScenario scenario;
-  final BudgetCycle cycle;
+  final FinancialCycle cycle;
   final int initialBalance;
   final int safetyCeiling;
   final int safetyFlooring;
@@ -38,7 +38,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cycleLabel = cycle == BudgetCycle.weekly ? 'Mingguan' : 'Bulanan';
+    final cycleLabel = cycle == FinancialCycle.weekly ? 'Mingguan' : 'Bulanan';
 
     return Column(
       children: [
@@ -169,9 +169,6 @@ class FinalPreviewSummaryCard extends StatelessWidget {
     }
 
     if (scenario == BudgetHealthScenario.critical) {
-      final bool doesRemainingBalanceLowerThanSafetyFlooring =
-          initialBalance - totalFixedCost < safetyFlooring;
-
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(AppSizes.spacing4),
@@ -195,12 +192,12 @@ class FinalPreviewSummaryCard extends StatelessWidget {
             FinalPreviewSummaryRow(
               label: 'Bertahan Hidup',
               value:
-                  'Rp ${CurrencyFormatter.format(doesRemainingBalanceLowerThanSafetyFlooring ? initialBalance - totalFixedCost : recommendedDailyBudget)}/hari',
+                  'Rp ${CurrencyFormatter.format(recommendedDailyBudget)}/hari',
               valueColor: AppColors.warning100,
               isLast: true,
             ),
             const SizedBox(height: AppSizes.spacing2),
-            if (doesRemainingBalanceLowerThanSafetyFlooring ||
+            if (recommendedDailyBudget < safetyFlooring ||
                 daysCoveredAtSafetyFloor == 1) ...[
               Text(
                 'Konsekuensi: hanya bertahan hari ini, selanjutnya saldo akan defisit.',

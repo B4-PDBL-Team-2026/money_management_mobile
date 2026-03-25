@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/calculate_onboarding_budget_usecase.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_state.dart';
 
 class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
-  final CalculateOnboardingBudgetUseCase calculateOnboardingBudgetUseCase;
+  final CalculateFinancialProfileUseCase calculateOnboardingBudgetUseCase;
 
   FinancialProfileDraftCubit(this.calculateOnboardingBudgetUseCase)
     : super(FinancialProfileDraftState.initial());
@@ -14,7 +14,7 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     emit(FinancialProfileDraftState.initial());
   }
 
-  void updateBudgetCycle(BudgetCycle budgetCycle) {
+  void updateFinancialCycle(FinancialCycle budgetCycle) {
     emit(state.copyWith(budgetCycle: budgetCycle));
   }
 
@@ -37,7 +37,7 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     required int categoryId,
     CategoryType categoryType = CategoryType.system,
     bool isActive = true,
-    required String cycle,
+    required FinancialCycle cycle,
     required int dueValue,
   }) {
     final updatedFixedCosts = List<FixedCostEntity>.from(state.fixedCosts)
@@ -76,7 +76,7 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     required int categoryId,
     CategoryType categoryType = CategoryType.system,
     bool isActive = true,
-    required String cycle,
+    required FinancialCycle cycle,
     required int dueValue,
   }) {
     if (index < 0 || index >= state.fixedCosts.length) {

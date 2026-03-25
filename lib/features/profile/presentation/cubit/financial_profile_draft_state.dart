@@ -2,7 +2,7 @@ import 'package:money_management_mobile/features/profile/domain/entities/financi
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 
 class FinancialProfileDraftState {
-  final BudgetCycle budgetCycle;
+  final FinancialCycle budgetCycle;
   final int initialBalance;
   final int safetyCeiling;
   final int safetyFlooring;
@@ -18,7 +18,7 @@ class FinancialProfileDraftState {
 
   factory FinancialProfileDraftState.initial() {
     return const FinancialProfileDraftState(
-      budgetCycle: BudgetCycle.monthly,
+      budgetCycle: FinancialCycle.monthly,
       initialBalance: 0,
       safetyCeiling: 0,
       safetyFlooring: 0,
@@ -27,7 +27,7 @@ class FinancialProfileDraftState {
   }
 
   FinancialProfileDraftState copyWith({
-    BudgetCycle? budgetCycle,
+    FinancialCycle? budgetCycle,
     int? initialBalance,
     int? safetyCeiling,
     int? safetyFlooring,

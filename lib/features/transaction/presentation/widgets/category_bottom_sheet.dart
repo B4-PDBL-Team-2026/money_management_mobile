@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_grid_item.dart';
 
 class CategoryBottomSheet extends StatefulWidget {
@@ -11,8 +12,8 @@ class CategoryBottomSheet extends StatefulWidget {
     required this.selectedCategory,
   });
 
-  final Map<String, IconData> categories;
-  final String selectedCategory;
+  final List<CategoryEntity> categories;
+  final int selectedCategory;
 
   @override
   State<CategoryBottomSheet> createState() => _CategoryBottomSheetState();
@@ -30,8 +31,11 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredCategories = widget.categories.entries
-        .where((e) => e.key.toLowerCase().contains(_searchQuery.toLowerCase()))
+    final filteredCategories = widget.categories
+        .where(
+          (category) =>
+              category.name.toLowerCase().contains(_searchQuery.toLowerCase()),
+        )
         .toList();
 
     final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
@@ -99,14 +103,15 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
                             mainAxisExtent: 80,
                           ),
                       itemBuilder: (context, index) {
-                        final entry = filteredCategories[index];
-                        final isSelected = widget.selectedCategory == entry.key;
+                        final category = filteredCategories[index];
+                        final isSelected =
+                            widget.selectedCategory == category.id;
 
                         return CategoryGridItem(
-                          categoryName: entry.key,
-                          categoryIcon: entry.value,
+                          categoryName: category.name,
+                          categoryIcon: category.icon,
                           isSelected: isSelected,
-                          onTap: () => Navigator.of(context).pop(entry.key),
+                          onTap: () => Navigator.of(context).pop(category.id),
                         );
                       },
                     ),

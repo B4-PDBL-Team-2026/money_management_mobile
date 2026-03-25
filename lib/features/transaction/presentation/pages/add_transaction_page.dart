@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
@@ -8,11 +9,13 @@ import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_segmented_control.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_bottom_sheet.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_grid_item.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-
-enum TransactionType { expense, income }
 
 class AddTransactionPage extends StatefulWidget {
   const AddTransactionPage({super.key});
@@ -27,37 +30,24 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   final _dateController = TextEditingController();
   final _noteController = TextEditingController();
 
-  final _expenseIconCategory = {
-    'Food': PhosphorIconsRegular.bowlFood,
-    'Transport': PhosphorIconsRegular.carSimple,
-    'Entertainment': PhosphorIconsRegular.gameController,
-    'Shopping': PhosphorIconsRegular.shoppingBag,
-    'Health': PhosphorIconsRegular.heart,
-    'Education': PhosphorIconsRegular.book,
-    'Other': PhosphorIconsRegular.tag,
-  };
-
-  final _incomeIconCategory = {
-    'Salary': PhosphorIconsRegular.wallet,
-    'Gift': PhosphorIconsRegular.gift,
-    'Investment': PhosphorIconsRegular.chartLineUp,
-    'Other': PhosphorIconsRegular.tag,
-  };
+  final List<CategoryEntity> _expenseCategories = [];
+  final List<CategoryEntity> _incomeCategories = [];
 
   TransactionType _selectedTransactionType = TransactionType.expense;
-  String _selectedCategory = 'Other';
+  int _selectedCategory = 0;
   DateTime _selectedDate = DateTime.now();
-
-  Map<String, IconData> get _currentCategoryIcons =>
-      switch (_selectedTransactionType) {
-        TransactionType.expense => _expenseIconCategory,
-        TransactionType.income => _incomeIconCategory,
-      };
 
   @override
   void initState() {
     super.initState();
     _dateController.text = _formatDate(_selectedDate);
+
+    final state = context.read<CategoryCubit>().state;
+
+    if (state is CategoryLoaded) {
+      _expenseCategories.addAll(state.expenseCategories);
+      _incomeCategories.addAll(state.incomeCategories);
+    }
   }
 
   @override
@@ -103,7 +93,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   }
 
   Future<void> _showCategoryBottomSheet(BuildContext context) async {
-    final result = await showModalBottomSheet<String>(
+    final result = await showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -113,7 +103,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         ),
       ),
       builder: (_) => CategoryBottomSheet(
-        categories: _currentCategoryIcons,
+        categories: _selectedTransactionType == TransactionType.expense
+            ? _expenseCategories
+            : _incomeCategories,
         selectedCategory: _selectedCategory,
       ),
     );
@@ -127,6 +119,12 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isExpenseSelected =
+        _selectedTransactionType == TransactionType.expense;
+    final currentCategories = isExpenseSelected
+        ? _expenseCategories
+        : _incomeCategories;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -208,7 +206,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   onChanged: (value) {
                     setState(() {
                       _selectedTransactionType = value;
-                      _selectedCategory = 'Other';
+                      _selectedCategory = 0;
                     });
                   },
                 ),
@@ -252,7 +250,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _currentCategoryIcons.length.clamp(0, 8),
+                  itemCount: currentCategories.length.clamp(0, 8),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
                     crossAxisSpacing: AppSizes.spacing4,
@@ -260,16 +258,16 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     mainAxisExtent: 80,
                   ),
                   itemBuilder: (context, index) {
-                    final item = _currentCategoryIcons.entries.elementAt(index);
+                    final category = currentCategories[index];
 
                     return CategoryGridItem(
-                      categoryName: item.key,
-                      categoryIcon: item.value,
-                      isSelected: _selectedCategory == item.key,
+                      categoryName: category.name,
+                      categoryIcon: category.icon,
+                      isSelected: _selectedCategory == category.id,
                       onTap: () {
-                        if (_selectedCategory != item.key) {
+                        if (_selectedCategory != category.id) {
                           setState(() {
-                            _selectedCategory = item.key;
+                            _selectedCategory = category.id;
                           });
                         }
                       },

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
+import 'package:money_management_mobile/core/network/interceptors/logging_interceptor.dart';
 import 'package:money_management_mobile/features/auth/data/data_sources/local/auth_local_data_source.dart';
 
 Dio createDioClient(AuthLocalDataSource authLocalDataSource) {
@@ -25,6 +26,8 @@ Dio createDioClient(AuthLocalDataSource authLocalDataSource) {
       },
     ),
   );
+
+  dio.interceptors.add(LoggingInterceptor());
 
   return dio;
 }

@@ -15,3 +15,9 @@ final class RegisterError extends RegisterState {
 
   RegisterError(this.message);
 }
+
+final class RegisterValidationError extends RegisterState {
+  final Map<String, dynamic>? errors;
+
+  RegisterValidationError(this.errors);
+}
