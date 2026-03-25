@@ -9,7 +9,7 @@ class DefaultCategories {
     'student': PhosphorIconsRegular.student,
     'film_reel': PhosphorIconsRegular.filmReel,
     'shopping_bag': PhosphorIconsRegular.shoppingBag,
-    'heartbeat': PhosphorIconsRegular.heartbeat,
+    'heart_beat': PhosphorIconsRegular.heartbeat,
     'hand_heart': PhosphorIconsRegular.handHeart,
     'money': PhosphorIconsRegular.money,
     'wallet': PhosphorIconsRegular.wallet,

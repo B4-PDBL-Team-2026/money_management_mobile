@@ -6,11 +6,11 @@ import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
 
 class AddFixedCostBottomSheet extends StatefulWidget {
   const AddFixedCostBottomSheet({
@@ -24,7 +24,7 @@ class AddFixedCostBottomSheet extends StatefulWidget {
 
   final FinancialProfileDraftCubit draftCubit;
   final bool isMainCycleWeekly;
-  final List<Category> expenseCategories;
+  final List<CategoryEntity> expenseCategories;
   final int? editingIndex;
   final FixedCostEntity? initialItem;
 
@@ -43,7 +43,7 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
   final TextEditingController _dueDateController = TextEditingController();
 
   late FinancialCycle _frequency;
-  late Category _category;
+  late CategoryEntity _category;
   late List<MapEntry<int, String>> _dueOptions;
   late int _selectedDueValue;
 
@@ -171,7 +171,7 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
                 },
               ),
               const SizedBox(height: AppSizes.spacing4),
-              DropdownButtonFormField<Category>(
+              DropdownButtonFormField<CategoryEntity>(
                 initialValue: _category,
                 decoration: _dropdownDecoration(context, 'Kategori'),
                 items: widget.expenseCategories

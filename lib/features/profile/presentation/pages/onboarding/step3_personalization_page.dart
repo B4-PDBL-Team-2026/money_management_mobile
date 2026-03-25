@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:money_management_mobile/core/constants/default_categories.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
+import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
@@ -15,7 +17,6 @@ import 'package:money_management_mobile/features/profile/presentation/utils/prof
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_bottom_sheet.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/step_progress_indicator.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
 
 class Step3PersonalizationPage extends StatefulWidget {
   const Step3PersonalizationPage({super.key});
@@ -26,7 +27,18 @@ class Step3PersonalizationPage extends StatefulWidget {
 }
 
 class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
-  List<Category> get _expenseCategories => DefaultCategories.expenses;
+  final List<CategoryEntity> _expenseCategories = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final state = context.read<CategoryCubit>().state;
+
+    if (state is CategoryLoaded) {
+      _expenseCategories.addAll(state.expenseCategories);
+    }
+  }
 
   void _showAddExpenseBottomSheet() {
     final draftCubit = context.read<FinancialProfileDraftCubit>();
