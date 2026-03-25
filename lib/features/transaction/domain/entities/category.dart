@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-enum CategoryType { expense, income }
+enum TransactionType { expense, income }
 
 class Category {
   final int id;
   final String name;
   final IconData icon;
-  final CategoryType type;
+  final TransactionType type;
 
   const Category({
     required this.id,

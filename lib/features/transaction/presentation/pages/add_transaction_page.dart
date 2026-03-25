@@ -8,11 +8,10 @@ import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_segmented_control.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_bottom_sheet.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_grid_item.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-
-enum TransactionType { expense, income }
 
 class AddTransactionPage extends StatefulWidget {
   const AddTransactionPage({super.key});
