@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/data/models/category_model.dart';
-import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryLocalDataSource {
@@ -39,5 +39,9 @@ class CategoryLocalDataSource {
         .toList();
 
     await sharedPreferences.setStringList(_categoriesKey, categoriesJson);
+  }
+
+  Future<void> clearCategories() async {
+    await sharedPreferences.remove(_categoriesKey);
   }
 }

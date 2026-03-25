@@ -6,7 +6,7 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
-import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';

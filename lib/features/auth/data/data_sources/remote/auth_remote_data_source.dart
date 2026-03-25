@@ -134,47 +134,22 @@ class AuthRemoteDataSource {
     }
   }
 
-  Future<void> logout({required bool hasToken}) async {
+  Future<void> logout() async {
     _log.fine('Sending logout request');
 
     if (AppEnv.useMockApi) {
       _log.info('USE_MOCK_API enabled, simulating logout response');
       await Future.delayed(const Duration(seconds: 1));
-
-      if (!hasToken) {
-        throw DioException(
-          requestOptions: RequestOptions(
-            path: '/auth/logout',
-            method: 'DELETE',
-          ),
-          response: Response(
-            requestOptions: RequestOptions(
-              path: '/auth/logout',
-              method: 'DELETE',
-            ),
-            statusCode: 401,
-            data: {'message': 'Unauthorized'},
-          ),
-          type: DioExceptionType.badResponse,
-          message: 'Mock unauthorized logout',
-        );
-      }
-
       return;
     }
 
-    final response = await dio.delete('/auth/logout');
-
-    _log.fine('Logout response received: ${response.statusCode}');
-    _log.fine('Logout response data: ${response.data}');
-
-    if (response.statusCode != 200) {
-      throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse,
-        message: 'Unexpected logout status code: ${response.statusCode}',
-      );
+    try {
+      await dio.delete('/auth/logout');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Logout');
+    } catch (e) {
+      _log.severe('Unexpected logout error', e);
+      throw UnexpectedException('Terjadi kesalahan sistem saat logout');
     }
   }
 }

@@ -1,13 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/features/category/domain/usecases/clear_categories_usecase.dart';
 import 'package:money_management_mobile/features/category/domain/usecases/get_categories_usecase.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 
 class CategoryCubit extends Cubit<CategoryState> {
   final GetCategoriesUsecase getCategoriesUsecase;
+  final ClearCategoriesUsecase clearCategoriesUsecase;
 
-  CategoryCubit(this.getCategoriesUsecase) : super(CategoryInitial());
+  CategoryCubit(this.getCategoriesUsecase, this.clearCategoriesUsecase)
+    : super(CategoryInitial());
 
   Future<void> fetchCategories() async {
     if (state is CategoryLoading) return;
@@ -37,5 +40,10 @@ class CategoryCubit extends Cubit<CategoryState> {
         );
       }
     }
+  }
+
+  Future<void> clearCategories() async {
+    await clearCategoriesUsecase.execute();
+    emit(CategoryInitial());
   }
 }

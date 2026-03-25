@@ -16,6 +16,7 @@ import 'package:money_management_mobile/features/category/data/data_sources/loca
 import 'package:money_management_mobile/features/category/data/data_sources/remote/category_remote_data_sources.dart';
 import 'package:money_management_mobile/features/category/data/repositories/category_repository_impl.dart';
 import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
+import 'package:money_management_mobile/features/category/domain/usecases/clear_categories_usecase.dart';
 import 'package:money_management_mobile/features/category/domain/usecases/get_categories_usecase.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/profile/data/data_sources/remote/profile_remote_data_source.dart';
@@ -94,5 +95,8 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<GetCategoriesUsecase>(
     () => GetCategoriesUsecase(sl()),
   );
-  sl.registerLazySingleton<CategoryCubit>(() => CategoryCubit(sl()));
+  sl.registerLazySingleton<ClearCategoriesUsecase>(
+    () => ClearCategoriesUsecase(sl()),
+  );
+  sl.registerLazySingleton<CategoryCubit>(() => CategoryCubit(sl(), sl()));
 }

@@ -9,7 +9,7 @@ import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_segmented_control.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
-import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';

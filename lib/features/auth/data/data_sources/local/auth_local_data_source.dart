@@ -55,14 +55,10 @@ class AuthLocalDataSource {
   }
 
   Future<void> clearAll() async {
-    _log.fine('Clearing all auth data from local storage');
-
     await Future.wait([
       sharedPreferences.remove(_keyToken),
       sharedPreferences.remove(_keyUser),
       sharedPreferences.remove(_keyRequiresOnboarding),
     ]);
-
-    _log.fine('All auth data cleared successfully');
   }
 }

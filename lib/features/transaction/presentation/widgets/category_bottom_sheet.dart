@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
-import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_grid_item.dart';
 
 class CategoryBottomSheet extends StatefulWidget {
