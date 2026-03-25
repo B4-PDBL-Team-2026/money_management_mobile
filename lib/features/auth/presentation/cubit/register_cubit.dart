@@ -3,14 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/register_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 
 import 'register_state.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   final RegisterUseCase registerUseCase;
   final SessionCubit sessionCubit;
+  final CategoryCubit categoryCubit;
 
-  RegisterCubit(this.registerUseCase, this.sessionCubit)
+  RegisterCubit(this.registerUseCase, this.sessionCubit, this.categoryCubit)
     : super(RegisterInitial());
 
   Future<void> register(
@@ -34,6 +36,8 @@ class RegisterCubit extends Cubit<RegisterState> {
         token: token,
         requiresOnboarding: requiresOnboarding,
       );
+
+      categoryCubit.fetchCategories();
 
       emit(RegisterSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {

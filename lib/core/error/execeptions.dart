@@ -30,6 +30,22 @@ class ValidationException implements Exception {
   String toString() => "Data yang diberikan tidak valid";
 }
 
+class CacheNotFoundException implements Exception {
+  final String message;
+  CacheNotFoundException([this.message = "Data tidak ditemukan di cache"]);
+
+  @override
+  String toString() => message;
+}
+
+class NotFoundException implements Exception {
+  final String message;
+  NotFoundException([this.message = "Data tidak ditemukan"]);
+
+  @override
+  String toString() => message;
+}
+
 class UnauthorizedException implements Exception {
   final String message;
   UnauthorizedException([this.message = "Akses tidak sah"]);

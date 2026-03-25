@@ -12,6 +12,12 @@ import 'package:money_management_mobile/features/auth/domain/usecases/restore_se
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/category/data/data_sources/local/category_local_data_sources.dart';
+import 'package:money_management_mobile/features/category/data/data_sources/remote/category_remote_data_sources.dart';
+import 'package:money_management_mobile/features/category/data/repositories/category_repository_impl.dart';
+import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
+import 'package:money_management_mobile/features/category/domain/usecases/get_categories_usecase.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/profile/data/data_sources/remote/profile_remote_data_source.dart';
 import 'package:money_management_mobile/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
@@ -24,18 +30,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 final sl = GetIt.instance;
 
 Future<void> initInjectionContainer() async {
-  // third party packages
   final sharedPreferences = await SharedPreferences.getInstance();
+
+  // third party packages
   sl.registerLazySingleton(() => sharedPreferences);
+
+  // Features - Auth
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSource(sl()),
   );
   sl.registerLazySingleton(() => createDioClient(sl<AuthLocalDataSource>()));
-
-  // Features - Auth
-  sl.registerFactory<LoginCubit>(() => LoginCubit(sl(), sl()));
+  sl.registerLazySingleton<LoginCubit>(() => LoginCubit(sl(), sl(), sl()));
   sl.registerLazySingleton<SessionCubit>(() => SessionCubit(sl(), sl(), sl()));
-  sl.registerFactory<RegisterCubit>(() => RegisterCubit(sl(), sl()));
+  sl.registerLazySingleton<RegisterCubit>(
+    () => RegisterCubit(sl(), sl(), sl()),
+  );
   sl.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(sl()));
   sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl()));
   sl.registerLazySingleton<RestoreSessionUseCase>(
@@ -52,7 +61,7 @@ Future<void> initInjectionContainer() async {
     () => AuthRemoteDataSource(sl()),
   );
 
-  // Features - Profile (Onboarding)
+  // Features - Profile
   sl.registerLazySingleton<FinancialProfileDraftCubit>(
     () => FinancialProfileDraftCubit(sl()),
   );
@@ -71,4 +80,19 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<ProfileRemoteDataSource>(
     () => ProfileRemoteDataSource(sl()),
   );
+
+  // Features - Category
+  sl.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(sl(), sl()),
+  );
+  sl.registerLazySingleton<CategoryRemoteDataSource>(
+    () => CategoryRemoteDataSource(sl()),
+  );
+  sl.registerLazySingleton<CategoryLocalDataSource>(
+    () => CategoryLocalDataSource(sl()),
+  );
+  sl.registerLazySingleton<GetCategoriesUsecase>(
+    () => GetCategoriesUsecase(sl()),
+  );
+  sl.registerLazySingleton<CategoryCubit>(() => CategoryCubit(sl()));
 }
