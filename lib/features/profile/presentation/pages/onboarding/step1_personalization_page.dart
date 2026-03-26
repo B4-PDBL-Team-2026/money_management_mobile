@@ -7,6 +7,7 @@ import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_state.dart';
@@ -125,19 +126,38 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                       child: _buildCycleHint(isWeekly),
                     ),
                     const SizedBox(height: AppSizes.spacing10),
-                    AppButton(
-                      text: 'Selanjutnya',
-                      onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          context
-                              .read<FinancialProfileDraftCubit>()
-                              .updateInitialBalance(
-                                CurrencyFormatter.parse(_amountController.text),
-                              );
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppButton(
+                            text: 'Kembali',
+                            variant: AppButtonVariant.ghost,
+                            onPressed: () {
+                              context.read<SessionCubit>().logout();
+                              context.go(AppRouter.welcome);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: AppSizes.spacing4),
+                        Expanded(
+                          child: AppButton(
+                            text: 'Selanjutnya',
+                            onPressed: () {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                context
+                                    .read<FinancialProfileDraftCubit>()
+                                    .updateInitialBalance(
+                                      CurrencyFormatter.parse(
+                                        _amountController.text,
+                                      ),
+                                    );
 
-                          context.push(AppRouter.step2Personalization);
-                        }
-                      },
+                                context.push(AppRouter.step2Personalization);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

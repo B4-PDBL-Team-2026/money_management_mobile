@@ -135,11 +135,10 @@ class AuthRemoteDataSource {
   }
 
   Future<void> logout() async {
-    _log.fine('Sending logout request');
-
     if (AppEnv.useMockApi) {
       _log.info('USE_MOCK_API enabled, simulating logout response');
       await Future.delayed(const Duration(seconds: 1));
+
       return;
     }
 

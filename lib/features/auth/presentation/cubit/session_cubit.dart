@@ -72,7 +72,11 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> logout() async {
-    await logoutUseCase.execute();
+    try {
+      await logoutUseCase.execute();
+    } catch (e) {
+      _log.severe('Error occurred during logout', e);
+    }
 
     emit(SessionUnauthenticated());
   }
