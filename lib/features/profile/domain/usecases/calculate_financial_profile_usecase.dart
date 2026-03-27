@@ -3,7 +3,16 @@ import 'dart:math';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 
-enum BudgetHealthScenario { surplus, moderate, critical, deficit }
+enum BudgetHealthScenario {
+  surplus('Surplus'),
+  moderate('Stabil'),
+  critical('Kritis'),
+  deficit('Defisit');
+
+  final String value;
+
+  const BudgetHealthScenario(this.value);
+}
 
 class FixedCostCalculationItem {
   final FixedCostEntity fixedCost;

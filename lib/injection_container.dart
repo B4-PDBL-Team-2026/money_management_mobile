@@ -19,6 +19,11 @@ import 'package:money_management_mobile/features/category/domain/repositories/ca
 import 'package:money_management_mobile/features/category/domain/usecases/clear_categories_usecase.dart';
 import 'package:money_management_mobile/features/category/domain/usecases/get_categories_usecase.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/data/data_sources/remote/dashboard_remote_data_source.dart';
+import 'package:money_management_mobile/features/dashboard/data/repositories/dashboard_repository_impl.dart';
+import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/profile/data/data_sources/remote/profile_remote_data_source.dart';
 import 'package:money_management_mobile/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
@@ -99,4 +104,18 @@ Future<void> initInjectionContainer() async {
     () => ClearCategoriesUsecase(sl()),
   );
   sl.registerLazySingleton<CategoryCubit>(() => CategoryCubit(sl(), sl()));
+
+  // Features - Dashboard
+  sl.registerLazySingleton<DashboardMetricCubit>(
+    () => DashboardMetricCubit(sl()),
+  );
+  sl.registerLazySingleton<CalculateDashboardMetricsUsecase>(
+    () => CalculateDashboardMetricsUsecase(sl()),
+  );
+  sl.registerLazySingleton<DashboardRemoteDataSource>(
+    () => DashboardRemoteDataSource(),
+  );
+  sl.registerLazySingleton<DashboardRepository>(
+    () => DashboardRepositoryImpl(sl()),
+  );
 }
