@@ -83,12 +83,6 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<CompleteOnboardingUseCase>(
     () => CompleteOnboardingUseCase(sl()),
   );
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(sl(), sl()),
-  );
-  sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSource(sl()),
-  );
 
   // Features - Profile
   sl.registerLazySingleton<FinancialProfileDraftCubit>(
