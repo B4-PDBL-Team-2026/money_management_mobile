@@ -11,21 +11,9 @@ class AuthLocalDataSource {
 
   static const _keyToken = 'auth_token';
   static const _keyUser = 'auth_user';
+  static const _keyRequiresOnboarding = 'auth_requires_onboarding';
 
   AuthLocalDataSource(this.sharedPreferences);
-
-  Future<void> saveSession(UserEntity user, String token) async {
-    _log.fine('Saving auth session to local storage');
-
-    final userModel = UserModel.fromEntity(user);
-
-    await Future.wait([
-      sharedPreferences.setString(_keyToken, token),
-      sharedPreferences.setString(_keyUser, userModel.toRawJson()),
-    ]);
-
-    _log.fine('Auth session saved successfully');
-  }
 
   String? getToken() {
     final token = sharedPreferences.getString(_keyToken);
@@ -35,6 +23,10 @@ class AuthLocalDataSource {
     );
 
     return token;
+  }
+
+  Future<void> storeToken(String token) async {
+    await sharedPreferences.setString(_keyToken, token);
   }
 
   UserEntity? getUser() {
@@ -49,26 +41,24 @@ class AuthLocalDataSource {
     return UserModel.fromJson(jsonDecode(rawUser) as Map<String, dynamic>);
   }
 
-  (UserEntity, String)? getSession() {
-    final user = getUser();
-    final token = getToken();
-
-    if (user == null || token == null) {
-      _log.fine('Auth session is incomplete in local storage');
-      return null;
-    }
-
-    return (user, token);
+  Future<void> storeUser(UserEntity user) async {
+    final userModel = UserModel.fromEntity(user);
+    await sharedPreferences.setString(_keyUser, userModel.toRawJson());
   }
 
-  Future<void> clearSession() async {
-    _log.fine('Clearing auth session from local storage');
+  bool? getRequiresOnboarding() {
+    return sharedPreferences.getBool(_keyRequiresOnboarding);
+  }
 
+  Future<void> storeRequiresOnboarding(bool requiresOnboarding) async {
+    await sharedPreferences.setBool(_keyRequiresOnboarding, requiresOnboarding);
+  }
+
+  Future<void> clearAll() async {
     await Future.wait([
       sharedPreferences.remove(_keyToken),
       sharedPreferences.remove(_keyUser),
+      sharedPreferences.remove(_keyRequiresOnboarding),
     ]);
-
-    _log.fine('Auth session cleared successfully');
   }
 }

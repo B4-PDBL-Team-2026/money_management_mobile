@@ -16,6 +16,7 @@ class AppTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final VoidCallback? onTap;
   final int? maxLines;
+  final String? errorText;
 
   const AppTextField({
     super.key,
@@ -31,6 +32,7 @@ class AppTextField extends StatefulWidget {
     this.onChanged,
     this.onTap,
     this.maxLines = 1,
+    this.errorText,
   });
 
   @override
@@ -74,6 +76,10 @@ class _AppTextFieldState extends State<AppTextField> {
           style: Theme.of(context).textTheme.bodyMedium,
           maxLines: widget.isPassword ? 1 : widget.maxLines,
           decoration: InputDecoration(
+            errorText: widget.errorText,
+            errorStyle: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.danger100),
             hintText: widget.hint,
             hintStyle: Theme.of(
               context,

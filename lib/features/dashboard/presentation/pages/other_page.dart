@@ -1,13 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/widgets/app_confirm_dialog.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_profile_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_tile.dart';
 
 class OtherPage extends StatelessWidget {
   const OtherPage({super.key});
+
+  Future<void> _onLogoutTap(BuildContext context) async {
+    final confirmed = await AppConfirmDialog.show(
+      context: context,
+      title: 'Keluar dari akun?',
+      content: 'Sesi login akan dihapus dari perangkat ini.',
+      confirmText: 'Keluar',
+      cancelText: 'Batal',
+      confirmButtonType: AppButtonType.danger,
+    );
+
+    if (!confirmed || !context.mounted) {
+      return;
+    }
+
+    try {
+      await context.read<CategoryCubit>().clearCategories();
+
+      if (context.mounted) {
+        await context.read<SessionCubit>().logout();
+      }
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.danger100,
+          content: const Text(
+            'Gagal logout. Coba lagi.',
+            style: TextStyle(color: AppColors.gohan),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +115,7 @@ class OtherPage extends StatelessWidget {
                     subtitle: 'Logout dari akun ini',
                     iconBackground: AppColors.danger10,
                     iconColor: AppColors.danger100,
-                    onTap: () {},
+                    onTap: () => _onLogoutTap(context),
                   ),
                 ],
               ),

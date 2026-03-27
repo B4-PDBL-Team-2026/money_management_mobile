@@ -1,10 +1,20 @@
 import 'package:money_management_mobile/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthRepository {
-  Future<void> register(String name, String email, String password);
-  Future<(UserEntity, String)> login(String email, String password);
-  Future<void> saveSession(UserEntity user, String token);
-  (UserEntity, String)? getSavedSession();
+  Future<(UserEntity, String, bool)> register(
+    String name,
+    String email,
+    String password,
+    String passwordConfirmation,
+  );
+  Future<(UserEntity, String, bool)> login(String email, String password);
+  Future<void> saveSession(
+    UserEntity user,
+    String token, {
+    required bool requiresOnboarding,
+  });
+  (UserEntity, String, bool)? getSavedSession();
   String? getToken();
+  Future<void> updateRequiresOnboarding(bool requiresOnboarding);
   Future<void> clearSession();
 }

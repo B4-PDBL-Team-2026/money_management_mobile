@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class AppColors {
@@ -15,6 +14,10 @@ class AppColors {
   static const Color danger100 = Color(0xFFFF4E64);
   static const Color danger60 = Color(0xFFFF9CA8);
   static const Color danger10 = Color(0xFFFFEAEC);
+
+  static const Color warning100 = Color(0xFFED6C02);
+  static const Color warning60 = Color(0xFFFFB74D);
+  static const Color warning10 = Color(0xFFFFF3E0);
 
   static const Color success100 = Color(0xFF2E7D32);
   static const Color success60 = Color(0xFF8AB68C);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_mobile/core/constants/default_categories.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -13,7 +14,7 @@ class CategoryGridItem extends StatelessWidget {
   });
 
   final String categoryName;
-  final IconData categoryIcon;
+  final String categoryIcon;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -31,7 +32,8 @@ class CategoryGridItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             ),
             child: PhosphorIcon(
-              categoryIcon,
+              DefaultCategories.iconMapping[categoryIcon] ??
+                  PhosphorIconsRegular.tag,
               color: isSelected ? AppColors.gohan : AppColors.trunks,
               size: AppSizes.spacing6,
             ),

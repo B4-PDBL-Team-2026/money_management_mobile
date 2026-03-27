@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
+import 'package:money_management_mobile/core/error/error_handler.dart';
+import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/data/models/user_model.dart';
 
 class AuthRemoteDataSource {
@@ -9,20 +11,85 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource(this.dio);
 
-  Future<void> register(String name, String email, String password) async {
-    _log.fine('Sending register request for email: $email');
-    _log.fine('Request payload: {name: $name, email: $email, password: ***}');
+  bool _parseRequiresOnboarding(dynamic value, {required bool defaultValue}) {
+    if (value is bool) {
+      return value;
+    }
 
-    // TODO: Implement API call to register user
-    await Future.delayed(const Duration(seconds: 2));
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      if (normalized == 'true' || normalized == '1') {
+        return true;
+      }
+      if (normalized == 'false' || normalized == '0') {
+        return false;
+      }
+    }
 
-    _log.fine('Register response received successfully');
+    if (value is num) {
+      return value == 1;
+    }
+
+    return defaultValue;
   }
 
-  Future<(UserModel, String)> login(String email, String password) async {
-    _log.fine('Sending login request for email: $email');
-    _log.fine('Request payload: {email: $email, password: ***}');
+  Future<(UserModel, String, bool)> register(
+    String name,
+    String email,
+    String password,
+    String passwordConfirmation,
+  ) async {
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, returning dummy register response');
+      await Future.delayed(const Duration(seconds: 1));
 
+      final now = DateTime.now().toUtc();
+      final dummyUser = UserModel(
+        id: 1,
+        name: name,
+        email: email,
+        emailVerifiedAt: null,
+        goal: null,
+        cycleType: null,
+        cycleStart: null,
+        balance: null,
+        profileUrl: null,
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      return (dummyUser, 'dev-register-token', true);
+    }
+
+    try {
+      final response = await dio.post(
+        '/auth/register',
+        data: {
+          'name': name,
+          'email': email,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+        },
+      );
+
+      final data = response.data['data'] as Map<String, dynamic>;
+      final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      final token = data['token'] as String;
+      final requiresOnboarding = _parseRequiresOnboarding(
+        data['requires_onboarding'],
+        defaultValue: true,
+      );
+
+      return (user, token, requiresOnboarding);
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Register');
+    } catch (e) {
+      _log.severe('Unexpected register error', e);
+      throw UnexpectedException('Terjadi kesalahan sistem saat registrasi');
+    }
+  }
+
+  Future<(UserModel, String, bool)> login(String email, String password) async {
     if (AppEnv.useMockApi) {
       _log.info('USE_MOCK_API enabled, returning dummy login response');
       await Future.delayed(const Duration(seconds: 1));
@@ -41,21 +108,47 @@ class AuthRemoteDataSource {
         updatedAt: DateTime.now().toUtc(),
       );
 
-      return (dummyUser, 'dev-token');
+      return (dummyUser, 'dev-token', false);
     }
 
-    final response = await dio.post(
-      '/auth/login',
-      data: {'email': email, 'password': password},
-    );
+    try {
+      final response = await dio.post(
+        '/auth/login',
+        data: {'email': email, 'password': password},
+      );
 
-    _log.fine('Login response received: ${response.statusCode}');
-    _log.fine('Login response data: ${response.data}');
+      final data = response.data['data'] as Map<String, dynamic>;
+      final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      final token = data['token'] as String;
+      final requiresOnboarding = _parseRequiresOnboarding(
+        data['requires_onboarding'],
+        defaultValue: false,
+      );
 
-    final data = response.data['data'] as Map<String, dynamic>;
-    final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
-    final token = data['token'] as String;
+      return (user, token, requiresOnboarding);
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Login');
+    } catch (e) {
+      _log.severe('Unexpected login error', e);
+      throw UnexpectedException('Terjadi kesalahan sistem saat login');
+    }
+  }
 
-    return (user, token);
+  Future<void> logout() async {
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, simulating logout response');
+      await Future.delayed(const Duration(seconds: 1));
+
+      return;
+    }
+
+    try {
+      await dio.delete('/auth/logout');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Logout');
+    } catch (e) {
+      _log.severe('Unexpected logout error', e);
+      throw UnexpectedException('Terjadi kesalahan sistem saat logout');
+    }
   }
 }
