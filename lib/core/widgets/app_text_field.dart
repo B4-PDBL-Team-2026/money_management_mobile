@@ -17,6 +17,7 @@ class AppTextField extends StatefulWidget {
   final VoidCallback? onTap;
   final int? maxLines;
   final String? errorText;
+  final bool? isDisabled;
 
   const AppTextField({
     super.key,
@@ -33,6 +34,7 @@ class AppTextField extends StatefulWidget {
     this.onTap,
     this.maxLines = 1,
     this.errorText,
+    this.isDisabled = false,
   });
 
   @override
@@ -75,6 +77,7 @@ class _AppTextFieldState extends State<AppTextField> {
           onTap: widget.onTap,
           style: Theme.of(context).textTheme.bodyMedium,
           maxLines: widget.isPassword ? 1 : widget.maxLines,
+          enabled: widget.isDisabled != true,
           decoration: InputDecoration(
             errorText: widget.errorText,
             errorStyle: Theme.of(

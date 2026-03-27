@@ -13,6 +13,7 @@ class AppCurrencyTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final TextAlign textAlign;
   final String? errorText;
+  final bool? isDisabled;
 
   const AppCurrencyTextField({
     super.key,
@@ -24,6 +25,7 @@ class AppCurrencyTextField extends StatelessWidget {
     this.onChanged,
     this.textAlign = TextAlign.start,
     this.errorText,
+    this.isDisabled = false,
   });
 
   @override
@@ -47,6 +49,7 @@ class AppCurrencyTextField extends StatelessWidget {
           keyboardType: TextInputType.number,
           validator: validator,
           onChanged: onChanged,
+          enabled: isDisabled != true,
           style: Theme.of(context).textTheme.titleLarge,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
