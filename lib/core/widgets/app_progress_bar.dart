@@ -19,7 +19,7 @@ class AppProgressBar extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
-        final labelWidth = 37.0;
+        final labelWidth = progress > 1 ? 50.0 : 37.0;
         final currentProgressWidth = maxWidth * progress;
 
         return Column(
@@ -44,6 +44,8 @@ class AppProgressBar extends StatelessWidget {
                         '${(progress * 100).toInt()}%',
                         textAlign: progress == 0
                             ? TextAlign.left
+                            : progress > 1
+                            ? TextAlign.right
                             : TextAlign.center,
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: AppColors.gohan,

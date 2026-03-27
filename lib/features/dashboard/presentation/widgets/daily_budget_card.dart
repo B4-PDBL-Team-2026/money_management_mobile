@@ -4,13 +4,28 @@ import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_container_card.dart';
 import 'package:money_management_mobile/core/widgets/app_progress_bar.dart';
+import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
 
 class DailyBudgetCard extends StatelessWidget {
-  const DailyBudgetCard({super.key});
+  final int dailyExpense;
+  final int dailyLimit;
+  final String limitName;
+  final DashboardLimitState limitState;
+  final BudgetHealthScenario healthScenario;
+
+  const DailyBudgetCard({
+    super.key,
+    required this.dailyExpense,
+    required this.dailyLimit,
+    required this.limitName,
+    required this.limitState,
+    required this.healthScenario,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AppCardContainer(
+    return AppContainerCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -23,7 +38,7 @@ class DailyBudgetCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.spacing4),
           Text(
-            'Rp ${CurrencyFormatter.format(32000)}',
+            'Rp ${CurrencyFormatter.format(dailyExpense)}',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
               color: AppColors.gohan,
               fontWeight: FontWeight.bold,
@@ -31,20 +46,25 @@ class DailyBudgetCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSizes.spacing4),
-          AppProgressBar(progress: 0.75, color: Colors.green),
+          AppProgressBar(
+            progress: dailyExpense / dailyLimit,
+            color: healthScenario == BudgetHealthScenario.deficit
+                ? Colors.red
+                : _resolveProgressColor(limitState),
+          ),
           const SizedBox(height: AppSizes.spacing2),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Batas optimal',
+                limitName,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.gohan,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                'Rp ${CurrencyFormatter.format(50000)}',
+                'Rp ${CurrencyFormatter.format(dailyLimit)}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.gohan,
                   fontWeight: FontWeight.bold,
@@ -55,5 +75,13 @@ class DailyBudgetCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color _resolveProgressColor(DashboardLimitState limitState) {
+    return switch (limitState) {
+      DashboardLimitState.underFirstLimit => Colors.green,
+      DashboardLimitState.overFirstLimit => Colors.orange,
+      DashboardLimitState.overLastLimit => Colors.red,
+    };
   }
 }

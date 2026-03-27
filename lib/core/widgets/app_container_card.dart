@@ -2,23 +2,29 @@ import 'package:flutter/widgets.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
-class AppCardContainer extends StatelessWidget {
+class AppContainerCard extends StatelessWidget {
   final Widget child;
+  final double? width;
+  final double? height;
   final Color? backgroundColor;
   final BoxBorder? border;
   final EdgeInsetsGeometry? padding;
 
-  const AppCardContainer({
+  const AppContainerCard({
     super.key,
     required this.child,
     this.border,
     this.backgroundColor,
+    this.width,
+    this.height,
     this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width,
+      height: height,
       padding: padding ?? EdgeInsets.all(AppSizes.spacing4),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.primary,
