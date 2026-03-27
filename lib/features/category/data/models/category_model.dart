@@ -1,5 +1,5 @@
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
 class CategoryModel extends CategoryEntity {
   CategoryModel({
@@ -21,11 +21,6 @@ class CategoryModel extends CategoryEntity {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'icon': icon,
-      'type': type == TransactionType.income ? 'income' : 'expense',
-    };
+    return {'id': id, 'name': name, 'icon': icon, 'type': type.value};
   }
 }

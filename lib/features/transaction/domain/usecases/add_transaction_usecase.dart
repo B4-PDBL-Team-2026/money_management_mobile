@@ -9,18 +9,20 @@ class AddTransactionUseCase {
   Future<TransactionEntity> execute({
     required String name,
     required int amount,
-    required TransactionKind type,
+    required TransactionType type,
     required int categoryId,
     required DateTime transactionDate,
     String? note,
   }) {
     return repository.addTransaction(
-      name: name,
-      amount: amount,
-      type: type,
-      categoryId: categoryId,
-      transactionDate: transactionDate,
-      note: note,
+      TransactionEntity(
+        name: name,
+        amount: amount,
+        type: type,
+        categoryId: categoryId,
+        transactionDate: transactionDate,
+        note: note,
+      ),
     );
   }
 }

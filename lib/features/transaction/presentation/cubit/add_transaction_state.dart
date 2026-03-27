@@ -17,3 +17,9 @@ final class AddTransactionError extends AddTransactionState {
 
   AddTransactionError(this.message);
 }
+
+final class AddTransactionValidationError extends AddTransactionState {
+  final Map<String, dynamic>? errors;
+
+  AddTransactionValidationError(this.errors);
+}

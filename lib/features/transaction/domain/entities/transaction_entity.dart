@@ -1,25 +1,26 @@
-enum TransactionKind { expense, income }
+enum TransactionType {
+  expense('expense'),
+  income('income');
+
+  final String value;
+
+  const TransactionType(this.value);
+}
 
 class TransactionEntity {
-  final String id;
   final String name;
   final int amount;
-  final TransactionKind type;
+  final TransactionType type;
   final int categoryId;
-  final DateTime transactionDate;
   final String? note;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime transactionDate;
 
   TransactionEntity({
-    required this.id,
     required this.name,
     required this.amount,
     required this.type,
     required this.categoryId,
     required this.transactionDate,
     this.note,
-    required this.createdAt,
-    required this.updatedAt,
   });
 }

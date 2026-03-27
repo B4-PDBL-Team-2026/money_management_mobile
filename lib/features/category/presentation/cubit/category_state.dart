@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
 sealed class CategoryState {}
 

@@ -5,23 +5,25 @@ import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CategoryGridItem extends StatelessWidget {
+  final String categoryName;
+  final String categoryIcon;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final bool? isDisabled;
+
   const CategoryGridItem({
     super.key,
     required this.categoryName,
     required this.categoryIcon,
     required this.isSelected,
     required this.onTap,
+    this.isDisabled = false,
   });
-
-  final String categoryName;
-  final String categoryIcon;
-  final bool isSelected;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isDisabled == true ? null : onTap,
       child: Column(
         children: [
           Container(

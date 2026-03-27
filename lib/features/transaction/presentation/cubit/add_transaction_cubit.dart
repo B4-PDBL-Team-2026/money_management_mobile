@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
@@ -10,12 +11,12 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   final _log = Logger('AddTransactionCubit');
 
   AddTransactionCubit(this.addTransactionUseCase)
-      : super(AddTransactionInitial());
+    : super(AddTransactionInitial());
 
   Future<void> addTransaction({
     required String name,
     required int amount,
-    required TransactionKind type,
+    required TransactionType type,
     required int categoryId,
     required DateTime transactionDate,
     String? note,
@@ -33,20 +34,25 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         note: note,
       );
 
-      _log.info('Add transaction completed: ${transaction.id}');
       emit(AddTransactionSuccess(transaction));
     } on ServerException catch (e) {
-      _log.severe('Add transaction failed with ServerException', e);
       emit(AddTransactionError(e.message));
     } on NetworkException catch (e) {
-      _log.warning('Add transaction failed with NetworkException', e);
       emit(AddTransactionError(e.message));
     } on UnexpectedException catch (e) {
-      _log.severe('Add transaction failed with UnexpectedException', e);
       emit(AddTransactionError(e.message));
+    } on ValidationException catch (e) {
+      emit(AddTransactionValidationError(e.fieldErrors));
     } catch (e) {
-      _log.severe('Add transaction failed with unknown error', e);
-      emit(AddTransactionError('Terjadi kesalahan: ${e.toString()}'));
+      if (kDebugMode) {
+        emit(AddTransactionError('Terjadi kesalahan: ${e.toString()}'));
+      } else {
+        emit(
+          AddTransactionError(
+            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
+          ),
+        );
+      }
     }
   }
 }

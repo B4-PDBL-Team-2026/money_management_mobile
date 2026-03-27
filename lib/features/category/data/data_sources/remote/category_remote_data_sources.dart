@@ -5,7 +5,7 @@ import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/data/models/category_model.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
 class CategoryRemoteDataSource {
   final Dio dio;

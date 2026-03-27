@@ -1,4 +1,4 @@
-import 'package:money_management_mobile/features/transaction/domain/entities/category.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
 class CategoryEntity {
   final int id;
