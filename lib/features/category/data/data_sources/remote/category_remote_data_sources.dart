@@ -4,7 +4,6 @@ import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/data/models/category_model.dart';
-import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
 class CategoryRemoteDataSource {
@@ -13,24 +12,24 @@ class CategoryRemoteDataSource {
 
   CategoryRemoteDataSource(this.dio);
 
-  Future<List<CategoryEntity>> getCategories() async {
+  Future<List<CategoryModel>> getCategories() async {
     if (AppEnv.useMockApi) {
       await Future.delayed(const Duration(seconds: 1));
 
       return [
-        CategoryEntity(
+        CategoryModel(
           id: 1,
           name: 'Gaji',
           icon: 'wallet',
           type: TransactionType.income,
         ),
-        CategoryEntity(
+        CategoryModel(
           id: 2,
           name: 'Makanan',
           icon: 'bowl_food',
           type: TransactionType.expense,
         ),
-        CategoryEntity(
+        CategoryModel(
           id: 3,
           name: 'Transportasi',
           icon: 'taxi',

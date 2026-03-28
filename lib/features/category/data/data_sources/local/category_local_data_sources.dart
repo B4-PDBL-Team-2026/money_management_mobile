@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/data/models/category_model.dart';
-import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryLocalDataSource {
@@ -12,7 +11,7 @@ class CategoryLocalDataSource {
 
   CategoryLocalDataSource(this.sharedPreferences);
 
-  List<CategoryEntity> getCategories() {
+  List<CategoryModel> getCategories() {
     final categoriesJson = sharedPreferences.getStringList(_categoriesKey);
 
     if (categoriesJson == null) {
@@ -24,7 +23,7 @@ class CategoryLocalDataSource {
         .toList();
   }
 
-  Future<void> storeCategories(List<CategoryEntity> categories) async {
+  Future<void> storeCategories(List<CategoryModel> categories) async {
     final categoriesJson = categories
         .map(
           (category) => jsonEncode(
