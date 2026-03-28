@@ -136,7 +136,7 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: history,
-                    builder: (context, state) => const TransactionHistoryPage(),
+                    builder: (context, state) => TransactionHistoryPage(),
                   ),
                 ],
               ),

@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_container_card.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
-import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:money_management_mobile/features/transaction/presentation/widgets/category_dialog_content.dart';
+import 'package:money_management_mobile/features/transaction/presentation/widgets/month_year_dialog_content.dart';
+import 'package:money_management_mobile/features/transaction/presentation/widgets/summary_card.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_components.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
-  const TransactionHistoryPage({super.key});
+  TransactionHistoryPage({super.key});
+
+  final _defaultCategories = CategoryEntity(
+    id: 0,
+    name: 'Semua',
+    icon: 'default',
+    type: TransactionType.expense,
+  );
 
   @override
   State<TransactionHistoryPage> createState() => _TransactionHistoryState();
@@ -18,17 +30,29 @@ class TransactionHistoryPage extends StatefulWidget {
 class _TransactionHistoryState extends State<TransactionHistoryPage> {
   final _searchController = TextEditingController();
 
-  String selectedMonthYear = 'Februari 2026';
-  String selectedCategory = 'Semua';
+  late int _month;
+  late int _year;
+  late CategoryEntity _selectedCategory;
 
   List<dynamic> transactionList = [];
   int totalPengeluaran = 0;
   int totalPemasukan = 0;
 
   @override
+  void initState() {
+    super.initState();
+
+    _selectedCategory = widget._defaultCategories;
+
+    final now = DateTime.now();
+    _month = now.month;
+    _year = now.year;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppColors.gohan,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
@@ -77,23 +101,24 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
               color: Colors.grey,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSizes.spacing3),
           Row(
             children: [
               Expanded(
-                flex: 10,
                 child: FilterButton(
-                  icon: Icons.calendar_today,
-                  text: selectedMonthYear,
+                  icon: PhosphorIconsRegular.calendarBlank,
+                  text: '${GlobalConstant.monthMapping[_month]} $_year',
                   onTap: _openMonthYearPicker,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSizes.spacing3),
               Expanded(
-                flex: 8,
                 child: FilterButton(
-                  icon: Icons.grid_view_rounded,
-                  text: selectedCategory,
+                  icon:
+                      GlobalConstant.categoryIconsMapping[_selectedCategory
+                          .icon] ??
+                      PhosphorIconsRegular.squaresFour,
+                  text: _selectedCategory.name,
                   onTap: _openCategoryPicker,
                 ),
               ),
@@ -135,7 +160,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
             child: Text(
               '${transactionList.length} Transaksi',
               style: const TextStyle(
-                color: primaryBlue,
+                color: AppColors.primary,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
               ),
@@ -183,20 +208,20 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
             if (showHeader) DateHeader(date: item['date']),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TransactionDetailScreen(
-                      isExpense: item['isExpense'] ?? true,
-                      title: item['title'] ?? '',
-                      nominal: 'Rp ${item['amount']}',
-                      category: item['category'] ?? '',
-                      categoryIcon: item['icon'] ?? Icons.help_outline,
-                      date: item['date'] ?? '',
-                      note: item['note'] ?? '',
-                    ),
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => TransactionDetailScreen(
+                //       isExpense: item['isExpense'] ?? true,
+                //       title: item['title'] ?? '',
+                //       nominal: 'Rp ${item['amount']}',
+                //       category: item['category'] ?? '',
+                //       categoryIcon: item['icon'] ?? Icons.help_outline,
+                //       date: item['date'] ?? '',
+                //       note: item['note'] ?? '',
+                //     ),
+                //   ),
+                // );
               },
               child: TransactionItem(
                 title: item['title'] ?? '',
@@ -213,40 +238,45 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
   }
 
   Future<void> _openMonthYearPicker() async {
-    List<String> currentSelection = selectedMonthYear.split(' ');
-    String tempMonth = currentSelection.isNotEmpty
-        ? currentSelection[0]
-        : 'Februari';
-    String tempYear = currentSelection.length > 1
-        ? currentSelection[1]
-        : '2026';
-
-    final result = await showDialog<String>(
+    // tuple: (month, year)
+    final result = await showDialog<(int, int)>(
       context: context,
       builder: (context) => Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         backgroundColor: Colors.white,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20),
         child: MonthYearDialogContent(
-          initialMonth: tempMonth,
-          initialYear: tempYear,
+          initialMonth: _month,
+          initialYear: _year,
+          startYear: 2024,
         ),
       ),
     );
 
-    if (result != null) setState(() => selectedMonthYear = result);
+    if (result != null) {
+      setState(() {
+        _month = result.$1;
+        _year = result.$2;
+      });
+    }
   }
 
   Future<void> _openCategoryPicker() async {
-    final result = await showDialog<String>(
+    final result = await showDialog<CategoryEntity>(
       context: context,
       builder: (context) => Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         backgroundColor: Colors.white,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-        child: CategoryDialogContent(initialCategory: selectedCategory),
+        child: CategoryDialogContent(
+          defaultCategory: widget._defaultCategories,
+          selectedCategory: _selectedCategory,
+        ),
       ),
     );
-    if (result != null) setState(() => selectedCategory = result);
+
+    if (result != null) {
+      setState(() => _selectedCategory = result);
+    }
   }
 }
