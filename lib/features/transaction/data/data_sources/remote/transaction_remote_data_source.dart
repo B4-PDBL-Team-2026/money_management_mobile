@@ -177,7 +177,7 @@ class TransactionRemoteDataSource {
 
     try {
       final response = await dio.get(
-        '/transaction',
+        '/transaction/transactions',
         queryParameters: {
           'page': page,
           'search': search,
