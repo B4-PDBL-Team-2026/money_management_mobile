@@ -12,13 +12,25 @@ class PaginatedModel<T> extends PaginatedEntity<T> {
     Map<String, dynamic> json,
     T Function(Map<String, dynamic>) fromJsonT,
   ) {
+    final data = json['data'] as Map<String, dynamic>;
+    final dataList = data['data'] as List<dynamic>;
+
     return PaginatedModel(
-      items: (json['data'] as List<dynamic>)
+      items: dataList
           .map((item) => fromJsonT(item as Map<String, dynamic>))
           .toList(),
-      currentPage: json['current_page'] as int,
-      totalPages: json['last_page'] as int,
-      totalItems: json['total'] as int,
+      currentPage: data['current_page'] as int,
+      totalPages: data['last_page'] as int,
+      totalItems: data['total'] as int,
+    );
+  }
+
+  PaginatedEntity<U> toEntity<U>(U Function(T) toEntityT) {
+    return PaginatedEntity<U>(
+      items: items.map((item) => toEntityT(item)).toList(),
+      currentPage: currentPage,
+      totalPages: totalPages,
+      totalItems: totalItems,
     );
   }
 }

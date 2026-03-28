@@ -34,6 +34,6 @@ class TransactionRepositoryImpl implements TransactionRepository {
       year: year,
     );
 
-    return model;
+    return model.toEntity((item) => item.toEntity());
   }
 }

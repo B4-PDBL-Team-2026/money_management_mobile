@@ -20,7 +20,7 @@ class TransactionHistoryModel extends TransactionHistoryEntity {
     return TransactionHistoryModel(
       id: json['id'] as int,
       name: json['name'] as String,
-      amount: json['amount'] as int,
+      amount: double.parse(json['amount'] as String).toInt(),
       type: json['type'] == 'income'
           ? TransactionType.income
           : TransactionType.expense,
@@ -33,6 +33,20 @@ class TransactionHistoryModel extends TransactionHistoryEntity {
           ? DateTime.parse(json['updated_at'] as String)
           : now,
       note: json['note'] as String?,
+    );
+  }
+
+  TransactionHistoryEntity toEntity() {
+    return TransactionHistoryEntity(
+      id: id,
+      name: name,
+      amount: amount,
+      type: type,
+      categoryId: categoryId,
+      transactionDate: transactionDate,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      note: note,
     );
   }
 }
