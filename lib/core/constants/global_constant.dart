@@ -18,6 +18,17 @@ class GlobalConstant {
     'arrow_circle_down': PhosphorIconsRegular.arrowCircleDown,
     'arrow_circle_right': PhosphorIconsRegular.arrowCircleRight,
     'tag': PhosphorIconsRegular.tag,
+    'question': PhosphorIconsRegular.question,
+  };
+
+  static final dayMapping = {
+    1: 'Senin',
+    2: 'Selasa',
+    3: 'Rabu',
+    4: 'Kamis',
+    5: 'Jumat',
+    6: 'Sabtu',
+    7: 'Minggu',
   };
 
   static final monthMapping = {

@@ -1,50 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
-
-class FilterButton extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final VoidCallback onTap;
-
-  const FilterButton({
-    super.key,
-    required this.icon,
-    required this.text,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSizes.spacing3),
-        decoration: BoxDecoration(
-          color: AppColors.lightPrimary,
-          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-        ),
-        child: Row(
-          children: [
-            PhosphorIcon(icon, color: AppColors.primary, size: 20),
-            const SizedBox(width: AppSizes.spacing2),
-            Expanded(
-              child: Text(
-                text,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class EmptyState extends StatelessWidget {
   const EmptyState({super.key});
@@ -112,112 +69,21 @@ class EmptyState extends StatelessWidget {
 }
 
 class DateHeader extends StatelessWidget {
-  final String date;
+  final DateTime date;
   const DateHeader({super.key, required this.date});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 8),
-        Text(
-          date,
-          style: const TextStyle(
-            color: AppColors.primary,
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
-        ),
-        const Divider(color: Colors.black12, thickness: 1, height: 16),
-      ],
-    );
-  }
-}
+    final dayName = GlobalConstant.dayMapping[date.weekday] ?? '';
+    final monthName = GlobalConstant.monthMapping[date.month] ?? '';
+    final dateString = '$dayName, ${date.day} $monthName ${date.year}';
 
-class TransactionItem extends StatelessWidget {
-  final String title;
-  final String category;
-  final String amount;
-  final IconData icon;
-  final bool isExpense;
-  const TransactionItem({
-    super.key,
-    required this.title,
-    required this.category,
-    required this.amount,
-    required this.icon,
-    required this.isExpense,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: isExpense
-                  ? const Color(0xFFFFF4E5)
-                  : const Color(0xFFE8F5E9),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: Colors.black87, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isExpense ? Colors.red[50] : Colors.green[50],
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text(
-                    category,
-                    style: TextStyle(
-                      color: isExpense ? Colors.red[300] : Colors.green[400],
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            amount,
-            style: TextStyle(
-              color: isExpense
-                  ? const Color(0xFFFF5252)
-                  : const Color(0xFF4CAF50),
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ],
+    return Text(
+      dateString,
+      style: const TextStyle(
+        color: AppColors.primary,
+        fontWeight: FontWeight.bold,
+        fontSize: 12,
       ),
     );
   }

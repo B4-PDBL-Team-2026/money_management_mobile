@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+
 import '../theme/app_text_styles.dart';
 
 enum AppButtonType { primary, secondary, danger }
@@ -17,6 +18,8 @@ class AppButton extends StatelessWidget {
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final double iconSize;
+  final double? fontSize;
+  final bool? overflow;
 
   const AppButton({
     super.key,
@@ -29,6 +32,8 @@ class AppButton extends StatelessWidget {
     this.leadingIcon,
     this.trailingIcon,
     this.iconSize = 18,
+    this.fontSize,
+    this.overflow,
   });
 
   Color get _backgroundColor {
@@ -69,7 +74,10 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = AppTextStyles.subtitle.copyWith(color: _foregroundColor);
+    final textStyle = AppTextStyles.subtitle.copyWith(
+      color: _foregroundColor,
+      fontSize: fontSize,
+    );
 
     return SizedBox(
       width: width ?? double.infinity,
@@ -102,13 +110,28 @@ class AppButton extends StatelessWidget {
                 ),
               )
             : Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (leadingIcon != null) ...[
                     Icon(leadingIcon, size: iconSize, color: _foregroundColor),
                     const SizedBox(width: AppSizes.spacing2),
                   ],
-                  Text(text, style: textStyle),
+
+                  if (overflow == true)
+                    Expanded(
+                      child: Text(
+                        text,
+                        style: textStyle,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
+                  else
+                    Text(
+                      text,
+                      style: textStyle,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
                   if (trailingIcon != null) ...[
                     const SizedBox(width: AppSizes.spacing2),
                     Icon(trailingIcon, size: iconSize, color: _foregroundColor),
