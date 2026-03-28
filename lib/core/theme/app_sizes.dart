@@ -35,10 +35,21 @@ class AppSizes {
   /// Spacing 72
   static const double spacing12 = 72.0;
 
+  /// radius 8
   static const double radiusSm = 8.0;
+
+  /// radius 12
   static const double radiusMd = 12.0;
+
+  /// radius 16
   static const double radiusNm = 16.0;
+
+  /// radius 20
   static const double radiusLg = 20.0;
+
+  /// radius 24
   static const double radiusXl = 24.0;
+
+  /// radius 32
   static const double radius2xl = 32.0;
 }
