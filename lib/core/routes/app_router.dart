@@ -13,7 +13,7 @@ import 'package:money_management_mobile/features/auth/presentation/pages/login_p
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/pages/transaction_history_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
@@ -163,10 +163,10 @@ class AppRouter {
           GoRoute(
             path: '/transaction/add',
             builder: (context, state) => BlocProvider<AddTransactionCubit>(
-          create: (_) => sl<AddTransactionCubit>(),
-          child: const AddTransactionPage(),
+              create: (_) => sl<AddTransactionCubit>(),
+              child: const AddTransactionPage(),
             ),
-      ),
+          ),
         ],
       ),
     ],
