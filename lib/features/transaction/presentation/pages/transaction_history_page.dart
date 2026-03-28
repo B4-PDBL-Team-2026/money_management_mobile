@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/utils/currency_formatter.dart';
+import 'package:money_management_mobile/core/widgets/app_container_card.dart';
+import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_components.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   const TransactionHistoryPage({super.key});
@@ -12,20 +16,14 @@ class TransactionHistoryPage extends StatefulWidget {
 }
 
 class _TransactionHistoryState extends State<TransactionHistoryPage> {
+  final _searchController = TextEditingController();
+
   String selectedMonthYear = 'Februari 2026';
   String selectedCategory = 'Semua';
 
   List<dynamic> transactionList = [];
   int totalPengeluaran = 0;
   int totalPemasukan = 0;
-
-  // format rupiah
-  String _formatRupiah(int number) {
-    return number.toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]}.',
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +46,11 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                   context,
                 ).textTheme.headlineLarge?.copyWith(color: AppColors.primary),
               ),
-              const SizedBox(height: AppSizes.spacing4),
+              const SizedBox(height: AppSizes.spacing6),
               _buildFilterSection(),
-              const SizedBox(height: AppSizes.spacing4),
+              const SizedBox(height: AppSizes.spacing3),
               _buildSummarySection(),
-              const SizedBox(height: AppSizes.spacing4),
+              const SizedBox(height: AppSizes.spacing3),
               Expanded(
                 child: transactionList.isNotEmpty
                     ? _buildDataList()
@@ -66,39 +64,17 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
   }
 
   Widget _buildFilterSection() {
-    return Container(
-      padding: const EdgeInsets.all(AppSizes.spacing4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0C000000),
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
+    return AppContainerCard(
+      backgroundColor: Colors.white,
       child: Column(
         children: [
-          Container(
-            height: 45,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const TextField(
-              decoration: InputDecoration(
-                hintText: 'Cari nama transaksi...',
-                hintStyle: TextStyle(color: Color(0xFFBDBDBD), fontSize: 14),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Color(0xFF9E9E9E),
-                  size: 20,
-                ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(vertical: 12),
-              ),
+          AppTextField(
+            controller: _searchController,
+            hint: 'Cari nama transaksi...',
+            withBorder: false,
+            prefixIcon: PhosphorIcon(
+              PhosphorIconsRegular.magnifyingGlass,
+              color: Colors.grey,
             ),
           ),
           const SizedBox(height: 12),
@@ -134,14 +110,14 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
         Expanded(
           child: SummaryCard(
             title: 'Total Pengeluaran',
-            amount: '- Rp ${_formatRupiah(totalPengeluaran)}',
+            value: 'Rp ${CurrencyFormatter.format(totalPengeluaran)}',
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSizes.spacing3),
         Expanded(
           child: SummaryCard(
             title: 'Total Pemasukan',
-            amount: '+ Rp ${_formatRupiah(totalPemasukan)}',
+            value: 'Rp ${CurrencyFormatter.format(totalPemasukan)}',
           ),
         ),
       ],

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_mobile/core/widgets/app_container_card.dart';
+import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/theme/app_colors.dart';
 
 const Color primaryBlue = Color(0xFF2A62B8);
 
@@ -155,31 +158,28 @@ class EmptyState extends StatelessWidget {
 
 class SummaryCard extends StatelessWidget {
   final String title;
-  final String amount;
-  const SummaryCard({super.key, required this.title, required this.amount});
+  final String value;
+  const SummaryCard({super.key, required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-      decoration: BoxDecoration(
-        color: primaryBlue,
-        borderRadius: BorderRadius.circular(15),
-      ),
+    return AppContainerCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(color: Colors.white70, fontSize: 11),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            amount,
-            style: const TextStyle(
-              color: Colors.white,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.gohan,
               fontWeight: FontWeight.bold,
-              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: AppSizes.spacing2),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: AppColors.gohan,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
