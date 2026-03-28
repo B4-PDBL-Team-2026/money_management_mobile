@@ -18,6 +18,7 @@ class AppTextField extends StatefulWidget {
   final int? maxLines;
   final String? errorText;
   final bool? isDisabled;
+  final bool? withBorder;
 
   const AppTextField({
     super.key,
@@ -35,6 +36,7 @@ class AppTextField extends StatefulWidget {
     this.maxLines = 1,
     this.errorText,
     this.isDisabled = false,
+    this.withBorder = true,
   });
 
   @override
@@ -92,22 +94,34 @@ class _AppTextFieldState extends State<AppTextField> {
               horizontal: AppSizes.spacing5,
               vertical: AppSizes.spacing4,
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.trunks),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.trunks),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.bulma, width: 2),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.danger100),
-            ),
+
+            border: widget.withBorder == true
+                ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppColors.trunks),
+                  )
+                : InputBorder.none,
+            enabledBorder: widget.withBorder == true
+                ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppColors.trunks),
+                  )
+                : InputBorder.none,
+            focusedBorder: widget.withBorder == true
+                ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                      color: AppColors.bulma,
+                      width: 2,
+                    ),
+                  )
+                : InputBorder.none,
+            errorBorder: widget.withBorder == true
+                ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppColors.danger100),
+                  )
+                : InputBorder.none,
             suffixIcon: widget.isPassword
                 ? IconButton(
                     icon: Icon(
