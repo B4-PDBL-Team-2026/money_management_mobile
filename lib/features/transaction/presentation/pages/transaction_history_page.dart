@@ -65,12 +65,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
       backgroundColor: AppColors.gohan,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSizes.spacing6,
-            AppSizes.spacing6,
-            AppSizes.spacing6,
-            0,
-          ),
+          padding: const EdgeInsets.all(AppSizes.spacing6),
           child: BlocConsumer<TransactionHistoryCubit, TransactionHistoryState>(
             listener: (context, state) {
               if (state is TransactionHistorySuccess) {
@@ -278,7 +273,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (showHeader) ...[
-              const SizedBox(height: AppSizes.spacing5),
+              const SizedBox(height: AppSizes.spacing3),
               DateHeader(date: item.transactionDate),
               const SizedBox(height: AppSizes.spacing3),
             ],
