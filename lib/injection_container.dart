@@ -73,7 +73,7 @@ Future<void> initInjectionContainer() async {
 
   // Features - Transaction
   sl.registerFactory<AddTransactionCubit>(
-    () => AddTransactionCubit(sl(), sl()),
+    () => AddTransactionCubit(sl(), sl(), sl()),
   );
   sl.registerLazySingleton<AddTransactionUseCase>(
     () => AddTransactionUseCase(sl()),
