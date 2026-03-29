@@ -277,13 +277,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             return 'Nominal tidak boleh kosong';
                           }
 
-                          final numericValue = num.tryParse(
-                            value.replaceAll(',', ''),
-                          );
-
-                          if (numericValue == null) {
-                            return 'Nominal harus berupa angka';
-                          }
+                          final numericValue = CurrencyFormatter.parse(value);
 
                           if (numericValue <= 0) {
                             return 'Nominal harus lebih besar dari nol';

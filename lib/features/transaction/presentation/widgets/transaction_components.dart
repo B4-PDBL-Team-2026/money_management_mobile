@@ -81,7 +81,7 @@ class DateHeader extends StatelessWidget {
     return Text(
       dateString,
       style: const TextStyle(
-        color: AppColors.primary,
+        color: AppColors.trunks,
         fontWeight: FontWeight.bold,
         fontSize: 12,
       ),

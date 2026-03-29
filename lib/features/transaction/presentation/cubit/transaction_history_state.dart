@@ -16,11 +16,29 @@ class TransactionHistorySuccess extends TransactionHistoryState {
   final int currentPage;
   final int totalPages;
   final int totalItems;
+  final bool isLoadingMore;
 
   TransactionHistorySuccess(
     this.transactionHistory,
     this.currentPage,
     this.totalPages,
-    this.totalItems,
-  );
+    this.totalItems, {
+    this.isLoadingMore = false,
+  });
+
+  TransactionHistorySuccess copyWith({
+    List<TransactionHistoryEntity>? transactionHistory,
+    int? currentPage,
+    int? totalPages,
+    int? totalItems,
+    bool? isLoadingMore,
+  }) {
+    return TransactionHistorySuccess(
+      transactionHistory ?? this.transactionHistory,
+      currentPage ?? this.currentPage,
+      totalPages ?? this.totalPages,
+      totalItems ?? this.totalItems,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+    );
+  }
 }
