@@ -5,12 +5,15 @@ import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/usecases/add_transaction_usecase.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_state.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 
 class AddTransactionCubit extends Cubit<AddTransactionState> {
   final AddTransactionUseCase addTransactionUseCase;
+  final TransactionHistoryCubit transactionHistoryCubit;
+
   final _log = Logger('AddTransactionCubit');
 
-  AddTransactionCubit(this.addTransactionUseCase)
+  AddTransactionCubit(this.addTransactionUseCase, this.transactionHistoryCubit)
     : super(AddTransactionInitial());
 
   Future<void> addTransaction({
@@ -33,6 +36,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         transactionDate: transactionDate,
         note: note,
       );
+      await transactionHistoryCubit.getTransactionHistory();
 
       emit(AddTransactionSuccess(transaction));
     } on ServerException catch (e) {
