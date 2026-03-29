@@ -16,10 +16,10 @@ class CategoryRepositoryImpl extends CategoryRepository {
     late final List<CategoryModel> categories;
 
     try {
-      categories = _localDataSource.getCategories();
+      categories = _localDataSource.getSystemCategories();
     } on CacheNotFoundException {
-      categories = await _remoteDataSource.getCategories();
-      await _localDataSource.storeCategories(categories);
+      categories = await _remoteDataSource.getSystemCategories();
+      await _localDataSource.storeSystemCategories(categories);
     } catch (e) {
       rethrow;
     }
@@ -29,6 +29,6 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
   @override
   Future<void> clearCategories() async {
-    await _localDataSource.clearCategories();
+    await _localDataSource.clearSystemCategories();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 
+// TODO: tipe kategori tidak konsisten di backend, kadang 'App\\Models\\SystemCategory', kadang 'system'. Perlu disesuaikan agar konsisten
 enum CategoryType {
   system('App\\Models\\SystemCategory'),
   custom('App\\Models\\CustomCategory');
