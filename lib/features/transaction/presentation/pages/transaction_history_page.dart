@@ -49,6 +49,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
       name: 'Semua',
       icon: 'default',
       type: TransactionType.expense,
+      categoryType: RealCategoryType.system,
     );
 
     final now = DateTime.now();

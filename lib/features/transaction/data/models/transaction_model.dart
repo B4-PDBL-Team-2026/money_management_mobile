@@ -1,3 +1,4 @@
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
 class TransactionModel extends TransactionEntity {
@@ -38,10 +39,13 @@ class TransactionModel extends TransactionEntity {
     return {
       'name': name,
       'amount': amount,
-      'type': type.name,
+      'type': type.value,
       'categoryId': categoryId,
-      'transactionDate': transactionDate.toIso8601String(),
+      'transactionDate': transactionDate.toUtc().toIso8601String(),
       'note': note,
+      // TODO: hardcode categoryType karena API butuh, tapi seharusnya bisa diambil dari categoryId
+      // ganti dengan entity menyimpan category langsung, bukan id
+      'categoryType': RealCategoryType.system.value,
     };
   }
 }

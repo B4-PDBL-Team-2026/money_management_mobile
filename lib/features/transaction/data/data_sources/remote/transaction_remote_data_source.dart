@@ -23,7 +23,7 @@ class TransactionRemoteDataSource {
     }
 
     try {
-      await dio.post('/transaction', data: transactionModel.toJson());
+      await dio.post('/transaction/transactions', data: transactionModel.toJson());
       return transactionModel;
     } on DioException catch (e) {
       throw ErrorHandler.handleRemoteException(e, _log, ' Add Transaction');
