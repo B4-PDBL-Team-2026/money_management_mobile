@@ -12,6 +12,7 @@ import 'package:money_management_mobile/features/auth/presentation/pages/forgot_
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
@@ -148,7 +149,11 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: dashboard,
-                    builder: (context, state) => const HomePage(),
+                    builder: (context, state) => BlocProvider.value(
+                      value: sl<DashboardMetricCubit>()
+                        ..fetchDashboardMetrics(),
+                      child: const HomePage(),
+                    ),
                   ),
                 ],
               ),
