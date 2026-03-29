@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
 
 class OtherProfileCard extends StatelessWidget {
   const OtherProfileCard({super.key});
@@ -45,19 +48,32 @@ class OtherProfileCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSizes.spacing4),
-          Text(
-            'Alexandra',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppColors.gohan,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: AppSizes.spacing1),
-          Text(
-            'alexandra@gmail.com',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: AppColors.gohan),
+          BlocConsumer<SessionCubit, SessionState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              if (state is! SessionAuthenticated) {
+                return SizedBox.shrink();
+              }
+
+              return Column(
+                children: [
+                  Text(
+                    state.user.name,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.gohan,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spacing1),
+                  Text(
+                    state.user.email,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: AppColors.gohan),
+                  ),
+                ],
+              );
+            },
           ),
         ],
       ),
