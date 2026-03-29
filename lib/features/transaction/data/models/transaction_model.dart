@@ -36,12 +36,17 @@ class TransactionModel extends TransactionEntity {
   }
 
   Map<String, dynamic> toJson() {
+    final transactionMonth = transactionDate.month < 10
+        ? '0${transactionDate.month}'
+        : transactionDate.month;
+
     return {
       'name': name,
       'amount': amount,
       'type': type.value,
       'categoryId': categoryId,
-      'transactionDate': transactionDate.toUtc().toIso8601String(),
+      'transactionDate':
+          '${transactionDate.year}-$transactionMonth-${transactionDate.day}',
       'note': note,
       // TODO: hardcode categoryType karena API butuh, tapi seharusnya bisa diambil dari categoryId
       // ganti dengan entity menyimpan category langsung, bukan id
