@@ -738,6 +738,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
   void _showCategoryDialog(BuildContext context, bool isExpense) {
     final activeList = isExpense ? pengeluaranCategories : pemasukanCategories;
+    
     String tempSelected = selectedCategory;
     if (!activeList.any((cat) => cat['name'] == tempSelected))
       tempSelected = activeList[0]['name'];

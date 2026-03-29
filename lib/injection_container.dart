@@ -12,6 +12,12 @@ import 'package:money_management_mobile/features/auth/domain/usecases/restore_se
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
+import 'package:money_management_mobile/features/transaction/data/data_sources/remote/transaction_remote_data_source.dart';
+import 'package:money_management_mobile/features/transaction/data/repositories/transaction_repository_impl.dart';
+import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
+import 'package:money_management_mobile/features/transaction/domain/usecases/add_transaction_usecase.dart';
+import 'package:money_management_mobile/features/transaction/domain/usecases/get_transactions_usecase.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/category/data/data_sources/local/category_local_data_sources.dart';
 import 'package:money_management_mobile/features/category/data/data_sources/remote/category_remote_data_sources.dart';
 import 'package:money_management_mobile/features/category/data/repositories/category_repository_impl.dart';
@@ -31,6 +37,7 @@ import 'package:money_management_mobile/features/profile/domain/usecases/calcula
 import 'package:money_management_mobile/features/profile/domain/usecases/submit_financial_profile_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
@@ -57,14 +64,32 @@ Future<void> initInjectionContainer() async {
     () => RestoreSessionUseCase(sl()),
   );
   sl.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(sl()));
-  sl.registerLazySingleton<CompleteOnboardingUseCase>(
-    () => CompleteOnboardingUseCase(sl()),
-  );
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(sl(), sl()),
   );
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSource(sl()),
+  );
+
+  // Features - Transaction
+  sl.registerFactory<AddTransactionCubit>(() => AddTransactionCubit(sl()));
+  sl.registerLazySingleton<AddTransactionUseCase>(
+    () => AddTransactionUseCase(sl()),
+  );
+  sl.registerLazySingleton<TransactionRepository>(
+    () => TransactionRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<TransactionRemoteDataSource>(
+    () => TransactionRemoteDataSource(sl()),
+  );
+  sl.registerLazySingleton<CompleteOnboardingUseCase>(
+    () => CompleteOnboardingUseCase(sl()),
+  );
+  sl.registerLazySingleton<TransactionHistoryCubit>(
+    () => TransactionHistoryCubit(sl()),
+  );
+  sl.registerLazySingleton<GetTransactionsUsecase>(
+    () => GetTransactionsUsecase(sl()),
   );
 
   // Features - Profile

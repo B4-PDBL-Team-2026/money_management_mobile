@@ -16,7 +16,7 @@ class DashboardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final sessionState = context.read<SessionCubit>().state;
     final username = sessionState is SessionAuthenticated
-        ? sessionState.user.name.split(' ').first
+        ? _resolveUsername(sessionState.user.name)
         : 'Guest';
 
     final dashboardState = context.watch<DashboardMetricCubit>().state;
@@ -112,5 +112,15 @@ class DashboardHeader extends StatelessWidget {
     }
 
     return 'Status tidak dikenal.';
+  }
+
+  String _resolveUsername(String username) {
+    final splitted = username.split(' ');
+
+    if (splitted.first.length < 3) {
+      return splitted.sublist(0, 2).join(' ');
+    }
+
+    return splitted.first;
   }
 }

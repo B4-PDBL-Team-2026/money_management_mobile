@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_mobile/core/constants/default_categories.dart';
+import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CategoryGridItem extends StatelessWidget {
+  final String categoryName;
+  final String categoryIcon;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final bool? isDisabled;
+
   const CategoryGridItem({
     super.key,
     required this.categoryName,
     required this.categoryIcon,
     required this.isSelected,
     required this.onTap,
+    this.isDisabled = false,
   });
-
-  final String categoryName;
-  final String categoryIcon;
-  final bool isSelected;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isDisabled == true ? null : onTap,
       child: Column(
         children: [
           Container(
@@ -32,7 +34,7 @@ class CategoryGridItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             ),
             child: PhosphorIcon(
-              DefaultCategories.iconMapping[categoryIcon] ??
+              GlobalConstant.categoryIconsMapping[categoryIcon] ??
                   PhosphorIconsRegular.tag,
               color: isSelected ? AppColors.gohan : AppColors.trunks,
               size: AppSizes.spacing6,

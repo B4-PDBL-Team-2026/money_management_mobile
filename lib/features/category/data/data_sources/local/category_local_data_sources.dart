@@ -8,40 +8,36 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CategoryLocalDataSource {
   final SharedPreferences sharedPreferences;
 
-  static const _categoriesKey = 'categories';
+  static const _systemCategoriesKey = 'system_categories';
 
   CategoryLocalDataSource(this.sharedPreferences);
 
-  List<CategoryEntity> getCategories() {
-    final categoriesJson = sharedPreferences.getStringList(_categoriesKey);
+  List<CategoryModel> getSystemCategories() {
+    final categoriesJson = sharedPreferences.getStringList(
+      _systemCategoriesKey,
+    );
 
     if (categoriesJson == null) {
       throw CacheNotFoundException();
     }
 
     return categoriesJson
-        .map((json) => CategoryModel.fromJson(jsonDecode(json)))
-        .toList();
-  }
-
-  Future<void> storeCategories(List<CategoryEntity> categories) async {
-    final categoriesJson = categories
         .map(
-          (category) => jsonEncode(
-            CategoryModel(
-              id: category.id,
-              name: category.name,
-              icon: category.icon,
-              type: category.type,
-            ).toJson(),
-          ),
+          (json) =>
+              CategoryModel.fromJson(jsonDecode(json), RealCategoryType.system),
         )
         .toList();
-
-    await sharedPreferences.setStringList(_categoriesKey, categoriesJson);
   }
 
-  Future<void> clearCategories() async {
-    await sharedPreferences.remove(_categoriesKey);
+  Future<void> storeSystemCategories(List<CategoryModel> categories) async {
+    final categoriesJson = categories
+        .map((category) => jsonEncode(category.toJson()))
+        .toList();
+
+    await sharedPreferences.setStringList(_systemCategoriesKey, categoriesJson);
+  }
+
+  Future<void> clearSystemCategories() async {
+    await sharedPreferences.remove(_systemCategoriesKey);
   }
 }

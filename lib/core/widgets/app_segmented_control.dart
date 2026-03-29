@@ -60,6 +60,8 @@ class AppSegmentedControl<T> extends StatelessWidget {
   /// Height of the control
   final double? height;
 
+  final bool? isDisabled;
+
   const AppSegmentedControl({
     super.key,
     required this.segments,
@@ -75,6 +77,7 @@ class AppSegmentedControl<T> extends StatelessWidget {
     this.segmentPadding,
     this.textSize,
     this.height,
+    this.isDisabled = false,
   }) : assert(segments.length >= 2, 'Must have at least 2 segments'),
        assert(segments.length <= 5, 'Should not have more than 5 segments');
 
@@ -137,7 +140,7 @@ class AppSegmentedControl<T> extends StatelessWidget {
           return Expanded(
             flex: segment.flex,
             child: GestureDetector(
-              onTap: segment.enabled
+              onTap: segment.enabled && isDisabled != true
                   ? () {
                       if (!isSelected) {
                         onChanged(segment.value);

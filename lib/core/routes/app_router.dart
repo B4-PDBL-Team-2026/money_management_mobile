@@ -13,7 +13,8 @@ import 'package:money_management_mobile/features/auth/presentation/pages/login_p
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/pages/transaction_history_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
@@ -22,6 +23,7 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/outer_shell.dart';
@@ -135,7 +137,11 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: history,
-                    builder: (context, state) => const TransactionHistoryPage(),
+                    builder: (context, state) =>
+                        BlocProvider<TransactionHistoryCubit>.value(
+                          value: sl<TransactionHistoryCubit>(),
+                          child: TransactionHistoryPage(),
+                        ),
                   ),
                 ],
               ),
@@ -161,7 +167,10 @@ class AppRouter {
           // transaction module
           GoRoute(
             path: '/transaction/add',
-            builder: (context, state) => const AddTransactionPage(),
+            builder: (context, state) => BlocProvider<AddTransactionCubit>(
+              create: (_) => sl<AddTransactionCubit>(),
+              child: const AddTransactionPage(),
+            ),
           ),
         ],
       ),
