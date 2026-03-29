@@ -7,6 +7,7 @@ import 'package:money_management_mobile/core/theme/app_theme.dart';
 import 'package:money_management_mobile/core/utils/logger.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
 late TimezoneInfo localTimezone;
@@ -21,7 +22,6 @@ void main() async {
     FlutterTimezone.getLocalTimezone(),
     initializeDateFormatting('id_ID'),
     sl<SessionCubit>().restoreSession(),
-    sl<CategoryCubit>().fetchCategories(),
   ]);
 
   runApp(const MyApp());
@@ -35,7 +35,12 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<SessionCubit>.value(value: sl<SessionCubit>()),
-        BlocProvider<CategoryCubit>.value(value: sl<CategoryCubit>()),
+        BlocProvider<CategoryCubit>.value(
+          value: sl<CategoryCubit>()..fetchCategories(),
+        ),
+        BlocProvider<TransactionHistoryCubit>.value(
+          value: sl<TransactionHistoryCubit>()..getFreshTransactionHistory(),
+        ),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

@@ -20,11 +20,17 @@ class DashboardBudgetMetrics extends StatelessWidget {
     final dashboardState = context.watch<DashboardMetricCubit>().state;
 
     if (dashboardState is DashboardMetricLoading) {
-      return Center(child: CircularProgressIndicator());
+      return SizedBox(
+        height: 400,
+        child: Center(child: CircularProgressIndicator()),
+      );
     } else if (dashboardState is DashboardMetricLoaded) {
       return _buildMetrics(context, dashboardState.metrics);
     } else if (dashboardState is DashboardMetricError) {
-      return Center(child: Text('Gagal memuat data dashboard'));
+      return SizedBox(
+        height: 400,
+        child: Center(child: Text('Gagal memuat data dashboard')),
+      );
     } else {
       return SizedBox.shrink();
     }

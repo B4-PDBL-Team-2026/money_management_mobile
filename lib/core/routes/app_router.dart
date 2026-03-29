@@ -23,7 +23,6 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
-import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
@@ -138,10 +137,7 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: history,
-                    builder: (context, state) => BlocProvider(
-                      create: (_) => sl<TransactionHistoryCubit>(),
-                      child: const TransactionHistoryPage(),
-                    ),
+                    builder: (context, state) => const TransactionHistoryPage(),
                   ),
                 ],
               ),
