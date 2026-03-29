@@ -143,7 +143,7 @@ Future<void> initInjectionContainer() async {
     () => CalculateDashboardMetricsUsecase(sl()),
   );
   sl.registerLazySingleton<DashboardRemoteDataSource>(
-    () => DashboardRemoteDataSource(),
+    () => DashboardRemoteDataSource(sl()),
   );
   sl.registerLazySingleton<DashboardRepository>(
     () => DashboardRepositoryImpl(sl()),
