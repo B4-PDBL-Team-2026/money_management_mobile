@@ -90,6 +90,9 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<TransactionHistoryCubit>(
     () => TransactionHistoryCubit(sl()),
   );
+  // sl.registerLazySingleton<TransactionHistoryQueryCubit>(
+  //   () => TransactionHistoryQueryCubit(),
+  // );
   sl.registerLazySingleton<GetTransactionsUsecase>(
     () => GetTransactionsUsecase(sl()),
   );

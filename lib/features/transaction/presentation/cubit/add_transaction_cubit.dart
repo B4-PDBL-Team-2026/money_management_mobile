@@ -36,7 +36,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         transactionDate: transactionDate,
         note: note,
       );
-      await transactionHistoryCubit.getTransactionHistory();
+      await transactionHistoryCubit.getFreshTransactionHistory();
 
       emit(AddTransactionSuccess(transaction));
     } on ServerException catch (e) {

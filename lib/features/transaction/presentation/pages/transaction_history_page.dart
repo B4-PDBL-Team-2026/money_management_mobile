@@ -4,12 +4,12 @@ import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
+import 'package:money_management_mobile/core/utils/debouncer.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_container_card.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_dialog_content.dart';
@@ -27,6 +27,7 @@ class TransactionHistoryPage extends StatefulWidget {
 }
 
 class _TransactionHistoryState extends State<TransactionHistoryPage> {
+  final _searchDebouncer = Debouncer(milliseconds: 500);
   final _searchController = TextEditingController();
 
   late final CategoryEntity _defaultCategory;
@@ -42,7 +43,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
   void initState() {
     super.initState();
 
-    context.read<TransactionHistoryCubit>().getTransactionHistory();
+    context.read<TransactionHistoryCubit>().getFreshTransactionHistory();
 
     _defaultCategory = CategoryEntity(
       id: 0,
@@ -57,6 +58,40 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     _year = now.year;
 
     _selectedCategory = _defaultCategory;
+  }
+
+  void _getFreshTransactionHistory({
+    int? page,
+    String? search,
+    CategoryEntity? categoryEntity,
+    int? month,
+    int? year,
+  }) {
+    final categoryToUse = categoryEntity ?? _selectedCategory;
+
+    context.read<TransactionHistoryCubit>().getFreshTransactionHistory(
+      month: month ?? _month,
+      year: year ?? _year,
+      categoryEntity: categoryToUse.id != 0 ? categoryToUse : null,
+      search: search ?? _searchController.text,
+    );
+  }
+
+  void _loadMoreTransactionHistory(int page) {
+    context.read<TransactionHistoryCubit>().loadMoreTransactionHistory(
+      page: page,
+      month: _month,
+      year: _year,
+      categoryEntity: _selectedCategory.id != 0 ? _selectedCategory : null,
+      search: _searchController.text,
+    );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchDebouncer.dispose();
+    super.dispose();
   }
 
   @override
@@ -110,7 +145,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                             if (state is! TransactionHistoryLoading) {
                               context
                                   .read<TransactionHistoryCubit>()
-                                  .getTransactionHistory();
+                                  .getFreshTransactionHistory();
                             }
                           },
                           icon: PhosphorIcon(
@@ -127,59 +162,72 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
 
                   if (state is TransactionHistorySuccess) ...[
                     _buildSummarySection(),
+                    const SizedBox(height: AppSizes.spacing3),
                   ],
 
                   if (state is TransactionHistoryLoading) ...[
-                    SizedBox(
-                      height: 350,
-                      child: const Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CircularProgressIndicator(),
-                            SizedBox(height: 8),
-                            Text('Memuat data transaksi...'),
-                          ],
-                        ),
-                      ),
-                    ),
+                    _buildLoadingState(),
                   ] else if (state is TransactionHistorySuccess) ...[
-                    Expanded(
-                      child: transactionList.isNotEmpty
-                          ? _buildDataList(state.transactionHistory)
-                          : const EmptyState(),
-                    ),
-                  ] else if (state is TransactionHistoryError) ...[
-                    SizedBox(
-                      height: 350,
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('Gagal memuat data transaksi'),
-                            const SizedBox(height: AppSizes.spacing4),
-                            AppButton(
-                              width: 120,
-                              text: 'Coba Lagi',
-                              onPressed: () {
-                                context
-                                    .read<TransactionHistoryCubit>()
-                                    .getTransactionHistory();
-                              },
-                              variant: AppButtonVariant.ghost,
-                            ),
-                          ],
-                        ),
+                    if (state.totalItems == 0) ...[
+                      Expanded(child: const EmptyState()),
+                    ] else ...[
+                      Expanded(
+                        child: transactionList.isNotEmpty
+                            ? _buildDataList(state)
+                            : const EmptyState(),
                       ),
-                    ),
+                    ],
+                  ] else if (state is TransactionHistoryError) ...[
+                    _buildErrorState(context),
                   ] else ...[
-                    const EmptyState(),
+                    Expanded(child: const EmptyState()),
                   ],
                 ],
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+
+  SizedBox _buildLoadingState() {
+    return SizedBox(
+      height: 350,
+      child: const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 8),
+            Text('Memuat data transaksi...'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SizedBox _buildErrorState(BuildContext context) {
+    return SizedBox(
+      height: 350,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Gagal memuat data transaksi'),
+            const SizedBox(height: AppSizes.spacing4),
+            AppButton(
+              width: 120,
+              text: 'Coba Lagi',
+              onPressed: () {
+                context
+                    .read<TransactionHistoryCubit>()
+                    .getFreshTransactionHistory();
+              },
+              variant: AppButtonVariant.ghost,
+            ),
+          ],
         ),
       ),
     );
@@ -198,6 +246,11 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
               PhosphorIconsRegular.magnifyingGlass,
               color: Colors.grey,
             ),
+            onChanged: (value) {
+              if (value.isEmpty || value.length >= 3) {
+                _searchDebouncer.run(_getFreshTransactionHistory);
+              }
+            },
           ),
           const SizedBox(height: AppSizes.spacing3),
           Row(
@@ -253,7 +306,9 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     );
   }
 
-  Widget _buildDataList(List<TransactionHistoryEntity> transactionList) {
+  Widget _buildDataList(TransactionHistorySuccess state) {
+    final transactionList = state.transactionHistory;
+
     return ListView.separated(
       physics: const BouncingScrollPhysics(),
       itemCount: transactionList.length,
@@ -281,6 +336,41 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
               onTap: () {},
               child: TransactionHistoryItem(transaction: item),
             ),
+
+            if (index == transactionList.length - 1) ...[
+              const SizedBox(height: AppSizes.spacing6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Total transaksi: ${state.totalItems}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+
+                  if (transactionList.length < state.totalItems) ...[
+                    const SizedBox(width: AppSizes.spacing3),
+                    Text(
+                      'Total transaksi tersisa: ${state.totalItems - transactionList.length}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ],
+              ),
+
+              if (state.currentPage < state.totalPages) ...[
+                const SizedBox(height: AppSizes.spacing3),
+                AppButton(
+                  isLoading: state.isLoadingMore,
+                  text: 'Muat Lebih Banyak',
+                  onPressed: () {
+                    if (!state.isLoadingMore) {
+                      _loadMoreTransactionHistory(state.currentPage + 1);
+                    }
+                  },
+                  variant: AppButtonVariant.ghost,
+                ),
+              ],
+            ],
           ],
         );
       },
@@ -304,9 +394,13 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     );
 
     if (result != null) {
+      final month = result.$1;
+      final year = result.$2;
+
+      _getFreshTransactionHistory(month: month, year: year);
       setState(() {
-        _month = result.$1;
-        _year = result.$2;
+        _month = month;
+        _year = year;
       });
     }
   }
@@ -326,6 +420,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     );
 
     if (result != null) {
+      _getFreshTransactionHistory(categoryEntity: result);
       setState(() => _selectedCategory = result);
     }
   }
