@@ -259,9 +259,11 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
   }
 
   Widget _buildDataList(List<TransactionHistoryEntity> transactionList) {
-    return ListView.builder(
+    return ListView.separated(
       physics: const BouncingScrollPhysics(),
       itemCount: transactionList.length,
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: AppSizes.spacing3),
       itemBuilder: (context, index) {
         final item = transactionList[index];
         final previousItem = index > 0 ? transactionList[index - 1] : null;
