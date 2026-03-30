@@ -67,8 +67,10 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
     await context.read<FixedCostOccurrencesCubit>().createFixedCost(payload);
   }
 
-  void _showEditFixedCostBottomSheet(FixedCostOccurrenceEntity fixedCost) {
-    showModalBottomSheet(
+  Future<void> _showEditFixedCostBottomSheet(
+    FixedCostOccurrenceEntity fixedCost,
+  ) async {
+    final payload = await showModalBottomSheet<FixedCostEntity>(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -87,6 +89,19 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
         initialCycleType: _toCycleLabel(fixedCost.cycleType),
         initialDueDate: DateFormat('dd/MM/yyyy').format(fixedCost.dueDate),
       ),
+    );
+
+    if (!mounted || payload == null) {
+      return;
+    }
+
+    final targetId = fixedCost.fixedCostTemplateId > 0
+        ? fixedCost.fixedCostTemplateId
+        : fixedCost.id;
+
+    await context.read<FixedCostOccurrencesCubit>().updateFixedCost(
+      targetId,
+      payload,
     );
   }
 

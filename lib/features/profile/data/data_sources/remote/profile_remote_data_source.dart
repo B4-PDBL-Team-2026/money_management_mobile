@@ -108,6 +108,38 @@ class ProfileRemoteDataSource {
     }
   }
 
+  Future<void> updateFixedCost(
+    int fixedCostTemplateId,
+    FixedCostModel payload,
+  ) async {
+    if (AppEnv.useMockApi) {
+      _log.info(
+        'USE_MOCK_API enabled, returning dummy update fixed cost response',
+      );
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (payload.name.toLowerCase() == 'error') {
+        throw ServerException('Simulasi gagal mengubah fixed cost');
+      }
+
+      return;
+    }
+
+    try {
+      await dio.patch(
+        '/fixed-costs/$fixedCostTemplateId',
+        data: payload.toJson(),
+      );
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Update Fixed Cost');
+    } catch (e) {
+      _log.severe('Unexpected error while updating fixed cost', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat mengubah fixed cost',
+      );
+    }
+  }
+
   Future<void> deleteFixedCost(int fixedCostTemplateId) async {
     if (AppEnv.useMockApi) {
       _log.info(

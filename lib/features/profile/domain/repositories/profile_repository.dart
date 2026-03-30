@@ -9,5 +9,10 @@ abstract class ProfileRepository {
 
   Future<void> createFixedCost(FixedCostEntity payload);
 
+  Future<void> updateFixedCost(
+    int fixedCostTemplateId,
+    FixedCostEntity payload,
+  );
+
   Future<void> deleteFixedCost(int fixedCostTemplateId);
 }

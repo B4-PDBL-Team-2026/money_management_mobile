@@ -5,17 +5,20 @@ import 'package:money_management_mobile/features/profile/domain/entities/fixed_c
 import 'package:money_management_mobile/features/profile/domain/usecases/create_fixed_cost_usecase.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/delete_fixed_cost_usecase.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/get_fixed_cost_occurrences_usecase.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/update_fixed_cost_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_state.dart';
 
 class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
   final GetFixedCostOccurrencesUseCase getFixedCostOccurrencesUseCase;
   final CreateFixedCostUseCase createFixedCostUseCase;
+  final UpdateFixedCostUseCase updateFixedCostUseCase;
   final DeleteFixedCostUseCase deleteFixedCostUseCase;
   final _log = Logger('FixedCostOccurrencesCubit');
 
   FixedCostOccurrencesCubit(
     this.getFixedCostOccurrencesUseCase,
     this.createFixedCostUseCase,
+    this.updateFixedCostUseCase,
     this.deleteFixedCostUseCase,
   ) : super(FixedCostOccurrencesInitial());
 
@@ -83,6 +86,31 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
       emit(FixedCostOccurrencesError(e.message));
     } catch (e) {
       _log.severe('Unexpected error while deleting fixed cost', e);
+      emit(FixedCostOccurrencesError('Terjadi kesalahan: ${e.toString()}'));
+    }
+  }
+
+  Future<void> updateFixedCost(
+    int fixedCostTemplateId,
+    FixedCostEntity payload,
+  ) async {
+    emit(FixedCostOccurrencesLoading());
+
+    try {
+      await updateFixedCostUseCase.execute(fixedCostTemplateId, payload);
+      await fetchFixedCostOccurrences(forceRefresh: true);
+    } on ServerException catch (e) {
+      emit(FixedCostOccurrencesError(e.message));
+    } on NetworkException catch (e) {
+      emit(FixedCostOccurrencesError(e.message));
+    } on UnauthorizedException catch (e) {
+      emit(FixedCostOccurrencesError(e.message));
+    } on ValidationException catch (e) {
+      emit(FixedCostOccurrencesError(e.toString()));
+    } on UnexpectedException catch (e) {
+      emit(FixedCostOccurrencesError(e.message));
+    } catch (e) {
+      _log.severe('Unexpected error while updating fixed cost', e);
       emit(FixedCostOccurrencesError('Terjadi kesalahan: ${e.toString()}'));
     }
   }

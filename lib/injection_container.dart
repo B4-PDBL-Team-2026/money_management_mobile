@@ -32,6 +32,7 @@ import 'package:money_management_mobile/features/profile/domain/usecases/create_
 import 'package:money_management_mobile/features/profile/domain/usecases/delete_fixed_cost_usecase.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/get_fixed_cost_occurrences_usecase.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/submit_financial_profile_usecase.dart';
+import 'package:money_management_mobile/features/profile/domain/usecases/update_fixed_cost_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
@@ -109,7 +110,7 @@ Future<void> initInjectionContainer() async {
     () => SubmitFinancialProfileCubit(sl(), sl()),
   );
   sl.registerLazySingleton<FixedCostOccurrencesCubit>(
-    () => FixedCostOccurrencesCubit(sl(), sl(), sl()),
+    () => FixedCostOccurrencesCubit(sl(), sl(), sl(), sl()),
   );
   sl.registerLazySingleton<CalculateFinancialProfileUseCase>(
     () => CalculateFinancialProfileUseCase(),
@@ -122,6 +123,9 @@ Future<void> initInjectionContainer() async {
   );
   sl.registerLazySingleton<DeleteFixedCostUseCase>(
     () => DeleteFixedCostUseCase(sl()),
+  );
+  sl.registerLazySingleton<UpdateFixedCostUseCase>(
+    () => UpdateFixedCostUseCase(sl()),
   );
   sl.registerLazySingleton<SubmitFinancialProfileUseCase>(
     () => SubmitFinancialProfileUseCase(sl()),
