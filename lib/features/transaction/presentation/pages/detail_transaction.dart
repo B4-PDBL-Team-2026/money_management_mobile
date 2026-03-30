@@ -9,7 +9,6 @@ import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_container_card.dart';
-import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
@@ -29,11 +28,6 @@ class TransactionDetailPage extends StatefulWidget {
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
-  final _nameController = TextEditingController();
-  final _sourceController = TextEditingController();
-  final _dateController = TextEditingController();
-  final _noteController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -43,22 +37,16 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   }
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _sourceController.dispose();
-    _dateController.dispose();
-    _noteController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.gohan,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Detail Transaksi'),
+        title: const Text(
+          'Detail Transaksi',
+          style: TextStyle(color: AppColors.bulma),
+        ),
         leading: Padding(
           padding: const EdgeInsets.all(AppSizes.spacing2),
           child: DecoratedBox(
@@ -78,10 +66,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           padding: const EdgeInsets.all(AppSizes.spacing6),
           child: BlocConsumer<TransactionDetailCubit, TransactionDetailState>(
             listener: (context, state) {
-              if (state is TransactionDetailSuccess) {
-                _syncControllers(state.transactionDetail);
-              }
-
               if (state is TransactionDetailError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -103,10 +87,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               if (state is TransactionDetailSuccess) {
                 return _DetailContent(
                   detail: state.transactionDetail,
-                  nameController: _nameController,
-                  sourceController: _sourceController,
-                  dateController: _dateController,
-                  noteController: _noteController,
                   onDeletePressed: _showNotAvailableSnackBar,
                   onUpdatePressed: _showNotAvailableSnackBar,
                 );
@@ -118,18 +98,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
         ),
       ),
     );
-  }
-
-  void _syncControllers(TransactionDetailEntity detail) {
-    final dateLabel = DateFormat(
-      'dd MMMM yyyy',
-      'id_ID',
-    ).format(detail.transactionDate);
-
-    _nameController.text = detail.name;
-    _sourceController.text = detail.source;
-    _dateController.text = dateLabel;
-    _noteController.text = detail.note ?? '-';
   }
 
   void _refetch() {
@@ -159,19 +127,11 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
 class _DetailContent extends StatelessWidget {
   final TransactionDetailEntity detail;
-  final TextEditingController nameController;
-  final TextEditingController sourceController;
-  final TextEditingController dateController;
-  final TextEditingController noteController;
   final VoidCallback onDeletePressed;
   final VoidCallback onUpdatePressed;
 
   const _DetailContent({
     required this.detail,
-    required this.nameController,
-    required this.sourceController,
-    required this.dateController,
-    required this.noteController,
     required this.onDeletePressed,
     required this.onUpdatePressed,
   });
@@ -182,89 +142,115 @@ class _DetailContent extends StatelessWidget {
     final transactionType = detail.type ?? category?.type;
     final isExpense = transactionType != TransactionType.income;
     final nominalColor = isExpense ? AppColors.danger100 : AppColors.success100;
+    final chipBgColor = isExpense ? AppColors.danger10 : AppColors.success10;
+    final chipTextColor = isExpense
+        ? AppColors.danger100
+        : AppColors.success100;
     final categoryIcon = _resolveCategoryIcon(category);
+    final dateLabel = DateFormat(
+      'dd MMMM yyyy',
+      'id_ID',
+    ).format(detail.transactionDate);
+    final noteText = (detail.note == null || detail.note!.trim().isEmpty)
+        ? '-'
+        : detail.note!;
+    final sourceText = detail.source.trim().isEmpty ? '-' : detail.source;
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppContainerCard(
-            backgroundColor: AppColors.lightPrimary,
-            border: Border.all(color: AppColors.mediumPrimary, width: 1),
+            backgroundColor: AppColors.primary,
+            border: Border.all(color: AppColors.primary, width: 1),
+            padding: const EdgeInsets.all(AppSizes.spacing5),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSizes.spacing3,
+                        vertical: AppSizes.spacing1,
+                      ),
+                      decoration: BoxDecoration(
+                        color: chipBgColor,
+                        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                      ),
+                      child: Text(
+                        isExpense ? 'Pengeluaran' : 'Pemasukan',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: chipTextColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(categoryIcon, color: AppColors.gohan),
+                  ],
+                ),
+                const SizedBox(height: AppSizes.spacing4),
                 Text(
-                  'NOMINAL',
+                  'Total Nominal',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
+                    color: AppColors.gohan,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: AppSizes.spacing2),
                 Text(
                   'Rp ${CurrencyFormatter.format(detail.amount)}',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: nominalColor,
+                    color: AppColors.gohan,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: AppSizes.spacing3),
-                Row(
-                  children: [
-                    Icon(categoryIcon, color: AppColors.primary),
-                    const SizedBox(width: AppSizes.spacing2),
-                    Expanded(
-                      child: Text(
-                        category?.name ?? 'Kategori #${detail.categoryId}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.bulma,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
+                Text(
+                  category?.name ?? 'Kategori #${detail.categoryId}',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppColors.gohan,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSizes.spacing6),
-          AppTextField(
-            label: 'Judul/Nama Transaksi',
-            hint: '-',
-            controller: nameController,
-            readOnly: true,
-            isDisabled: true,
-            prefixIcon: const Icon(Icons.edit_outlined),
+          _InfoTile(
+            label: 'Judul / Nama Transaksi',
+            value: detail.name,
+            icon: Icons.edit_outlined,
           ),
-          const SizedBox(height: AppSizes.spacing4),
-          AppTextField(
+          const SizedBox(height: AppSizes.spacing3),
+          _InfoTile(
             label: 'Sumber',
-            hint: '-',
-            controller: sourceController,
-            readOnly: true,
-            isDisabled: true,
-            prefixIcon: const Icon(Icons.wallet_outlined),
+            value: sourceText,
+            icon: Icons.wallet_outlined,
           ),
-          const SizedBox(height: AppSizes.spacing4),
-          AppTextField(
+          const SizedBox(height: AppSizes.spacing3),
+          _InfoTile(
             label: 'Tanggal',
-            hint: '-',
-            controller: dateController,
-            readOnly: true,
-            isDisabled: true,
-            prefixIcon: const Icon(Icons.calendar_today_outlined),
+            value: dateLabel,
+            icon: Icons.calendar_today_outlined,
           ),
-          const SizedBox(height: AppSizes.spacing4),
-          AppTextField(
+          const SizedBox(height: AppSizes.spacing3),
+          _InfoTile(
             label: 'Catatan',
-            hint: '-',
-            controller: noteController,
-            readOnly: true,
-            isDisabled: true,
-            maxLines: null,
-            prefixIcon: const Icon(Icons.description_outlined),
+            value: noteText,
+            icon: Icons.description_outlined,
+            multiline: true,
           ),
           const SizedBox(height: AppSizes.spacing6),
+          Text(
+            'Aksi',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppColors.bulma,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: AppSizes.spacing3),
           Row(
             children: [
               Expanded(
@@ -277,9 +263,20 @@ class _DetailContent extends StatelessWidget {
               ),
               const SizedBox(width: AppSizes.spacing3),
               Expanded(
-                child: AppButton(text: 'Update', onPressed: onUpdatePressed),
+                child: AppButton(
+                  text: 'Update',
+                  onPressed: onUpdatePressed,
+                  type: AppButtonType.secondary,
+                ),
               ),
             ],
+          ),
+          const SizedBox(height: AppSizes.spacing2),
+          Text(
+            'Perubahan data akan aktif setelah fitur update tersedia.',
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
           ),
         ],
       ),
@@ -309,6 +306,68 @@ class _DetailContent extends StatelessWidget {
 
     return GlobalConstant.categoryIconsMapping[category.icon] ??
         PhosphorIconsRegular.question;
+  }
+}
+
+class _InfoTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final bool multiline;
+
+  const _InfoTile({
+    required this.label,
+    required this.value,
+    required this.icon,
+    this.multiline = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppContainerCard(
+      backgroundColor: Colors.white,
+      border: Border.all(color: AppColors.beerus, width: 1),
+      padding: const EdgeInsets.all(AppSizes.spacing4),
+      child: Row(
+        crossAxisAlignment: multiline
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: AppSizes.spacing9,
+            height: AppSizes.spacing9,
+            decoration: BoxDecoration(
+              color: AppColors.lightPrimary,
+              borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+            ),
+            child: Icon(icon, color: AppColors.primary),
+          ),
+          const SizedBox(width: AppSizes.spacing3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.trunks,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: AppSizes.spacing1),
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppColors.bulma,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
