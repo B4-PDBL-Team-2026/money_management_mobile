@@ -16,5 +16,6 @@ abstract class AuthRepository {
   (UserEntity, String, bool)? getSavedSession();
   String? getToken();
   Future<void> updateRequiresOnboarding(bool requiresOnboarding);
+  Future<String> sendPasswordResetEmail(String email);
   Future<void> clearSession();
 }

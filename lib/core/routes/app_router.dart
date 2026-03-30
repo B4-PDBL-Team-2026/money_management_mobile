@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/email_verification_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
@@ -168,7 +169,10 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: other,
-                    builder: (context, state) => const OtherPage(),
+                    builder: (context, state) => BlocProvider(
+                      create: (_) => sl<EmailVerificationCubit>(),
+                      child: const OtherPage(),
+                    ),
                   ),
                 ],
               ),

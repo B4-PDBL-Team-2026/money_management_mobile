@@ -151,4 +151,38 @@ class AuthRemoteDataSource {
       throw UnexpectedException('Terjadi kesalahan sistem saat logout');
     }
   }
+
+  Future<String> sendPasswordResetEmail(String email) async {
+    if (AppEnv.useMockApi) {
+      _log.info(
+        'USE_MOCK_API enabled, simulating send password reset email response',
+      );
+      await Future.delayed(const Duration(seconds: 1));
+
+      return 'Link reset password berhasil dikirim ke email Anda.';
+    }
+
+    try {
+      final response = await dio.post(
+        '/auth/password/email',
+        data: {'email': email},
+      );
+
+      final responseData = response.data as Map<String, dynamic>?;
+      final message = responseData?['message'] as String?;
+
+      return message ?? 'Silakan cek email Anda untuk langkah berikutnya.';
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Send Password Reset Email',
+      );
+    } catch (e) {
+      _log.severe('Unexpected send password reset email error', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat mengirim email verifikasi',
+      );
+    }
+  }
 }
