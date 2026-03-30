@@ -16,7 +16,10 @@ class BudgetSnapshotModel extends BudgetSnapshotEntity {
     required super.unpaidFixedCosts,
   });
 
-  factory BudgetSnapshotModel.fromJson(Map<String, dynamic> json) {
+  factory BudgetSnapshotModel.fromJson(
+    Map<String, dynamic> json, {
+    List<UnpaidFixedCostModel>? unpaidFixedCosts,
+  }) {
     return BudgetSnapshotModel(
       timestamp: DateTime.parse(json['serverTime'] as String),
       balance: json['currentBalance'] as int,
@@ -29,12 +32,14 @@ class BudgetSnapshotModel extends BudgetSnapshotEntity {
       todayLimit: json['todayLimit'] as int,
       tomorrowLimitPrediction: json['tomorrowLimitPrediction'] as int,
       actualDailyAllowance: json['rawTodayLimit'] as int,
-      unpaidFixedCosts: (json['unpaidFixedCosts'] as List<dynamic>)
-          .map(
-            (item) =>
-                UnpaidFixedCostModel.fromJson(item as Map<String, dynamic>),
-          )
-          .toList(),
+      unpaidFixedCosts:
+          unpaidFixedCosts ??
+          (json['unpaidFixedCosts'] as List<dynamic>)
+              .map(
+                (item) =>
+                    UnpaidFixedCostModel.fromJson(item as Map<String, dynamic>),
+              )
+              .toList(),
     );
   }
 

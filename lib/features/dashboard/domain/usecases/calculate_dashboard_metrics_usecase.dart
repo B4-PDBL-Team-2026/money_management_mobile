@@ -31,7 +31,6 @@ class CalculateDashboardMetricsUsecase {
 
     final totalUnpaidFixedCost = _calculateTotalUnpaidFixedCost(
       unpaidFixedCosts,
-      now,
     );
 
     final safeBalance = max(balance - totalUnpaidFixedCost, 0);
@@ -226,6 +225,7 @@ class CalculateDashboardMetricsUsecase {
       limitName: limitName,
       totalUnpaidFixedCost: totalUnpaidFixedCost,
       remainingDaysInCycle: remainingDaysInCycle,
+      unpaidFixedCosts: unpaidFixedCosts,
       firstMetric: firstMetric,
       secondMetric: secondMetric,
       healthScenario: scenario,
@@ -256,28 +256,8 @@ class CalculateDashboardMetricsUsecase {
 
   int _calculateTotalUnpaidFixedCost(
     List<UnpaidFixedCostEntity> unpaidFixedCosts,
-    DateTime now,
   ) {
-    final recalculateUnpaidFixedCosts = unpaidFixedCosts.map((cost) {
-      if (cost.cycle == FinancialCycle.monthly) {
-        return cost;
-      }
-
-      final occurrences = _countWeekdayOccurrences(
-        currentWeekday: now.weekday,
-        targetWeekday: cost.dueValue,
-        remainingDays: _remainingDaysInWeek(now),
-      );
-
-      return UnpaidFixedCostEntity(
-        name: cost.name,
-        amount: cost.amount * occurrences,
-        cycle: cost.cycle,
-        dueValue: cost.dueValue,
-      );
-    }).toList();
-
-    final totalUnpaidFixedCost = recalculateUnpaidFixedCosts.fold(
+    final totalUnpaidFixedCost = unpaidFixedCosts.fold(
       0,
       (sum, item) => sum + (item.amount),
     );
@@ -293,34 +273,6 @@ class CalculateDashboardMetricsUsecase {
   int _remainingDaysInWeek(DateTime date) {
     final daysUntilEndOfWeek = DateTime.daysPerWeek - date.weekday;
     return daysUntilEndOfWeek + 1;
-  }
-
-  int _countWeekdayOccurrences({
-    required int currentWeekday,
-    required int targetWeekday,
-    required int remainingDays,
-  }) {
-    // Validasi due value agar tetap di rentang weekday yang valid [1..7].
-    if (targetWeekday < 1 || targetWeekday > DateTime.daysPerWeek) {
-      return 0;
-    }
-
-    // Jarak hari dari hari ini ke kemunculan pertama target weekday.
-    final daysUntilFirst =
-        (targetWeekday - currentWeekday) % DateTime.daysPerWeek;
-
-    // Karena hari ini ikut dihitung, offset valid adalah [0..remainingDays-1].
-    final maxOffset = remainingDays - 1;
-
-    if (daysUntilFirst > maxOffset) {
-      return 0;
-    }
-
-    // Setelah kemunculan pertama, weekday yang sama berulang tiap 7 hari.
-    final daysAfterFirst = maxOffset - daysUntilFirst;
-    final extraOccurrences = daysAfterFirst ~/ DateTime.daysPerWeek;
-
-    return 1 + extraOccurrences;
   }
 }
 
@@ -348,6 +300,7 @@ class DashboardMetricsResult {
   final String limitName;
   final int remainingDaysInCycle;
   final int totalUnpaidFixedCost;
+  final List<UnpaidFixedCostEntity> unpaidFixedCosts;
   final DashboardMetric firstMetric;
   final DashboardMetric secondMetric;
   final BudgetHealthScenario healthScenario;
@@ -361,6 +314,7 @@ class DashboardMetricsResult {
     required this.limitName,
     required this.totalUnpaidFixedCost,
     required this.remainingDaysInCycle,
+    required this.unpaidFixedCosts,
     required this.firstMetric,
     required this.secondMetric,
     required this.healthScenario,

@@ -28,12 +28,14 @@ class DashboardRemoteDataSource {
         tomorrowLimitPrediction: 50000, // Prediksi besok tetap aman
         unpaidFixedCosts: const [
           UnpaidFixedCostModel(
+            occurrenceId: 1,
             name: 'Sewa Kos',
             amount: 100000,
             cycle: FinancialCycle.monthly,
             dueValue: 30,
           ),
           UnpaidFixedCostModel(
+            occurrenceId: 2,
             name: 'Listrik',
             amount: 50000,
             cycle: FinancialCycle.monthly,
@@ -44,10 +46,31 @@ class DashboardRemoteDataSource {
     }
 
     try {
-      final response = await dio.get('/user/dashboard');
+      final responses = await Future.wait([
+        dio.get('/user/dashboard'),
+        dio.get('/fixed-costs/occurrences'),
+      ]);
+
+      final dashboardResponse = responses[0].data;
+      final occurrencesResponse = responses[1].data;
+
+      final rawOccurrences =
+          occurrencesResponse['data'] as List<dynamic>? ?? <dynamic>[];
+
+      final unpaidFixedCosts = rawOccurrences
+          .whereType<Map>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .where((item) {
+            final paidAt = item['paid_at'];
+            final voidedAt = item['voided_at'];
+            return paidAt == null && voidedAt == null;
+          })
+          .map(UnpaidFixedCostModel.fromJson)
+          .toList(growable: false);
 
       return BudgetSnapshotModel.fromJson(
-        response.data['data'] as Map<String, dynamic>,
+        dashboardResponse['data'] as Map<String, dynamic>,
+        unpaidFixedCosts: unpaidFixedCosts,
       );
     } on DioException catch (e) {
       throw ErrorHandler.handleRemoteException(
@@ -59,6 +82,50 @@ class DashboardRemoteDataSource {
       _log.severe('Unexpected error while fetching budget snapshot', e);
       throw UnexpectedException(
         'Terjadi kesalahan sistem saat mengambil data dashoboard',
+      );
+    }
+  }
+
+  Future<void> confirmFixedCostOccurrence(int occurrenceId) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.post('/fixed-costs/occurrences/$occurrenceId/confirm');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Confirm Fixed Cost Occurrence',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while confirming fixed cost occurrence', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat konfirmasi pembayaran fixed cost',
+      );
+    }
+  }
+
+  Future<void> cancelFixedCostOccurrence(int occurrenceId) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.post('/fixed-costs/occurrences/$occurrenceId/cancel');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Cancel Fixed Cost Occurrence',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while cancelling fixed cost occurrence', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat membatalkan fixed cost',
       );
     }
   }
