@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart'
+    as category;
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 
 class ManageFixedCostBottomSheet extends StatefulWidget {
   const ManageFixedCostBottomSheet({
     super.key,
+    required this.categories,
     this.isEditing = false,
     this.initialName,
     this.initialAmount,
-    this.initialCategory,
+    this.initialCategoryId,
     this.initialCycleType,
     this.initialDueDate,
   });
 
+  final List<CategoryEntity> categories;
+
   final bool isEditing;
   final String? initialName;
   final String? initialAmount;
-  final String? initialCategory;
+  final int? initialCategoryId;
   final String? initialCycleType;
   final String? initialDueDate;
 
@@ -28,25 +37,41 @@ class ManageFixedCostBottomSheet extends StatefulWidget {
       _ManageFixedCostBottomSheetState();
 }
 
-class _ManageFixedCostBottomSheetState extends State<ManageFixedCostBottomSheet> {
+class _ManageFixedCostBottomSheetState
+    extends State<ManageFixedCostBottomSheet> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _nameController;
   late TextEditingController _amountController;
   late TextEditingController _dueDateController;
 
-  late String _selectedCategory;
+  late int _selectedCategoryId;
   late String _selectedCycleType;
+  DateTime? _selectedDueDate;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initialName ?? '');
     _amountController = TextEditingController(text: widget.initialAmount ?? '');
-    _dueDateController = TextEditingController(text: widget.initialDueDate ?? '');
+    _dueDateController = TextEditingController(
+      text: widget.initialDueDate ?? '',
+    );
 
-    _selectedCategory = widget.initialCategory ?? 'Utilitas';
+    final defaultCategoryId = widget.categories.isNotEmpty
+        ? widget.categories.first.id
+        : 0;
+    _selectedCategoryId = widget.initialCategoryId ?? defaultCategoryId;
     _selectedCycleType = widget.initialCycleType ?? 'Mingguan';
+
+    if ((widget.initialDueDate ?? '').isNotEmpty) {
+      final dateParts = widget.initialDueDate!.split('/');
+      if (dateParts.length == 3) {
+        _selectedDueDate = DateTime.tryParse(
+          '${dateParts[2]}-${dateParts[1].padLeft(2, '0')}-${dateParts[0].padLeft(2, '0')}',
+        );
+      }
+    }
   }
 
   @override
@@ -90,9 +115,9 @@ class _ManageFixedCostBottomSheetState extends State<ManageFixedCostBottomSheet>
               const SizedBox(height: AppSizes.spacing4),
               Text(
                 widget.isEditing ? 'Edit Fixed Cost' : 'Tambah Fixed Cost',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppColors.primary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineMedium?.copyWith(color: AppColors.primary),
               ),
               const SizedBox(height: AppSizes.spacing4),
               AppTextField(
@@ -127,23 +152,6 @@ class _ManageFixedCostBottomSheetState extends State<ManageFixedCostBottomSheet>
               ),
               const SizedBox(height: AppSizes.spacing4),
               DropdownButtonFormField<String>(
-                initialValue: _selectedCategory,
-                decoration: _dropdownDecoration(context, 'Kategori'),
-                items: const [
-                  DropdownMenuItem(value: 'Utilitas', child: Text('Utilitas')),
-                  DropdownMenuItem(value: 'Transportasi', child: Text('Transportasi')),
-                  DropdownMenuItem(value: 'Makanan', child: Text('Makanan')),
-                  DropdownMenuItem(value: 'Kesehatan', child: Text('Kesehatan')),
-                  DropdownMenuItem(value: 'Entertain', child: Text('Entertain')),
-                ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedCategory = value);
-                  }
-                },
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              DropdownButtonFormField<String>(
                 initialValue: _selectedCycleType,
                 decoration: _dropdownDecoration(context, 'Frekuensi'),
                 items: const [
@@ -154,6 +162,30 @@ class _ManageFixedCostBottomSheetState extends State<ManageFixedCostBottomSheet>
                   if (value != null) {
                     setState(() => _selectedCycleType = value);
                   }
+                },
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              DropdownButtonFormField<int>(
+                value: _selectedCategoryId == 0 ? null : _selectedCategoryId,
+                decoration: _dropdownDecoration(context, 'Kategori'),
+                items: widget.categories
+                    .map(
+                      (categoryItem) => DropdownMenuItem<int>(
+                        value: categoryItem.id,
+                        child: Text(categoryItem.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => _selectedCategoryId = value);
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value == 0) {
+                    return 'Kategori wajib dipilih';
+                  }
+                  return null;
                 },
               ),
               const SizedBox(height: AppSizes.spacing4),
@@ -168,7 +200,7 @@ class _ManageFixedCostBottomSheetState extends State<ManageFixedCostBottomSheet>
                 onTap: () async {
                   final pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(),
+                    initialDate: _selectedDueDate ?? DateTime.now(),
                     firstDate: DateTime.now(),
                     lastDate: DateTime.now().add(const Duration(days: 365)),
                     cancelText: 'Batal',
@@ -176,10 +208,18 @@ class _ManageFixedCostBottomSheetState extends State<ManageFixedCostBottomSheet>
                   );
                   if (pickedDate != null) {
                     setState(() {
+                      _selectedDueDate = pickedDate;
                       _dueDateController.text =
                           '${pickedDate.day}/${pickedDate.month}/${pickedDate.year}';
                     });
                   }
+                },
+                validator: (value) {
+                  if ((value ?? '').trim().isEmpty ||
+                      _selectedDueDate == null) {
+                    return 'Tanggal jatuh tempo wajib dipilih';
+                  }
+                  return null;
                 },
               ),
               const SizedBox(height: AppSizes.spacing5),
@@ -187,7 +227,35 @@ class _ManageFixedCostBottomSheetState extends State<ManageFixedCostBottomSheet>
                 text: widget.isEditing ? 'Simpan Perubahan' : 'Simpan',
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
-                    Navigator.pop(context);
+                    final selectedCategory = widget.categories.firstWhere(
+                      (categoryItem) => categoryItem.id == _selectedCategoryId,
+                      orElse: () => widget.categories.first,
+                    );
+
+                    final dueDate = _selectedDueDate ?? DateTime.now();
+                    final cycle = _selectedCycleType == 'Mingguan'
+                        ? FinancialCycle.weekly
+                        : FinancialCycle.monthly;
+                    final dueDay = cycle == FinancialCycle.weekly
+                        ? dueDate.weekday
+                        : dueDate.day;
+
+                    final payload = FixedCostEntity(
+                      name: _nameController.text.trim(),
+                      amount: CurrencyFormatter.parse(_amountController.text),
+                      category: selectedCategory.name,
+                      categoryId: selectedCategory.id,
+                      categoryType:
+                          selectedCategory.categoryType ==
+                              category.RealCategoryType.system
+                          ? CategoryType.system
+                          : CategoryType.custom,
+                      cycle: cycle,
+                      dueValue: dueDay,
+                      isActive: true,
+                    );
+
+                    Navigator.pop(context, payload);
                   }
                 },
               ),
@@ -201,9 +269,9 @@ class _ManageFixedCostBottomSheetState extends State<ManageFixedCostBottomSheet>
   InputDecoration _dropdownDecoration(BuildContext context, String labelText) {
     return InputDecoration(
       labelText: labelText,
-      labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: AppColors.trunks,
-      ),
+      labelStyle: Theme.of(
+        context,
+      ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
       filled: true,
       fillColor: AppColors.gohan,
       border: OutlineInputBorder(

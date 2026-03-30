@@ -4,9 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/active_fixed_cost_item_card.dart';
@@ -27,23 +29,41 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
     context.read<FixedCostOccurrencesCubit>().fetchFixedCostOccurrences();
   }
 
-  void _showAddFixedCostBottomSheet() {
-    showModalBottomSheet(
+  Future<void> _showAddFixedCostBottomSheet() async {
+    final categories = _expenseCategoriesFromState(
+      context.read<CategoryCubit>().state,
+    );
+
+    if (categories.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: AppColors.danger100,
+          content: Text(
+            'Kategori belum tersedia. Silakan coba lagi.',
+            style: TextStyle(color: AppColors.gohan),
+          ),
+        ),
+      );
+      return;
+    }
+
+    final payload = await showModalBottomSheet<FixedCostEntity>(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => const ManageFixedCostBottomSheet(),
+      builder: (context) => ManageFixedCostBottomSheet(categories: categories),
     );
+
+    if (!mounted || payload == null) {
+      return;
+    }
+
+    await context.read<FixedCostOccurrencesCubit>().createFixedCost(payload);
   }
 
   void _showEditFixedCostBottomSheet(FixedCostOccurrenceEntity fixedCost) {
-    final categoryName = _categoryNameById(
-      context.read<CategoryCubit>().state,
-      fixedCost.categoryId,
-    );
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -51,12 +71,15 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) => ManageFixedCostBottomSheet(
+        categories: _expenseCategoriesFromState(
+          context.read<CategoryCubit>().state,
+        ),
         isEditing: true,
         initialName: fixedCost.name,
         initialAmount: CurrencyFormatter.format(
           _parseAmountFromRaw(fixedCost.amountRaw),
         ),
-        initialCategory: categoryName,
+        initialCategoryId: fixedCost.categoryId,
         initialCycleType: _toCycleLabel(fixedCost.cycleType),
         initialDueDate: DateFormat('dd/MM/yyyy').format(fixedCost.dueDate),
       ),
@@ -96,6 +119,16 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
     }
 
     return 'Kategori #$categoryId';
+  }
+
+  List<CategoryEntity> _expenseCategoriesFromState(
+    CategoryState categoryState,
+  ) {
+    if (categoryState is CategoryLoaded) {
+      return categoryState.expenseCategories;
+    }
+
+    return const [];
   }
 
   @override

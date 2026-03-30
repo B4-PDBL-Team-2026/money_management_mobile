@@ -3,9 +3,10 @@ import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/features/profile/data/models/fixed_cost_model.dart';
 import 'package:money_management_mobile/features/profile/data/models/fixed_cost_occurrence_model.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 import 'package:money_management_mobile/features/profile/data/models/financial_profile_model.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 
 class ProfileRemoteDataSource {
   final Dio dio;
@@ -75,6 +76,32 @@ class ProfileRemoteDataSource {
       _log.severe('Unexpected error while fetching fixed cost occurrences', e);
       throw UnexpectedException(
         'Terjadi kesalahan sistem saat mengambil fixed cost occurrences',
+      );
+    }
+  }
+
+  Future<void> createFixedCost(FixedCostModel payload) async {
+    if (AppEnv.useMockApi) {
+      _log.info(
+        'USE_MOCK_API enabled, returning dummy create fixed cost response',
+      );
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (payload.name.toLowerCase() == 'error') {
+        throw ServerException('Simulasi gagal membuat fixed cost');
+      }
+
+      return;
+    }
+
+    try {
+      await dio.post('/fixed-costs', data: payload.toJson());
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Create Fixed Cost');
+    } catch (e) {
+      _log.severe('Unexpected error while creating fixed cost', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat menambahkan fixed cost',
       );
     }
   }
