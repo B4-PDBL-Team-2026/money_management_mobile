@@ -17,9 +17,9 @@ void main() async {
   AppLogger.init();
 
   await initInjectionContainer();
+  localTimezone = await FlutterTimezone.getLocalTimezone();
 
   await Future.wait([
-    FlutterTimezone.getLocalTimezone(),
     initializeDateFormatting('id_ID'),
     sl<SessionCubit>().restoreSession(),
   ]);

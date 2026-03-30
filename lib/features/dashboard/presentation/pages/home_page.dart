@@ -63,7 +63,11 @@ class HomePage extends StatelessWidget {
                         ),
                         separatorBuilder: (context, index) =>
                             const SizedBox(height: AppSizes.spacing2),
-                        itemCount: 3,
+                        itemCount: state.transactionHistory.isEmpty
+                            ? 0
+                            : state.transactionHistory.length > 3
+                            ? 3
+                            : state.transactionHistory.length,
                       ),
                       const SizedBox(height: AppSizes.spacing6),
                     ],

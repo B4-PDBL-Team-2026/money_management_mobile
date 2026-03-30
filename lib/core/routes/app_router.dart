@@ -18,6 +18,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/pages/ho
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/fixed_costs_management_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
@@ -42,6 +43,7 @@ class AppRouter {
   static const String step2Personalization = '/personalization/step-2';
   static const String step3Personalization = '/personalization/step-3';
   static const String step4Personalization = '/personalization/step-4';
+  static const String fixedCostsManagement = '/fixed-costs';
 
   static const String dashboard = '/';
   static const String history = '/history';
@@ -125,6 +127,10 @@ class AppRouter {
               ],
               child: const Step4PersonalizationPage(),
             ),
+          ),
+          GoRoute(
+            path: '/fixed-costs',
+            builder: (context, state) => const FixedCostsManagementPage(),
           ),
 
           // dashboard module
