@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/usecases/delete_transaction_usecase.dart';
 import 'package:money_management_mobile/features/transaction/domain/usecases/get_transaction_detail_usecase.dart';
@@ -57,6 +58,7 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
     required int amount,
     required TransactionType type,
     required int categoryId,
+    required RealCategoryType categoryType,
     required DateTime transactionDate,
     String? note,
   }) async {
@@ -69,6 +71,7 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
         amount: amount,
         type: type,
         categoryId: categoryId,
+        categoryType: categoryType,
         transactionDate: transactionDate,
         note: note,
       );

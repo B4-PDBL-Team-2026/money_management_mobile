@@ -1,4 +1,5 @@
 import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/data_sources/remote/transaction_remote_data_source.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
@@ -34,6 +35,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
     required int amount,
     required TransactionType type,
     required int categoryId,
+    required RealCategoryType categoryType,
     required DateTime transactionDate,
     String? note,
   }) async {
@@ -43,6 +45,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       amount: amount,
       type: type,
       categoryId: categoryId,
+      categoryType: categoryType,
       transactionDate: transactionDate,
       note: note,
     );

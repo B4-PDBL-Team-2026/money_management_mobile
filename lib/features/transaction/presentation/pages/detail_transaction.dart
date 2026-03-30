@@ -197,6 +197,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           amount: payload.amount,
           type: payload.type,
           categoryId: payload.categoryId,
+          categoryType: payload.categoryType,
           transactionDate: payload.transactionDate,
           note: payload.note,
         );
@@ -257,6 +258,7 @@ class _UpdateTransactionPayload {
   final int amount;
   final TransactionType type;
   final int categoryId;
+  final RealCategoryType categoryType;
   final DateTime transactionDate;
   final String? note;
 
@@ -265,6 +267,7 @@ class _UpdateTransactionPayload {
     required this.amount,
     required this.type,
     required this.categoryId,
+    required this.categoryType,
     required this.transactionDate,
     required this.note,
   });
@@ -489,6 +492,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                             ),
                             type: _selectedType,
                             categoryId: _selectedCategoryId,
+                            categoryType: _selectedCategoryType(),
                             transactionDate: _selectedDate,
                             note: _noteController.text.trim().isEmpty
                                 ? null
@@ -545,6 +549,16 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
 
   String _formatDate(DateTime date) {
     return DateFormat('dd MMMM yyyy', 'id_ID').format(date);
+  }
+
+  RealCategoryType _selectedCategoryType() {
+    for (final category in widget.categories) {
+      if (category.id == _selectedCategoryId) {
+        return category.categoryType;
+      }
+    }
+
+    return RealCategoryType.system;
   }
 }
 
