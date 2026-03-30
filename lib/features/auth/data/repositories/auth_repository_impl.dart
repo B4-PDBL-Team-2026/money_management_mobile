@@ -80,9 +80,9 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await remoteDataSource.logout();
     } catch (e) {
-      await localDataSource.clearAll();
-
       rethrow;
+    } finally {
+      await localDataSource.clearAll();
     }
   }
 }
