@@ -65,6 +65,7 @@ class HomePage extends StatelessWidget {
                             const SizedBox(height: AppSizes.spacing2),
                         itemCount: 3,
                       ),
+                      const SizedBox(height: AppSizes.spacing6),
                     ],
                   );
                 },

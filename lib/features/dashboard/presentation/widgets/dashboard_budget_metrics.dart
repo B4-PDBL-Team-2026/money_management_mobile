@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
+import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_container_card.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
@@ -29,7 +30,20 @@ class DashboardBudgetMetrics extends StatelessWidget {
     } else if (dashboardState is DashboardMetricError) {
       return SizedBox(
         height: 400,
-        child: Center(child: Text('Gagal memuat data dashboard')),
+        child: Center(
+          child: Column(
+            children: [
+              Text('Gagal memuat data dashboard'),
+              const SizedBox(height: AppSizes.spacing2),
+              AppButton(
+                onPressed: () {
+                  context.read<DashboardMetricCubit>().fetchDashboardMetrics();
+                },
+                text: 'Coba Lagi',
+              ),
+            ],
+          ),
+        ),
       );
     } else {
       return SizedBox.shrink();
