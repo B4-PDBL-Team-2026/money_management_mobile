@@ -42,8 +42,10 @@ import 'package:money_management_mobile/features/transaction/data/data_sources/r
 import 'package:money_management_mobile/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:money_management_mobile/features/transaction/domain/usecases/add_transaction_usecase.dart';
+import 'package:money_management_mobile/features/transaction/domain/usecases/get_transaction_detail_usecase.dart';
 import 'package:money_management_mobile/features/transaction/domain/usecases/get_transactions_usecase.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -82,8 +84,14 @@ Future<void> initInjectionContainer() async {
   sl.registerFactory<AddTransactionCubit>(
     () => AddTransactionCubit(sl(), sl(), sl()),
   );
+  sl.registerFactory<TransactionDetailCubit>(
+    () => TransactionDetailCubit(sl()),
+  );
   sl.registerLazySingleton<AddTransactionUseCase>(
     () => AddTransactionUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetTransactionDetailUseCase>(
+    () => GetTransactionDetailUseCase(sl()),
   );
   sl.registerLazySingleton<TransactionRepository>(
     () => TransactionRepositoryImpl(sl()),

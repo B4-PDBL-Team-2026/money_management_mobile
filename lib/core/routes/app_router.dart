@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +26,8 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/outer_shell.dart';
@@ -50,6 +53,8 @@ class AppRouter {
   static const String other = '/other';
 
   static const String addTransaction = '/transaction/add';
+  static const String transactionDetailBase = '/transaction';
+  static const String transactionDetail = '/transaction/:id';
 
   static final SessionCubit _sessionCubit = sl<SessionCubit>();
 
@@ -177,6 +182,23 @@ class AppRouter {
               create: (_) => sl<AddTransactionCubit>(),
               child: const AddTransactionPage(),
             ),
+          ),
+          GoRoute(
+            path: '/transaction/:id',
+            builder: (context, state) {
+              final id = int.tryParse(state.pathParameters['id'] ?? '');
+
+              if (id == null) {
+                return const Scaffold(
+                  body: Center(child: Text('ID transaksi tidak valid.')),
+                );
+              }
+
+              return BlocProvider<TransactionDetailCubit>(
+                create: (_) => sl<TransactionDetailCubit>(),
+                child: TransactionDetailPage(transactionId: id),
+              );
+            },
           ),
         ],
       ),

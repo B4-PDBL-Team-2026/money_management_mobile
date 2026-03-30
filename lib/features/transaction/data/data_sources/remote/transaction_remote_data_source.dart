@@ -4,6 +4,7 @@ import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/data/models/paginated_model.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/features/transaction/data/models/transaction_detail_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_history_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
@@ -31,6 +32,57 @@ class TransactionRemoteDataSource {
       _log.severe('Unexpected error while adding transaction', e);
       throw UnexpectedException(
         'Terjadi kesalahan sistem saat menambah transaksi',
+      );
+    }
+  }
+
+  Future<TransactionDetailModel> getTransactionDetail({required int id}) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+
+      return TransactionDetailModel(
+        id: id,
+        userId: 1,
+        categoryType: 'system',
+        categoryId: 1,
+        fixedCostOccurrenceId: null,
+        type: TransactionType.expense,
+        source: 'manual',
+        name: 'Makan Siang',
+        amount: 30000,
+        transactionDate: DateTime.now(),
+        effectiveAt: null,
+        note: 'Mock detail transaction',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        deletedAt: null,
+      );
+    }
+
+    try {
+      final response = await dio.get('/transaction/$id');
+      final responseData = response.data as Map<String, dynamic>?;
+      final data = responseData?['data'] as Map<String, dynamic>?;
+
+      if (data == null) {
+        throw UnexpectedException('Data detail transaksi tidak ditemukan.');
+      }
+
+      return TransactionDetailModel.fromJson(data);
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        ' Get Transaction Detail',
+      );
+    } catch (e) {
+      if (e is UnexpectedException) {
+        rethrow;
+      }
+
+      _log.severe('Unexpected error while fetching transaction detail', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat mengambil detail transaksi',
       );
     }
   }
