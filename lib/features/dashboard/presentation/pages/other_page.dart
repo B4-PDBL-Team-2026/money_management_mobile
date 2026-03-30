@@ -209,34 +209,34 @@ class OtherPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  BlocConsumer<SessionCubit, SessionState>(
-                    builder: (context, state) {
-                      if (state is SessionAuthenticated &&
-                          state.user.emailVerifiedAt != null) {
-                        return const SizedBox.shrink();
-                      }
+                  // BlocConsumer<SessionCubit, SessionState>(
+                  //   builder: (context, state) {
+                  //     if (state is SessionAuthenticated &&
+                  //         state.user.emailVerifiedAt != null) {
+                  //       return const SizedBox.shrink();
+                  //     }
 
-                      return Column(
-                        children: [
-                          OtherSettingsTile(
-                            icon: Icons.email_outlined,
-                            title: 'Verifikasi Email',
-                            subtitle:
-                                'Tingkatkan keamanan akun dengan verifikasi email',
-                            iconBackground: AppColors.lightPrimary,
-                            iconColor: AppColors.primary,
-                            onTap: () {},
-                          ),
-                          Divider(
-                            height: 1,
-                            thickness: 1,
-                            color: AppColors.beerus,
-                          ),
-                        ],
-                      );
-                    },
-                    listener: (context, state) {},
-                  ),
+                  //     return Column(
+                  //       children: [
+                  //         OtherSettingsTile(
+                  //           icon: Icons.email_outlined,
+                  //           title: 'Verifikasi Email',
+                  //           subtitle:
+                  //               'Tingkatkan keamanan akun dengan verifikasi email',
+                  //           iconBackground: AppColors.lightPrimary,
+                  //           iconColor: AppColors.primary,
+                  //           onTap: () {},
+                  //         ),
+                  //         Divider(
+                  //           height: 1,
+                  //           thickness: 1,
+                  //           color: AppColors.beerus,
+                  //         ),
+                  //       ],
+                  //     );
+                  //   },
+                  //   listener: (context, state) {},
+                  // ),
                   OtherSettingsTile(
                     icon: Icons.logout,
                     title: 'Keluar',
