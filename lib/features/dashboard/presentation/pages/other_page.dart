@@ -81,8 +81,8 @@ class OtherPage extends StatelessWidget {
                 children: [
                   OtherSettingsTile(
                     icon: Icons.edit_outlined,
-                    title: 'Edit Anggaran & Biaya Tetap',
-                    subtitle: 'Ubah uang saku & pengeluaran tetap',
+                    title: 'Edit Fixed Cost',
+                    subtitle: 'Ubah biaya tetap (Fixed cost)',
                     iconBackground: AppColors.lightPrimary,
                     iconColor: AppColors.primary,
                     onTap: () {},
@@ -100,14 +100,14 @@ class OtherPage extends StatelessWidget {
               const SizedBox(height: AppSizes.spacing4),
               OtherSettingsCard(
                 children: [
-                  OtherSettingsTile(
-                    icon: Icons.lock_outline,
-                    title: 'Ganti Password',
-                    subtitle: 'Perbarui keamanan akunmu',
-                    iconBackground: AppColors.lightPrimary,
-                    iconColor: AppColors.primary,
-                    onTap: () {},
-                  ),
+                  // OtherSettingsTile(
+                  //   icon: Icons.lock_outline,
+                  //   title: 'Ganti Password',
+                  //   subtitle: 'Perbarui keamanan akunmu',
+                  //   iconBackground: AppColors.lightPrimary,
+                  //   iconColor: AppColors.primary,
+                  //   onTap: () {},
+                  // ),
                   Divider(height: 1, thickness: 1, color: AppColors.beerus),
                   OtherSettingsTile(
                     icon: Icons.logout,
@@ -118,14 +118,6 @@ class OtherPage extends StatelessWidget {
                     onTap: () => _onLogoutTap(context),
                   ),
                 ],
-              ),
-              const SizedBox(height: AppSizes.spacing8),
-              AppButton(
-                text: 'Reset Semua Data Transaksi',
-                onPressed: () {},
-                variant: AppButtonVariant.ghost,
-                type: AppButtonType.danger,
-                leadingIcon: Icons.delete_outline,
               ),
             ],
           ),
