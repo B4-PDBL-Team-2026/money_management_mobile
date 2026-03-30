@@ -28,4 +28,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<void> createFixedCost(FixedCostEntity payload) async {
     await remoteDataSource.createFixedCost(FixedCostModel.fromEntity(payload));
   }
+
+  @override
+  Future<void> deleteFixedCost(int fixedCostTemplateId) async {
+    await remoteDataSource.deleteFixedCost(fixedCostTemplateId);
+  }
 }

@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
+import 'package:money_management_mobile/core/widgets/app_button.dart';
+import 'package:money_management_mobile/core/widgets/app_confirm_dialog.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/active_fixed_cost_item_card.dart';
@@ -131,6 +135,30 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
     return const [];
   }
 
+  Future<void> _confirmAndDeleteFixedCost(
+    FixedCostOccurrenceEntity fixedCost,
+  ) async {
+    final isConfirmed = await AppConfirmDialog.show(
+      context: context,
+      title: 'Hapus fixed cost?',
+      content:
+          'Fixed cost ${fixedCost.name} akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.',
+      confirmText: 'Hapus',
+      cancelText: 'Batal',
+      confirmButtonType: AppButtonType.danger,
+    );
+
+    if (!isConfirmed || !mounted) {
+      return;
+    }
+
+    final targetId = fixedCost.fixedCostTemplateId > 0
+        ? fixedCost.fixedCostTemplateId
+        : fixedCost.id;
+
+    await context.read<FixedCostOccurrencesCubit>().deleteFixedCost(targetId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -179,7 +207,13 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
             },
             child: CustomScrollView(
               slivers: [
-                const SliverAppBar(
+                SliverAppBar(
+                  leading: BackButton(
+                    color: AppColors.gohan,
+                    onPressed: () {
+                      context.go(AppRouter.other);
+                    },
+                  ),
                   title: Text('Fixed Cost Management'),
                   pinned: true,
                   elevation: 0,
@@ -225,19 +259,8 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
                             showDeleteAction: true,
                             onEdit: () =>
                                 _showEditFixedCostBottomSheet(fixedCost),
-                            onDelete: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  backgroundColor: AppColors.danger100,
-                                  content: Text(
-                                    'Delete ${fixedCost.name} - Coming soon',
-                                    style: const TextStyle(
-                                      color: AppColors.gohan,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                            onDelete: () =>
+                                _confirmAndDeleteFixedCost(fixedCost),
                           ),
                         );
                       }, childCount: items.length),

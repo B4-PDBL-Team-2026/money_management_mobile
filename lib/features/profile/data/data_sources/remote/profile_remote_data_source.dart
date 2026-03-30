@@ -37,6 +37,7 @@ class ProfileRemoteDataSource {
 
       return [
         FixedCostOccurrenceModel(
+          fixedCostTemplateId: 1,
           id: 1,
           name: 'WiFi',
           amountRaw: '100000',
@@ -46,6 +47,7 @@ class ProfileRemoteDataSource {
           status: FixedCostOccurrenceStatus.pending,
         ),
         FixedCostOccurrenceModel(
+          fixedCostTemplateId: 2,
           id: 2,
           name: 'Asuransi',
           amountRaw: '500000',
@@ -102,6 +104,27 @@ class ProfileRemoteDataSource {
       _log.severe('Unexpected error while creating fixed cost', e);
       throw UnexpectedException(
         'Terjadi kesalahan sistem saat menambahkan fixed cost',
+      );
+    }
+  }
+
+  Future<void> deleteFixedCost(int fixedCostTemplateId) async {
+    if (AppEnv.useMockApi) {
+      _log.info(
+        'USE_MOCK_API enabled, returning dummy delete fixed cost response',
+      );
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.delete('/fixed-costs/$fixedCostTemplateId');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Delete Fixed Cost');
+    } catch (e) {
+      _log.severe('Unexpected error while deleting fixed cost', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat menghapus fixed cost',
       );
     }
   }

@@ -23,6 +23,7 @@ enum FixedCostOccurrenceStatus {
 
 class FixedCostOccurrenceEntity {
   final int id;
+  final int fixedCostTemplateId;
   final String name;
   final String amountRaw;
   final int categoryId;
@@ -32,6 +33,7 @@ class FixedCostOccurrenceEntity {
 
   const FixedCostOccurrenceEntity({
     required this.id,
+    required this.fixedCostTemplateId,
     required this.name,
     required this.amountRaw,
     required this.categoryId,

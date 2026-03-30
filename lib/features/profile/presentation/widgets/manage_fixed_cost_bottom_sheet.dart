@@ -10,6 +10,7 @@ import 'package:money_management_mobile/features/category/domain/entities/catego
     as category;
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
+import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
 
 class ManageFixedCostBottomSheet extends StatefulWidget {
   const ManageFixedCostBottomSheet({
@@ -43,33 +44,49 @@ class _ManageFixedCostBottomSheetState
 
   late TextEditingController _nameController;
   late TextEditingController _amountController;
-  late TextEditingController _dueDateController;
+  final TextEditingController _dueDateController = TextEditingController();
 
   late int _selectedCategoryId;
-  late String _selectedCycleType;
-  DateTime? _selectedDueDate;
+  late FinancialCycle _frequency;
+  late List<MapEntry<int, String>> _dueOptions;
+  late int _selectedDueValue;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initialName ?? '');
     _amountController = TextEditingController(text: widget.initialAmount ?? '');
-    _dueDateController = TextEditingController(
-      text: widget.initialDueDate ?? '',
-    );
 
     final defaultCategoryId = widget.categories.isNotEmpty
         ? widget.categories.first.id
         : 0;
     _selectedCategoryId = widget.initialCategoryId ?? defaultCategoryId;
-    _selectedCycleType = widget.initialCycleType ?? 'Mingguan';
+    _frequency = _parseInitialFrequency(widget.initialCycleType);
+    _dueOptions = _buildDueOptions(_frequency);
+    _selectedDueValue = _dueOptions.first.key;
+
+    final now = DateTime.now();
+    if (_frequency == FinancialCycle.monthly) {
+      _selectedDueValue = now.day;
+      _dueDateController.text = _monthlyDueText(_selectedDueValue);
+    }
 
     if ((widget.initialDueDate ?? '').isNotEmpty) {
       final dateParts = widget.initialDueDate!.split('/');
       if (dateParts.length == 3) {
-        _selectedDueDate = DateTime.tryParse(
+        final selectedDate = DateTime.tryParse(
           '${dateParts[2]}-${dateParts[1].padLeft(2, '0')}-${dateParts[0].padLeft(2, '0')}',
         );
+
+        if (selectedDate != null) {
+          _selectedDueValue = _frequency == FinancialCycle.weekly
+              ? selectedDate.weekday
+              : selectedDate.day;
+
+          if (_frequency == FinancialCycle.monthly) {
+            _dueDateController.text = _monthlyDueText(_selectedDueValue);
+          }
+        }
       }
     }
   }
@@ -151,16 +168,35 @@ class _ManageFixedCostBottomSheetState
                 },
               ),
               const SizedBox(height: AppSizes.spacing4),
-              DropdownButtonFormField<String>(
-                initialValue: _selectedCycleType,
+              DropdownButtonFormField<FinancialCycle>(
+                initialValue: _frequency,
                 decoration: _dropdownDecoration(context, 'Frekuensi'),
                 items: const [
-                  DropdownMenuItem(value: 'Mingguan', child: Text('Mingguan')),
-                  DropdownMenuItem(value: 'Bulanan', child: Text('Bulanan')),
+                  DropdownMenuItem(
+                    value: FinancialCycle.weekly,
+                    child: Text('Mingguan'),
+                  ),
+                  DropdownMenuItem(
+                    value: FinancialCycle.monthly,
+                    child: Text('Bulanan'),
+                  ),
                 ],
                 onChanged: (value) {
                   if (value != null) {
-                    setState(() => _selectedCycleType = value);
+                    setState(() {
+                      _frequency = value;
+                      _dueOptions = _buildDueOptions(_frequency);
+                      _selectedDueValue = _dueOptions.first.key;
+
+                      if (_frequency == FinancialCycle.monthly) {
+                        _selectedDueValue = DateTime.now().day;
+                        _dueDateController.text = _monthlyDueText(
+                          _selectedDueValue,
+                        );
+                      } else {
+                        _dueDateController.clear();
+                      }
+                    });
                   }
                 },
               ),
@@ -189,38 +225,83 @@ class _ManageFixedCostBottomSheetState
                 },
               ),
               const SizedBox(height: AppSizes.spacing4),
-              AppTextField(
-                hint: 'Pilih tanggal jatuh tempo',
-                controller: _dueDateController,
-                readOnly: true,
-                prefixIcon: const Icon(
-                  Icons.calendar_today_outlined,
-                  color: AppColors.trunks,
-                ),
-                onTap: () async {
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: _selectedDueDate ?? DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now().add(const Duration(days: 365)),
-                    cancelText: 'Batal',
-                    confirmText: 'Pilih',
-                  );
-                  if (pickedDate != null) {
+              if (_frequency == FinancialCycle.weekly)
+                DropdownButtonFormField<int>(
+                  initialValue: _selectedDueValue,
+                  decoration: _dropdownDecoration(context, 'Hari Jatuh Tempo'),
+                  items: _dueOptions
+                      .map(
+                        (item) => DropdownMenuItem<int>(
+                          value: item.key,
+                          child: Text(item.value),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _selectedDueValue = value);
+                    }
+                  },
+                  validator: (value) {
+                    if (value == null || value < 1 || value > 7) {
+                      return 'Hari jatuh tempo wajib dipilih';
+                    }
+                    return null;
+                  },
+                )
+              else
+                AppTextField(
+                  hint: 'Pilih tanggal jatuh tempo (bulan ini)',
+                  controller: _dueDateController,
+                  readOnly: true,
+                  prefixIcon: const Icon(
+                    Icons.calendar_today_outlined,
+                    color: AppColors.trunks,
+                  ),
+                  onTap: () async {
+                    final pickedDate = await _pickDueDateInCurrentMonth(
+                      context,
+                      _selectedDueValue,
+                    );
+
+                    if (!mounted || pickedDate == null) {
+                      return;
+                    }
+
                     setState(() {
-                      _selectedDueDate = pickedDate;
-                      _dueDateController.text =
-                          '${pickedDate.day}/${pickedDate.month}/${pickedDate.year}';
+                      _selectedDueValue = pickedDate.day;
+                      _dueDateController.text = _monthlyDueText(
+                        _selectedDueValue,
+                      );
                     });
-                  }
-                },
-                validator: (value) {
-                  if ((value ?? '').trim().isEmpty ||
-                      _selectedDueDate == null) {
-                    return 'Tanggal jatuh tempo wajib dipilih';
-                  }
-                  return null;
-                },
+                  },
+                  validator: (value) {
+                    if ((value ?? '').trim().isEmpty) {
+                      return 'Tanggal bulan ini wajib dipilih';
+                    }
+                    return null;
+                  },
+                ),
+              const SizedBox(height: AppSizes.spacing2),
+              Row(
+                children: [
+                  Text(
+                    'Jatuh tempo yang lewat akan diabaikan.',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+                  ),
+                  const SizedBox(width: AppSizes.spacing1),
+                  const Tooltip(
+                    message:
+                        'Jika tanggal sudah terlewat dalam siklus aktif, fixed cost tidak dihitung untuk proyeksi saat ini.',
+                    child: Icon(
+                      Icons.info_outline,
+                      size: 16,
+                      color: AppColors.trunks,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: AppSizes.spacing5),
               AppButton(
@@ -232,13 +313,8 @@ class _ManageFixedCostBottomSheetState
                       orElse: () => widget.categories.first,
                     );
 
-                    final dueDate = _selectedDueDate ?? DateTime.now();
-                    final cycle = _selectedCycleType == 'Mingguan'
-                        ? FinancialCycle.weekly
-                        : FinancialCycle.monthly;
-                    final dueDay = cycle == FinancialCycle.weekly
-                        ? dueDate.weekday
-                        : dueDate.day;
+                    final cycle = _frequency;
+                    final dueDay = _selectedDueValue;
 
                     final payload = FixedCostEntity(
                       name: _nameController.text.trim(),
@@ -264,6 +340,50 @@ class _ManageFixedCostBottomSheetState
         ),
       ),
     );
+  }
+
+  FinancialCycle _parseInitialFrequency(String? rawCycleType) {
+    final cycleType = rawCycleType?.toLowerCase();
+    if (cycleType == 'bulanan' || cycleType == 'monthly') {
+      return FinancialCycle.monthly;
+    }
+
+    return FinancialCycle.weekly;
+  }
+
+  List<MapEntry<int, String>> _buildDueOptions(FinancialCycle frequency) {
+    if (frequency == FinancialCycle.weekly) {
+      return ProfileUtils.weekdayOptions;
+    }
+
+    return List.generate(
+      31,
+      (index) => MapEntry(index + 1, 'Tanggal ${index + 1}'),
+    );
+  }
+
+  Future<DateTime?> _pickDueDateInCurrentMonth(
+    BuildContext context,
+    int selectedDay,
+  ) {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year, now.month, 1);
+    final lastDate = DateTime(now.year, now.month + 1, 0);
+    final initialDay = selectedDay.clamp(1, lastDate.day);
+
+    return showDatePicker(
+      context: context,
+      initialDate: DateTime(now.year, now.month, initialDay),
+      firstDate: firstDate,
+      lastDate: lastDate,
+      helpText: 'Pilih tanggal bulan ini',
+      cancelText: 'Batal',
+      confirmText: 'Pilih',
+    );
+  }
+
+  String _monthlyDueText(int day) {
+    return 'Tanggal $day';
   }
 
   InputDecoration _dropdownDecoration(BuildContext context, String labelText) {

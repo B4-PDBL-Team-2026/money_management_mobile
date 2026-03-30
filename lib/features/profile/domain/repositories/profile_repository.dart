@@ -8,4 +8,6 @@ abstract class ProfileRepository {
   Future<List<FixedCostOccurrenceEntity>> getFixedCostOccurrences();
 
   Future<void> createFixedCost(FixedCostEntity payload);
+
+  Future<void> deleteFixedCost(int fixedCostTemplateId);
 }
