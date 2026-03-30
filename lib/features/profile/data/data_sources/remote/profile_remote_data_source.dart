@@ -3,10 +3,9 @@ import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/features/profile/data/models/financial_profile_model.dart';
 import 'package:money_management_mobile/features/profile/data/models/fixed_cost_model.dart';
 import 'package:money_management_mobile/features/profile/data/models/fixed_cost_occurrence_model.dart';
-import 'package:money_management_mobile/features/profile/data/models/financial_profile_model.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 
 class ProfileRemoteDataSource {
   final Dio dio;

@@ -578,7 +578,6 @@ class _DetailContent extends StatelessWidget {
     final category = _findCategory(context, detail.categoryId);
     final transactionType = detail.type ?? category?.type;
     final isExpense = transactionType != TransactionType.income;
-    final nominalColor = isExpense ? AppColors.danger100 : AppColors.success100;
     final chipBgColor = isExpense ? AppColors.danger10 : AppColors.success10;
     final chipTextColor = isExpense
         ? AppColors.danger100
