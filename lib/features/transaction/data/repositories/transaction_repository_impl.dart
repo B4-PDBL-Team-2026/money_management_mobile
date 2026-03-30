@@ -28,6 +28,32 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
+  Future<void> updateTransaction({
+    required int id,
+    required String name,
+    required int amount,
+    required TransactionType type,
+    required int categoryId,
+    required DateTime transactionDate,
+    String? note,
+  }) async {
+    await remoteDataSource.updateTransaction(
+      id: id,
+      name: name,
+      amount: amount,
+      type: type,
+      categoryId: categoryId,
+      transactionDate: transactionDate,
+      note: note,
+    );
+  }
+
+  @override
+  Future<void> deleteTransaction({required int id}) async {
+    await remoteDataSource.deleteTransaction(id: id);
+  }
+
+  @override
   Future<PaginatedEntity<TransactionHistoryEntity>> getTransactions({
     int? page,
     String? search,

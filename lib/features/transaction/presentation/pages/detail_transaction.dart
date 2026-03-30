@@ -7,8 +7,11 @@ import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
+import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_container_card.dart';
+import 'package:money_management_mobile/core/widgets/app_segmented_control.dart';
+import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
@@ -16,6 +19,7 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_state.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TransactionDetailPage extends StatefulWidget {
@@ -66,6 +70,20 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           padding: const EdgeInsets.all(AppSizes.spacing6),
           child: BlocConsumer<TransactionDetailCubit, TransactionDetailState>(
             listener: (context, state) {
+              if (state is TransactionDetailDeleted) {
+                context
+                    .read<TransactionHistoryCubit>()
+                    .getFreshTransactionHistory();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: AppColors.primary,
+                  ),
+                );
+                _goBack();
+                return;
+              }
+
               if (state is TransactionDetailError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -87,8 +105,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               if (state is TransactionDetailSuccess) {
                 return _DetailContent(
                   detail: state.transactionDetail,
-                  onDeletePressed: _showNotAvailableSnackBar,
-                  onUpdatePressed: _showNotAvailableSnackBar,
+                  onDeletePressed: () =>
+                      _showDeleteConfirmationDialog(state.transactionDetail),
+                  onUpdatePressed: () =>
+                      _openUpdateDialog(state.transactionDetail),
                 );
               }
 
@@ -115,13 +135,416 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     context.go(AppRouter.history);
   }
 
-  void _showNotAvailableSnackBar() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Fitur update dan hapus sedang dalam pengembangan.'),
-        backgroundColor: AppColors.warning100,
+  Future<void> _openUpdateDialog(TransactionDetailEntity detail) async {
+    final categoryState = context.read<CategoryCubit>().state;
+
+    if (categoryState is! CategoryLoaded) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Kategori belum siap. Coba lagi sebentar.'),
+          backgroundColor: AppColors.warning100,
+        ),
+      );
+      return;
+    }
+
+    CategoryEntity? selectedCategory;
+    for (final category in categoryState.categories) {
+      if (category.id == detail.categoryId) {
+        selectedCategory = category;
+        break;
+      }
+    }
+
+    final selectedType = detail.type ?? selectedCategory?.type;
+
+    if (selectedType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tipe transaksi tidak valid untuk update.'),
+          backgroundColor: AppColors.warning100,
+        ),
+      );
+      return;
+    }
+
+    final payload = await showModalBottomSheet<_UpdateTransactionPayload>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSizes.radiusNm),
+        ),
+      ),
+      builder: (_) => _UpdateTransactionSheet(
+        detail: detail,
+        categories: categoryState.categories,
+        initialType: selectedType,
       ),
     );
+
+    if (payload == null || !mounted) {
+      return;
+    }
+
+    final success = await context
+        .read<TransactionDetailCubit>()
+        .updateTransaction(
+          id: detail.id,
+          name: payload.name,
+          amount: payload.amount,
+          type: payload.type,
+          categoryId: payload.categoryId,
+          transactionDate: payload.transactionDate,
+          note: payload.note,
+        );
+
+    if (!mounted || !success) {
+      return;
+    }
+
+    context.read<TransactionHistoryCubit>().getFreshTransactionHistory();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Transaksi berhasil diperbarui.'),
+        backgroundColor: AppColors.primary,
+      ),
+    );
+  }
+
+  Future<void> _showDeleteConfirmationDialog(
+    TransactionDetailEntity detail,
+  ) async {
+    final isDeleteConfirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Hapus Transaksi?'),
+          content: const Text(
+            'Data transaksi ini akan dihapus permanen. Lanjutkan?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text(
+                'Hapus',
+                style: TextStyle(color: AppColors.danger100),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (isDeleteConfirmed != true || !mounted) {
+      return;
+    }
+
+    await context.read<TransactionDetailCubit>().deleteTransaction(
+      id: detail.id,
+    );
+  }
+}
+
+class _UpdateTransactionPayload {
+  final String name;
+  final int amount;
+  final TransactionType type;
+  final int categoryId;
+  final DateTime transactionDate;
+  final String? note;
+
+  _UpdateTransactionPayload({
+    required this.name,
+    required this.amount,
+    required this.type,
+    required this.categoryId,
+    required this.transactionDate,
+    required this.note,
+  });
+}
+
+class _UpdateTransactionSheet extends StatefulWidget {
+  final TransactionDetailEntity detail;
+  final List<CategoryEntity> categories;
+  final TransactionType initialType;
+
+  const _UpdateTransactionSheet({
+    required this.detail,
+    required this.categories,
+    required this.initialType,
+  });
+
+  @override
+  State<_UpdateTransactionSheet> createState() =>
+      _UpdateTransactionSheetState();
+}
+
+class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController _nameController;
+  late final TextEditingController _amountController;
+  late final TextEditingController _dateController;
+  late final TextEditingController _noteController;
+
+  late TransactionType _selectedType;
+  late DateTime _selectedDate;
+  late int _selectedCategoryId;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedType = widget.initialType;
+    _selectedDate = widget.detail.transactionDate;
+    _nameController = TextEditingController(text: widget.detail.name);
+    _amountController = TextEditingController(
+      text: CurrencyFormatter.format(widget.detail.amount),
+    );
+    _dateController = TextEditingController(text: _formatDate(_selectedDate));
+    _noteController = TextEditingController(text: widget.detail.note ?? '');
+
+    final availableCategories = _categoriesByType(_selectedType);
+    final currentCategoryExists = availableCategories.any(
+      (item) => item.id == widget.detail.categoryId,
+    );
+
+    _selectedCategoryId = currentCategoryExists
+        ? widget.detail.categoryId
+        : availableCategories.first.id;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _amountController.dispose();
+    _dateController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = _categoriesByType(_selectedType);
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: AppSizes.spacing6,
+        right: AppSizes.spacing6,
+        top: AppSizes.spacing6,
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppSizes.spacing6,
+      ),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Update Transaksi',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: AppColors.bulma,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              AppSegmentedControl<TransactionType>(
+                segments: const [
+                  SegmentedControlItem(
+                    value: TransactionType.expense,
+                    label: 'Pengeluaran',
+                    selectedBackgroundColor: AppColors.danger100,
+                  ),
+                  SegmentedControlItem(
+                    value: TransactionType.income,
+                    label: 'Pemasukan',
+                    selectedBackgroundColor: AppColors.success100,
+                  ),
+                ],
+                selectedValue: _selectedType,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedType = value;
+                    final nextCategories = _categoriesByType(value);
+                    _selectedCategoryId = nextCategories.first.id;
+                  });
+                },
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              AppTextField(
+                label: 'Judul/Nama Transaksi',
+                hint: 'Masukkan nama transaksi',
+                controller: _nameController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Nama transaksi wajib diisi';
+                  }
+
+                  return null;
+                },
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              AppCurrencyTextField(
+                label: 'Nominal',
+                hint: 'Masukkan nominal',
+                controller: _amountController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Nominal wajib diisi';
+                  }
+
+                  final amount = CurrencyFormatter.parse(value);
+                  if (amount < 1) {
+                    return 'Nominal minimal 1';
+                  }
+
+                  return null;
+                },
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              Text(
+                'Kategori',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 14,
+                  color: AppColors.trunks,
+                ),
+              ),
+              const SizedBox(height: AppSizes.spacing2),
+              DropdownButtonFormField<int>(
+                value: _selectedCategoryId,
+                items: categories
+                    .map(
+                      (category) => DropdownMenuItem<int>(
+                        value: category.id,
+                        child: Text(category.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+
+                  setState(() => _selectedCategoryId = value);
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              AppTextField(
+                label: 'Tanggal',
+                hint: 'Pilih tanggal transaksi',
+                controller: _dateController,
+                readOnly: true,
+                onTap: _pickDate,
+                prefixIcon: const Icon(Icons.calendar_today_outlined),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              AppTextField(
+                label: 'Catatan (opsional)',
+                hint: 'Masukkan catatan',
+                controller: _noteController,
+                maxLines: null,
+                validator: (value) {
+                  if (value != null && value.length > 1000) {
+                    return 'Catatan maksimal 1000 karakter';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: AppSizes.spacing6),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      text: 'Batal',
+                      onPressed: () => Navigator.of(context).pop(),
+                      variant: AppButtonVariant.ghost,
+                    ),
+                  ),
+                  const SizedBox(width: AppSizes.spacing3),
+                  Expanded(
+                    child: AppButton(
+                      text: 'Simpan',
+                      type: AppButtonType.secondary,
+                      onPressed: () {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
+
+                        Navigator.of(context).pop(
+                          _UpdateTransactionPayload(
+                            name: _nameController.text.trim(),
+                            amount: CurrencyFormatter.parse(
+                              _amountController.text,
+                            ),
+                            type: _selectedType,
+                            categoryId: _selectedCategoryId,
+                            transactionDate: _selectedDate,
+                            note: _noteController.text.trim().isEmpty
+                                ? null
+                                : _noteController.text.trim(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<CategoryEntity> _categoriesByType(TransactionType type) {
+    final items = widget.categories.where((item) => item.type == type).toList();
+
+    if (items.isEmpty) {
+      return [
+        CategoryEntity(
+          id: widget.detail.categoryId,
+          name: 'Kategori #${widget.detail.categoryId}',
+          icon: 'question',
+          type: type,
+          categoryType: RealCategoryType.system,
+        ),
+      ];
+    }
+
+    return items;
+  }
+
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked == null) {
+      return;
+    }
+
+    setState(() {
+      _selectedDate = picked;
+      _dateController.text = _formatDate(picked);
+    });
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('dd MMMM yyyy', 'id_ID').format(date);
   }
 }
 

@@ -17,3 +17,9 @@ class TransactionDetailError extends TransactionDetailState {
 
   TransactionDetailError(this.message);
 }
+
+class TransactionDetailDeleted extends TransactionDetailState {
+  final String message;
+
+  TransactionDetailDeleted(this.message);
+}

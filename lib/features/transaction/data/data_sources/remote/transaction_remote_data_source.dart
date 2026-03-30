@@ -87,6 +87,60 @@ class TransactionRemoteDataSource {
     }
   }
 
+  Future<void> updateTransaction({
+    required int id,
+    required String name,
+    required int amount,
+    required TransactionType type,
+    required int categoryId,
+    required DateTime transactionDate,
+    String? note,
+  }) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.put(
+        '/transaction/$id',
+        data: {
+          'name': name,
+          'amount': amount,
+          'type': type.value,
+          'categoryId': categoryId,
+          'note': note,
+          'transactionDate': transactionDate.toIso8601String().split('T').first,
+        },
+      );
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, ' Update Transaction');
+    } catch (e) {
+      _log.severe('Unexpected error while updating transaction', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat memperbarui transaksi',
+      );
+    }
+  }
+
+  Future<void> deleteTransaction({required int id}) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.delete('/transaction/$id');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, ' Delete Transaction');
+    } catch (e) {
+      _log.severe('Unexpected error while deleting transaction', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat menghapus transaksi',
+      );
+    }
+  }
+
   Future<PaginatedModel<TransactionHistoryModel>> getTransaction({
     int? page,
     String? search,

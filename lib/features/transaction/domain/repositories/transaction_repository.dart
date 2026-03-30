@@ -6,6 +6,16 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 abstract class TransactionRepository {
   Future<TransactionEntity> addTransaction(TransactionEntity entity);
   Future<TransactionDetailEntity> getTransactionDetail({required int id});
+  Future<void> updateTransaction({
+    required int id,
+    required String name,
+    required int amount,
+    required TransactionType type,
+    required int categoryId,
+    required DateTime transactionDate,
+    String? note,
+  });
+  Future<void> deleteTransaction({required int id});
   Future<PaginatedEntity<TransactionHistoryEntity>> getTransactions({
     int? page,
     String? search,
