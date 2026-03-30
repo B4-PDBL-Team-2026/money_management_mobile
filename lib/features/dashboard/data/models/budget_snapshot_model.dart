@@ -18,18 +18,18 @@ class BudgetSnapshotModel extends BudgetSnapshotEntity {
 
   factory BudgetSnapshotModel.fromJson(Map<String, dynamic> json) {
     return BudgetSnapshotModel(
-      timestamp: DateTime.parse(json['server_time'] as String),
-      balance: json['current_balance'] as int,
+      timestamp: DateTime.parse(json['serverTime'] as String),
+      balance: json['currentBalance'] as int,
       budgetCycle: FinancialCycle.values.firstWhere(
-        (e) => e.value == json['budget_cycle'] as String,
+        (e) => e.value == json['budgetCycle'] as String,
       ),
-      safetyCeiling: json['safety_ceiling'] as int,
-      safetyFlooring: json['safety_flooring'] as int,
-      todaySpent: json['today_spent'] as int,
-      todayLimit: json['today_limit'] as int,
-      tomorrowLimitPrediction: json['tomorrow_limit_prediction'] as int,
-      actualDailyAllowance: json['raw_today_limit'] as int,
-      unpaidFixedCosts: (json['unpaid_fixed_costs'] as List<dynamic>)
+      safetyCeiling: json['safetyCeiling'] as int,
+      safetyFlooring: json['safetyFlooring'] as int,
+      todaySpent: json['todaySpent'] as int,
+      todayLimit: json['todayLimit'] as int,
+      tomorrowLimitPrediction: json['tomorrowLimitPrediction'] as int,
+      actualDailyAllowance: json['rawTodayLimit'] as int,
+      unpaidFixedCosts: (json['unpaidFixedCosts'] as List<dynamic>)
           .map(
             (item) =>
                 UnpaidFixedCostModel.fromJson(item as Map<String, dynamic>),
