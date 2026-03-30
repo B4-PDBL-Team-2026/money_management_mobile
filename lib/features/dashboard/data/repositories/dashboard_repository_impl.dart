@@ -8,7 +8,18 @@ class DashboardRepositoryImpl extends DashboardRepository {
   DashboardRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<BudgetSnapshotEntity> getBudgetSnapshot() {
-    return remoteDataSource.fetchBudgetSnapshot();
+  Future<BudgetSnapshotEntity> getBudgetSnapshot() async {
+    final budgetSnapshotModel = await remoteDataSource.fetchBudgetSnapshot();
+    return budgetSnapshotModel.toEntity();
+  }
+
+  @override
+  Future<void> confirmFixedCostOccurrence(int occurrenceId) async {
+    await remoteDataSource.confirmFixedCostOccurrence(occurrenceId);
+  }
+
+  @override
+  Future<void> cancelFixedCostOccurrence(int occurrenceId) async {
+    await remoteDataSource.cancelFixedCostOccurrence(occurrenceId);
   }
 }

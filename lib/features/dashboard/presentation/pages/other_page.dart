@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
-import 'package:money_management_mobile/core/widgets/app_confirm_dialog.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
+import 'package:money_management_mobile/core/widgets/app_confirm_dialog.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_profile_card.dart';
@@ -81,11 +83,13 @@ class OtherPage extends StatelessWidget {
                 children: [
                   OtherSettingsTile(
                     icon: Icons.edit_outlined,
-                    title: 'Edit Anggaran & Biaya Tetap',
-                    subtitle: 'Ubah uang saku & pengeluaran tetap',
+                    title: 'Managemen Fixed Cost',
+                    subtitle: 'Atur pengeluaran tetap anda',
                     iconBackground: AppColors.lightPrimary,
                     iconColor: AppColors.primary,
-                    onTap: () {},
+                    onTap: () {
+                      context.go(AppRouter.fixedCostsManagement);
+                    },
                   ),
                 ],
               ),
@@ -100,14 +104,14 @@ class OtherPage extends StatelessWidget {
               const SizedBox(height: AppSizes.spacing4),
               OtherSettingsCard(
                 children: [
-                  OtherSettingsTile(
-                    icon: Icons.lock_outline,
-                    title: 'Ganti Password',
-                    subtitle: 'Perbarui keamanan akunmu',
-                    iconBackground: AppColors.lightPrimary,
-                    iconColor: AppColors.primary,
-                    onTap: () {},
-                  ),
+                  // OtherSettingsTile(
+                  //   icon: Icons.lock_outline,
+                  //   title: 'Ganti Password',
+                  //   subtitle: 'Perbarui keamanan akunmu',
+                  //   iconBackground: AppColors.lightPrimary,
+                  //   iconColor: AppColors.primary,
+                  //   onTap: () {},
+                  // ),
                   Divider(height: 1, thickness: 1, color: AppColors.beerus),
                   OtherSettingsTile(
                     icon: Icons.logout,
@@ -118,14 +122,6 @@ class OtherPage extends StatelessWidget {
                     onTap: () => _onLogoutTap(context),
                   ),
                 ],
-              ),
-              const SizedBox(height: AppSizes.spacing8),
-              AppButton(
-                text: 'Reset Semua Data Transaksi',
-                onPressed: () {},
-                variant: AppButtonVariant.ghost,
-                type: AppButtonType.danger,
-                leadingIcon: Icons.delete_outline,
               ),
             ],
           ),

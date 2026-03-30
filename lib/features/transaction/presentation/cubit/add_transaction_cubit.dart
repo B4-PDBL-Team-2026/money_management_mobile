@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/usecases/add_transaction_usecase.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_state.dart';
@@ -9,12 +10,17 @@ import 'package:money_management_mobile/features/transaction/presentation/cubit/
 
 class AddTransactionCubit extends Cubit<AddTransactionState> {
   final AddTransactionUseCase addTransactionUseCase;
+
   final TransactionHistoryCubit transactionHistoryCubit;
+  final DashboardMetricCubit dashboardMetricCubit;
 
   final _log = Logger('AddTransactionCubit');
 
-  AddTransactionCubit(this.addTransactionUseCase, this.transactionHistoryCubit)
-    : super(AddTransactionInitial());
+  AddTransactionCubit(
+    this.addTransactionUseCase,
+    this.transactionHistoryCubit,
+    this.dashboardMetricCubit,
+  ) : super(AddTransactionInitial());
 
   Future<void> addTransaction({
     required String name,
@@ -36,7 +42,11 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         transactionDate: transactionDate,
         note: note,
       );
-      await transactionHistoryCubit.getFreshTransactionHistory();
+
+      await Future.wait([
+        transactionHistoryCubit.getFreshTransactionHistory(),
+        dashboardMetricCubit.fetchDashboardMetrics(),
+      ]);
 
       emit(AddTransactionSuccess(transaction));
     } on ServerException catch (e) {

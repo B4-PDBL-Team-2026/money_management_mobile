@@ -12,17 +12,18 @@ import 'package:money_management_mobile/features/auth/presentation/pages/forgot_
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/fixed_costs_management_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
-import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
@@ -42,6 +43,7 @@ class AppRouter {
   static const String step2Personalization = '/personalization/step-2';
   static const String step3Personalization = '/personalization/step-3';
   static const String step4Personalization = '/personalization/step-4';
+  static const String fixedCostsManagement = '/fixed-costs';
 
   static const String dashboard = '/';
   static const String history = '/history';
@@ -126,6 +128,10 @@ class AppRouter {
               child: const Step4PersonalizationPage(),
             ),
           ),
+          GoRoute(
+            path: '/fixed-costs',
+            builder: (context, state) => const FixedCostsManagementPage(),
+          ),
 
           // dashboard module
           StatefulShellRoute.indexedStack(
@@ -137,10 +143,7 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: history,
-                    builder: (context, state) => BlocProvider(
-                      create: (_) => sl<TransactionHistoryCubit>(),
-                      child: const TransactionHistoryPage(),
-                    ),
+                    builder: (context, state) => const TransactionHistoryPage(),
                   ),
                 ],
               ),
@@ -148,7 +151,11 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: dashboard,
-                    builder: (context, state) => const HomePage(),
+                    builder: (context, state) => BlocProvider.value(
+                      value: sl<DashboardMetricCubit>()
+                        ..fetchDashboardMetrics(),
+                      child: const HomePage(),
+                    ),
                   ),
                 ],
               ),

@@ -35,15 +35,12 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
   late int _month;
   late int _year;
   late CategoryEntity _selectedCategory;
-  List<dynamic> transactionList = [];
   int totalPengeluaran = 0;
   int totalPemasukan = 0;
 
   @override
   void initState() {
     super.initState();
-
-    context.read<TransactionHistoryCubit>().getFreshTransactionHistory();
 
     _defaultCategory = CategoryEntity(
       id: 0,
@@ -104,8 +101,6 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
           child: BlocConsumer<TransactionHistoryCubit, TransactionHistoryState>(
             listener: (context, state) {
               if (state is TransactionHistorySuccess) {
-                transactionList = state.transactionHistory;
-
                 totalPengeluaran = state.transactionHistory
                     .where((item) => item.type == TransactionType.expense)
                     .fold(0, (sum, item) => sum + item.amount);
@@ -172,7 +167,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                       Expanded(child: const EmptyState()),
                     ] else ...[
                       Expanded(
-                        child: transactionList.isNotEmpty
+                        child: state.transactionHistory.isNotEmpty
                             ? _buildDataList(state)
                             : const EmptyState(),
                       ),

@@ -7,7 +7,8 @@ import 'package:money_management_mobile/core/theme/app_theme.dart';
 import 'package:money_management_mobile/core/utils/logger.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
 late TimezoneInfo localTimezone;
@@ -15,14 +16,14 @@ late TimezoneInfo localTimezone;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppLogger.init();
+
+  await initInjectionContainer();
   localTimezone = await FlutterTimezone.getLocalTimezone();
 
-  await initializeDateFormatting('id_ID');
-  await initInjectionContainer();
-
-  await sl<SessionCubit>().restoreSession();
-  await sl<CategoryCubit>().fetchCategories();
-  await sl<DashboardMetricCubit>().fetchDashboardMetrics();
+  await Future.wait([
+    initializeDateFormatting('id_ID'),
+    sl<SessionCubit>().restoreSession(),
+  ]);
 
   runApp(const MyApp());
 }
@@ -35,9 +36,14 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<SessionCubit>.value(value: sl<SessionCubit>()),
-        BlocProvider<CategoryCubit>.value(value: sl<CategoryCubit>()),
-        BlocProvider<DashboardMetricCubit>.value(
-          value: sl<DashboardMetricCubit>(),
+        BlocProvider<CategoryCubit>.value(
+          value: sl<CategoryCubit>()..fetchCategories(),
+        ),
+        BlocProvider<TransactionHistoryCubit>.value(
+          value: sl<TransactionHistoryCubit>()..getFreshTransactionHistory(),
+        ),
+        BlocProvider<FixedCostOccurrencesCubit>.value(
+          value: sl<FixedCostOccurrencesCubit>(),
         ),
       ],
       child: MaterialApp.router(

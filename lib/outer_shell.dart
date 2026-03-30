@@ -13,11 +13,12 @@ class OuterShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<CategoryCubit, CategoryState>(
       listener: (context, state) {
-        if (state is CategoryError) {
+        if (state is CategoryErrorAndRetry) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
               backgroundColor: AppColors.danger100,
+              action: SnackBarAction(label: 'Retry', onPressed: state.onRetry),
             ),
           );
         }
