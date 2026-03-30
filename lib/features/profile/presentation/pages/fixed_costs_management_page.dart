@@ -118,14 +118,25 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
     };
   }
 
-  FixedCostStatus _toUiStatus(FixedCostOccurrenceStatus status) {
-    return switch (status) {
-      FixedCostOccurrenceStatus.paid => FixedCostStatus.paid,
-      FixedCostOccurrenceStatus.pending => FixedCostStatus.pending,
-      FixedCostOccurrenceStatus.overdue => FixedCostStatus.overdue,
-      FixedCostOccurrenceStatus.skipped => FixedCostStatus.skipped,
-      FixedCostOccurrenceStatus.voided => FixedCostStatus.void_,
+  String _weekdayLabel(int weekday) {
+    return switch (weekday) {
+      DateTime.monday => 'Senin',
+      DateTime.tuesday => 'Selasa',
+      DateTime.wednesday => 'Rabu',
+      DateTime.thursday => 'Kamis',
+      DateTime.friday => 'Jumat',
+      DateTime.saturday => 'Sabtu',
+      DateTime.sunday => 'Minggu',
+      _ => 'Senin',
     };
+  }
+
+  String _dueLabel(FixedCostOccurrenceEntity fixedCost) {
+    if (fixedCost.cycleType.toLowerCase() == 'weekly') {
+      return _weekdayLabel(fixedCost.dueDate.weekday);
+    }
+
+    return DateFormat('dd MMM yyyy', 'id_ID').format(fixedCost.dueDate);
   }
 
   String _categoryNameById(CategoryState categoryState, int categoryId) {
@@ -240,7 +251,7 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(AppSizes.spacing6),
                         child: Text(
-                          'Belum ada fixed cost occurrence',
+                          'Belum ada fixed cost',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
@@ -263,13 +274,9 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
                               fixedCost.categoryId,
                             ),
                             cycleType: _toCycleLabel(fixedCost.cycleType),
-                            dueDate: DateFormat(
-                              'dd MMM yyyy',
-                              'id_ID',
-                            ).format(fixedCost.dueDate),
+                            dueDate: _dueLabel(fixedCost),
                             amount:
                                 'Rp ${CurrencyFormatter.format(_parseAmountFromRaw(fixedCost.amountRaw))}',
-                            status: _toUiStatus(fixedCost.status),
                             showEditAction: true,
                             showDeleteAction: true,
                             onEdit: () =>

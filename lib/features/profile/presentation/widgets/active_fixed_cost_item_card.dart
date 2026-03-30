@@ -3,40 +3,6 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_detail_value.dart';
 
-enum FixedCostStatus { paid, pending, overdue, skipped, void_ }
-
-extension FixedCostStatusX on FixedCostStatus {
-  String get label {
-    return switch (this) {
-      FixedCostStatus.paid => 'Lunas',
-      FixedCostStatus.pending => 'Pending',
-      FixedCostStatus.overdue => 'Terlambat',
-      FixedCostStatus.skipped => 'Dilewati',
-      FixedCostStatus.void_ => 'Dibatalkan',
-    };
-  }
-
-  Color get color {
-    return switch (this) {
-      FixedCostStatus.paid => AppColors.success100,
-      FixedCostStatus.pending => AppColors.bulma,
-      FixedCostStatus.overdue => AppColors.danger100,
-      FixedCostStatus.skipped => AppColors.trunks,
-      FixedCostStatus.void_ => AppColors.beerus,
-    };
-  }
-
-  Color get bgColor {
-    return switch (this) {
-      FixedCostStatus.paid => const Color(0xFFE8F5E9),
-      FixedCostStatus.pending => const Color(0xFFE3F2FD),
-      FixedCostStatus.overdue => const Color(0xFFFFEBEE),
-      FixedCostStatus.skipped => const Color(0xFFFAFAFA),
-      FixedCostStatus.void_ => const Color(0xFFFAFAFA),
-    };
-  }
-}
-
 class ActiveFixedCostItemCard extends StatelessWidget {
   const ActiveFixedCostItemCard({
     super.key,
@@ -45,7 +11,6 @@ class ActiveFixedCostItemCard extends StatelessWidget {
     required this.cycleType,
     required this.dueDate,
     required this.amount,
-    required this.status,
     this.showDeleteAction = false,
     this.onDelete,
     this.showEditAction = false,
@@ -57,7 +22,6 @@ class ActiveFixedCostItemCard extends StatelessWidget {
   final String cycleType;
   final String dueDate;
   final String amount;
-  final FixedCostStatus status;
   final bool showDeleteAction;
   final bool showEditAction;
   final VoidCallback? onDelete;
@@ -115,24 +79,6 @@ class ActiveFixedCostItemCard extends StatelessWidget {
           const SizedBox(height: AppSizes.spacing3),
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.spacing2,
-                  vertical: AppSizes.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: status.bgColor,
-                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                ),
-                child: Text(
-                  status.label,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: status.color,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSizes.spacing2),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSizes.spacing2,

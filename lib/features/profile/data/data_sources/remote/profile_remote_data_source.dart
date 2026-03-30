@@ -36,32 +36,34 @@ class ProfileRemoteDataSource {
       await Future.delayed(const Duration(seconds: 1));
 
       return [
-        FixedCostOccurrenceModel(
-          fixedCostTemplateId: 1,
-          id: 1,
-          name: 'WiFi',
-          amountRaw: '100000',
-          categoryId: 3,
-          cycleType: 'weekly',
-          dueDate: DateTime.now().add(const Duration(days: 2)),
-          status: FixedCostOccurrenceStatus.pending,
-        ),
-        FixedCostOccurrenceModel(
-          fixedCostTemplateId: 2,
-          id: 2,
-          name: 'Asuransi',
-          amountRaw: '500000',
-          categoryId: 4,
-          cycleType: 'monthly',
-          dueDate: DateTime.now().add(const Duration(days: 7)),
-          status: FixedCostOccurrenceStatus.paid,
-        ),
+        FixedCostOccurrenceModel.fromJson({
+          'id': 1,
+          'name': 'WiFi',
+          'amount': '100000.00',
+          'category_id': 3,
+          'cycle_type': 'weekly',
+          'due_day': 2,
+          'is_active': true,
+        }),
+        FixedCostOccurrenceModel.fromJson({
+          'id': 2,
+          'name': 'Asuransi',
+          'amount': '500000.00',
+          'category_id': 4,
+          'cycle_type': 'monthly',
+          'due_day': 7,
+          'is_active': true,
+        }),
       ];
     }
 
     try {
-      final response = await dio.get('/fixed-costs/occurrences');
-      final rawData = response.data['data'] as List<dynamic>? ?? [];
+      final response = await dio.get(
+        '/fixed-costs',
+        queryParameters: {'per_page': 100},
+      );
+      final rawEnvelope = response.data['data'] as Map<String, dynamic>? ?? {};
+      final rawData = rawEnvelope['data'] as List<dynamic>? ?? [];
 
       return rawData
           .whereType<Map>()
@@ -72,12 +74,12 @@ class ProfileRemoteDataSource {
       throw ErrorHandler.handleRemoteException(
         e,
         _log,
-        'Get Fixed Cost Occurrences',
+        'Get Fixed Cost Templates',
       );
     } catch (e) {
-      _log.severe('Unexpected error while fetching fixed cost occurrences', e);
+      _log.severe('Unexpected error while fetching fixed cost templates', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengambil fixed cost occurrences',
+        'Terjadi kesalahan sistem saat mengambil fixed cost templates',
       );
     }
   }
