@@ -10,7 +10,7 @@ import 'package:money_management_mobile/features/auth/domain/usecases/logout_use
 import 'package:money_management_mobile/features/auth/domain/usecases/register_usecase.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/restore_session_usecase.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/send_password_reset_email_usecase.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/email_verification_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -67,8 +67,8 @@ Future<void> initInjectionContainer() async {
   );
   sl.registerLazySingleton(() => createDioClient(sl<AuthLocalDataSource>()));
   sl.registerFactory<LoginCubit>(() => LoginCubit(sl(), sl(), sl(), sl()));
-  sl.registerFactory<EmailVerificationCubit>(
-    () => EmailVerificationCubit(sl()),
+  sl.registerFactory<ResetPasswordCubit>(
+    () => ResetPasswordCubit(sl()),
   );
   sl.registerLazySingleton<SessionCubit>(() => SessionCubit(sl(), sl(), sl()));
   sl.registerFactory<RegisterCubit>(

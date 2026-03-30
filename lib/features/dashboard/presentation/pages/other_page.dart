@@ -6,8 +6,8 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_confirm_dialog.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/email_verification_cubit.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/email_verification_state.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
@@ -18,7 +18,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/widgets/
 class OtherPage extends StatelessWidget {
   const OtherPage({super.key});
 
-  Future<void> _onVerifyEmailTap(BuildContext context) async {
+  Future<void> _onForgotPasswordTap(BuildContext context) async {
     final sessionState = context.read<SessionCubit>().state;
 
     if (sessionState is! SessionAuthenticated) {
@@ -31,7 +31,7 @@ class OtherPage extends StatelessWidget {
       return;
     }
 
-    await context.read<EmailVerificationCubit>().sendVerificationEmail(
+    await context.read<ResetPasswordCubit>().sendVerificationEmail(
       email: sessionState.user.email,
     );
   }
@@ -50,7 +50,7 @@ class OtherPage extends StatelessWidget {
                 child: CircularProgressIndicator(strokeWidth: 2.2),
               ),
               SizedBox(width: AppSizes.spacing4),
-              Expanded(child: Text('Mengirim email verifikasi...')),
+              Expanded(child: Text('Mengirim email reset password...')),
             ],
           ),
         );
@@ -68,8 +68,8 @@ class OtherPage extends StatelessWidget {
   Future<void> _showSuccessDialog(BuildContext context, String message) async {
     await AppConfirmDialog.show(
       context: context,
-      title: 'Cek Email Anda',
-      content: '$message\n\nSilakan cek inbox atau folder spam.',
+      title: 'Reset Password Terkirim',
+      content: '$message\n\nSilakan cek inbox atau folder spam Anda.',
       confirmText: 'Mengerti',
       cancelText: 'Tutup',
       confirmButtonType: AppButtonType.primary,
@@ -115,131 +115,139 @@ class OtherPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<EmailVerificationCubit, EmailVerificationState>(
-      listener: (context, state) async {
-        if (state is EmailVerificationLoading) {
-          _showLoadingDialog(context);
-          return;
-        }
-
-        if (state is EmailVerificationSuccess) {
-          _closeDialogIfOpen(context);
-          await _showSuccessDialog(context, state.message);
-          return;
-        }
-
-        if (state is EmailVerificationError) {
-          _closeDialogIfOpen(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppColors.danger100,
-              content: Text(
-                state.message,
-                style: const TextStyle(color: AppColors.gohan),
+    return Scaffold(
+      backgroundColor: AppColors.gohan,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.spacing6),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Profil & Pengaturan',
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineLarge?.copyWith(color: AppColors.primary),
               ),
-            ),
-          );
-        }
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.gohan,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSizes.spacing6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Profil & Pengaturan',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineLarge?.copyWith(color: AppColors.primary),
+              const SizedBox(height: AppSizes.spacing6),
+              const OtherProfileCard(),
+              const SizedBox(height: AppSizes.spacing8),
+              Text(
+                'KEUANGAN',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.trunks,
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(height: AppSizes.spacing6),
-                const OtherProfileCard(),
-                const SizedBox(height: AppSizes.spacing8),
-                Text(
-                  'KEUANGAN',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.trunks,
-                    fontWeight: FontWeight.w700,
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              OtherSettingsCard(
+                children: [
+                  OtherSettingsTile(
+                    icon: Icons.edit_outlined,
+                    title: 'Managemen Fixed Cost',
+                    subtitle: 'Atur pengeluaran tetap anda',
+                    iconBackground: AppColors.lightPrimary,
+                    iconColor: AppColors.primary,
+                    onTap: () {
+                      context.go(AppRouter.fixedCostsManagement);
+                    },
                   ),
+                ],
+              ),
+              const SizedBox(height: AppSizes.spacing6),
+              Text(
+                'AKUN',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.trunks,
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(height: AppSizes.spacing4),
-                OtherSettingsCard(
-                  children: [
-                    OtherSettingsTile(
-                      icon: Icons.edit_outlined,
-                      title: 'Managemen Fixed Cost',
-                      subtitle: 'Atur pengeluaran tetap anda',
-                      iconBackground: AppColors.lightPrimary,
-                      iconColor: AppColors.primary,
-                      onTap: () {
-                        context.go(AppRouter.fixedCostsManagement);
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSizes.spacing6),
-                Text(
-                  'AKUN',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.trunks,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: AppSizes.spacing4),
-                OtherSettingsCard(
-                  children: [
-                    OtherSettingsTile(
-                      icon: Icons.lock_outline,
-                      title: 'Ganti Password',
-                      subtitle: 'Perbarui keamanan akunmu',
-                      iconBackground: AppColors.lightPrimary,
-                      iconColor: AppColors.primary,
-                      onTap: () {},
-                    ),
-                    Divider(height: 1, thickness: 1, color: AppColors.beerus),
-                    BlocConsumer<SessionCubit, SessionState>(
-                      builder: (context, state) {
-                        if (state is SessionAuthenticated &&
-                            state.user.emailVerifiedAt != null) {
-                          return const SizedBox.shrink();
-                        }
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              OtherSettingsCard(
+                children: [
+                  BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
+                    listener: (context, state) async {
+                      if (state is ResetPasswordLoading) {
+                        _showLoadingDialog(context);
+                        return;
+                      }
 
-                        return Column(
-                          children: [
-                            OtherSettingsTile(
-                              icon: Icons.email_outlined,
-                              title: 'Verifikasi Email',
-                              subtitle:
-                                  'Tingkatkan keamanan akun dengan verifikasi email',
-                              iconBackground: AppColors.lightPrimary,
-                              iconColor: AppColors.primary,
-                              onTap: () => _onVerifyEmailTap(context),
+                      if (state is ResetPasswordSuccess) {
+                        _closeDialogIfOpen(context);
+                        await _showSuccessDialog(context, state.message);
+                        return;
+                      }
+
+                      if (state is ResetPasswordError) {
+                        _closeDialogIfOpen(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: AppColors.danger100,
+                            content: Text(
+                              state.message,
+                              style: const TextStyle(color: AppColors.gohan),
                             ),
-                            Divider(
-                              height: 1,
-                              thickness: 1,
-                              color: AppColors.beerus,
-                            ),
-                          ],
+                          ),
                         );
-                      },
-                      listener: (context, state) {},
+                      }
+                    },
+                    builder: (context, state) => Column(
+                      children: [
+                        OtherSettingsTile(
+                          icon: Icons.lock_outline,
+                          title: 'Ganti Password',
+                          subtitle: 'Perbarui keamanan akunmu',
+                          iconBackground: AppColors.lightPrimary,
+                          iconColor: AppColors.primary,
+                          onTap: () => _onForgotPasswordTap(context),
+                        ),
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: AppColors.beerus,
+                        ),
+                      ],
                     ),
-                    OtherSettingsTile(
-                      icon: Icons.logout,
-                      title: 'Keluar',
-                      subtitle: 'Logout dari akun ini',
-                      iconBackground: AppColors.danger10,
-                      iconColor: AppColors.danger100,
-                      onTap: () => _onLogoutTap(context),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  BlocConsumer<SessionCubit, SessionState>(
+                    builder: (context, state) {
+                      if (state is SessionAuthenticated &&
+                          state.user.emailVerifiedAt != null) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Column(
+                        children: [
+                          OtherSettingsTile(
+                            icon: Icons.email_outlined,
+                            title: 'Verifikasi Email',
+                            subtitle:
+                                'Tingkatkan keamanan akun dengan verifikasi email',
+                            iconBackground: AppColors.lightPrimary,
+                            iconColor: AppColors.primary,
+                            onTap: () {},
+                          ),
+                          Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: AppColors.beerus,
+                          ),
+                        ],
+                      );
+                    },
+                    listener: (context, state) {},
+                  ),
+                  OtherSettingsTile(
+                    icon: Icons.logout,
+                    title: 'Keluar',
+                    subtitle: 'Logout dari akun ini',
+                    iconBackground: AppColors.danger10,
+                    iconColor: AppColors.danger100,
+                    onTap: () => _onLogoutTap(context),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

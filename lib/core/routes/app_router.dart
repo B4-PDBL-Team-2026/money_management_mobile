@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/email_verification_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password/forgot_password_page.dart';
+import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password/send_success_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
@@ -40,6 +41,8 @@ class AppRouter {
 
   static const String login = '/welcome/login';
   static const String forgotPassword = '/welcome/login/forgot-password';
+  static const String forgotPasswordSuccess =
+      '/welcome/login/forgot-password/success';
 
   static const String registration = '/welcome/registration';
 
@@ -80,7 +83,16 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: 'forgot-password',
-                    builder: (context, state) => const ForgotPasswordPage(),
+                    builder: (context, state) => BlocProvider(
+                      create: (_) => sl<ResetPasswordCubit>(),
+                      child: const ForgotPasswordPage(),
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: 'success',
+                        builder: (context, state) => const SendSuccessPage(),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -170,7 +182,7 @@ class AppRouter {
                   GoRoute(
                     path: other,
                     builder: (context, state) => BlocProvider(
-                      create: (_) => sl<EmailVerificationCubit>(),
+                      create: (_) => sl<ResetPasswordCubit>(),
                       child: const OtherPage(),
                     ),
                   ),
