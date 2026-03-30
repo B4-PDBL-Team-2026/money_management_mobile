@@ -57,11 +57,9 @@ Future<void> initInjectionContainer() async {
     () => AuthLocalDataSource(sl()),
   );
   sl.registerLazySingleton(() => createDioClient(sl<AuthLocalDataSource>()));
-  sl.registerLazySingleton<LoginCubit>(
-    () => LoginCubit(sl(), sl(), sl(), sl()),
-  );
+  sl.registerFactory<LoginCubit>(() => LoginCubit(sl(), sl(), sl(), sl()));
   sl.registerLazySingleton<SessionCubit>(() => SessionCubit(sl(), sl(), sl()));
-  sl.registerLazySingleton<RegisterCubit>(
+  sl.registerFactory<RegisterCubit>(
     () => RegisterCubit(sl(), sl(), sl(), sl()),
   );
   sl.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(sl()));
