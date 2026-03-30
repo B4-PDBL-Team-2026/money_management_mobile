@@ -81,8 +81,8 @@ class OtherPage extends StatelessWidget {
                 children: [
                   OtherSettingsTile(
                     icon: Icons.edit_outlined,
-                    title: 'Edit Fixed Cost',
-                    subtitle: 'Ubah biaya tetap (Fixed cost)',
+                    title: 'Managemen Fixed Cost',
+                    subtitle: 'Atur pengeluaran tetap anda',
                     iconBackground: AppColors.lightPrimary,
                     iconColor: AppColors.primary,
                     onTap: () {},
