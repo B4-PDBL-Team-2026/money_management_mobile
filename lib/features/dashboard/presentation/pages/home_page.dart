@@ -8,7 +8,9 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/u
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_budget_metrics.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_header.dart';
+import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/unpaid_fixed_cost_card.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_history_item.dart';
@@ -41,7 +43,6 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: AppSizes.spacing4),
               BlocConsumer<
                 UnpaidFixedCostOccurrencesCubit,
                 UnpaidFixedCostOccurrencesState
@@ -62,82 +63,47 @@ class HomePage extends StatelessWidget {
                     return const SizedBox.shrink();
                   }
 
-                  final unpaidFixedCosts = state.items;
+                  final now = DateTime.now();
+                  final weeklyItems = state.items
+                      .where(
+                        (item) =>
+                            item.cycle == FinancialCycle.weekly &&
+                            _isInCurrentWeek(item.dueDate, now),
+                      )
+                      .toList(growable: false);
+                  final monthlyItems = state.items
+                      .where(
+                        (item) =>
+                            item.cycle == FinancialCycle.monthly &&
+                            _isInCurrentMonth(item.dueDate, now),
+                      )
+                      .toList(growable: false);
+
+                  if (weeklyItems.isEmpty && monthlyItems.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Fixed Cost Belum Dibayar',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineMedium?.copyWith(fontSize: 16),
+                      if (weeklyItems.isNotEmpty)
+                        const SizedBox(height: AppSizes.spacing6),
+                      _FixedCostSection(
+                        title: 'Fixed Cost Mingguan di Minggu Ini',
+                        items: weeklyItems,
                       ),
-                      const SizedBox(height: AppSizes.spacing3),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final item = unpaidFixedCosts[index];
-
-                          return UnpaidFixedCostCard(
-                            item: item,
-                            isPayEnabled: true,
-                            onPay: () async {
-                              final success = await context
-                                  .read<UnpaidFixedCostOccurrencesCubit>()
-                                  .confirmFixedCostOccurrence(
-                                    item.occurrenceId,
-                                  );
-
-                              if (!success || !context.mounted) {
-                                return;
-                              }
-
-                              await context
-                                  .read<TransactionHistoryCubit>()
-                                  .getFreshTransactionHistory();
-
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    backgroundColor: AppColors.success100,
-                                    content: Text(
-                                      'Fixed cost berhasil dibayar',
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            onCancel: () async {
-                              final success = await context
-                                  .read<UnpaidFixedCostOccurrencesCubit>()
-                                  .cancelFixedCostOccurrence(item.occurrenceId);
-
-                              if (!success || !context.mounted) {
-                                return;
-                              }
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  backgroundColor: AppColors.warning100,
-                                  content: Text(
-                                    'Fixed cost berhasil dibatalkan',
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: AppSizes.spacing2),
-                        itemCount: unpaidFixedCosts.length,
-                      ),
+                      if (weeklyItems.isNotEmpty && monthlyItems.isNotEmpty)
+                        const SizedBox(height: AppSizes.spacing6),
+                      if (monthlyItems.isNotEmpty)
+                        _FixedCostSection(
+                          title: 'Fixed Cost Bulanan di Bulan Ini',
+                          items: monthlyItems,
+                        ),
                     ],
                   );
                 },
               ),
-              const SizedBox(height: AppSizes.spacing4),
+              const SizedBox(height: AppSizes.spacing6),
               BlocConsumer<TransactionHistoryCubit, TransactionHistoryState>(
                 listener: (context, state) {},
                 builder: (context, state) {
@@ -182,6 +148,106 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  static bool _isInCurrentWeek(DateTime? date, DateTime now) {
+    if (date == null) {
+      return false;
+    }
+
+    final weekStart = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: now.weekday - 1));
+    final weekEndExclusive = weekStart.add(const Duration(days: 7));
+    final dueDate = DateTime(date.year, date.month, date.day);
+
+    return !dueDate.isBefore(weekStart) && dueDate.isBefore(weekEndExclusive);
+  }
+
+  static bool _isInCurrentMonth(DateTime? date, DateTime now) {
+    if (date == null) {
+      return false;
+    }
+
+    return date.year == now.year && date.month == now.month;
+  }
+}
+
+class _FixedCostSection extends StatelessWidget {
+  final String title;
+  final List<UnpaidFixedCostEntity> items;
+
+  const _FixedCostSection({required this.title, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.headlineMedium?.copyWith(fontSize: 16),
+        ),
+        const SizedBox(height: AppSizes.spacing3),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            final item = items[index];
+
+            return UnpaidFixedCostCard(
+              item: item,
+              isPayEnabled: true,
+              onPay: () async {
+                final success = await context
+                    .read<UnpaidFixedCostOccurrencesCubit>()
+                    .confirmFixedCostOccurrence(item.occurrenceId);
+
+                if (!success || !context.mounted) {
+                  return;
+                }
+
+                await context
+                    .read<TransactionHistoryCubit>()
+                    .getFreshTransactionHistory();
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: AppColors.success100,
+                      content: Text('Fixed cost berhasil dibayar'),
+                    ),
+                  );
+                }
+              },
+              onCancel: () async {
+                final success = await context
+                    .read<UnpaidFixedCostOccurrencesCubit>()
+                    .cancelFixedCostOccurrence(item.occurrenceId);
+
+                if (!success || !context.mounted) {
+                  return;
+                }
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: AppColors.warning100,
+                    content: Text('Fixed cost berhasil dibatalkan'),
+                  ),
+                );
+              },
+            );
+          },
+          separatorBuilder: (context, index) =>
+              const SizedBox(height: AppSizes.spacing2),
+          itemCount: items.length,
+        ),
+      ],
     );
   }
 }
