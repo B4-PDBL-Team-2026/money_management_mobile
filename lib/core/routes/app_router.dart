@@ -51,11 +51,11 @@ class AppRouter {
   static const String step2Personalization = '/personalization/step-2';
   static const String step3Personalization = '/personalization/step-3';
   static const String step4Personalization = '/personalization/step-4';
-  static const String fixedCostsManagement = '/fixed-costs';
 
   static const String dashboard = '/';
   static const String history = '/history';
   static const String other = '/other';
+  static const String fixedCostsManagement = '/other/fixed-costs';
 
   static const String addTransaction = '/transaction/add';
   static const String transactionDetailBase = '/transaction';
@@ -147,10 +147,6 @@ class AppRouter {
               child: const Step4PersonalizationPage(),
             ),
           ),
-          GoRoute(
-            path: '/fixed-costs',
-            builder: (context, state) => const FixedCostsManagementPage(),
-          ),
 
           // dashboard module
           StatefulShellRoute.indexedStack(
@@ -189,6 +185,13 @@ class AppRouter {
                       ],
                       child: const OtherPage(),
                     ),
+                    routes: [
+                      GoRoute(
+                        path: 'fixed-costs',
+                        builder: (context, state) =>
+                            const FixedCostsManagementPage(),
+                      ),
+                    ],
                   ),
                 ],
               ),
