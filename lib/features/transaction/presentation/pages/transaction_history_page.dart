@@ -34,8 +34,8 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
 
   late final CategoryEntity _defaultCategory;
 
-  late int _month;
-  late int _year;
+  int? _month;
+  int? _year;
   late CategoryEntity _selectedCategory;
   int totalPengeluaran = 0;
   int totalPemasukan = 0;
@@ -52,25 +52,21 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
       categoryType: RealCategoryType.system,
     );
 
-    final now = DateTime.now();
-    _month = now.month;
-    _year = now.year;
+    _month = null;
+    _year = null;
 
     _selectedCategory = _defaultCategory;
   }
 
   void _getFreshTransactionHistory({
-    int? page,
     String? search,
     CategoryEntity? categoryEntity,
-    int? month,
-    int? year,
   }) {
     final categoryToUse = categoryEntity ?? _selectedCategory;
 
     context.read<TransactionHistoryCubit>().getFreshTransactionHistory(
-      month: month ?? _month,
-      year: year ?? _year,
+      month: _month,
+      year: _year,
       categoryEntity: categoryToUse.id != 0 ? categoryToUse : null,
       search: search ?? _searchController.text,
     );
@@ -254,7 +250,11 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
             children: [
               Expanded(
                 child: AppButton(
-                  text: '${GlobalConstant.monthMapping[_month]} $_year',
+                  text: _month == null && _year == null
+                      ? 'Semua Hari'
+                      : _month == null
+                      ? 'Semua Bulan $_year'
+                      : '${GlobalConstant.monthMapping[_month]} $_year',
                   leadingIcon: PhosphorIconsRegular.calendarBlank,
                   onPressed: _openMonthYearPicker,
                   variant: AppButtonVariant.ghost,
@@ -378,15 +378,17 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
 
   Future<void> _openMonthYearPicker() async {
     // tuple: (month, year)
-    final result = await showDialog<(int, int)>(
+    final result = await showDialog<(int?, int?)>(
       context: context,
       builder: (context) => Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         backgroundColor: Colors.white,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20),
         child: MonthYearDialogContent(
-          initialMonth: _month,
-          initialYear: _year,
+          initialMonth: _month ?? DateTime.now().month,
+          initialYear: _year ?? DateTime.now().year,
+          initialSelectedMonth: _month,
+          initialSelectedYear: _year,
           startYear: 2024,
         ),
       ),
@@ -395,12 +397,12 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     if (result != null) {
       final month = result.$1;
       final year = result.$2;
-
-      _getFreshTransactionHistory(month: month, year: year);
       setState(() {
         _month = month;
         _year = year;
       });
+
+      _getFreshTransactionHistory();
     }
   }
 
@@ -419,8 +421,8 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     );
 
     if (result != null) {
-      _getFreshTransactionHistory(categoryEntity: result);
       setState(() => _selectedCategory = result);
+      _getFreshTransactionHistory();
     }
   }
 }
