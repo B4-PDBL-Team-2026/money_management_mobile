@@ -9,12 +9,14 @@ import 'package:money_management_mobile/features/profile/domain/entities/financi
 
 class UnpaidFixedCostCard extends StatelessWidget {
   final UnpaidFixedCostEntity item;
+  final bool isPayEnabled;
   final VoidCallback? onPay;
   final VoidCallback? onCancel;
 
   const UnpaidFixedCostCard({
     super.key,
     required this.item,
+    this.isPayEnabled = true,
     this.onPay,
     this.onCancel,
   });
@@ -33,6 +35,7 @@ class UnpaidFixedCostCard extends StatelessWidget {
           ),
           builder: (_) => UnpaidFixedCostDetailBottomSheet(
             item: item,
+            isPayEnabled: isPayEnabled,
             onPay: onPay,
             onCancel: onCancel,
           ),

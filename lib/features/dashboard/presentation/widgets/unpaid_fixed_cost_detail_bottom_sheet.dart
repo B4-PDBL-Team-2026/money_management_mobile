@@ -8,12 +8,14 @@ import 'package:money_management_mobile/features/profile/domain/entities/financi
 
 class UnpaidFixedCostDetailBottomSheet extends StatelessWidget {
   final UnpaidFixedCostEntity item;
+  final bool isPayEnabled;
   final VoidCallback? onPay;
   final VoidCallback? onCancel;
 
   const UnpaidFixedCostDetailBottomSheet({
     super.key,
     required this.item,
+    this.isPayEnabled = true,
     this.onPay,
     this.onCancel,
   });
@@ -90,10 +92,12 @@ class UnpaidFixedCostDetailBottomSheet extends StatelessWidget {
                 child: AppButton(
                   text: 'Bayar',
                   type: AppButtonType.primary,
-                  onPressed: () {
+                  onPressed: isPayEnabled
+                      ? () {
                     Navigator.of(context).pop();
                     onPay?.call();
-                  },
+                        }
+                      : null,
                 ),
               ),
             ],
