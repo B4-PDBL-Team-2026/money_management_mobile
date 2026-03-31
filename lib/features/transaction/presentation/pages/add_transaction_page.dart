@@ -13,6 +13,8 @@ import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_state.dart';
@@ -281,6 +283,19 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
                           if (numericValue <= 0) {
                             return 'Nominal harus lebih besar dari nol';
+                          }
+
+                          final fashboardMetricState = context
+                              .read<DashboardMetricCubit>()
+                              .state;
+
+                          if (fashboardMetricState is DashboardMetricLoaded) {
+                            if (_selectedTransactionType ==
+                                    TransactionType.expense &&
+                                numericValue >
+                                    fashboardMetricState.metrics.balance) {
+                              return 'Nominal pengeluaran tidak boleh lebih besar dari saldo saat ini';
+                            }
                           }
 
                           return null;

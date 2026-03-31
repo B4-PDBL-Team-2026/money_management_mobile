@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/constants/global_constant.dart';
+import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 
@@ -38,7 +40,9 @@ class EmptyState extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push(AppRouter.addTransaction);
+                    },
                     icon: const Icon(Icons.add, color: Colors.white),
                     label: const Text(
                       'Tambah Transaksi',
