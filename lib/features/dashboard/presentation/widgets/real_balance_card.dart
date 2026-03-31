@@ -21,7 +21,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
   Widget build(BuildContext context) {
     return AppContainerCard(
       padding: EdgeInsets.only(left: AppSizes.spacing4),
-      backgroundColor: AppColors.gohan,
+      backgroundColor: Colors.white,
       child: Row(
         children: [
           Text(

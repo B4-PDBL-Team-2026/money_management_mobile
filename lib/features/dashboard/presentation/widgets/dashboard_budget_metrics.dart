@@ -150,7 +150,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
     int safeBalance,
   ) {
     return AppContainerCard(
-      backgroundColor: AppColors.gohan,
+      backgroundColor: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

@@ -12,7 +12,7 @@ class OtherSettingsCard extends StatelessWidget {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: AppColors.gohan,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(AppSizes.radiusNm),
         border: Border.all(color: AppColors.beerus),
       ),

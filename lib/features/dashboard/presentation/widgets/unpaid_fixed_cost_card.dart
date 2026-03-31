@@ -39,7 +39,7 @@ class UnpaidFixedCostCard extends StatelessWidget {
         );
       },
       child: AppContainerCard(
-        backgroundColor: AppColors.gohan,
+        backgroundColor: Colors.white,
         border: Border.all(color: AppColors.beerus, width: 1),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
