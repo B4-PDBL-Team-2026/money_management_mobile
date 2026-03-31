@@ -17,13 +17,14 @@ class DashboardRemoteDataSource {
     if (AppEnv.useMockApi) {
       await Future.delayed(const Duration(seconds: 1));
 
-      return const [
+      return [
         UnpaidFixedCostModel(
           occurrenceId: 1,
           name: 'Sewa Kos',
           amount: 100000,
           cycle: FinancialCycle.monthly,
           dueValue: 30,
+          dueDate: DateTime(2026, 4, 30),
         ),
         UnpaidFixedCostModel(
           occurrenceId: 2,
@@ -31,6 +32,7 @@ class DashboardRemoteDataSource {
           amount: 50000,
           cycle: FinancialCycle.monthly,
           dueValue: 28,
+          dueDate: DateTime(2026, 4, 28),
         ),
       ];
     }
@@ -79,13 +81,14 @@ class DashboardRemoteDataSource {
         todayLimit: 50000, // Limit tetap di target awal
         actualDailyAllowance: 60000, // Kekuatan asli masih kuat (Surplus)
         tomorrowLimitPrediction: 50000, // Prediksi besok tetap aman
-        unpaidFixedCosts: const [
+        unpaidFixedCosts: [
           UnpaidFixedCostModel(
             occurrenceId: 1,
             name: 'Sewa Kos',
             amount: 100000,
             cycle: FinancialCycle.monthly,
             dueValue: 30,
+            dueDate: DateTime(2026, 4, 30),
           ),
           UnpaidFixedCostModel(
             occurrenceId: 2,
@@ -93,6 +96,7 @@ class DashboardRemoteDataSource {
             amount: 50000,
             cycle: FinancialCycle.monthly,
             dueValue: 28,
+            dueDate: DateTime(2026, 4, 28),
           ),
         ],
       );

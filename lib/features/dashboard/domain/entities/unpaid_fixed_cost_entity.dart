@@ -6,6 +6,7 @@ class UnpaidFixedCostEntity {
   final int amount;
   final FinancialCycle cycle;
   final int dueValue;
+  final DateTime? dueDate;
 
   const UnpaidFixedCostEntity({
     required this.occurrenceId,
@@ -13,5 +14,6 @@ class UnpaidFixedCostEntity {
     required this.amount,
     required this.cycle,
     required this.dueValue,
+    this.dueDate,
   });
 }

@@ -103,10 +103,6 @@ class UnpaidFixedCostCard extends StatelessWidget {
   }
 
   String _dueText(UnpaidFixedCostEntity item) {
-    if (item.cycle == FinancialCycle.monthly) {
-      return 'Tanggal ${item.dueValue}';
-    }
-
     const weekdayLabel = {
       1: 'Senin',
       2: 'Selasa',
@@ -117,6 +113,32 @@ class UnpaidFixedCostCard extends StatelessWidget {
       7: 'Minggu',
     };
 
-    return weekdayLabel[item.dueValue] ?? '-';
+    const monthLabel = {
+      1: 'Januari',
+      2: 'Februari',
+      3: 'Maret',
+      4: 'April',
+      5: 'Mei',
+      6: 'Juni',
+      7: 'Juli',
+      8: 'Agustus',
+      9: 'September',
+      10: 'Oktober',
+      11: 'November',
+      12: 'Desember',
+    };
+
+    final dueDate = item.dueDate;
+    if (dueDate != null) {
+      final weekday = weekdayLabel[dueDate.weekday] ?? '-';
+      final month = monthLabel[dueDate.month] ?? '-';
+      return '$weekday, ${dueDate.day} $month ${dueDate.year}';
+    }
+
+    if (item.cycle == FinancialCycle.monthly) {
+      return 'Tanggal ${item.dueValue}';
+    }
+
+    return '${weekdayLabel[item.dueValue] ?? '-'}, -';
   }
 }

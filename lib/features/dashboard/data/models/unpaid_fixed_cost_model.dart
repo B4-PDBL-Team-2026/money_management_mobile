@@ -8,6 +8,7 @@ class UnpaidFixedCostModel extends UnpaidFixedCostEntity {
     required super.amount,
     required super.cycle,
     required super.dueValue,
+    super.dueDate,
   });
 
   factory UnpaidFixedCostModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +29,7 @@ class UnpaidFixedCostModel extends UnpaidFixedCostEntity {
       amount: _parseInt(rawAmount),
       cycle: cycle,
       dueValue: dueValue,
+      dueDate: dueDate,
     );
   }
 
@@ -69,6 +71,7 @@ class UnpaidFixedCostModel extends UnpaidFixedCostEntity {
       amount: amount,
       cycle: cycle,
       dueValue: dueValue,
+      dueDate: dueDate,
     );
   }
 }
