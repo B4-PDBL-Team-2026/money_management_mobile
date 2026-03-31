@@ -29,7 +29,9 @@ import 'package:money_management_mobile/features/dashboard/domain/repositories/d
 import 'package:money_management_mobile/features/dashboard/domain/usecases/cancel_fixed_cost_occurrence_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/confirm_fixed_cost_occurrence_usecase.dart';
+import 'package:money_management_mobile/features/dashboard/domain/usecases/get_unpaid_fixed_cost_occurrences_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/data/data_sources/remote/profile_remote_data_source.dart';
 import 'package:money_management_mobile/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
@@ -189,8 +191,14 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<DashboardMetricCubit>(
     () => DashboardMetricCubit(sl(), sl(), sl()),
   );
+  sl.registerLazySingleton<UnpaidFixedCostOccurrencesCubit>(
+    () => UnpaidFixedCostOccurrencesCubit(sl(), sl(), sl()),
+  );
   sl.registerLazySingleton<CalculateDashboardMetricsUsecase>(
     () => CalculateDashboardMetricsUsecase(sl()),
+  );
+  sl.registerLazySingleton<GetUnpaidFixedCostOccurrencesUseCase>(
+    () => GetUnpaidFixedCostOccurrencesUseCase(sl()),
   );
   sl.registerLazySingleton<ConfirmFixedCostOccurrenceUseCase>(
     () => ConfirmFixedCostOccurrenceUseCase(sl()),

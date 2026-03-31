@@ -4,6 +4,8 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_budget_metrics.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_header.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/unpaid_fixed_cost_card.dart';
@@ -40,20 +42,27 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSizes.spacing4),
-              // TODO: aksi cancel dan bayar hanya sekali, selanjutnya error
-              BlocBuilder<DashboardMetricCubit, DashboardMetricState>(
+              BlocConsumer<
+                UnpaidFixedCostOccurrencesCubit,
+                UnpaidFixedCostOccurrencesState
+              >(
+                listener: (context, state) {
+                  if (state is UnpaidFixedCostOccurrencesError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: AppColors.danger100,
+                        content: Text(state.message),
+                      ),
+                    );
+                  }
+                },
                 builder: (context, state) {
-                  if (state is! DashboardMetricLoaded ||
-                      state.metrics.unpaidFixedCosts.isEmpty) {
+                  if (state is! UnpaidFixedCostOccurrencesLoaded ||
+                      state.items.isEmpty) {
                     return const SizedBox.shrink();
                   }
 
-                  if (state.metrics.unpaidFixedCosts.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-
-                  final unpaidFixedCosts = state.metrics.unpaidFixedCosts;
-                  final isPayEnabled = state.metrics.balance > 0;
+                  final unpaidFixedCosts = state.items;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,19 +82,23 @@ class HomePage extends StatelessWidget {
 
                           return UnpaidFixedCostCard(
                             item: item,
-                            isPayEnabled: isPayEnabled,
+                            isPayEnabled: true,
                             onPay: () async {
-                              await context
-                                  .read<DashboardMetricCubit>()
+                              final success = await context
+                                  .read<UnpaidFixedCostOccurrencesCubit>()
                                   .confirmFixedCostOccurrence(
                                     item.occurrenceId,
                                   );
 
-                              if (context.mounted) {
-                                await context
-                                    .read<TransactionHistoryCubit>()
-                                    .getFreshTransactionHistory();
+                              if (!success || !context.mounted) {
+                                return;
+                              }
 
+                              await context
+                                  .read<TransactionHistoryCubit>()
+                                  .getFreshTransactionHistory();
+
+                              if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     backgroundColor: AppColors.success100,
@@ -97,26 +110,22 @@ class HomePage extends StatelessWidget {
                               }
                             },
                             onCancel: () async {
-                              await context
-                                  .read<DashboardMetricCubit>()
+                              final success = await context
+                                  .read<UnpaidFixedCostOccurrencesCubit>()
                                   .cancelFixedCostOccurrence(item.occurrenceId);
 
-                              if (context.mounted) {
-                                await context
-                                    .read<DashboardMetricCubit>()
-                                    .fetchDashboardMetrics();
+                              if (!success || !context.mounted) {
+                                return;
                               }
 
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    backgroundColor: AppColors.warning100,
-                                    content: Text(
-                                      'Fixed cost berhasil dibatalkan',
-                                    ),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: AppColors.warning100,
+                                  content: Text(
+                                    'Fixed cost berhasil dibatalkan',
                                   ),
-                                );
-                              }
+                                ),
+                              );
                             },
                           );
                         },
