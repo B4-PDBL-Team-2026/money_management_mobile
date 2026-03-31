@@ -192,7 +192,13 @@ Future<void> initInjectionContainer() async {
     () => DashboardMetricCubit(sl(), sl(), sl()),
   );
   sl.registerLazySingleton<UnpaidFixedCostOccurrencesCubit>(
-    () => UnpaidFixedCostOccurrencesCubit(sl(), sl(), sl()),
+    () => UnpaidFixedCostOccurrencesCubit(
+      sl(),
+      sl(),
+      sl(),
+      sl<DashboardMetricCubit>(),
+      sl<TransactionHistoryCubit>(),
+    ),
   );
   sl.registerLazySingleton<CalculateDashboardMetricsUsecase>(
     () => CalculateDashboardMetricsUsecase(sl()),

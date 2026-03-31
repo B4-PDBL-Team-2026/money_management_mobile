@@ -78,7 +78,7 @@ class UnpaidFixedCostDetailBottomSheet extends StatelessWidget {
             children: [
               Expanded(
                 child: AppButton(
-                  text: 'Cancel',
+                  text: 'Lewati',
                   variant: AppButtonVariant.outlined,
                   type: AppButtonType.danger,
                   onPressed: () {

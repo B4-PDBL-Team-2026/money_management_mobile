@@ -5,7 +5,9 @@ import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/cancel_fixed_cost_occurrence_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/confirm_fixed_cost_occurrence_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/get_unpaid_fixed_cost_occurrences_usecase.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_state.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 
 class UnpaidFixedCostOccurrencesCubit
     extends Cubit<UnpaidFixedCostOccurrencesState> {
@@ -13,6 +15,8 @@ class UnpaidFixedCostOccurrencesCubit
   getUnpaidFixedCostOccurrencesUseCase;
   final ConfirmFixedCostOccurrenceUseCase confirmFixedCostOccurrenceUseCase;
   final CancelFixedCostOccurrenceUseCase cancelFixedCostOccurrenceUseCase;
+  final DashboardMetricCubit dashboardMetricCubit;
+  final TransactionHistoryCubit transactionHistoryCubit;
 
   final _log = Logger('UnpaidFixedCostOccurrencesCubit');
 
@@ -20,6 +24,8 @@ class UnpaidFixedCostOccurrencesCubit
     this.getUnpaidFixedCostOccurrencesUseCase,
     this.confirmFixedCostOccurrenceUseCase,
     this.cancelFixedCostOccurrenceUseCase,
+    this.dashboardMetricCubit,
+    this.transactionHistoryCubit,
   ) : super(UnpaidFixedCostOccurrencesInitial());
 
   Future<void> fetchUnpaidFixedCosts() async {
@@ -57,6 +63,8 @@ class UnpaidFixedCostOccurrencesCubit
     try {
       await confirmFixedCostOccurrenceUseCase.execute(occurrenceId);
       await fetchUnpaidFixedCosts();
+      await dashboardMetricCubit.fetchDashboardMetrics();
+      await transactionHistoryCubit.getFreshTransactionHistory();
       return true;
     } on ServerException catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
@@ -91,6 +99,8 @@ class UnpaidFixedCostOccurrencesCubit
     try {
       await cancelFixedCostOccurrenceUseCase.execute(occurrenceId);
       await fetchUnpaidFixedCosts();
+      await dashboardMetricCubit.fetchDashboardMetrics();
+      await transactionHistoryCubit.getFreshTransactionHistory();
       return true;
     } on ServerException catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
