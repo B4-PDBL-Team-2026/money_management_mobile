@@ -16,6 +16,7 @@ class ManageFixedCostBottomSheet extends StatefulWidget {
   const ManageFixedCostBottomSheet({
     super.key,
     required this.categories,
+    this.isMainCycleWeekly = false,
     this.isEditing = false,
     this.initialName,
     this.initialAmount,
@@ -25,6 +26,7 @@ class ManageFixedCostBottomSheet extends StatefulWidget {
   });
 
   final List<CategoryEntity> categories;
+  final bool isMainCycleWeekly;
 
   final bool isEditing;
   final String? initialName;
@@ -61,7 +63,9 @@ class _ManageFixedCostBottomSheetState
         ? widget.categories.first.id
         : 0;
     _selectedCategoryId = widget.initialCategoryId ?? defaultCategoryId;
-    _frequency = _parseInitialFrequency(widget.initialCycleType);
+    _frequency = widget.isMainCycleWeekly
+        ? FinancialCycle.weekly
+        : _parseInitialFrequency(widget.initialCycleType);
     _dueOptions = _buildDueOptions(_frequency);
     _selectedDueValue = _dueOptions.first.key;
 
@@ -167,39 +171,71 @@ class _ManageFixedCostBottomSheetState
                   return null;
                 },
               ),
-              const SizedBox(height: AppSizes.spacing4),
-              DropdownButtonFormField<FinancialCycle>(
-                initialValue: _frequency,
-                decoration: _dropdownDecoration(context, 'Frekuensi'),
-                items: const [
-                  DropdownMenuItem(
-                    value: FinancialCycle.weekly,
-                    child: Text('Mingguan'),
+              if (widget.isMainCycleWeekly) ...[
+                const SizedBox(height: AppSizes.spacing4),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSizes.spacing3),
+                  decoration: BoxDecoration(
+                    color: AppColors.gohan,
+                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                    border: Border.all(color: AppColors.beerus),
                   ),
-                  DropdownMenuItem(
-                    value: FinancialCycle.monthly,
-                    child: Text('Bulanan'),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.info_outline,
+                        size: 18,
+                        color: AppColors.trunks,
+                      ),
+                      const SizedBox(width: AppSizes.spacing2),
+                      Expanded(
+                        child: Text(
+                          'Siklus utama Anda mingguan, jadi fixed cost hanya bisa mingguan dan tidak dapat diubah ke bulanan.',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppColors.trunks),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _frequency = value;
-                      _dueOptions = _buildDueOptions(_frequency);
-                      _selectedDueValue = _dueOptions.first.key;
+                ),
+              ],
+              if (!widget.isMainCycleWeekly) ...[
+                const SizedBox(height: AppSizes.spacing4),
+                DropdownButtonFormField<FinancialCycle>(
+                  initialValue: _frequency,
+                  decoration: _dropdownDecoration(context, 'Frekuensi'),
+                  items: const [
+                    DropdownMenuItem(
+                      value: FinancialCycle.weekly,
+                      child: Text('Mingguan'),
+                    ),
+                    DropdownMenuItem(
+                      value: FinancialCycle.monthly,
+                      child: Text('Bulanan'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _frequency = value;
+                        _dueOptions = _buildDueOptions(_frequency);
+                        _selectedDueValue = _dueOptions.first.key;
 
-                      if (_frequency == FinancialCycle.monthly) {
-                        _selectedDueValue = DateTime.now().day;
-                        _dueDateController.text = _monthlyDueText(
-                          _selectedDueValue,
-                        );
-                      } else {
-                        _dueDateController.clear();
-                      }
-                    });
-                  }
-                },
-              ),
+                        if (_frequency == FinancialCycle.monthly) {
+                          _selectedDueValue = DateTime.now().day;
+                          _dueDateController.text = _monthlyDueText(
+                            _selectedDueValue,
+                          );
+                        } else {
+                          _dueDateController.clear();
+                        }
+                      });
+                    }
+                  },
+                ),
+              ],
               const SizedBox(height: AppSizes.spacing4),
               DropdownButtonFormField<int>(
                 value: _selectedCategoryId == 0 ? null : _selectedCategoryId,

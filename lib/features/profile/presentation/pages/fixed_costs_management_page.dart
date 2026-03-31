@@ -8,11 +8,15 @@ import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_confirm_dialog.dart';
+import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/active_fixed_cost_item_card.dart';
@@ -37,6 +41,7 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
     final categories = _expenseCategoriesFromState(
       context.read<CategoryCubit>().state,
     );
+    final isMainCycleWeekly = await _resolveIsMainCycleWeekly();
 
     if (categories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -57,7 +62,10 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => ManageFixedCostBottomSheet(categories: categories),
+      builder: (context) => ManageFixedCostBottomSheet(
+        categories: categories,
+        isMainCycleWeekly: isMainCycleWeekly,
+      ),
     );
 
     if (!mounted || payload == null) {
@@ -70,6 +78,8 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
   Future<void> _showEditFixedCostBottomSheet(
     FixedCostOccurrenceEntity fixedCost,
   ) async {
+    final isMainCycleWeekly = await _resolveIsMainCycleWeekly();
+
     final payload = await showModalBottomSheet<FixedCostEntity>(
       context: context,
       isScrollControlled: true,
@@ -85,6 +95,7 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
         initialAmount: CurrencyFormatter.format(
           _parseAmountFromRaw(fixedCost.amountRaw),
         ),
+        isMainCycleWeekly: isMainCycleWeekly,
         initialCategoryId: fixedCost.categoryId,
         initialCycleType: _toCycleLabel(fixedCost.cycleType),
         initialDueDate: DateFormat('dd/MM/yyyy').format(fixedCost.dueDate),
@@ -149,6 +160,22 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
     }
 
     return 'Kategori #$categoryId';
+  }
+
+  Future<bool> _resolveIsMainCycleWeekly() async {
+    final dashboardMetricCubit = sl<DashboardMetricCubit>();
+    var dashboardState = dashboardMetricCubit.state;
+
+    if (dashboardState is DashboardMetricInitial) {
+      await dashboardMetricCubit.fetchDashboardMetrics();
+      dashboardState = dashboardMetricCubit.state;
+    }
+
+    if (dashboardState is DashboardMetricLoaded) {
+      return dashboardState.metrics.budgetCycle == FinancialCycle.weekly;
+    }
+
+    return false;
   }
 
   List<CategoryEntity> _expenseCategoriesFromState(
