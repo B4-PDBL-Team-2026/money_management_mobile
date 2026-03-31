@@ -40,6 +40,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSizes.spacing4),
+              // TODO: aksi cancel dan bayar hanya sekali, selanjutnya error
               BlocBuilder<DashboardMetricCubit, DashboardMetricState>(
                 builder: (context, state) {
                   if (state is! DashboardMetricLoaded ||
