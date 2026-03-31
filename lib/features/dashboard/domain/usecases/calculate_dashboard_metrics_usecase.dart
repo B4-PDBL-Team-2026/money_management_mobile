@@ -239,7 +239,7 @@ class CalculateDashboardMetricsUsecase {
     required int safetyCeiling,
     required int safetyFlooring,
   }) {
-    if (actualDailyBudget <= 0) {
+    if (actualDailyBudget <= 0 && totalUnpaidFixedCost > 0) {
       return BudgetHealthScenario.deficit;
     }
 
