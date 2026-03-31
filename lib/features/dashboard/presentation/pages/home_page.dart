@@ -101,6 +101,12 @@ class HomePage extends StatelessWidget {
                                   .cancelFixedCostOccurrence(item.occurrenceId);
 
                               if (context.mounted) {
+                                await context
+                                    .read<DashboardMetricCubit>()
+                                    .fetchDashboardMetrics();
+                              }
+
+                              if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     backgroundColor: AppColors.warning100,
