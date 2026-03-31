@@ -32,9 +32,7 @@ class UserModel extends UserEntity {
       cycleStart: json['cycle_start'] != null
           ? DateTime.parse(json['cycle_start'] as String)
           : null,
-      balance: json['balance'] != null
-          ? (json['balance'] as num).toDouble()
-          : null,
+      balance: _parseNullableDouble(json['balance']),
       profileUrl: json['profile_url'] as String?,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
@@ -78,4 +76,20 @@ class UserModel extends UserEntity {
   }
 
   String toRawJson() => jsonEncode(toJson());
+
+  static double? _parseNullableDouble(dynamic value) {
+    if (value == null) {
+      return null;
+    }
+
+    if (value is num) {
+      return value.toDouble();
+    }
+
+    if (value is String) {
+      return double.tryParse(value);
+    }
+
+    return null;
+  }
 }
