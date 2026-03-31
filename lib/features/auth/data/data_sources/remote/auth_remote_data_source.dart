@@ -185,4 +185,34 @@ class AuthRemoteDataSource {
       );
     }
   }
+
+  Future<String> requestEmailVerification() async {
+    if (AppEnv.useMockApi) {
+      _log.info(
+        'USE_MOCK_API enabled, simulating verify email request response',
+      );
+      await Future.delayed(const Duration(seconds: 1));
+
+      return 'Email verifikasi berhasil dikirim.';
+    }
+
+    try {
+      final response = await dio.get('/auth/verify-email/request');
+      final responseData = response.data as Map<String, dynamic>?;
+      final message = responseData?['message'] as String?;
+
+      return message ?? 'Silakan cek email Anda untuk melakukan verifikasi.';
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Request Email Verification',
+      );
+    } catch (e) {
+      _log.severe('Unexpected request email verification error', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat mengirim email verifikasi',
+      );
+    }
+  }
 }

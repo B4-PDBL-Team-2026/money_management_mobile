@@ -48,21 +48,48 @@ class OtherProfileCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSizes.spacing4),
-          BlocConsumer<SessionCubit, SessionState>(
-            listener: (context, state) {},
+          BlocBuilder<SessionCubit, SessionState>(
             builder: (context, state) {
               if (state is! SessionAuthenticated) {
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
+
+              final isEmailVerified = state.user.emailVerifiedAt != null;
 
               return Column(
                 children: [
-                  Text(
-                    state.user.name,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.gohan,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          state.user.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                color: AppColors.gohan,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
+                      ),
+                      if (isEmailVerified) ...[
+                        const SizedBox(width: AppSizes.spacing2),
+                        Container(
+                          width: 22,
+                          height: 22,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.success100,
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            size: 14,
+                            color: AppColors.gohan,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: AppSizes.spacing1),
                   Text(

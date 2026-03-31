@@ -76,6 +76,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<String> requestEmailVerification() {
+    return remoteDataSource.requestEmailVerification();
+  }
+
+  @override
   Future<void> clearSession() async {
     try {
       await remoteDataSource.logout();

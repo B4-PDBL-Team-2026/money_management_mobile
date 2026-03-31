@@ -10,6 +10,8 @@ import 'package:money_management_mobile/features/auth/presentation/cubit/reset_p
 import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/verify_email_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/verify_email_state.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_profile_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_card.dart';
@@ -18,7 +20,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/widgets/
 class OtherPage extends StatelessWidget {
   const OtherPage({super.key});
 
-  Future<void> _onForgotPasswordTap(BuildContext context) async {
+  Future<void> _onChangePasswordTap(BuildContext context) async {
     final sessionState = context.read<SessionCubit>().state;
 
     if (sessionState is! SessionAuthenticated) {
@@ -36,12 +38,38 @@ class OtherPage extends StatelessWidget {
     );
   }
 
-  void _showLoadingDialog(BuildContext context) {
+  Future<void> _onVerifyEmailTap(BuildContext context) async {
+    final sessionState = context.read<SessionCubit>().state;
+
+    if (sessionState is! SessionAuthenticated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sesi tidak valid. Silakan login ulang.'),
+          backgroundColor: AppColors.danger100,
+        ),
+      );
+      return;
+    }
+
+    if (sessionState.user.emailVerifiedAt != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email Anda sudah terverifikasi.'),
+          backgroundColor: AppColors.success100,
+        ),
+      );
+      return;
+    }
+
+    await context.read<VerifyEmailCubit>().requestVerificationEmail();
+  }
+
+  void _showLoadingDialog(BuildContext context, {required String message}) {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) {
-        return const AlertDialog(
+        return AlertDialog(
           content: Row(
             children: [
               SizedBox(
@@ -50,7 +78,7 @@ class OtherPage extends StatelessWidget {
                 child: CircularProgressIndicator(strokeWidth: 2.2),
               ),
               SizedBox(width: AppSizes.spacing4),
-              Expanded(child: Text('Mengirim email reset password...')),
+              Expanded(child: Text(message)),
             ],
           ),
         );
@@ -65,10 +93,14 @@ class OtherPage extends StatelessWidget {
     }
   }
 
-  Future<void> _showSuccessDialog(BuildContext context, String message) async {
+  Future<void> _showSuccessDialog(
+    BuildContext context, {
+    required String title,
+    required String message,
+  }) async {
     await AppConfirmDialog.show(
       context: context,
-      title: 'Reset Password Terkirim',
+      title: title,
       content: '$message\n\nSilakan cek inbox atau folder spam Anda.',
       confirmText: 'Mengerti',
       cancelText: 'Tutup',
@@ -168,13 +200,20 @@ class OtherPage extends StatelessWidget {
                   BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
                     listener: (context, state) async {
                       if (state is ResetPasswordLoading) {
-                        _showLoadingDialog(context);
+                        _showLoadingDialog(
+                          context,
+                          message: 'Mengirim email reset password...',
+                        );
                         return;
                       }
 
                       if (state is ResetPasswordSuccess) {
                         _closeDialogIfOpen(context);
-                        await _showSuccessDialog(context, state.message);
+                        await _showSuccessDialog(
+                          context,
+                          title: 'Reset Password Terkirim',
+                          message: state.message,
+                        );
                         return;
                       }
 
@@ -199,7 +238,7 @@ class OtherPage extends StatelessWidget {
                           subtitle: 'Perbarui keamanan akunmu',
                           iconBackground: AppColors.lightPrimary,
                           iconColor: AppColors.primary,
-                          onTap: () => _onForgotPasswordTap(context),
+                          onTap: () => _onChangePasswordTap(context),
                         ),
                         Divider(
                           height: 1,
@@ -209,34 +248,69 @@ class OtherPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // BlocConsumer<SessionCubit, SessionState>(
-                  //   builder: (context, state) {
-                  //     if (state is SessionAuthenticated &&
-                  //         state.user.emailVerifiedAt != null) {
-                  //       return const SizedBox.shrink();
-                  //     }
+                  BlocConsumer<VerifyEmailCubit, VerifyEmailState>(
+                    listener: (context, state) async {
+                      if (state is VerifyEmailLoading) {
+                        _showLoadingDialog(
+                          context,
+                          message: 'Mengirim email verifikasi...',
+                        );
+                        return;
+                      }
 
-                  //     return Column(
-                  //       children: [
-                  //         OtherSettingsTile(
-                  //           icon: Icons.email_outlined,
-                  //           title: 'Verifikasi Email',
-                  //           subtitle:
-                  //               'Tingkatkan keamanan akun dengan verifikasi email',
-                  //           iconBackground: AppColors.lightPrimary,
-                  //           iconColor: AppColors.primary,
-                  //           onTap: () {},
-                  //         ),
-                  //         Divider(
-                  //           height: 1,
-                  //           thickness: 1,
-                  //           color: AppColors.beerus,
-                  //         ),
-                  //       ],
-                  //     );
-                  //   },
-                  //   listener: (context, state) {},
-                  // ),
+                      if (state is VerifyEmailSuccess) {
+                        _closeDialogIfOpen(context);
+                        await _showSuccessDialog(
+                          context,
+                          title: 'Verifikasi Email Terkirim',
+                          message: state.message,
+                        );
+                        return;
+                      }
+
+                      if (state is VerifyEmailError) {
+                        _closeDialogIfOpen(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: AppColors.danger100,
+                            content: Text(
+                              state.message,
+                              style: const TextStyle(color: AppColors.gohan),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, _) {
+                      final sessionState = context.watch<SessionCubit>().state;
+                      final isVerified =
+                          sessionState is SessionAuthenticated &&
+                          sessionState.user.emailVerifiedAt != null;
+
+                      if (isVerified) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Column(
+                        children: [
+                          OtherSettingsTile(
+                            icon: Icons.email_outlined,
+                            title: 'Verifikasi Email',
+                            subtitle:
+                                'Tingkatkan keamanan akun dengan verifikasi email',
+                            iconBackground: AppColors.lightPrimary,
+                            iconColor: AppColors.primary,
+                            onTap: () => _onVerifyEmailTap(context),
+                          ),
+                          Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: AppColors.beerus,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                   OtherSettingsTile(
                     icon: Icons.logout,
                     title: 'Keluar',

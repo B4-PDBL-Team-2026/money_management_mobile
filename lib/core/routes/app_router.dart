@@ -10,6 +10,7 @@ import 'package:money_management_mobile/features/auth/presentation/cubit/reset_p
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/verify_email_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password/forgot_password_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/forgot_password/send_success_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
@@ -181,8 +182,11 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: other,
-                    builder: (context, state) => BlocProvider(
-                      create: (_) => sl<ResetPasswordCubit>(),
+                    builder: (context, state) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider(create: (_) => sl<ResetPasswordCubit>()),
+                        BlocProvider(create: (_) => sl<VerifyEmailCubit>()),
+                      ],
                       child: const OtherPage(),
                     ),
                   ),
