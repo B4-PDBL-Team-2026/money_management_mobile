@@ -293,6 +293,8 @@ class TransactionRemoteDataSource {
           'categoryId': categoryId,
           'month': month,
           'year': year,
+          // TODO: BERBAHAYA, hapus jika sudah ada fitur custom category
+          'categoryType': 'system',
         },
       );
 
