@@ -40,6 +40,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSizes.spacing4),
+              // TODO: aksi cancel dan bayar hanya sekali, selanjutnya error
               BlocBuilder<DashboardMetricCubit, DashboardMetricState>(
                 builder: (context, state) {
                   if (state is! DashboardMetricLoaded ||
@@ -47,7 +48,12 @@ class HomePage extends StatelessWidget {
                     return const SizedBox.shrink();
                   }
 
+                  if (state.metrics.unpaidFixedCosts.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
                   final unpaidFixedCosts = state.metrics.unpaidFixedCosts;
+                  final isPayEnabled = state.metrics.balance > 0;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,6 +73,7 @@ class HomePage extends StatelessWidget {
 
                           return UnpaidFixedCostCard(
                             item: item,
+                            isPayEnabled: isPayEnabled,
                             onPay: () async {
                               await context
                                   .read<DashboardMetricCubit>()
@@ -95,6 +102,12 @@ class HomePage extends StatelessWidget {
                                   .cancelFixedCostOccurrence(item.occurrenceId);
 
                               if (context.mounted) {
+                                await context
+                                    .read<DashboardMetricCubit>()
+                                    .fetchDashboardMetrics();
+                              }
+
+                              if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     backgroundColor: AppColors.warning100,
@@ -120,6 +133,10 @@ class HomePage extends StatelessWidget {
                 listener: (context, state) {},
                 builder: (context, state) {
                   if (state is! TransactionHistorySuccess) {
+                    return SizedBox.shrink();
+                  }
+
+                  if (state.transactionHistory.isEmpty) {
                     return SizedBox.shrink();
                   }
 

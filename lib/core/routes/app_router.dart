@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/verify_email_cubit.dart';
@@ -28,9 +27,9 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
-import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/outer_shell.dart';
@@ -51,11 +50,11 @@ class AppRouter {
   static const String step2Personalization = '/personalization/step-2';
   static const String step3Personalization = '/personalization/step-3';
   static const String step4Personalization = '/personalization/step-4';
-  static const String fixedCostsManagement = '/fixed-costs';
 
   static const String dashboard = '/';
   static const String history = '/history';
   static const String other = '/other';
+  static const String fixedCostsManagement = '/other/fixed-costs';
 
   static const String addTransaction = '/transaction/add';
   static const String transactionDetailBase = '/transaction';
@@ -147,10 +146,6 @@ class AppRouter {
               child: const Step4PersonalizationPage(),
             ),
           ),
-          GoRoute(
-            path: '/fixed-costs',
-            builder: (context, state) => const FixedCostsManagementPage(),
-          ),
 
           // dashboard module
           StatefulShellRoute.indexedStack(
@@ -189,6 +184,13 @@ class AppRouter {
                       ],
                       child: const OtherPage(),
                     ),
+                    routes: [
+                      GoRoute(
+                        path: 'fixed-costs',
+                        builder: (context, state) =>
+                            const FixedCostsManagementPage(),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -198,8 +200,11 @@ class AppRouter {
           // transaction module
           GoRoute(
             path: '/transaction/add',
-            builder: (context, state) => BlocProvider<AddTransactionCubit>(
-              create: (_) => sl<AddTransactionCubit>(),
+            builder: (context, state) => MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (_) => sl<AddTransactionCubit>()),
+                BlocProvider.value(value: sl<DashboardMetricCubit>()),
+              ],
               child: const AddTransactionPage(),
             ),
           ),

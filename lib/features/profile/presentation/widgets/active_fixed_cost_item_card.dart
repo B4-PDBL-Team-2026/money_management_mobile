@@ -32,6 +32,7 @@ class ActiveFixedCostItemCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSizes.spacing4),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         border: Border.all(color: AppColors.beerus),
       ),
@@ -76,27 +77,23 @@ class ActiveFixedCostItemCard extends StatelessWidget {
               ],
             ],
           ),
-          const SizedBox(height: AppSizes.spacing3),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.spacing2,
-                  vertical: AppSizes.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.lightPrimary,
-                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                ),
-                child: Text(
-                  category,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+          const SizedBox(width: AppSizes.spacing3),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.spacing2,
+              vertical: AppSizes.spacing1,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.lightPrimary,
+              borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+            ),
+            child: Text(
+              category,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
               ),
-            ],
+            ),
           ),
           const SizedBox(height: AppSizes.spacing3),
           Row(

@@ -8,12 +8,16 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 class MonthYearDialogContent extends StatefulWidget {
   final int initialMonth;
   final int initialYear;
+  final int? initialSelectedMonth;
+  final int? initialSelectedYear;
   final int startYear;
 
   const MonthYearDialogContent({
     super.key,
     required this.initialMonth,
     required this.initialYear,
+    this.initialSelectedMonth,
+    this.initialSelectedYear,
     required this.startYear,
   });
 
@@ -30,6 +34,8 @@ class _MonthYearDialogContentState extends State<MonthYearDialogContent> {
 
   late int month;
   late int year;
+  int? selectedMonth;
+  int? selectedYear;
   double scrollProgress = 0.0;
 
   @override
@@ -37,6 +43,8 @@ class _MonthYearDialogContentState extends State<MonthYearDialogContent> {
     super.initState();
     month = widget.initialMonth;
     year = widget.initialYear;
+    selectedMonth = widget.initialSelectedMonth;
+    selectedYear = widget.initialSelectedYear;
 
     yearList = List.generate(
       DateTime.now().year - widget.startYear + 1,
@@ -94,8 +102,22 @@ class _MonthYearDialogContentState extends State<MonthYearDialogContent> {
                 Expanded(
                   child: _buildScrollableList(
                     itemCount: 12,
-                    selectedIndex: month - 1,
-                    onSelected: (index) => setState(() => month = index + 1),
+                    selectedIndex: selectedMonth == null
+                        ? -1
+                        : selectedMonth! - 1,
+                    onSelected: (index) {
+                      final tappedMonth = index + 1;
+                      setState(() {
+                        if (selectedMonth == tappedMonth) {
+                          selectedMonth = null;
+                          return;
+                        }
+
+                        month = tappedMonth;
+                        selectedMonth = tappedMonth;
+                        selectedYear ??= year;
+                      });
+                    },
                     labelBuilder: (index) =>
                         GlobalConstant.monthMapping[index + 1]!,
                     controller: monthController,
@@ -105,9 +127,22 @@ class _MonthYearDialogContentState extends State<MonthYearDialogContent> {
                 Expanded(
                   child: _buildScrollableList(
                     itemCount: yearList.length,
-                    selectedIndex: yearList.indexOf(year),
-                    onSelected: (index) =>
-                        setState(() => year = yearList[index]),
+                    selectedIndex: selectedYear == null
+                        ? -1
+                        : yearList.indexOf(selectedYear!),
+                    onSelected: (index) {
+                      final tappedYear = yearList[index];
+                      setState(() {
+                        if (selectedYear == tappedYear) {
+                          selectedYear = null;
+                          selectedMonth = null;
+                          return;
+                        }
+
+                        year = tappedYear;
+                        selectedYear = tappedYear;
+                      });
+                    },
                     labelBuilder: (index) => yearList[index].toString(),
                     controller: yearController,
                   ),
@@ -118,7 +153,8 @@ class _MonthYearDialogContentState extends State<MonthYearDialogContent> {
           const SizedBox(height: AppSizes.spacing4),
           AppButton(
             text: 'Pilih',
-            onPressed: () => Navigator.pop(context, (month, year)),
+            onPressed: () =>
+                Navigator.pop(context, (selectedMonth, selectedYear)),
           ),
         ],
       ),

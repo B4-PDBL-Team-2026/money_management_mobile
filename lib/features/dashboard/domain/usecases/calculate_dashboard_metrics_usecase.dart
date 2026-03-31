@@ -218,6 +218,7 @@ class CalculateDashboardMetricsUsecase {
     }
 
     return DashboardMetricsResult(
+      budgetCycle: budgetSnapshot.budgetCycle,
       balance: balance,
       safeBalance: safeBalance,
       todaySpent: todaySpent,
@@ -239,7 +240,7 @@ class CalculateDashboardMetricsUsecase {
     required int safetyCeiling,
     required int safetyFlooring,
   }) {
-    if (actualDailyBudget <= 0) {
+    if (actualDailyBudget <= 0 && totalUnpaidFixedCost > 0) {
       return BudgetHealthScenario.deficit;
     }
 
@@ -293,6 +294,7 @@ class DashboardMetric {
 }
 
 class DashboardMetricsResult {
+  final FinancialCycle budgetCycle;
   final int balance;
   final int safeBalance;
   final int todaySpent;
@@ -307,6 +309,7 @@ class DashboardMetricsResult {
   final DashboardLimitState limitState;
 
   DashboardMetricsResult({
+    required this.budgetCycle,
     required this.balance,
     required this.safeBalance,
     required this.todaySpent,

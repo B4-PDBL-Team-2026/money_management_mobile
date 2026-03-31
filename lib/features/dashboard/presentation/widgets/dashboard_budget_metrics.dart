@@ -88,37 +88,55 @@ class DashboardBudgetMetrics extends StatelessWidget {
           ),
         ],
         const SizedBox(height: AppSizes.spacing3),
-        DailyBudgetCard(
-          dailyExpense: metrics.todaySpent,
-          dailyLimit: metrics.limit,
-          limitName: metrics.limitName,
-          limitState: metrics.limitState,
-          healthScenario: metrics.healthScenario,
-        ),
-        const SizedBox(height: AppSizes.spacing3),
-        if (metrics.healthScenario != BudgetHealthScenario.deficit) ...[
-          Row(
-            children: [
-              Expanded(child: MetricCard(metric: metrics.firstMetric)),
-              const SizedBox(width: AppSizes.spacing3),
-              Expanded(child: MetricCard(metric: metrics.secondMetric)),
-            ],
-          ),
-        ] else ...[
-          Row(
-            children: [
-              Expanded(child: MetricCard(metric: metrics.firstMetric)),
-              const SizedBox(width: AppSizes.spacing3),
-              Expanded(
-                child: MetricCard(
-                  metric: metrics.secondMetric,
-                  backgroundColor: AppColors.danger10,
-                  textColor: AppColors.danger100,
-                  boxBorder: Border.all(color: AppColors.danger100, width: 1),
+        if (metrics.balance == 0 ||
+            metrics.healthScenario == BudgetHealthScenario.deficit) ...[
+          AppContainerCard(
+            width: double.infinity,
+            height: 150,
+            backgroundColor: AppColors.danger100,
+            child: Center(
+              child: Text(
+                'Saldo anda sudah habis',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.gohan,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
+            ),
           ),
+        ] else ...[
+          DailyBudgetCard(
+            dailyExpense: metrics.todaySpent,
+            dailyLimit: metrics.limit,
+            limitName: metrics.limitName,
+            limitState: metrics.limitState,
+            healthScenario: metrics.healthScenario,
+          ),
+          const SizedBox(height: AppSizes.spacing3),
+          if (metrics.healthScenario != BudgetHealthScenario.deficit) ...[
+            Row(
+              children: [
+                Expanded(child: MetricCard(metric: metrics.firstMetric)),
+                const SizedBox(width: AppSizes.spacing3),
+                Expanded(child: MetricCard(metric: metrics.secondMetric)),
+              ],
+            ),
+          ] else ...[
+            Row(
+              children: [
+                Expanded(child: MetricCard(metric: metrics.firstMetric)),
+                const SizedBox(width: AppSizes.spacing3),
+                Expanded(
+                  child: MetricCard(
+                    metric: metrics.secondMetric,
+                    backgroundColor: AppColors.danger10,
+                    textColor: AppColors.danger100,
+                    boxBorder: Border.all(color: AppColors.danger100, width: 1),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
         const SizedBox(height: AppSizes.spacing3),
         RealBalanceCard(balance: metrics.balance),
@@ -132,7 +150,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
     int safeBalance,
   ) {
     return AppContainerCard(
-      backgroundColor: AppColors.gohan,
+      backgroundColor: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

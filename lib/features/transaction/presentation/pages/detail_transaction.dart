@@ -7,6 +7,7 @@ import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/utils/currency_formatter.dart';
+import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_container_card.dart';
@@ -15,6 +16,7 @@ import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
@@ -69,11 +71,14 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.spacing6),
           child: BlocConsumer<TransactionDetailCubit, TransactionDetailState>(
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state is TransactionDetailDeleted) {
-                context
-                    .read<TransactionHistoryCubit>()
-                    .getFreshTransactionHistory();
+                await _refreshTransactionAndDashboardMetrics();
+
+                if (!mounted) {
+                  return;
+                }
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(state.message),
@@ -206,13 +211,25 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       return;
     }
 
-    context.read<TransactionHistoryCubit>().getFreshTransactionHistory();
+    await _refreshTransactionAndDashboardMetrics();
+
+    if (!mounted) {
+      return;
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Transaksi berhasil diperbarui.'),
         backgroundColor: AppColors.primary,
       ),
     );
+  }
+
+  Future<void> _refreshTransactionAndDashboardMetrics() {
+    return Future.wait([
+      context.read<TransactionHistoryCubit>().getFreshTransactionHistory(),
+      sl<DashboardMetricCubit>().fetchDashboardMetrics(),
+    ]);
   }
 
   Future<void> _showDeleteConfirmationDialog(
