@@ -144,7 +144,7 @@ Future<void> initInjectionContainer() async {
     () => SubmitFinancialProfileCubit(sl(), sl(), sl(), sl()),
   );
   sl.registerLazySingleton<FixedCostOccurrencesCubit>(
-    () => FixedCostOccurrencesCubit(sl(), sl(), sl(), sl(), sl()),
+    () => FixedCostOccurrencesCubit(sl(), sl(), sl(), sl(), sl(), sl()),
   );
   sl.registerLazySingleton<CalculateFinancialProfileUseCase>(
     () => CalculateFinancialProfileUseCase(),
