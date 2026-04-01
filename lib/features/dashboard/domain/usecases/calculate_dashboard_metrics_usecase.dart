@@ -134,7 +134,7 @@ class CalculateDashboardMetricsUsecase {
         final maxSurvivalLimit = min(startOfDaySafeBalance, safetyFlooring);
 
         secondMetric = DashboardMetric(
-          name: 'Uang Cukup Untuk',
+          name: 'Bertahan sampai',
           value: maxSurvivalLimit > 0
               ? max(safeBalance ~/ maxSurvivalLimit, 0)
               : 0,
@@ -149,6 +149,11 @@ class CalculateDashboardMetricsUsecase {
             name: 'Sisa Jatah Ekstrem',
             value: limit - todaySpent,
             type: MetricType.currency,
+          );
+          secondMetric = DashboardMetric(
+            name: 'Bertahan sampai',
+            value: remainingDaysInCycle,
+            type: MetricType.day,
           );
         } else if (todaySpent <= maxSurvivalLimit) {
           limit = maxSurvivalLimit;
