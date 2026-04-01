@@ -88,18 +88,21 @@ class HomePage extends StatelessWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (weeklyItems.isNotEmpty)
+                      if (weeklyItems.isNotEmpty) ...[
                         const SizedBox(height: AppSizes.spacing6),
-                      _FixedCostSection(
-                        title: 'Fixed Cost Mingguan di Minggu Ini',
-                        items: weeklyItems,
-                      ),
-                      if (monthlyItems.isNotEmpty)
+                        _FixedCostSection(
+                          title: 'Fixed Cost Mingguan di Minggu Ini',
+                          items: weeklyItems,
+                        ),
+                      ],
+
+                      if (monthlyItems.isNotEmpty) ...[
                         const SizedBox(height: AppSizes.spacing6),
-                      _FixedCostSection(
-                        title: 'Fixed Cost Bulanan di Bulan Ini',
-                        items: monthlyItems,
-                      ),
+                        _FixedCostSection(
+                          title: 'Fixed Cost Bulanan di Bulan Ini',
+                          items: monthlyItems,
+                        ),
+                      ],
                     ],
                   );
                 },
