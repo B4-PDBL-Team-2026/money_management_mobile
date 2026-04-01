@@ -88,7 +88,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
           ),
         ],
         const SizedBox(height: AppSizes.spacing3),
-        if (metrics.balance == 0 ||
+        if (metrics.balance == 0 &&
             metrics.healthScenario == BudgetHealthScenario.deficit) ...[
           AppContainerCard(
             width: double.infinity,

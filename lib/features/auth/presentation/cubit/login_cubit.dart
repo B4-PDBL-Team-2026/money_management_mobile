@@ -5,6 +5,7 @@ import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/login_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 
 import 'login_state.dart';
@@ -15,6 +16,7 @@ class LoginCubit extends Cubit<LoginState> {
   final SessionCubit sessionCubit;
   final CategoryCubit categoryCubit;
   final TransactionHistoryCubit transactionHistoryCubit;
+  final FixedCostOccurrencesCubit fixedCostOccurrencesCubit;
 
   final _log = Logger('LoginCubit');
 
@@ -23,6 +25,7 @@ class LoginCubit extends Cubit<LoginState> {
     this.sessionCubit,
     this.categoryCubit,
     this.transactionHistoryCubit,
+    this.fixedCostOccurrencesCubit,
   ) : super(LoginInitial());
 
   Future<void> login(String email, String password) async {
@@ -42,7 +45,7 @@ class LoginCubit extends Cubit<LoginState> {
       );
       categoryCubit.fetchCategories();
       transactionHistoryCubit.getFreshTransactionHistory();
-
+      fixedCostOccurrencesCubit.fetchFixedCostOccurrences(forceRefresh: true);
       emit(LoginSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {
       emit(LoginError(e.message));

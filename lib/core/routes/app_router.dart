@@ -16,6 +16,7 @@ import 'package:money_management_mobile/features/auth/presentation/pages/login_p
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
@@ -165,9 +166,17 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: dashboard,
-                    builder: (context, state) => BlocProvider.value(
-                      value: sl<DashboardMetricCubit>()
-                        ..fetchDashboardMetrics(),
+                    builder: (context, state) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: sl<DashboardMetricCubit>()
+                            ..fetchDashboardMetrics(),
+                        ),
+                        BlocProvider.value(
+                          value: sl<UnpaidFixedCostOccurrencesCubit>()
+                            ..fetchUnpaidFixedCosts(),
+                        ),
+                      ],
                       child: const HomePage(),
                     ),
                   ),
@@ -209,9 +218,10 @@ class AppRouter {
             ),
           ),
           GoRoute(
-            path: '/transaction/:id',
+            path: transactionDetail,
             builder: (context, state) {
-              final id = int.tryParse(state.pathParameters['id'] ?? '');
+              final idParam = state.pathParameters['id'];
+              final id = int.tryParse(idParam ?? '');
 
               if (id == null) {
                 return const Scaffold(

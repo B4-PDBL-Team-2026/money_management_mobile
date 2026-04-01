@@ -13,6 +13,61 @@ class DashboardRemoteDataSource {
 
   DashboardRemoteDataSource(this.dio);
 
+  Future<List<UnpaidFixedCostModel>> fetchUnpaidFixedCostOccurrences() async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+
+      return [
+        UnpaidFixedCostModel(
+          occurrenceId: 1,
+          name: 'Sewa Kos',
+          amount: 100000,
+          cycle: FinancialCycle.monthly,
+          dueValue: 30,
+          dueDate: DateTime(2026, 4, 30),
+        ),
+        UnpaidFixedCostModel(
+          occurrenceId: 2,
+          name: 'Listrik',
+          amount: 50000,
+          cycle: FinancialCycle.monthly,
+          dueValue: 28,
+          dueDate: DateTime(2026, 4, 28),
+        ),
+      ];
+    }
+
+    try {
+      final response = await dio.get('/fixed-costs/occurrences');
+      final rawOccurrences =
+          response.data['data'] as List<dynamic>? ?? <dynamic>[];
+
+      return rawOccurrences
+          .whereType<Map>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .where((item) {
+            final status = item['status']?.toString().toLowerCase() ?? '';
+            final paidAt = item['paid_at'];
+            final voidedAt = item['voided_at'];
+            final isUnpaidStatus = status == 'pending' || status == 'overdue';
+            return isUnpaidStatus && paidAt == null && voidedAt == null;
+          })
+          .map(UnpaidFixedCostModel.fromJson)
+          .toList(growable: false);
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Fetch Unpaid Fixed Cost Occurrences',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while fetching unpaid fixed costs', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat mengambil fixed cost yang belum dibayar',
+      );
+    }
+  }
+
   Future<BudgetSnapshotModel> fetchBudgetSnapshot() async {
     if (AppEnv.useMockApi) {
       return BudgetSnapshotModel(
@@ -26,13 +81,14 @@ class DashboardRemoteDataSource {
         todayLimit: 50000, // Limit tetap di target awal
         actualDailyAllowance: 60000, // Kekuatan asli masih kuat (Surplus)
         tomorrowLimitPrediction: 50000, // Prediksi besok tetap aman
-        unpaidFixedCosts: const [
+        unpaidFixedCosts: [
           UnpaidFixedCostModel(
             occurrenceId: 1,
             name: 'Sewa Kos',
             amount: 100000,
             cycle: FinancialCycle.monthly,
             dueValue: 30,
+            dueDate: DateTime(2026, 4, 30),
           ),
           UnpaidFixedCostModel(
             occurrenceId: 2,
@@ -40,37 +96,18 @@ class DashboardRemoteDataSource {
             amount: 50000,
             cycle: FinancialCycle.monthly,
             dueValue: 28,
+            dueDate: DateTime(2026, 4, 28),
           ),
         ],
       );
     }
 
     try {
-      final responses = await Future.wait([
-        dio.get('/user/dashboard'),
-        dio.get('/fixed-costs/occurrences'),
-      ]);
-
-      final dashboardResponse = responses[0].data;
-      final occurrencesResponse = responses[1].data;
-
-      final rawOccurrences =
-          occurrencesResponse['data'] as List<dynamic>? ?? <dynamic>[];
-
-      final unpaidFixedCosts = rawOccurrences
-          .whereType<Map>()
-          .map((item) => Map<String, dynamic>.from(item))
-          .where((item) {
-            final paidAt = item['paid_at'];
-            final voidedAt = item['voided_at'];
-            return paidAt == null && voidedAt == null;
-          })
-          .map(UnpaidFixedCostModel.fromJson)
-          .toList(growable: false);
+      final response = await dio.get('/user/dashboard');
+      final dashboardResponse = response.data;
 
       return BudgetSnapshotModel.fromJson(
         dashboardResponse['data'] as Map<String, dynamic>,
-        unpaidFixedCosts: unpaidFixedCosts,
       );
     } on DioException catch (e) {
       throw ErrorHandler.handleRemoteException(

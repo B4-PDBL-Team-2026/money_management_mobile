@@ -34,7 +34,7 @@ class BudgetSnapshotModel extends BudgetSnapshotEntity {
       actualDailyAllowance: json['rawTodayLimit'] as int,
       unpaidFixedCosts:
           unpaidFixedCosts ??
-          (json['unpaidFixedCosts'] as List<dynamic>)
+          (json['unpaidFixedCosts'] as List<dynamic>? ?? <dynamic>[])
               .map(
                 (item) =>
                     UnpaidFixedCostModel.fromJson(item as Map<String, dynamic>),

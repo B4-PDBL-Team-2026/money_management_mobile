@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/create_fixed_cost_usecase.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/delete_fixed_cost_usecase.dart';
@@ -13,6 +15,10 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
   final CreateFixedCostUseCase createFixedCostUseCase;
   final UpdateFixedCostUseCase updateFixedCostUseCase;
   final DeleteFixedCostUseCase deleteFixedCostUseCase;
+
+  final UnpaidFixedCostOccurrencesCubit unpaidFixedCostOccurrencesCubit;
+  final DashboardMetricCubit dashboardMetricCubit;
+
   final _log = Logger('FixedCostOccurrencesCubit');
 
   FixedCostOccurrencesCubit(
@@ -20,6 +26,8 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
     this.createFixedCostUseCase,
     this.updateFixedCostUseCase,
     this.deleteFixedCostUseCase,
+    this.unpaidFixedCostOccurrencesCubit,
+    this.dashboardMetricCubit,
   ) : super(FixedCostOccurrencesInitial());
 
   Future<void> fetchFixedCostOccurrences({bool forceRefresh = false}) async {
@@ -51,7 +59,11 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
 
     try {
       await createFixedCostUseCase.execute(payload);
-      await fetchFixedCostOccurrences(forceRefresh: true);
+      await Future.wait([
+        fetchFixedCostOccurrences(forceRefresh: true),
+        unpaidFixedCostOccurrencesCubit.fetchUnpaidFixedCosts(),
+        dashboardMetricCubit.fetchDashboardMetrics(),
+      ]);
     } on ServerException catch (e) {
       emit(FixedCostOccurrencesError(e.message));
     } on NetworkException catch (e) {
@@ -73,7 +85,11 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
 
     try {
       await deleteFixedCostUseCase.execute(fixedCostTemplateId);
-      await fetchFixedCostOccurrences(forceRefresh: true);
+      await Future.wait([
+        fetchFixedCostOccurrences(forceRefresh: true),
+        unpaidFixedCostOccurrencesCubit.fetchUnpaidFixedCosts(),
+        dashboardMetricCubit.fetchDashboardMetrics(),
+      ]);
     } on ServerException catch (e) {
       emit(FixedCostOccurrencesError(e.message));
     } on NetworkException catch (e) {
@@ -98,7 +114,11 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
 
     try {
       await updateFixedCostUseCase.execute(fixedCostTemplateId, payload);
-      await fetchFixedCostOccurrences(forceRefresh: true);
+      await Future.wait([
+        fetchFixedCostOccurrences(forceRefresh: true),
+        unpaidFixedCostOccurrencesCubit.fetchUnpaidFixedCosts(),
+        dashboardMetricCubit.fetchDashboardMetrics(),
+      ]);
     } on ServerException catch (e) {
       emit(FixedCostOccurrencesError(e.message));
     } on NetworkException catch (e) {
