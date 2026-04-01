@@ -64,6 +64,7 @@ class HomePage extends StatelessWidget {
                   }
 
                   final now = DateTime.now();
+
                   final weeklyItems = state.items
                       .where(
                         (item) =>
@@ -71,6 +72,7 @@ class HomePage extends StatelessWidget {
                             _isInCurrentWeek(item.dueDate, now),
                       )
                       .toList(growable: false);
+
                   final monthlyItems = state.items
                       .where(
                         (item) =>
@@ -92,13 +94,12 @@ class HomePage extends StatelessWidget {
                         title: 'Fixed Cost Mingguan di Minggu Ini',
                         items: weeklyItems,
                       ),
-                      if (weeklyItems.isNotEmpty && monthlyItems.isNotEmpty)
-                        const SizedBox(height: AppSizes.spacing6),
                       if (monthlyItems.isNotEmpty)
-                        _FixedCostSection(
-                          title: 'Fixed Cost Bulanan di Bulan Ini',
-                          items: monthlyItems,
-                        ),
+                        const SizedBox(height: AppSizes.spacing6),
+                      _FixedCostSection(
+                        title: 'Fixed Cost Bulanan di Bulan Ini',
+                        items: monthlyItems,
+                      ),
                     ],
                   );
                 },
