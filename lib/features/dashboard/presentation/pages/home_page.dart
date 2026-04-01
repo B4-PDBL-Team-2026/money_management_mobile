@@ -188,6 +188,11 @@ class _FixedCostSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dashboardMetricState = context.watch<DashboardMetricCubit>().state;
+    final isPayEnabled =
+        dashboardMetricState is DashboardMetricLoaded &&
+        dashboardMetricState.metrics.balance > 0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -206,7 +211,7 @@ class _FixedCostSection extends StatelessWidget {
 
             return UnpaidFixedCostCard(
               item: item,
-              isPayEnabled: true,
+              isPayEnabled: isPayEnabled,
               onPay: () async {
                 final success = await context
                     .read<UnpaidFixedCostOccurrencesCubit>()
