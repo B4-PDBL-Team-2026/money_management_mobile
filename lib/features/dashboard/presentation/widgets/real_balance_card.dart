@@ -25,7 +25,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
       child: Row(
         children: [
           Text(
-            'Saldo rill',
+            'Saldo sebenarnya',
             style: Theme.of(
               context,
             ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
