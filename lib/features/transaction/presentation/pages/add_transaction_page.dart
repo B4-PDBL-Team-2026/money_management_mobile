@@ -298,6 +298,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             }
                           }
 
+                          if (numericValue > 1000000000) {
+                            return 'Nominal tidak boleh lebih dari 1.000.000.000';
+                          }
+
                           return null;
                         },
                       ),
