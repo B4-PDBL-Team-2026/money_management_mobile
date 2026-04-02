@@ -33,7 +33,7 @@ Dokumen ini menguraikan inisiatif penyederhanaan _codebase_ agar pengembangan fi
 
 ## 📅 Rencana Eksekusi 1 Minggu (The "When")
 
-Jadwal ini dirancang agar refactoring dasar selesai di awal minggu, sehingga sisa waktu bisa digunakan untuk pengembangan fitur Sprint 2.
+Jadwal ini dirancang agar refactoring dasar selesai di sebelum Sprint 2, sehingga tim bisa fokus pada pengembangan fitur dengan _codebase_ yang sudah diperbarui.
 
 ### Hari 1: Fondasi & Automasi Dasar
 
