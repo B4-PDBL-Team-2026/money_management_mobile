@@ -5,13 +5,13 @@ import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/usecases/add_transaction_usecase.dart';
+import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 
 @Injectable()
 class AddTransactionCubit extends Cubit<AddTransactionState> {
-  final AddTransactionUseCase addTransactionUseCase;
+  final TransactionRepository _transactionRepository;
 
   final TransactionHistoryCubit transactionHistoryCubit;
   final DashboardMetricCubit dashboardMetricCubit;
@@ -19,7 +19,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   final _log = Logger('AddTransactionCubit');
 
   AddTransactionCubit(
-    this.addTransactionUseCase,
+    this._transactionRepository,
     this.transactionHistoryCubit,
     this.dashboardMetricCubit,
   ) : super(AddTransactionInitial());
@@ -36,13 +36,15 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
     emit(AddTransactionLoading());
 
     try {
-      final transaction = await addTransactionUseCase.execute(
-        name: name,
-        amount: amount,
-        type: type,
-        categoryId: categoryId,
-        transactionDate: transactionDate,
-        note: note,
+      final transaction = await _transactionRepository.addTransaction(
+        TransactionEntity(
+          name: name,
+          amount: amount,
+          type: type,
+          categoryId: categoryId,
+          transactionDate: transactionDate,
+          note: note,
+        ),
       );
 
       await Future.wait([

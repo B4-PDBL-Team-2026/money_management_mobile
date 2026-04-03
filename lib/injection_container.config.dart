@@ -68,16 +68,6 @@ import 'features/transaction/data/repositories/transaction_repository_impl.dart'
     as _i16;
 import 'features/transaction/domain/repositories/transaction_repository.dart'
     as _i463;
-import 'features/transaction/domain/usecases/add_transaction_usecase.dart'
-    as _i970;
-import 'features/transaction/domain/usecases/delete_transaction_usecase.dart'
-    as _i221;
-import 'features/transaction/domain/usecases/get_transaction_detail_usecase.dart'
-    as _i121;
-import 'features/transaction/domain/usecases/get_transactions_usecase.dart'
-    as _i120;
-import 'features/transaction/domain/usecases/update_transaction_usecase.dart'
-    as _i412;
 import 'features/transaction/presentation/cubit/add_transaction_cubit.dart'
     as _i1024;
 import 'features/transaction/presentation/cubit/transaction_detail_cubit.dart'
@@ -177,42 +167,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i478.CategoryCubit>(
       () => _i478.CategoryCubit(gh<_i5.CategoryRepository>()),
     );
-    gh.lazySingleton<_i970.AddTransactionUseCase>(
-      () => _i970.AddTransactionUseCase(gh<_i463.TransactionRepository>()),
+    gh.lazySingleton<_i900.TransactionHistoryCubit>(
+      () => _i900.TransactionHistoryCubit(gh<_i463.TransactionRepository>()),
     );
-    gh.lazySingleton<_i221.DeleteTransactionUseCase>(
-      () => _i221.DeleteTransactionUseCase(gh<_i463.TransactionRepository>()),
-    );
-    gh.lazySingleton<_i120.GetTransactionsUsecase>(
-      () => _i120.GetTransactionsUsecase(gh<_i463.TransactionRepository>()),
-    );
-    gh.lazySingleton<_i412.UpdateTransactionUseCase>(
-      () => _i412.UpdateTransactionUseCase(gh<_i463.TransactionRepository>()),
-    );
-    gh.factory<_i121.GetTransactionDetailUseCase>(
-      () =>
-          _i121.GetTransactionDetailUseCase(gh<_i463.TransactionRepository>()),
+    gh.factory<_i555.TransactionDetailCubit>(
+      () => _i555.TransactionDetailCubit(gh<_i463.TransactionRepository>()),
     );
     gh.lazySingleton<_i1023.DashboardMetricCubit>(
       () => _i1023.DashboardMetricCubit(
         gh<_i83.CalculateDashboardMetricsUsecase>(),
-        gh<_i557.DashboardRepository>(),
-      ),
-    );
-    gh.factory<_i555.TransactionDetailCubit>(
-      () => _i555.TransactionDetailCubit(
-        gh<_i121.GetTransactionDetailUseCase>(),
-        gh<_i412.UpdateTransactionUseCase>(),
-        gh<_i221.DeleteTransactionUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i900.TransactionHistoryCubit>(
-      () => _i900.TransactionHistoryCubit(gh<_i120.GetTransactionsUsecase>()),
-    );
-    gh.lazySingleton<_i928.UnpaidFixedCostOccurrencesCubit>(
-      () => _i928.UnpaidFixedCostOccurrencesCubit(
-        gh<_i1023.DashboardMetricCubit>(),
-        gh<_i900.TransactionHistoryCubit>(),
         gh<_i557.DashboardRepository>(),
       ),
     );
@@ -224,17 +187,24 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i900.TransactionHistoryCubit>(),
       ),
     );
-    gh.lazySingleton<_i463.FixedCostOccurrencesCubit>(
-      () => _i463.FixedCostOccurrencesCubit(
-        gh<_i626.ProfileRepository>(),
-        gh<_i928.UnpaidFixedCostOccurrencesCubit>(),
+    gh.lazySingleton<_i928.UnpaidFixedCostOccurrencesCubit>(
+      () => _i928.UnpaidFixedCostOccurrencesCubit(
         gh<_i1023.DashboardMetricCubit>(),
+        gh<_i900.TransactionHistoryCubit>(),
+        gh<_i557.DashboardRepository>(),
       ),
     );
     gh.factory<_i1024.AddTransactionCubit>(
       () => _i1024.AddTransactionCubit(
-        gh<_i970.AddTransactionUseCase>(),
+        gh<_i463.TransactionRepository>(),
         gh<_i900.TransactionHistoryCubit>(),
+        gh<_i1023.DashboardMetricCubit>(),
+      ),
+    );
+    gh.lazySingleton<_i463.FixedCostOccurrencesCubit>(
+      () => _i463.FixedCostOccurrencesCubit(
+        gh<_i626.ProfileRepository>(),
+        gh<_i928.UnpaidFixedCostOccurrencesCubit>(),
         gh<_i1023.DashboardMetricCubit>(),
       ),
     );
