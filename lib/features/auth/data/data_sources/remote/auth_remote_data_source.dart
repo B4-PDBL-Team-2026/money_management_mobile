@@ -215,4 +215,30 @@ class AuthRemoteDataSource {
       );
     }
   }
+
+  Future<String> deleteAccount(String password) async {
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, simulating delete account response');
+      await Future.delayed(const Duration(seconds: 1));
+
+      return 'Akun berhasil dihapus.';
+    }
+
+    try {
+      final response = await dio.delete(
+        '/auth/user',
+        queryParameters: {'password': password},
+      );
+
+      final responseData = response.data as Map<String, dynamic>?;
+      final message = responseData?['message'] as String?;
+
+      return message ?? 'Akun berhasil dihapus.';
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Delete Account');
+    } catch (e) {
+      _log.severe('Unexpected delete account error', e);
+      throw UnexpectedException('Terjadi kesalahan sistem saat menghapus akun');
+    }
+  }
 }

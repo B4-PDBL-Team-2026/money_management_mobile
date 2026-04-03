@@ -11,9 +11,9 @@ import 'package:money_management_mobile/features/auth/domain/usecases/register_u
 import 'package:money_management_mobile/features/auth/domain/usecases/request_email_verification_usecase.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/restore_session_usecase.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/send_password_reset_email_usecase.dart';
-import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/verify_email_cubit.dart';
 import 'package:money_management_mobile/features/category/data/data_sources/local/category_local_data_sources.dart';
@@ -26,11 +26,13 @@ import 'package:money_management_mobile/features/category/presentation/cubit/cat
 import 'package:money_management_mobile/features/dashboard/data/data_sources/remote/dashboard_remote_data_source.dart';
 import 'package:money_management_mobile/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
-import 'package:money_management_mobile/features/dashboard/domain/usecases/cancel_fixed_cost_occurrence_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
+import 'package:money_management_mobile/features/dashboard/domain/usecases/cancel_fixed_cost_occurrence_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/confirm_fixed_cost_occurrence_usecase.dart';
+import 'package:money_management_mobile/features/dashboard/domain/usecases/delete_account_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/get_unpaid_fixed_cost_occurrences_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/data/data_sources/remote/profile_remote_data_source.dart';
 import 'package:money_management_mobile/features/profile/data/repositories/profile_repository_impl.dart';
@@ -41,8 +43,8 @@ import 'package:money_management_mobile/features/profile/domain/usecases/delete_
 import 'package:money_management_mobile/features/profile/domain/usecases/get_fixed_cost_occurrences_usecase.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/submit_financial_profile_usecase.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/update_fixed_cost_usecase.dart';
-import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
 import 'package:money_management_mobile/features/transaction/data/data_sources/remote/transaction_remote_data_source.dart';
 import 'package:money_management_mobile/features/transaction/data/repositories/transaction_repository_impl.dart';
@@ -97,6 +99,10 @@ Future<void> initInjectionContainer() async {
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSource(sl()),
   );
+  sl.registerLazySingleton<DeleteAccountUseCase>(
+    () => DeleteAccountUseCase(sl()),
+  );
+  sl.registerFactory(() => DeleteAccountCubit(sl(), sl()));
 
   // Features - Transaction
   sl.registerFactory<AddTransactionCubit>(

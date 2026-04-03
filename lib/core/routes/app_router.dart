@@ -16,8 +16,10 @@ import 'package:money_management_mobile/features/auth/presentation/pages/login_p
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/pages/delete_account_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
@@ -56,6 +58,7 @@ class AppRouter {
   static const String history = '/history';
   static const String other = '/other';
   static const String fixedCostsManagement = '/other/fixed-costs';
+  static const String deleteAccount = '/other/delete-account';
 
   static const String addTransaction = '/transaction/add';
   static const String transactionDetailBase = '/transaction';
@@ -198,6 +201,13 @@ class AppRouter {
                         path: 'fixed-costs',
                         builder: (context, state) =>
                             const FixedCostsManagementPage(),
+                      ),
+                      GoRoute(
+                        path: 'delete-account',
+                        builder: (context, state) => BlocProvider(
+                          create: (context) => sl<DeleteAccountCubit>(),
+                          child: const DeleteAccountPage(),
+                        ),
                       ),
                     ],
                   ),

@@ -16,6 +16,7 @@ import 'package:money_management_mobile/features/category/presentation/cubit/cat
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_profile_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_tile.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OtherPage extends StatelessWidget {
   const OtherPage({super.key});
@@ -212,7 +213,8 @@ class OtherPage extends StatelessWidget {
                         await _showSuccessDialog(
                           context,
                           title: 'Reset Password Terkirim',
-                          message: state.message,
+                          message:
+                              'Email reset password telah dikirim. Silakan cek inbox atau folder spam Anda.',
                         );
                         return;
                       }
@@ -263,7 +265,8 @@ class OtherPage extends StatelessWidget {
                         await _showSuccessDialog(
                           context,
                           title: 'Verifikasi Email Terkirim',
-                          message: state.message,
+                          message:
+                              'Email verifikasi telah dikirim. Silakan cek inbox atau folder spam Anda.',
                         );
                         return;
                       }
@@ -310,6 +313,14 @@ class OtherPage extends StatelessWidget {
                         ],
                       );
                     },
+                  ),
+                  OtherSettingsTile(
+                    icon: PhosphorIconsRegular.userMinus,
+                    title: 'Hapus Akun',
+                    subtitle: 'Hapus akun ini secara permanen',
+                    iconBackground: AppColors.danger10,
+                    iconColor: AppColors.danger100,
+                    onTap: () => context.go(AppRouter.deleteAccount),
                   ),
                   OtherSettingsTile(
                     icon: Icons.logout,
