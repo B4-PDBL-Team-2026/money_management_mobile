@@ -2,28 +2,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/features/auth/domain/entities/user_entity.dart';
-import 'package:money_management_mobile/features/auth/domain/usecases/complete_onboarding_usecase.dart';
-import 'package:money_management_mobile/features/auth/domain/usecases/logout_usecase.dart';
-import 'package:money_management_mobile/features/auth/domain/usecases/restore_session_usecase.dart';
+import 'package:money_management_mobile/features/auth/domain/repositories/auth_repository.dart';
 
 import 'session_state.dart';
 
 @LazySingleton()
 class SessionCubit extends Cubit<SessionState> {
-  final RestoreSessionUseCase restoreSessionUseCase;
-  final CompleteOnboardingUseCase _completeOnboardingUseCase;
-  final LogoutUseCase logoutUseCase;
+  final AuthRepository _authRepository;
   final _log = Logger('SessionCubit');
 
-  SessionCubit(
-    this.restoreSessionUseCase,
-    this._completeOnboardingUseCase,
-    this.logoutUseCase,
-  ) : super(SessionUnauthenticated());
+  SessionCubit(this._authRepository) : super(SessionUnauthenticated());
 
   Future<void> restoreSession() async {
     _log.info('Restoring local auth session');
-    final session = restoreSessionUseCase.execute();
+    final session = _authRepository.getSavedSession();
 
     if (session == null) {
       _log.info('No saved auth session found');
@@ -64,7 +56,7 @@ class SessionCubit extends Cubit<SessionState> {
         throw Exception('User must be authenticated to complete onboarding');
       }
 
-      await _completeOnboardingUseCase.execute();
+      await _authRepository.updateRequiresOnboarding(false);
 
       emit((state as SessionAuthenticated).copyWith(requiresOnboarding: false));
     } catch (e) {
@@ -75,7 +67,7 @@ class SessionCubit extends Cubit<SessionState> {
 
   Future<void> logout() async {
     try {
-      await logoutUseCase.execute();
+      await _authRepository.clearSession();
     } catch (e) {
       _log.severe('Error occurred during logout', e);
     }

@@ -3,24 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
-import 'package:money_management_mobile/features/auth/domain/usecases/request_email_verification_usecase.dart';
+import 'package:money_management_mobile/features/auth/domain/repositories/auth_repository.dart';
 
 import 'verify_email_state.dart';
 
 @Injectable()
 class VerifyEmailCubit extends Cubit<VerifyEmailState> {
-  final RequestEmailVerificationUseCase requestEmailVerificationUseCase;
+  final AuthRepository _authRepository;
 
   final _log = Logger('VerifyEmailCubit');
 
-  VerifyEmailCubit(this.requestEmailVerificationUseCase)
-    : super(VerifyEmailInitial());
+  VerifyEmailCubit(this._authRepository) : super(VerifyEmailInitial());
 
   Future<void> requestVerificationEmail() async {
     emit(VerifyEmailLoading());
 
     try {
-      final message = await requestEmailVerificationUseCase.execute();
+      final message = await _authRepository.requestEmailVerification();
       emit(VerifyEmailSuccess(message));
     } on ServerException catch (e) {
       _log.severe('Server error while requesting email verification', e);

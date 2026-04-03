@@ -22,16 +22,8 @@ import 'features/auth/data/data_sources/remote/auth_remote_data_source.dart'
     as _i711;
 import 'features/auth/data/repositories/auth_repository_impl.dart' as _i111;
 import 'features/auth/domain/repositories/auth_repository.dart' as _i1015;
-import 'features/auth/domain/usecases/complete_onboarding_usecase.dart'
-    as _i465;
 import 'features/auth/domain/usecases/login_usecase.dart' as _i206;
-import 'features/auth/domain/usecases/logout_usecase.dart' as _i824;
 import 'features/auth/domain/usecases/register_usecase.dart' as _i693;
-import 'features/auth/domain/usecases/request_email_verification_usecase.dart'
-    as _i134;
-import 'features/auth/domain/usecases/restore_session_usecase.dart' as _i38;
-import 'features/auth/domain/usecases/send_password_reset_email_usecase.dart'
-    as _i137;
 import 'features/auth/presentation/cubit/login_cubit.dart' as _i250;
 import 'features/auth/presentation/cubit/register_cubit.dart' as _i622;
 import 'features/auth/presentation/cubit/reset_password_cubit.dart' as _i801;
@@ -164,6 +156,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i465.AuthLocalDataSource>(),
       ),
     );
+    gh.factory<_i801.ResetPasswordCubit>(
+      () => _i801.ResetPasswordCubit(gh<_i1015.AuthRepository>()),
+    );
+    gh.factory<_i217.VerifyEmailCubit>(
+      () => _i217.VerifyEmailCubit(gh<_i1015.AuthRepository>()),
+    );
+    gh.lazySingleton<_i410.SessionCubit>(
+      () => _i410.SessionCubit(gh<_i1015.AuthRepository>()),
+    );
     gh.lazySingleton<_i557.DashboardRepository>(
       () =>
           _i448.DashboardRepositoryImpl(gh<_i553.DashboardRemoteDataSource>()),
@@ -174,26 +175,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i844.CategoryLocalDataSource>(),
       ),
     );
-    gh.factory<_i465.CompleteOnboardingUseCase>(
-      () => _i465.CompleteOnboardingUseCase(gh<_i1015.AuthRepository>()),
-    );
     gh.factory<_i206.LoginUseCase>(
       () => _i206.LoginUseCase(gh<_i1015.AuthRepository>()),
     );
-    gh.factory<_i824.LogoutUseCase>(
-      () => _i824.LogoutUseCase(gh<_i1015.AuthRepository>()),
-    );
     gh.factory<_i693.RegisterUseCase>(
       () => _i693.RegisterUseCase(gh<_i1015.AuthRepository>()),
-    );
-    gh.factory<_i134.RequestEmailVerificationUseCase>(
-      () => _i134.RequestEmailVerificationUseCase(gh<_i1015.AuthRepository>()),
-    );
-    gh.factory<_i38.RestoreSessionUseCase>(
-      () => _i38.RestoreSessionUseCase(gh<_i1015.AuthRepository>()),
-    );
-    gh.factory<_i137.SendPasswordResetEmailUseCase>(
-      () => _i137.SendPasswordResetEmailUseCase(gh<_i1015.AuthRepository>()),
     );
     gh.lazySingleton<_i419.ClearCategoriesUsecase>(
       () => _i419.ClearCategoriesUsecase(gh<_i5.CategoryRepository>()),
@@ -213,12 +199,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i83.CalculateDashboardMetricsUsecase(
         gh<_i557.DashboardRepository>(),
       ),
-    );
-    gh.factory<_i801.ResetPasswordCubit>(
-      () => _i801.ResetPasswordCubit(gh<_i137.SendPasswordResetEmailUseCase>()),
-    );
-    gh.factory<_i217.VerifyEmailCubit>(
-      () => _i217.VerifyEmailCubit(gh<_i134.RequestEmailVerificationUseCase>()),
     );
     gh.lazySingleton<_i970.AddTransactionUseCase>(
       () => _i970.AddTransactionUseCase(gh<_i463.TransactionRepository>()),
@@ -249,13 +229,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1009.GetUnpaidFixedCostOccurrencesUseCase>(
       () => _i1009.GetUnpaidFixedCostOccurrencesUseCase(
         gh<_i557.DashboardRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i410.SessionCubit>(
-      () => _i410.SessionCubit(
-        gh<_i38.RestoreSessionUseCase>(),
-        gh<_i465.CompleteOnboardingUseCase>(),
-        gh<_i824.LogoutUseCase>(),
       ),
     );
     gh.factory<_i555.TransactionDetailCubit>(
