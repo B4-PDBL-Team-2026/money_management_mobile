@@ -45,12 +45,6 @@ import 'features/dashboard/domain/repositories/dashboard_repository.dart'
     as _i557;
 import 'features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart'
     as _i83;
-import 'features/dashboard/domain/usecases/cancel_fixed_cost_occurrence_usecase.dart'
-    as _i417;
-import 'features/dashboard/domain/usecases/confirm_fixed_cost_occurrence_usecase.dart'
-    as _i930;
-import 'features/dashboard/domain/usecases/get_unpaid_fixed_cost_occurrences_usecase.dart'
-    as _i1009;
 import 'features/dashboard/presentation/cubits/dashboard_metric_cubit.dart'
     as _i1023;
 import 'features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart'
@@ -209,18 +203,9 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i121.GetTransactionDetailUseCase(gh<_i463.TransactionRepository>()),
     );
-    gh.factory<_i417.CancelFixedCostOccurrenceUseCase>(
-      () => _i417.CancelFixedCostOccurrenceUseCase(
-        gh<_i557.DashboardRepository>(),
-      ),
-    );
-    gh.factory<_i930.ConfirmFixedCostOccurrenceUseCase>(
-      () => _i930.ConfirmFixedCostOccurrenceUseCase(
-        gh<_i557.DashboardRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i1009.GetUnpaidFixedCostOccurrencesUseCase>(
-      () => _i1009.GetUnpaidFixedCostOccurrencesUseCase(
+    gh.lazySingleton<_i1023.DashboardMetricCubit>(
+      () => _i1023.DashboardMetricCubit(
+        gh<_i83.CalculateDashboardMetricsUsecase>(),
         gh<_i557.DashboardRepository>(),
       ),
     );
@@ -246,38 +231,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i411.GetFixedCostOccurrencesUseCase>(
       () => _i411.GetFixedCostOccurrencesUseCase(gh<_i626.ProfileRepository>()),
     );
-    gh.lazySingleton<_i1023.DashboardMetricCubit>(
-      () => _i1023.DashboardMetricCubit(
-        gh<_i83.CalculateDashboardMetricsUsecase>(),
-        gh<_i930.ConfirmFixedCostOccurrenceUseCase>(),
-        gh<_i417.CancelFixedCostOccurrenceUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i900.TransactionHistoryCubit>(
       () => _i900.TransactionHistoryCubit(gh<_i120.GetTransactionsUsecase>()),
     );
-    gh.factory<_i622.RegisterCubit>(
-      () => _i622.RegisterCubit(
-        gh<_i693.RegisterUseCase>(),
-        gh<_i410.SessionCubit>(),
-        gh<_i478.CategoryCubit>(),
-        gh<_i900.TransactionHistoryCubit>(),
-      ),
-    );
     gh.lazySingleton<_i928.UnpaidFixedCostOccurrencesCubit>(
       () => _i928.UnpaidFixedCostOccurrencesCubit(
-        gh<_i1009.GetUnpaidFixedCostOccurrencesUseCase>(),
-        gh<_i930.ConfirmFixedCostOccurrenceUseCase>(),
-        gh<_i417.CancelFixedCostOccurrenceUseCase>(),
         gh<_i1023.DashboardMetricCubit>(),
         gh<_i900.TransactionHistoryCubit>(),
-      ),
-    );
-    gh.factory<_i1024.AddTransactionCubit>(
-      () => _i1024.AddTransactionCubit(
-        gh<_i970.AddTransactionUseCase>(),
-        gh<_i900.TransactionHistoryCubit>(),
-        gh<_i1023.DashboardMetricCubit>(),
+        gh<_i557.DashboardRepository>(),
       ),
     );
     gh.lazySingleton<_i463.FixedCostOccurrencesCubit>(
@@ -297,6 +258,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i478.CategoryCubit>(),
         gh<_i900.TransactionHistoryCubit>(),
         gh<_i463.FixedCostOccurrencesCubit>(),
+      ),
+    );
+    gh.factory<_i622.RegisterCubit>(
+      () => _i622.RegisterCubit(
+        gh<_i693.RegisterUseCase>(),
+        gh<_i410.SessionCubit>(),
+        gh<_i478.CategoryCubit>(),
+        gh<_i900.TransactionHistoryCubit>(),
+      ),
+    );
+    gh.factory<_i1024.AddTransactionCubit>(
+      () => _i1024.AddTransactionCubit(
+        gh<_i970.AddTransactionUseCase>(),
+        gh<_i900.TransactionHistoryCubit>(),
+        gh<_i1023.DashboardMetricCubit>(),
       ),
     );
     gh.factory<_i262.SubmitFinancialProfileCubit>(
