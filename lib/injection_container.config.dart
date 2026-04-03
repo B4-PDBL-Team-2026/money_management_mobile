@@ -36,10 +36,6 @@ import 'features/category/data/data_sources/remote/category_remote_data_sources.
 import 'features/category/data/repositories/category_repository_impl.dart'
     as _i44;
 import 'features/category/domain/repositories/category_repository.dart' as _i5;
-import 'features/category/domain/usecases/clear_categories_usecase.dart'
-    as _i419;
-import 'features/category/domain/usecases/get_categories_usecase.dart'
-    as _i1042;
 import 'features/category/presentation/cubit/category_cubit.dart' as _i478;
 import 'features/dashboard/data/data_sources/remote/dashboard_remote_data_source.dart'
     as _i553;
@@ -181,16 +177,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i693.RegisterUseCase>(
       () => _i693.RegisterUseCase(gh<_i1015.AuthRepository>()),
     );
-    gh.lazySingleton<_i419.ClearCategoriesUsecase>(
-      () => _i419.ClearCategoriesUsecase(gh<_i5.CategoryRepository>()),
-    );
     gh.lazySingleton<_i463.TransactionRepository>(
       () => _i16.TransactionRepositoryImpl(
         gh<_i1023.TransactionRemoteDataSource>(),
       ),
-    );
-    gh.lazySingleton<_i1042.GetCategoriesUsecase>(
-      () => _i1042.GetCategoriesUsecase(gh<_i5.CategoryRepository>()),
     );
     gh.lazySingleton<_i626.ProfileRepository>(
       () => _i277.ProfileRepositoryImpl(gh<_i959.ProfileRemoteDataSource>()),
@@ -199,6 +189,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i83.CalculateDashboardMetricsUsecase(
         gh<_i557.DashboardRepository>(),
       ),
+    );
+    gh.lazySingleton<_i478.CategoryCubit>(
+      () => _i478.CategoryCubit(gh<_i5.CategoryRepository>()),
     );
     gh.lazySingleton<_i970.AddTransactionUseCase>(
       () => _i970.AddTransactionUseCase(gh<_i463.TransactionRepository>()),
@@ -252,12 +245,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i411.GetFixedCostOccurrencesUseCase>(
       () => _i411.GetFixedCostOccurrencesUseCase(gh<_i626.ProfileRepository>()),
-    );
-    gh.lazySingleton<_i478.CategoryCubit>(
-      () => _i478.CategoryCubit(
-        gh<_i1042.GetCategoriesUsecase>(),
-        gh<_i419.ClearCategoriesUsecase>(),
-      ),
     );
     gh.lazySingleton<_i1023.DashboardMetricCubit>(
       () => _i1023.DashboardMetricCubit(

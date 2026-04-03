@@ -2,17 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
-import 'package:money_management_mobile/features/category/domain/usecases/clear_categories_usecase.dart';
-import 'package:money_management_mobile/features/category/domain/usecases/get_categories_usecase.dart';
+import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 
 @LazySingleton()
 class CategoryCubit extends Cubit<CategoryState> {
-  final GetCategoriesUsecase getCategoriesUsecase;
-  final ClearCategoriesUsecase clearCategoriesUsecase;
+  final CategoryRepository _categoryRepository;
 
-  CategoryCubit(this.getCategoriesUsecase, this.clearCategoriesUsecase)
-    : super(CategoryInitial());
+  CategoryCubit(this._categoryRepository) : super(CategoryInitial());
 
   Future<void> fetchCategories() async {
     if (state is CategoryLoading) return;
@@ -21,7 +18,7 @@ class CategoryCubit extends Cubit<CategoryState> {
     emit(CategoryLoading());
 
     try {
-      final result = await getCategoriesUsecase.execute();
+      final result = await _categoryRepository.getCategories();
       emit(CategoryLoaded(result));
     } on NetworkException catch (e) {
       emit(CategoryErrorAndRetry(e.message, fetchCategories));
@@ -45,7 +42,7 @@ class CategoryCubit extends Cubit<CategoryState> {
   }
 
   Future<void> clearCategories() async {
-    await clearCategoriesUsecase.execute();
+    await _categoryRepository.clearCategories();
     emit(CategoryInitial());
   }
 }
