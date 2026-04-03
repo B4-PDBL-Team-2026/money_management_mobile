@@ -43,7 +43,7 @@ Jadwal ini dirancang agar refactoring dasar selesai di sebelum Sprint 2, sehingg
 
 ### Hari 2: Pemangkasan Arsitektur & Routing
 
-- [ ] Menghapus _Use Case passthrough_ pada fitur-fitur yang sudah ada (Auth, Profile, Transaction, Dashboard) dan menghubungkan Cubit langsung ke Repository.
+- [x] Menghapus _Use Case passthrough_ pada fitur-fitur yang sudah ada (Auth, Profile, Transaction, Dashboard) dan menghubungkan Cubit langsung ke Repository.
 - [ ] Mengonfigurasi _strong-typed routing_ pada `app_router.dart` menggunakan _code generation_.
 
 ### Hari 3: Reactive State & Error Handling
