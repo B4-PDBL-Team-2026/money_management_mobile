@@ -38,7 +38,7 @@ Jadwal ini dirancang agar refactoring dasar selesai di sebelum Sprint 2, sehingg
 ### Hari 1: Fondasi & Automasi Dasar
 
 - [x] Mengonfigurasi library `injectable` dan mengubah `injection_container.dart` menjadi berbasis _code generation_.
-- [ ] Membuat file `.vscode/money_management.code-snippets` untuk _template_ Entity, Model, Cubit, dan State.
+- [x] Membuat file `.vscode/money_management.code-snippets` untuk _template_ Entity, Model, Cubit, dan State.
 - [ ] Membuat _Export Barrels_ untuk folder-folder utilitas dan _widgets_ utama (`lib/core/widgets/widgets.dart`, dll).
 
 ### Hari 2: Pemangkasan Arsitektur & Routing
