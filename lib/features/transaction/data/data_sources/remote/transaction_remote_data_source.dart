@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/data/models/paginated_model.dart';
@@ -10,6 +11,7 @@ import 'package:money_management_mobile/features/transaction/data/models/transac
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
+@LazySingleton()
 class TransactionRemoteDataSource {
   final Dio dio;
   final _log = Logger('TransactionRemoteDataSource');

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
@@ -7,6 +8,7 @@ import 'package:money_management_mobile/features/category/data/models/category_m
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
+@LazySingleton()
 class CategoryRemoteDataSource {
   final Dio dio;
   final _log = Logger('CategoryRemoteDataSource');

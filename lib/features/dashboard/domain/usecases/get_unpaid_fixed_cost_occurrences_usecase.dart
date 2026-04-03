@@ -1,6 +1,8 @@
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
 
+@LazySingleton()
 class GetUnpaidFixedCostOccurrencesUseCase {
   final DashboardRepository repository;
 

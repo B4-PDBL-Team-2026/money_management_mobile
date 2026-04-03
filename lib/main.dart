@@ -40,12 +40,12 @@ void main() async {
 Future<void> _bootstrapAndRunApp({required bool enableSentry}) async {
   AppLogger.init(enableSentry: enableSentry);
 
-  await initInjectionContainer();
+  await configureDependencies();
   localTimezone = await FlutterTimezone.getLocalTimezone();
 
   await Future.wait([
     initializeDateFormatting('id_ID'),
-    sl<SessionCubit>().restoreSession(),
+    getIt<SessionCubit>().restoreSession(),
   ]);
 
   runApp(const MyApp());
@@ -58,15 +58,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SessionCubit>.value(value: sl<SessionCubit>()),
+        BlocProvider<SessionCubit>.value(value: getIt<SessionCubit>()),
         BlocProvider<CategoryCubit>.value(
-          value: sl<CategoryCubit>()..fetchCategories(),
+          value: getIt<CategoryCubit>()..fetchCategories(),
         ),
         BlocProvider<TransactionHistoryCubit>.value(
-          value: sl<TransactionHistoryCubit>()..getFreshTransactionHistory(),
+          value: getIt<TransactionHistoryCubit>()..getFreshTransactionHistory(),
         ),
         BlocProvider<FixedCostOccurrencesCubit>.value(
-          value: sl<FixedCostOccurrencesCubit>(),
+          value: getIt<FixedCostOccurrencesCubit>(),
         ),
       ],
       child: MaterialApp.router(

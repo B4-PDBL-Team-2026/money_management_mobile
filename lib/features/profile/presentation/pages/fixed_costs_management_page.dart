@@ -163,7 +163,7 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
   }
 
   Future<bool> _resolveIsMainCycleWeekly() async {
-    final dashboardMetricCubit = sl<DashboardMetricCubit>();
+    final dashboardMetricCubit = getIt<DashboardMetricCubit>();
     var dashboardState = dashboardMetricCubit.state;
 
     if (dashboardState is DashboardMetricInitial) {

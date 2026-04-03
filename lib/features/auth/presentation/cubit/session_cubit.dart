@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/complete_onboarding_usecase.dart';
@@ -7,6 +8,7 @@ import 'package:money_management_mobile/features/auth/domain/usecases/restore_se
 
 import 'session_state.dart';
 
+@LazySingleton()
 class SessionCubit extends Cubit<SessionState> {
   final RestoreSessionUseCase restoreSessionUseCase;
   final CompleteOnboardingUseCase _completeOnboardingUseCase;

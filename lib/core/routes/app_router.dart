@@ -61,7 +61,7 @@ class AppRouter {
   static const String transactionDetailBase = '/transaction';
   static const String transactionDetail = '/transaction/:id';
 
-  static final SessionCubit _sessionCubit = sl<SessionCubit>();
+  static final SessionCubit _sessionCubit = getIt<SessionCubit>();
 
   static final router = GoRouter(
     initialLocation: '/welcome',
@@ -78,14 +78,14 @@ class AppRouter {
               GoRoute(
                 path: 'login',
                 builder: (context, state) => BlocProvider(
-                  create: (_) => sl.get<LoginCubit>(),
+                  create: (_) => getIt<LoginCubit>(),
                   child: const LoginPage(),
                 ),
                 routes: [
                   GoRoute(
                     path: 'forgot-password',
                     builder: (context, state) => BlocProvider(
-                      create: (_) => sl<ResetPasswordCubit>(),
+                      create: (_) => getIt<ResetPasswordCubit>(),
                       child: const ForgotPasswordPage(),
                     ),
                     routes: [
@@ -100,7 +100,7 @@ class AppRouter {
               GoRoute(
                 path: 'registration',
                 builder: (context, state) => BlocProvider(
-                  create: (_) => sl.get<RegisterCubit>(),
+                  create: (_) => getIt<RegisterCubit>(),
                   child: const RegisterPage(),
                 ),
               ),
@@ -111,8 +111,8 @@ class AppRouter {
             path: '/personalization/step-1',
             builder: (context, state) => MultiBlocProvider(
               providers: [
-                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
-                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+                BlocProvider.value(value: getIt<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: getIt<SubmitFinancialProfileCubit>()),
               ],
               child: const Step1PersonalizationPage(),
             ),
@@ -121,8 +121,8 @@ class AppRouter {
             path: '/personalization/step-2',
             builder: (context, state) => MultiBlocProvider(
               providers: [
-                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
-                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+                BlocProvider.value(value: getIt<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: getIt<SubmitFinancialProfileCubit>()),
               ],
               child: const Step2PersonalizationPage(),
             ),
@@ -131,8 +131,8 @@ class AppRouter {
             path: '/personalization/step-3',
             builder: (context, state) => MultiBlocProvider(
               providers: [
-                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
-                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+                BlocProvider.value(value: getIt<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: getIt<SubmitFinancialProfileCubit>()),
               ],
               child: const Step3PersonalizationPage(),
             ),
@@ -141,8 +141,8 @@ class AppRouter {
             path: '/personalization/step-4',
             builder: (context, state) => MultiBlocProvider(
               providers: [
-                BlocProvider.value(value: sl<FinancialProfileDraftCubit>()),
-                BlocProvider.value(value: sl<SubmitFinancialProfileCubit>()),
+                BlocProvider.value(value: getIt<FinancialProfileDraftCubit>()),
+                BlocProvider.value(value: getIt<SubmitFinancialProfileCubit>()),
               ],
               child: const Step4PersonalizationPage(),
             ),
@@ -169,11 +169,11 @@ class AppRouter {
                     builder: (context, state) => MultiBlocProvider(
                       providers: [
                         BlocProvider.value(
-                          value: sl<DashboardMetricCubit>()
+                          value: getIt<DashboardMetricCubit>()
                             ..fetchDashboardMetrics(),
                         ),
                         BlocProvider.value(
-                          value: sl<UnpaidFixedCostOccurrencesCubit>()
+                          value: getIt<UnpaidFixedCostOccurrencesCubit>()
                             ..fetchUnpaidFixedCosts(),
                         ),
                       ],
@@ -188,8 +188,8 @@ class AppRouter {
                     path: other,
                     builder: (context, state) => MultiBlocProvider(
                       providers: [
-                        BlocProvider(create: (_) => sl<ResetPasswordCubit>()),
-                        BlocProvider(create: (_) => sl<VerifyEmailCubit>()),
+                        BlocProvider(create: (_) => getIt<ResetPasswordCubit>()),
+                        BlocProvider(create: (_) => getIt<VerifyEmailCubit>()),
                       ],
                       child: const OtherPage(),
                     ),
@@ -211,8 +211,8 @@ class AppRouter {
             path: '/transaction/add',
             builder: (context, state) => MultiBlocProvider(
               providers: [
-                BlocProvider(create: (_) => sl<AddTransactionCubit>()),
-                BlocProvider.value(value: sl<DashboardMetricCubit>()),
+                BlocProvider(create: (_) => getIt<AddTransactionCubit>()),
+                BlocProvider.value(value: getIt<DashboardMetricCubit>()),
               ],
               child: const AddTransactionPage(),
             ),
@@ -230,7 +230,7 @@ class AppRouter {
               }
 
               return BlocProvider<TransactionDetailCubit>(
-                create: (_) => sl<TransactionDetailCubit>(),
+                create: (_) => getIt<TransactionDetailCubit>(),
                 child: TransactionDetailPage(transactionId: id),
               );
             },

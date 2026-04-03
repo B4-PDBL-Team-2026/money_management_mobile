@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/request_email_verification_usecase.dart';
 
 import 'verify_email_state.dart';
 
+@Injectable()
 class VerifyEmailCubit extends Cubit<VerifyEmailState> {
   final RequestEmailVerificationUseCase requestEmailVerificationUseCase;
 

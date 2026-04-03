@@ -1,8 +1,10 @@
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/dashboard/data/data_sources/remote/dashboard_remote_data_source.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/budget_snapshot_entity.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
 
+@LazySingleton(as: DashboardRepository)
 class DashboardRepositoryImpl extends DashboardRepository {
   final DashboardRemoteDataSource remoteDataSource;
 

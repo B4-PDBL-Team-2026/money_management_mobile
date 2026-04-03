@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -8,6 +9,7 @@ import 'package:money_management_mobile/features/profile/presentation/cubit/fixe
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 
+@Injectable()
 class SubmitFinancialProfileCubit extends Cubit<SubmitFinancialProfileState> {
   final SubmitFinancialProfileUseCase submitOnboardingUseCase;
 

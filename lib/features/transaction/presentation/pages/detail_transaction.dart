@@ -228,7 +228,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   Future<void> _refreshTransactionAndDashboardMetrics() {
     return Future.wait([
       context.read<TransactionHistoryCubit>().getFreshTransactionHistory(),
-      sl<DashboardMetricCubit>().fetchDashboardMetrics(),
+      getIt<DashboardMetricCubit>().fetchDashboardMetrics(),
     ]);
   }
 

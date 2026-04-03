@@ -1,6 +1,8 @@
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
 
+@LazySingleton()
 class AddTransactionUseCase {
   final TransactionRepository repository;
 

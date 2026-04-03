@@ -1,6 +1,8 @@
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
 
+@LazySingleton()
 class GetCategoriesUsecase {
   final CategoryRepository repository;
 

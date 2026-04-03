@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:money_management_mobile/features/profile/domain/usecases/get_fix
 import 'package:money_management_mobile/features/profile/domain/usecases/update_fixed_cost_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_state.dart';
 
+@LazySingleton()
 class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
   final GetFixedCostOccurrencesUseCase getFixedCostOccurrencesUseCase;
   final CreateFixedCostUseCase createFixedCostUseCase;

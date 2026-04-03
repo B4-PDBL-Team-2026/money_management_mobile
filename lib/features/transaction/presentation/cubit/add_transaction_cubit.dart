@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
@@ -8,6 +9,7 @@ import 'package:money_management_mobile/features/transaction/domain/usecases/add
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 
+@Injectable()
 class AddTransactionCubit extends Cubit<AddTransactionState> {
   final AddTransactionUseCase addTransactionUseCase;
 

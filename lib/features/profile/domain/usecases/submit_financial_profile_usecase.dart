@@ -1,6 +1,8 @@
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
 
+@Injectable()
 class SubmitFinancialProfileUseCase {
   final ProfileRepository repository;
 

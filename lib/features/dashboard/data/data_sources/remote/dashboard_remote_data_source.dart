@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
@@ -7,6 +8,7 @@ import 'package:money_management_mobile/features/dashboard/data/models/budget_sn
 import 'package:money_management_mobile/features/dashboard/data/models/unpaid_fixed_cost_model.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 
+@LazySingleton()
 class DashboardRemoteDataSource {
   final Dio dio;
   final _log = Logger('DashboardRemoteDataSource');

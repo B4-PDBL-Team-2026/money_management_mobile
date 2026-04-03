@@ -1,6 +1,8 @@
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
 
+@LazySingleton()
 class GetFixedCostOccurrencesUseCase {
   final ProfileRepository repository;
 

@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/data/models/category_model.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@LazySingleton()
 class CategoryLocalDataSource {
   final SharedPreferences sharedPreferences;
 
