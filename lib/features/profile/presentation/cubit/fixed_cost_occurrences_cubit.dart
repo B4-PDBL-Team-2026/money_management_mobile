@@ -5,18 +5,12 @@ import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/create_fixed_cost_usecase.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/delete_fixed_cost_usecase.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/get_fixed_cost_occurrences_usecase.dart';
-import 'package:money_management_mobile/features/profile/domain/usecases/update_fixed_cost_usecase.dart';
+import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_state.dart';
 
 @LazySingleton()
 class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
-  final GetFixedCostOccurrencesUseCase getFixedCostOccurrencesUseCase;
-  final CreateFixedCostUseCase createFixedCostUseCase;
-  final UpdateFixedCostUseCase updateFixedCostUseCase;
-  final DeleteFixedCostUseCase deleteFixedCostUseCase;
+  final ProfileRepository _profileRepository;
 
   final UnpaidFixedCostOccurrencesCubit unpaidFixedCostOccurrencesCubit;
   final DashboardMetricCubit dashboardMetricCubit;
@@ -24,10 +18,7 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
   final _log = Logger('FixedCostOccurrencesCubit');
 
   FixedCostOccurrencesCubit(
-    this.getFixedCostOccurrencesUseCase,
-    this.createFixedCostUseCase,
-    this.updateFixedCostUseCase,
-    this.deleteFixedCostUseCase,
+    this._profileRepository,
     this.unpaidFixedCostOccurrencesCubit,
     this.dashboardMetricCubit,
   ) : super(FixedCostOccurrencesInitial());
@@ -40,7 +31,7 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
     emit(FixedCostOccurrencesLoading());
 
     try {
-      final items = await getFixedCostOccurrencesUseCase.execute();
+      final items = await _profileRepository.getFixedCostOccurrences();
       emit(FixedCostOccurrencesSuccess(items));
     } on ServerException catch (e) {
       emit(FixedCostOccurrencesError(e.message));
@@ -60,7 +51,7 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
     emit(FixedCostOccurrencesLoading());
 
     try {
-      await createFixedCostUseCase.execute(payload);
+      await _profileRepository.createFixedCost(payload);
       await Future.wait([
         fetchFixedCostOccurrences(forceRefresh: true),
         unpaidFixedCostOccurrencesCubit.fetchUnpaidFixedCosts(),
@@ -86,7 +77,7 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
     emit(FixedCostOccurrencesLoading());
 
     try {
-      await deleteFixedCostUseCase.execute(fixedCostTemplateId);
+      await _profileRepository.deleteFixedCost(fixedCostTemplateId);
       await Future.wait([
         fetchFixedCostOccurrences(forceRefresh: true),
         unpaidFixedCostOccurrencesCubit.fetchUnpaidFixedCosts(),
@@ -115,7 +106,7 @@ class FixedCostOccurrencesCubit extends Cubit<FixedCostOccurrencesState> {
     emit(FixedCostOccurrencesLoading());
 
     try {
-      await updateFixedCostUseCase.execute(fixedCostTemplateId, payload);
+      await _profileRepository.updateFixedCost(fixedCostTemplateId, payload);
       await Future.wait([
         fetchFixedCostOccurrences(forceRefresh: true),
         unpaidFixedCostOccurrencesCubit.fetchUnpaidFixedCosts(),
