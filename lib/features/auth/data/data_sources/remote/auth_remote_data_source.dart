@@ -197,7 +197,7 @@ class AuthRemoteDataSource {
     }
 
     try {
-      final response = await dio.get('/auth/verify-email/request');
+      final response = await dio.post('/auth/verify-email/request');
       final responseData = response.data as Map<String, dynamic>?;
       final message = responseData?['message'] as String?;
 
