@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/fixed_cost_item_detail_value.dart';
 
 class FixedCostItemCard extends StatelessWidget {

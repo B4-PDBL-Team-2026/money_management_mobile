@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_mobile/core/widgets/app_button.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 
 class AppConfirmDialog extends StatelessWidget {
   final String title;
@@ -47,14 +47,8 @@ class AppConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.headlineMedium,
-      ),
-      content: Text(
-        content,
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
+      title: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+      content: Text(content, style: Theme.of(context).textTheme.bodyMedium),
       actionsAlignment: MainAxisAlignment.end,
       actions: [
         SizedBox(

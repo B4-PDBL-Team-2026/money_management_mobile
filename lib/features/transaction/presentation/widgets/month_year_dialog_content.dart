@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/constants/global_constant.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
-import 'package:money_management_mobile/core/widgets/app_button.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class MonthYearDialogContent extends StatefulWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
 
 class CustomDropdown extends StatelessWidget {
   final List<String> items;

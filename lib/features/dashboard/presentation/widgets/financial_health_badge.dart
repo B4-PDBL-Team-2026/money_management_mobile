@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
 
 class BudgetHealthBadge extends StatelessWidget {
