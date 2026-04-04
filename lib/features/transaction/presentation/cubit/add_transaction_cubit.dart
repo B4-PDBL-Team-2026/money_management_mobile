@@ -42,7 +42,12 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
           amount: amount,
           type: type,
           categoryId: categoryId,
-          transactionDate: transactionDate,
+          // TODO: hotfix, harusnya server-side tidak perlu memotong waktu. Segera perbaiki di server-side!
+          transactionDate: DateTime.utc(
+            transactionDate.year,
+            transactionDate.month,
+            transactionDate.day,
+          ),
           note: note,
         ),
       );

@@ -45,7 +45,8 @@ class TransactionModel extends TransactionEntity {
       'amount': amount,
       'type': type.value,
       'categoryId': categoryId,
-      'transactionDate': transactionDate.toUtc().toIso8601String(),
+      // TODO: sudah diformat UTC secara paksa di cubit, pakai lagi setelah difix!
+      'transactionDate': transactionDate/* .toUtc() */.toIso8601String(),
       'note': note,
       // TODO: hardcode categoryType karena API butuh, tapi seharusnya bisa diambil dari categoryId
       // ganti dengan entity menyimpan category langsung, bukan id
