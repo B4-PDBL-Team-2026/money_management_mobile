@@ -191,7 +191,9 @@ class AppRouter {
                     path: other,
                     builder: (context, state) => MultiBlocProvider(
                       providers: [
-                        BlocProvider(create: (_) => getIt<ResetPasswordCubit>()),
+                        BlocProvider(
+                          create: (_) => getIt<ResetPasswordCubit>(),
+                        ),
                         BlocProvider(create: (_) => getIt<VerifyEmailCubit>()),
                       ],
                       child: const OtherPage(),
@@ -205,7 +207,7 @@ class AppRouter {
                       GoRoute(
                         path: 'delete-account',
                         builder: (context, state) => BlocProvider(
-                          create: (context) => sl<DeleteAccountCubit>(),
+                          create: (context) => getIt<DeleteAccountCubit>(),
                           child: const DeleteAccountPage(),
                         ),
                       ),

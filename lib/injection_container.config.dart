@@ -47,6 +47,8 @@ import 'features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.d
     as _i83;
 import 'features/dashboard/presentation/cubits/dashboard_metric_cubit.dart'
     as _i1023;
+import 'features/dashboard/presentation/cubits/delete_account_cubit.dart'
+    as _i111;
 import 'features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart'
     as _i928;
 import 'features/profile/data/data_sources/remote/profile_remote_data_source.dart'
@@ -97,7 +99,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i844.CategoryLocalDataSource>(
       () => _i844.CategoryLocalDataSource(gh<_i460.SharedPreferences>()),
     );
-    gh.factory<_i715.FinancialProfileDraftCubit>(
+    gh.lazySingleton<_i715.FinancialProfileDraftCubit>(
       () => _i715.FinancialProfileDraftCubit(
         gh<_i103.CalculateFinancialProfileUseCase>(),
       ),
@@ -143,6 +145,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i44.CategoryRepositoryImpl(
         gh<_i300.CategoryRemoteDataSource>(),
         gh<_i844.CategoryLocalDataSource>(),
+      ),
+    );
+    gh.factory<_i111.DeleteAccountCubit>(
+      () => _i111.DeleteAccountCubit(
+        gh<_i1015.AuthRepository>(),
+        gh<_i410.SessionCubit>(),
       ),
     );
     gh.factory<_i206.LoginUseCase>(
