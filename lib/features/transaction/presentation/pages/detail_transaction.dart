@@ -756,6 +756,7 @@ class _DetailContent extends StatelessWidget {
         PhosphorIconsRegular.question;
   }
 
+  // TODO: refactor ini di masa depan menggunakan enum terpisah di entitas transaction detail agar lebih type-safe dan mudah di-maintain
   String _resolveSourceText(String source) {
     return switch (source) {
       'manual' => 'Pencatatan Manual',
