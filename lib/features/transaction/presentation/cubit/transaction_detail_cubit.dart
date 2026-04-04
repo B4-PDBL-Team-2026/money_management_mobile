@@ -1,33 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/usecases/delete_transaction_usecase.dart';
-import 'package:money_management_mobile/features/transaction/domain/usecases/get_transaction_detail_usecase.dart';
-import 'package:money_management_mobile/features/transaction/domain/usecases/update_transaction_usecase.dart';
+import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_state.dart';
 
+@Injectable()
 class TransactionDetailCubit extends Cubit<TransactionDetailState> {
-  final GetTransactionDetailUseCase getTransactionDetailUseCase;
-  final UpdateTransactionUseCase updateTransactionUseCase;
-  final DeleteTransactionUseCase deleteTransactionUseCase;
+  final TransactionRepository _transactionRepository;
 
   final _log = Logger('TransactionDetailCubit');
 
-  TransactionDetailCubit(
-    this.getTransactionDetailUseCase,
-    this.updateTransactionUseCase,
-    this.deleteTransactionUseCase,
-  ) : super(TransactionDetailInitial());
+  TransactionDetailCubit(this._transactionRepository)
+    : super(TransactionDetailInitial());
 
   Future<void> getTransactionDetail({required int id}) async {
     _log.info('Fetch transaction detail started for transaction id: $id');
     emit(TransactionDetailLoading());
 
     try {
-      final result = await getTransactionDetailUseCase.execute(id: id);
+      final result = await _transactionRepository.getTransactionDetail(id: id);
       emit(TransactionDetailSuccess(result));
     } on ServerException catch (e) {
       _log.severe('Server error while fetching transaction detail', e);
@@ -59,20 +54,20 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
     required TransactionType type,
     required int categoryId,
     required RealCategoryType categoryType,
-    required DateTime transactionDate,
+    required DateTime transactionAt,
     String? note,
   }) async {
     _log.info('Update transaction started for transaction id: $id');
 
     try {
-      await updateTransactionUseCase.execute(
+      await _transactionRepository.updateTransaction(
         id: id,
         name: name,
         amount: amount,
         type: type,
         categoryId: categoryId,
         categoryType: categoryType,
-        transactionDate: transactionDate,
+        transactionAt: transactionAt,
         note: note,
       );
 
@@ -110,7 +105,7 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
     emit(TransactionDetailLoading());
 
     try {
-      await deleteTransactionUseCase.execute(id: id);
+      await _transactionRepository.deleteTransaction(id: id);
       emit(TransactionDetailDeleted('Transaksi berhasil dihapus.'));
       return true;
     } on ServerException catch (e) {

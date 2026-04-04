@@ -1,16 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/usecases/get_transactions_usecase.dart';
+import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_state.dart';
 
+@LazySingleton()
 class TransactionHistoryCubit extends Cubit<TransactionHistoryState> {
-  final GetTransactionsUsecase getTransactionsUsecase;
+  final TransactionRepository _transactionRepository;
   final _log = Logger('TransactionHistoryCubit');
 
-  TransactionHistoryCubit(this.getTransactionsUsecase)
+  TransactionHistoryCubit(this._transactionRepository)
     : super(TransactionHistoryInitial());
 
   Future<void> getFreshTransactionHistory({
@@ -22,9 +24,10 @@ class TransactionHistoryCubit extends Cubit<TransactionHistoryState> {
     emit(TransactionHistoryLoading());
 
     try {
-      final result = await getTransactionsUsecase.execute(
+      final result = await _transactionRepository.getTransactions(
+        page: 1,
         search: search,
-        categoryEntity: categoryEntity,
+        categoryId: categoryEntity?.id,
         month: month,
         year: year,
       );
@@ -75,12 +78,12 @@ class TransactionHistoryCubit extends Cubit<TransactionHistoryState> {
       emit(currentState.copyWith(isLoadingMore: true));
 
       try {
-        final result = await getTransactionsUsecase.execute(
+        final result = await _transactionRepository.getTransactions(
+          page: page,
           search: search,
-          categoryEntity: categoryEntity,
+          categoryId: categoryEntity?.id,
           month: month,
           year: year,
-          page: page,
         );
 
         final transactionHistory = result.items;

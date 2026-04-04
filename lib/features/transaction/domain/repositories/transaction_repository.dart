@@ -14,7 +14,7 @@ abstract class TransactionRepository {
     required TransactionType type,
     required int categoryId,
     required RealCategoryType categoryType,
-    required DateTime transactionDate,
+    required DateTime transactionAt,
     String? note,
   });
   Future<void> deleteTransaction({required int id});

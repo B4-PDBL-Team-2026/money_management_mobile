@@ -1,7 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/network/interceptors/logging_interceptor.dart';
 import 'package:money_management_mobile/features/auth/data/data_sources/local/auth_local_data_source.dart';
+
+@module
+abstract class Http {
+  @lazySingleton
+  Dio dio(AuthLocalDataSource authLocalDataSource) =>
+      createDioClient(authLocalDataSource);
+}
 
 Dio createDioClient(AuthLocalDataSource authLocalDataSource) {
   final dio = Dio(
@@ -17,17 +25,14 @@ Dio createDioClient(AuthLocalDataSource authLocalDataSource) {
     InterceptorsWrapper(
       onRequest: (options, handler) {
         final token = authLocalDataSource.getToken();
-
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
         }
-
         return handler.next(options);
       },
     ),
   );
 
   dio.interceptors.add(LoggingInterceptor());
-
   return dio;
 }

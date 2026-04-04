@@ -1,10 +1,12 @@
 import 'dart:math';
 
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
 
+@Injectable()
 class CalculateDashboardMetricsUsecase {
   final DashboardRepository _dashboardRepository;
 

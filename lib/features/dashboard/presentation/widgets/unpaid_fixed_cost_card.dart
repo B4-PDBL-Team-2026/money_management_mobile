@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
-import 'package:money_management_mobile/core/utils/currency_formatter.dart';
-import 'package:money_management_mobile/core/widgets/app_container_card.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/utils/utils.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/unpaid_fixed_cost_detail_bottom_sheet.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';

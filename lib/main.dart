@@ -4,8 +4,8 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
-import 'package:money_management_mobile/core/theme/app_theme.dart';
-import 'package:money_management_mobile/core/utils/logger.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
@@ -40,12 +40,12 @@ void main() async {
 Future<void> _bootstrapAndRunApp({required bool enableSentry}) async {
   AppLogger.init(enableSentry: enableSentry);
 
-  await initInjectionContainer();
+  await configureDependencies();
   localTimezone = await FlutterTimezone.getLocalTimezone();
 
   await Future.wait([
     initializeDateFormatting('id_ID'),
-    sl<SessionCubit>().restoreSession(),
+    getIt<SessionCubit>().restoreSession(),
   ]);
 
   runApp(const MyApp());
@@ -58,15 +58,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SessionCubit>.value(value: sl<SessionCubit>()),
+        BlocProvider<SessionCubit>.value(value: getIt<SessionCubit>()),
         BlocProvider<CategoryCubit>.value(
-          value: sl<CategoryCubit>()..fetchCategories(),
+          value: getIt<CategoryCubit>()..fetchCategories(),
         ),
         BlocProvider<TransactionHistoryCubit>.value(
-          value: sl<TransactionHistoryCubit>()..getFreshTransactionHistory(),
+          value: getIt<TransactionHistoryCubit>()..getFreshTransactionHistory(),
         ),
         BlocProvider<FixedCostOccurrencesCubit>.value(
-          value: sl<FixedCostOccurrencesCubit>(),
+          value: getIt<FixedCostOccurrencesCubit>(),
         ),
       ],
       child: MaterialApp.router(

@@ -10,7 +10,7 @@ class TransactionHistoryEntity extends TransactionEntity {
     required super.amount,
     required super.type,
     required super.categoryId,
-    required super.transactionDate,
+    required super.transactionAt,
     super.note,
     required this.id,
     required this.createdAt,

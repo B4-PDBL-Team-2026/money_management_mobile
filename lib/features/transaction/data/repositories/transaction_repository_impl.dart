@@ -1,12 +1,14 @@
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/data_sources/remote/transaction_remote_data_source.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
 
+@LazySingleton(as: TransactionRepository)
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionRemoteDataSource remoteDataSource;
 
@@ -36,7 +38,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
     required TransactionType type,
     required int categoryId,
     required RealCategoryType categoryType,
-    required DateTime transactionDate,
+    required DateTime transactionAt,
     String? note,
   }) async {
     await remoteDataSource.updateTransaction(
@@ -46,7 +48,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       type: type,
       categoryId: categoryId,
       categoryType: categoryType,
-      transactionDate: transactionDate,
+      transactionAt: transactionAt,
       note: note,
     );
   }

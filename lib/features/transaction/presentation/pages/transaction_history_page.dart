@@ -3,13 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
-import 'package:money_management_mobile/core/utils/currency_formatter.dart';
-import 'package:money_management_mobile/core/utils/debouncer.dart';
-import 'package:money_management_mobile/core/widgets/app_button.dart';
-import 'package:money_management_mobile/core/widgets/app_container_card.dart';
-import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/utils/utils.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
@@ -317,16 +313,16 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
 
         bool showHeader =
             previousItem == null ||
-            item.transactionDate.day != previousItem.transactionDate.day ||
-            item.transactionDate.month != previousItem.transactionDate.month ||
-            item.transactionDate.year != previousItem.transactionDate.year;
+            item.transactionAt.day != previousItem.transactionAt.day ||
+            item.transactionAt.month != previousItem.transactionAt.month ||
+            item.transactionAt.year != previousItem.transactionAt.year;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (showHeader) ...[
               const SizedBox(height: AppSizes.spacing3),
-              DateHeader(date: item.transactionDate),
+              DateHeader(date: item.transactionAt),
               const SizedBox(height: AppSizes.spacing3),
             ],
             GestureDetector(

@@ -7,7 +7,7 @@ class TransactionModel extends TransactionEntity {
     required super.amount,
     required super.type,
     required super.categoryId,
-    required super.transactionDate,
+    required super.transactionAt,
     super.note,
   });
 
@@ -19,7 +19,7 @@ class TransactionModel extends TransactionEntity {
           ? TransactionType.income
           : TransactionType.expense,
       categoryId: json['categoryId'] as int,
-      transactionDate: DateTime.parse(json['transactionDate'] as String),
+      transactionAt: DateTime.parse(json['transaction_at'] as String).toLocal(),
       note: json['note'] as String?,
     );
   }
@@ -30,22 +30,22 @@ class TransactionModel extends TransactionEntity {
       amount: entity.amount,
       type: entity.type,
       categoryId: entity.categoryId,
-      transactionDate: entity.transactionDate,
+      transactionAt: entity.transactionAt,
       note: entity.note,
     );
   }
 
   Map<String, dynamic> toJson() {
-    // final transactionMonth = transactionDate.month < 10
-    //     ? '0${transactionDate.month}'
-    //     : transactionDate.month;
+    // final transactionMonth = transactionAt.month < 10
+    //     ? '0${transactionAt.month}'
+    //     : transactionAt.month;
 
     return {
       'name': name,
       'amount': amount,
       'type': type.value,
       'categoryId': categoryId,
-      'transactionDate': transactionDate.toUtc().toIso8601String(),
+      'transactionAt': transactionAt.toUtc().toIso8601String(),
       'note': note,
       // TODO: hardcode categoryType karena API butuh, tapi seharusnya bisa diambil dari categoryId
       // ganti dengan entity menyimpan category langsung, bukan id

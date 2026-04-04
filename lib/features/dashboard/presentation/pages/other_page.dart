@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
-import 'package:money_management_mobile/core/widgets/app_button.dart';
-import 'package:money_management_mobile/core/widgets/app_confirm_dialog.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_state.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -16,6 +14,7 @@ import 'package:money_management_mobile/features/category/presentation/cubit/cat
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_profile_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_tile.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OtherPage extends StatelessWidget {
   const OtherPage({super.key});
@@ -212,7 +211,8 @@ class OtherPage extends StatelessWidget {
                         await _showSuccessDialog(
                           context,
                           title: 'Reset Password Terkirim',
-                          message: state.message,
+                          message:
+                              'Email reset password telah dikirim. Silakan cek inbox atau folder spam Anda.',
                         );
                         return;
                       }
@@ -263,7 +263,8 @@ class OtherPage extends StatelessWidget {
                         await _showSuccessDialog(
                           context,
                           title: 'Verifikasi Email Terkirim',
-                          message: state.message,
+                          message:
+                              'Email verifikasi telah dikirim. Silakan cek inbox atau folder spam Anda.',
                         );
                         return;
                       }
@@ -310,6 +311,14 @@ class OtherPage extends StatelessWidget {
                         ],
                       );
                     },
+                  ),
+                  OtherSettingsTile(
+                    icon: PhosphorIconsRegular.userMinus,
+                    title: 'Hapus Akun',
+                    subtitle: 'Hapus akun ini secara permanen',
+                    iconBackground: AppColors.danger10,
+                    iconColor: AppColors.danger100,
+                    onTap: () => context.go(AppRouter.deleteAccount),
                   ),
                   OtherSettingsTile(
                     icon: Icons.logout,

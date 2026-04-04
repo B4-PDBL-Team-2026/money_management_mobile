@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/data/models/paginated_model.dart';
@@ -10,6 +11,7 @@ import 'package:money_management_mobile/features/transaction/data/models/transac
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
+@LazySingleton()
 class TransactionRemoteDataSource {
   final Dio dio;
   final _log = Logger('TransactionRemoteDataSource');
@@ -51,7 +53,7 @@ class TransactionRemoteDataSource {
         source: 'manual',
         name: 'Makan Siang',
         amount: 30000,
-        transactionDate: DateTime.now(),
+        transactionAt: DateTime.now(),
         effectiveAt: null,
         note: 'Mock detail transaction',
         createdAt: DateTime.now(),
@@ -95,7 +97,7 @@ class TransactionRemoteDataSource {
     required TransactionType type,
     required int categoryId,
     required RealCategoryType categoryType,
-    required DateTime transactionDate,
+    required DateTime transactionAt,
     String? note,
   }) async {
     if (AppEnv.useMockApi) {
@@ -113,7 +115,7 @@ class TransactionRemoteDataSource {
           'categoryId': categoryId,
           'categoryType': categoryType.value,
           'note': note,
-          'transactionDate': transactionDate.toIso8601String().split('T').first,
+          'transactionAt': transactionAt.toIso8601String().split('T').first,
         },
       );
     } on DioException catch (e) {
@@ -165,7 +167,7 @@ class TransactionRemoteDataSource {
           amount: 5000000,
           categoryId: 11,
           name: 'Gaji Bulanan',
-          transactionDate: now,
+          transactionAt: now,
           createdAt: now,
           updatedAt: now,
           type: TransactionType.income,
@@ -175,7 +177,7 @@ class TransactionRemoteDataSource {
           amount: 35000,
           categoryId: 1,
           name: 'Makan Siang (Nasi Padang)',
-          transactionDate: now,
+          transactionAt: now,
           createdAt: now,
           updatedAt: now,
           type: TransactionType.expense,
@@ -185,7 +187,7 @@ class TransactionRemoteDataSource {
           amount: 15000,
           categoryId: 2,
           name: 'Ojek Online',
-          transactionDate: now,
+          transactionAt: now,
           createdAt: now,
           updatedAt: now,
           type: TransactionType.expense,
@@ -197,7 +199,7 @@ class TransactionRemoteDataSource {
           amount: 150000,
           categoryId: 6,
           name: 'Belanja Mingguan',
-          transactionDate: yesterday,
+          transactionAt: yesterday,
           createdAt: yesterday,
           updatedAt: yesterday,
           type: TransactionType.expense,
@@ -207,7 +209,7 @@ class TransactionRemoteDataSource {
           amount: 200000,
           categoryId: 13,
           name: 'Hadiah Ulang Tahun',
-          transactionDate: yesterday,
+          transactionAt: yesterday,
           createdAt: yesterday,
           updatedAt: yesterday,
           type: TransactionType.income,
@@ -217,7 +219,7 @@ class TransactionRemoteDataSource {
           amount: 85000,
           categoryId: 5,
           name: 'Tiket Bioskop',
-          transactionDate: yesterday,
+          transactionAt: yesterday,
           createdAt: yesterday,
           updatedAt: yesterday,
           type: TransactionType.expense,
@@ -229,7 +231,7 @@ class TransactionRemoteDataSource {
           amount: 1200000,
           categoryId: 3,
           name: 'Bayar Listrik & WiFi',
-          transactionDate: threeDaysAgo,
+          transactionAt: threeDaysAgo,
           createdAt: threeDaysAgo,
           updatedAt: threeDaysAgo,
           type: TransactionType.expense,
@@ -239,7 +241,7 @@ class TransactionRemoteDataSource {
           amount: 500000,
           categoryId: 14,
           name: 'Dividen Saham',
-          transactionDate: threeDaysAgo,
+          transactionAt: threeDaysAgo,
           createdAt: threeDaysAgo,
           updatedAt: threeDaysAgo,
           type: TransactionType.income,
@@ -249,7 +251,7 @@ class TransactionRemoteDataSource {
           amount: 50000,
           categoryId: 8,
           name: 'Donasi Panti Asuhan',
-          transactionDate: threeDaysAgo,
+          transactionAt: threeDaysAgo,
           createdAt: threeDaysAgo,
           updatedAt: threeDaysAgo,
           type: TransactionType.expense,
@@ -259,7 +261,7 @@ class TransactionRemoteDataSource {
           amount: 25000,
           categoryId: 7,
           name: 'Beli Obat Flu',
-          transactionDate: threeDaysAgo,
+          transactionAt: threeDaysAgo,
           createdAt: threeDaysAgo,
           updatedAt: threeDaysAgo,
           type: TransactionType.expense,
@@ -269,7 +271,7 @@ class TransactionRemoteDataSource {
           amount: 1000000,
           categoryId: 15,
           name: 'Pinjaman Cair',
-          transactionDate: threeDaysAgo,
+          transactionAt: threeDaysAgo,
           createdAt: threeDaysAgo,
           updatedAt: threeDaysAgo,
           type: TransactionType.income,

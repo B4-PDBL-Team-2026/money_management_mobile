@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
-import 'package:money_management_mobile/core/utils/currency_formatter.dart';
-import 'package:money_management_mobile/core/widgets/app_button.dart';
-import 'package:money_management_mobile/core/widgets/app_container_card.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/utils/utils.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';

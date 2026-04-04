@@ -13,14 +13,14 @@ class TransactionEntity {
   final TransactionType type;
   final int categoryId;
   final String? note;
-  final DateTime transactionDate;
+  final DateTime transactionAt;
 
   TransactionEntity({
     required this.name,
     required this.amount,
     required this.type,
     required this.categoryId,
-    required this.transactionDate,
+    required this.transactionAt,
     this.note,
   });
 }

@@ -10,7 +10,7 @@ class TransactionDetailEntity {
   final String source;
   final String name;
   final int amount;
-  final DateTime transactionDate;
+  final DateTime transactionAt;
   final DateTime? effectiveAt;
   final String? note;
   final DateTime? createdAt;
@@ -27,7 +27,7 @@ class TransactionDetailEntity {
     required this.source,
     required this.name,
     required this.amount,
-    required this.transactionDate,
+    required this.transactionAt,
     required this.effectiveAt,
     required this.note,
     required this.createdAt,

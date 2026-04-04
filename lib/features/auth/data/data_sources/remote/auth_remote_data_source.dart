@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/data/models/user_model.dart';
 
+@Injectable()
 class AuthRemoteDataSource {
   final Dio dio;
   final _log = Logger('AuthRemoteDataSource');
@@ -197,7 +199,7 @@ class AuthRemoteDataSource {
     }
 
     try {
-      final response = await dio.get('/auth/verify-email/request');
+      final response = await dio.post('/auth/verify-email/request');
       final responseData = response.data as Map<String, dynamic>?;
       final message = responseData?['message'] as String?;
 
@@ -213,6 +215,32 @@ class AuthRemoteDataSource {
       throw UnexpectedException(
         'Terjadi kesalahan sistem saat mengirim email verifikasi',
       );
+    }
+  }
+
+  Future<String> deleteAccount(String password) async {
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, simulating delete account response');
+      await Future.delayed(const Duration(seconds: 1));
+
+      return 'Akun berhasil dihapus.';
+    }
+
+    try {
+      final response = await dio.delete(
+        '/auth/user',
+        queryParameters: {'password': password},
+      );
+
+      final responseData = response.data as Map<String, dynamic>?;
+      final message = responseData?['message'] as String?;
+
+      return message ?? 'Akun berhasil dihapus.';
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Delete Account');
+    } catch (e) {
+      _log.severe('Unexpected delete account error', e);
+      throw UnexpectedException('Terjadi kesalahan sistem saat menghapus akun');
     }
   }
 }

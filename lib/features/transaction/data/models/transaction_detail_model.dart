@@ -12,7 +12,7 @@ class TransactionDetailModel extends TransactionDetailEntity {
     required super.source,
     required super.name,
     required super.amount,
-    required super.transactionDate,
+    required super.transactionAt,
     required super.effectiveAt,
     required super.note,
     required super.createdAt,
@@ -33,8 +33,10 @@ class TransactionDetailModel extends TransactionDetailEntity {
       source: (json['source'] as String?) ?? '-',
       name: (json['name'] as String?) ?? '-',
       amount: _parseAmount(json['amount']),
-      transactionDate:
-          DateTime.tryParse((json['transaction_date'] as String?) ?? '') ??
+      transactionAt:
+          DateTime.tryParse(
+            (json['transaction_at'] as String?) ?? '',
+          )?.toLocal() ??
           DateTime.now(),
       effectiveAt: _parseDateTime(json['effective_at']),
       note: json['note'] as String?,
@@ -55,7 +57,7 @@ class TransactionDetailModel extends TransactionDetailEntity {
       source: source,
       name: name,
       amount: amount,
-      transactionDate: transactionDate,
+      transactionAt: transactionAt,
       effectiveAt: effectiveAt,
       note: note,
       createdAt: createdAt,

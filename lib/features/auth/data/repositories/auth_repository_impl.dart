@@ -1,8 +1,10 @@
+import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/auth/data/data_sources/local/auth_local_data_source.dart';
 import 'package:money_management_mobile/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
 import 'package:money_management_mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:money_management_mobile/features/auth/domain/repositories/auth_repository.dart';
 
+@Injectable(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
@@ -89,5 +91,11 @@ class AuthRepositoryImpl implements AuthRepository {
     } finally {
       await localDataSource.clearAll();
     }
+  }
+
+  @override
+  Future<void> deleteAccount(String password) async {
+    await remoteDataSource.deleteAccount(password);
+    await localDataSource.clearAll();
   }
 }

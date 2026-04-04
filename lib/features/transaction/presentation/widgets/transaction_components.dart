@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
 
 class EmptyState extends StatelessWidget {
   const EmptyState({super.key});

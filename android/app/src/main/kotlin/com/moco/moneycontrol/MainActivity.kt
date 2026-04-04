@@ -1,4 +1,4 @@
-package com.example.money_management_mobile
+package com.moco.moneycontrol
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -4,15 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
-import 'package:money_management_mobile/core/utils/currency_formatter.dart';
-import 'package:money_management_mobile/injection_container.dart';
-import 'package:money_management_mobile/core/widgets/app_currency_text_field.dart';
-import 'package:money_management_mobile/core/widgets/app_button.dart';
-import 'package:money_management_mobile/core/widgets/app_container_card.dart';
-import 'package:money_management_mobile/core/widgets/app_segmented_control.dart';
-import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/utils/utils.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
@@ -22,6 +16,7 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
+import 'package:money_management_mobile/injection_container.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TransactionDetailPage extends StatefulWidget {
@@ -203,7 +198,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           type: payload.type,
           categoryId: payload.categoryId,
           categoryType: payload.categoryType,
-          transactionDate: payload.transactionDate,
+          transactionAt: payload.transactionAt,
           note: payload.note,
         );
 
@@ -228,7 +223,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   Future<void> _refreshTransactionAndDashboardMetrics() {
     return Future.wait([
       context.read<TransactionHistoryCubit>().getFreshTransactionHistory(),
-      sl<DashboardMetricCubit>().fetchDashboardMetrics(),
+      getIt<DashboardMetricCubit>().fetchDashboardMetrics(),
     ]);
   }
 
@@ -276,7 +271,7 @@ class _UpdateTransactionPayload {
   final TransactionType type;
   final int categoryId;
   final RealCategoryType categoryType;
-  final DateTime transactionDate;
+  final DateTime transactionAt;
   final String? note;
 
   _UpdateTransactionPayload({
@@ -285,7 +280,7 @@ class _UpdateTransactionPayload {
     required this.type,
     required this.categoryId,
     required this.categoryType,
-    required this.transactionDate,
+    required this.transactionAt,
     required this.note,
   });
 }
@@ -322,7 +317,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
   void initState() {
     super.initState();
     _selectedType = widget.initialType;
-    _selectedDate = widget.detail.transactionDate;
+    _selectedDate = widget.detail.transactionAt;
     _nameController = TextEditingController(text: widget.detail.name);
     _amountController = TextEditingController(
       text: CurrencyFormatter.format(widget.detail.amount),
@@ -510,7 +505,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                             type: _selectedType,
                             categoryId: _selectedCategoryId,
                             categoryType: _selectedCategoryType(),
-                            transactionDate: _selectedDate,
+                            transactionAt: _selectedDate,
                             note: _noteController.text.trim().isEmpty
                                 ? null
                                 : _noteController.text.trim(),
@@ -603,7 +598,7 @@ class _DetailContent extends StatelessWidget {
     final dateLabel = DateFormat(
       'dd MMMM yyyy',
       'id_ID',
-    ).format(detail.transactionDate);
+    ).format(detail.transactionAt);
     final noteText = (detail.note == null || detail.note!.trim().isEmpty)
         ? '-'
         : detail.note!;
@@ -679,7 +674,7 @@ class _DetailContent extends StatelessWidget {
           const SizedBox(height: AppSizes.spacing3),
           _InfoTile(
             label: 'Sumber',
-            value: sourceText,
+            value: _resolveSourceText(sourceText),
             icon: Icons.wallet_outlined,
           ),
           const SizedBox(height: AppSizes.spacing3),
@@ -759,6 +754,15 @@ class _DetailContent extends StatelessWidget {
 
     return GlobalConstant.categoryIconsMapping[category.icon] ??
         PhosphorIconsRegular.question;
+  }
+
+  // TODO: refactor ini di masa depan menggunakan enum terpisah di entitas transaction detail agar lebih type-safe dan mudah di-maintain
+  String _resolveSourceText(String source) {
+    return switch (source) {
+      'manual' => 'Pencatatan Manual',
+      'fixed_cost_payment' => 'Pembayaran Fixed Cost',
+      _ => source,
+    };
   }
 }
 
