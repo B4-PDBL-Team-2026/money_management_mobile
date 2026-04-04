@@ -92,4 +92,10 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.clearAll();
     }
   }
+
+  @override
+  Future<void> deleteAccount(String password) async {
+    await remoteDataSource.deleteAccount(password);
+    await localDataSource.clearAll();
+  }
 }
