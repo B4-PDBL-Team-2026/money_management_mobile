@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_budget_metrics.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_header.dart';
-import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/unpaid_fixed_cost_card.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
@@ -131,9 +133,18 @@ class HomePage extends StatelessWidget {
                       ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) => TransactionHistoryItem(
-                          transaction: state.transactionHistory[index],
-                        ),
+                        itemBuilder: (context, index) {
+                          final item = state.transactionHistory[index];
+
+                          return GestureDetector(
+                            onTap: () {
+                              context.push(
+                                '${AppRouter.transactionDetailBase}/${item.id}',
+                              );
+                            },
+                            child: TransactionHistoryItem(transaction: item),
+                          );
+                        },
                         separatorBuilder: (context, index) =>
                             const SizedBox(height: AppSizes.spacing2),
                         itemCount: state.transactionHistory.isEmpty
