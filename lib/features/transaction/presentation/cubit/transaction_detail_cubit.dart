@@ -54,7 +54,7 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
     required TransactionType type,
     required int categoryId,
     required RealCategoryType categoryType,
-    required DateTime transactionDate,
+    required DateTime transactionAt,
     String? note,
   }) async {
     _log.info('Update transaction started for transaction id: $id');
@@ -67,7 +67,7 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
         type: type,
         categoryId: categoryId,
         categoryType: categoryType,
-        transactionDate: transactionDate,
+        transactionAt: transactionAt,
         note: note,
       );
 

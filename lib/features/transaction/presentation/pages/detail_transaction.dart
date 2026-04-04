@@ -198,7 +198,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           type: payload.type,
           categoryId: payload.categoryId,
           categoryType: payload.categoryType,
-          transactionDate: payload.transactionDate,
+          transactionAt: payload.transactionAt,
           note: payload.note,
         );
 
@@ -271,7 +271,7 @@ class _UpdateTransactionPayload {
   final TransactionType type;
   final int categoryId;
   final RealCategoryType categoryType;
-  final DateTime transactionDate;
+  final DateTime transactionAt;
   final String? note;
 
   _UpdateTransactionPayload({
@@ -280,7 +280,7 @@ class _UpdateTransactionPayload {
     required this.type,
     required this.categoryId,
     required this.categoryType,
-    required this.transactionDate,
+    required this.transactionAt,
     required this.note,
   });
 }
@@ -317,7 +317,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
   void initState() {
     super.initState();
     _selectedType = widget.initialType;
-    _selectedDate = widget.detail.transactionDate;
+    _selectedDate = widget.detail.transactionAt;
     _nameController = TextEditingController(text: widget.detail.name);
     _amountController = TextEditingController(
       text: CurrencyFormatter.format(widget.detail.amount),
@@ -505,7 +505,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                             type: _selectedType,
                             categoryId: _selectedCategoryId,
                             categoryType: _selectedCategoryType(),
-                            transactionDate: _selectedDate,
+                            transactionAt: _selectedDate,
                             note: _noteController.text.trim().isEmpty
                                 ? null
                                 : _noteController.text.trim(),
@@ -598,7 +598,7 @@ class _DetailContent extends StatelessWidget {
     final dateLabel = DateFormat(
       'dd MMMM yyyy',
       'id_ID',
-    ).format(detail.transactionDate);
+    ).format(detail.transactionAt);
     final noteText = (detail.note == null || detail.note!.trim().isEmpty)
         ? '-'
         : detail.note!;

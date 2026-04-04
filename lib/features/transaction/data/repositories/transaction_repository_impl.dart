@@ -38,7 +38,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
     required TransactionType type,
     required int categoryId,
     required RealCategoryType categoryType,
-    required DateTime transactionDate,
+    required DateTime transactionAt,
     String? note,
   }) async {
     await remoteDataSource.updateTransaction(
@@ -48,7 +48,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
       type: type,
       categoryId: categoryId,
       categoryType: categoryType,
-      transactionDate: transactionDate,
+      transactionAt: transactionAt,
       note: note,
     );
   }

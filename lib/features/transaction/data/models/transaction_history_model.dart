@@ -8,7 +8,7 @@ class TransactionHistoryModel extends TransactionHistoryEntity {
     required super.amount,
     required super.type,
     required super.categoryId,
-    required super.transactionDate,
+    required super.transactionAt,
     required super.createdAt,
     required super.updatedAt,
     super.note,
@@ -25,7 +25,7 @@ class TransactionHistoryModel extends TransactionHistoryEntity {
           ? TransactionType.income
           : TransactionType.expense,
       categoryId: json['category_id'] as int,
-      transactionDate: DateTime.parse(json['transaction_date'] as String),
+      transactionAt: DateTime.parse(json['transaction_at'] as String).toLocal(),
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : now,
@@ -43,7 +43,7 @@ class TransactionHistoryModel extends TransactionHistoryEntity {
       amount: amount,
       type: type,
       categoryId: categoryId,
-      transactionDate: transactionDate,
+      transactionAt: transactionAt,
       createdAt: createdAt,
       updatedAt: updatedAt,
       note: note,

@@ -29,7 +29,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
     required int amount,
     required TransactionType type,
     required int categoryId,
-    required DateTime transactionDate,
+    required DateTime transactionAt,
     String? note,
   }) async {
     _log.info('Add transaction initiated for name: $name');
@@ -42,12 +42,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
           amount: amount,
           type: type,
           categoryId: categoryId,
-          // TODO: hotfix, harusnya server-side tidak perlu memotong waktu. Segera perbaiki di server-side!
-          transactionDate: DateTime.utc(
-            transactionDate.year,
-            transactionDate.month,
-            transactionDate.day,
-          ),
+          transactionAt: transactionAt,
           note: note,
         ),
       );

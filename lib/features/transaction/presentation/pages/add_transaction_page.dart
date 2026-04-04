@@ -386,7 +386,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         prefixIcon: const PhosphorIcon(
                           PhosphorIconsRegular.calendarBlank,
                         ),
-                        errorText: serverErrors?['transactionDate']?[0],
+                        errorText: serverErrors?['transactionAt']?[0],
                         isDisabled: state is AddTransactionLoading,
                       ),
                       const SizedBox(height: AppSizes.spacing4),
@@ -418,7 +418,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               ),
                               name: _nameController.text,
                               categoryId: _selectedCategory,
-                              transactionDate: _selectedDate,
+                              transactionAt: _selectedDate,
                               note: _noteController.text.isEmpty
                                   ? null
                                   : _noteController.text,

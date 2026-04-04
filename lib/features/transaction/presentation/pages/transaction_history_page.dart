@@ -313,16 +313,16 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
 
         bool showHeader =
             previousItem == null ||
-            item.transactionDate.day != previousItem.transactionDate.day ||
-            item.transactionDate.month != previousItem.transactionDate.month ||
-            item.transactionDate.year != previousItem.transactionDate.year;
+            item.transactionAt.day != previousItem.transactionAt.day ||
+            item.transactionAt.month != previousItem.transactionAt.month ||
+            item.transactionAt.year != previousItem.transactionAt.year;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (showHeader) ...[
               const SizedBox(height: AppSizes.spacing3),
-              DateHeader(date: item.transactionDate),
+              DateHeader(date: item.transactionAt),
               const SizedBox(height: AppSizes.spacing3),
             ],
             GestureDetector(
