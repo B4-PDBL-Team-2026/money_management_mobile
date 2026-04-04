@@ -674,7 +674,7 @@ class _DetailContent extends StatelessWidget {
           const SizedBox(height: AppSizes.spacing3),
           _InfoTile(
             label: 'Sumber',
-            value: sourceText,
+            value: _resolveSourceText(sourceText),
             icon: Icons.wallet_outlined,
           ),
           const SizedBox(height: AppSizes.spacing3),
@@ -754,6 +754,14 @@ class _DetailContent extends StatelessWidget {
 
     return GlobalConstant.categoryIconsMapping[category.icon] ??
         PhosphorIconsRegular.question;
+  }
+
+  String _resolveSourceText(String source) {
+    return switch (source) {
+      'manual' => 'Pencatatan Manual',
+      'fixed_cost_payment' => 'Pembayaran Fixed Cost',
+      _ => source,
+    };
   }
 }
 
