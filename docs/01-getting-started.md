@@ -1,16 +1,16 @@
 # 01 - Getting Started
 
-Panduan ini berisi langkah-langkah untuk melakukan _setup_ dan menjalankan proyek **Money Management Mobile** di _local environment_ Anda.
+Dokumen ini menjelaskan langkah-langkah untuk melakukan persiapan (_setup_) dan menjalankan proyek **Money Management Mobile** di lingkungan lokal (_local environment_) Anda.
 
 ## 1. Persyaratan Sistem & Instalasi
 
 Sebelum memulai, pastikan sistem Anda memenuhi spesifikasi berikut:
 
 - **Flutter SDK**: Versi `3.10.8` atau yang lebih baru.
-- **RAM**: Minimal 8GB (direkomendasikan untuk kelancaran _build_ dan emulator).
-- **IDE**: VS Code atau Android Studio dengan ekstensi/plugin Flutter dan Dart yang sudah terinstal.
+- **RAM**: Minimal 8GB (direkomendasikan untuk kelancaran kompilasi dan emulator).
+- **IDE**: VS Code atau Android Studio dengan ekstensi/plugin Flutter dan Dart yang sudah terpasang.
 
-Untuk memverifikasi versi Flutter Anda, jalankan:
+Untuk memverifikasi versi Flutter Anda, jalankan perintah berikut:
 
 ```bash
 flutter --version
@@ -18,7 +18,7 @@ flutter --version
 
 ## 2. Generate Code (Build Runner)
 
-Proyek ini menggunakan `injectable` (beserta `get_it`) untuk _Dependency Injection_. Karena itu, Anda **wajib** menjalankan _code generator_ sebelum melakukan _compile_ atau menjalankan aplikasi pertama kali.
+Proyek ini menggunakan `injectable` (beserta `get_it`) untuk _Dependency Injection_. Oleh karena itu, Anda **wajib** menjalankan _code generator_ sebelum melakukan kompilasi atau menjalankan aplikasi untuk pertama kalinya.
 
 Jalankan perintah berikut di terminal pada _root directory_ proyek:
 
@@ -27,9 +27,9 @@ flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
-_(Catatan: Anda juga bisa menggunakan `dart run build_runner build --delete-conflicting-outputs`)_
+_(Catatan: Anda juga dapat menggunakan perintah `dart run build_runner build --delete-conflicting-outputs`)_
 
-Jika Anda sedang dalam proses _development_ dan sering mengubah _dependencies_ atau _module_, gunakan perintah `watch` agar _code generator_ berjalan otomatis setiap ada perubahan file:
+Jika Anda sedang dalam proses pengembangan (_development_) dan sering mengubah dependensi atau modul, gunakan perintah `watch` agar _code generator_ berjalan otomatis setiap kali ada perubahan file:
 
 ```bash
 flutter pub run build_runner watch --delete-conflicting-outputs
@@ -37,15 +37,15 @@ flutter pub run build_runner watch --delete-conflicting-outputs
 
 ## 3. Konfigurasi Environment
 
-Aplikasi ini membaca konfigurasi _environment_ menggunakan `fromEnvironment` pada saat proses _build_ atau _run_.
+Aplikasi ini membaca konfigurasi _environment_ menggunakan `fromEnvironment` pada saat proses _build_ atau berjalan.
 
-Berikut adalah daftar variabel _environment_ yang tersedia beserta nilai _default_-nya:
+Berikut adalah daftar variabel _environment_ yang tersedia beserta nilai bawaannya (_default value_):
 
 | Variabel                    | Tipe     | Default Value                 | Deskripsi                                                                       |
 | :-------------------------- | :------- | :---------------------------- | :------------------------------------------------------------------------------ |
 | `USE_MOCK_API`              | `bool`   | `false`                       | Set ke `true` untuk menggunakan data _mock_ alih-alih memanggil API asli.       |
 | `API_BASE_URL`              | `String` | `http://localhost:8000/api`   | Base URL untuk _endpoint_ backend.                                              |
-| `SENTRY_DSN`                | `String` | `''` (kosong)                 | DSN url untuk _error tracking_ menggunakan Sentry.                              |
+| `SENTRY_DSN`                | `String` | `''` (kosong)                 | DSN url untuk pelacakan _error_ menggunakan Sentry.                             |
 | `APP_ENV`                   | `String` | `development`                 | Status _environment_ saat ini (contoh: `development`, `staging`, `production`). |
 | `APP_RELEASE`               | `String` | `money_management_mobile@dev` | Identifier versi rilis untuk Sentry/Analytics.                                  |
 | `SENTRY_TRACES_SAMPLE_RATE` | `String` | `0.0`                         | Persentase _tracing_ Sentry (dari `0.0` hingga `1.0`).                          |
