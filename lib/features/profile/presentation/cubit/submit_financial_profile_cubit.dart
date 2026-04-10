@@ -1,29 +1,27 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
-import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_state.dart';
-import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 
 @Injectable()
 class SubmitFinancialProfileCubit extends Cubit<SubmitFinancialProfileState> {
   final ProfileRepository _profileRepository;
 
   final SessionCubit sessionCubit;
-  final FixedCostOccurrencesCubit fixedCostOccurrencesCubit;
-  final TransactionHistoryCubit transactionHistoryCubit;
+  final EventBus _eventBus;
 
   final _log = Logger('SubmitFinancialProfileCubit');
 
   SubmitFinancialProfileCubit(
     this._profileRepository,
     this.sessionCubit,
-    this.fixedCostOccurrencesCubit,
-    this.transactionHistoryCubit,
+    this._eventBus,
   ) : super(SubmitFinancialProfileInitial());
 
   void reset() {
@@ -36,10 +34,9 @@ class SubmitFinancialProfileCubit extends Cubit<SubmitFinancialProfileState> {
     try {
       await _profileRepository.submitFinancialProfile(financialProfile);
       await sessionCubit.markOnboardingAsDone();
-      await fixedCostOccurrencesCubit.fetchFixedCostOccurrences(
-        forceRefresh: true,
-      );
-      await transactionHistoryCubit.getFreshTransactionHistory();
+      _eventBus.fire(const TransactionChangesEvent());
+      _eventBus.fire(const FixedCostOccurrencesChangesEvent());
+      _eventBus.fire(const FixedCostTemplateChangesEvent());
 
       emit(SubmitFinancialProfileSuccess());
     } on ServerException catch (e) {

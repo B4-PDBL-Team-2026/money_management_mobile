@@ -1,28 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_state.dart';
-import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
+import 'package:event_bus/event_bus.dart';
 
 @LazySingleton()
 class UnpaidFixedCostOccurrencesCubit
     extends Cubit<UnpaidFixedCostOccurrencesState> {
   final DashboardRepository _dashboardRepository;
-
-  final DashboardMetricCubit dashboardMetricCubit;
-  final TransactionHistoryCubit transactionHistoryCubit;
+  final EventBus _eventBus;
+  late final StreamSubscription<dynamic> _refreshSubscription;
 
   final _log = Logger('UnpaidFixedCostOccurrencesCubit');
 
-  UnpaidFixedCostOccurrencesCubit(
-    this.dashboardMetricCubit,
-    this.transactionHistoryCubit,
-    this._dashboardRepository,
-  ) : super(UnpaidFixedCostOccurrencesInitial());
+  UnpaidFixedCostOccurrencesCubit(this._eventBus, this._dashboardRepository)
+    : super(UnpaidFixedCostOccurrencesInitial()) {
+    _refreshSubscription = _eventBus.on<FixedCostTemplateChangesEvent>().listen(
+      (_) => fetchUnpaidFixedCosts(),
+    );
+  }
 
   Future<void> fetchUnpaidFixedCosts() async {
     emit(UnpaidFixedCostOccurrencesLoading());
@@ -59,8 +61,7 @@ class UnpaidFixedCostOccurrencesCubit
     try {
       await _dashboardRepository.confirmFixedCostOccurrence(occurrenceId);
       await fetchUnpaidFixedCosts();
-      await dashboardMetricCubit.fetchDashboardMetrics();
-      await transactionHistoryCubit.getFreshTransactionHistory();
+      _eventBus.fire(const TransactionChangesEvent());
       return true;
     } on ServerException catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
@@ -95,8 +96,7 @@ class UnpaidFixedCostOccurrencesCubit
     try {
       await _dashboardRepository.cancelFixedCostOccurrence(occurrenceId);
       await fetchUnpaidFixedCosts();
-      await dashboardMetricCubit.fetchDashboardMetrics();
-      await transactionHistoryCubit.getFreshTransactionHistory();
+      _eventBus.fire(const TransactionChangesEvent());
       return true;
     } on ServerException catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
@@ -125,5 +125,11 @@ class UnpaidFixedCostOccurrencesCubit
       }
       return false;
     }
+  }
+
+  @override
+  Future<void> close() {
+    _refreshSubscription.cancel();
+    return super.close();
   }
 }

@@ -231,10 +231,6 @@ class _FixedCostSection extends StatelessWidget {
                   return;
                 }
 
-                await context
-                    .read<TransactionHistoryCubit>()
-                    .getFreshTransactionHistory();
-
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

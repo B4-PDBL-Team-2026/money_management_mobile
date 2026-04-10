@@ -1,11 +1,11 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/register_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
-import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 
 import 'register_state.dart';
 
@@ -14,15 +14,10 @@ class RegisterCubit extends Cubit<RegisterState> {
   final RegisterUseCase registerUseCase;
 
   final SessionCubit sessionCubit;
-  final CategoryCubit categoryCubit;
-  final TransactionHistoryCubit transactionHistoryCubit;
+  final EventBus _eventBus;
 
-  RegisterCubit(
-    this.registerUseCase,
-    this.sessionCubit,
-    this.categoryCubit,
-    this.transactionHistoryCubit,
-  ) : super(RegisterInitial());
+  RegisterCubit(this.registerUseCase, this.sessionCubit, this._eventBus)
+    : super(RegisterInitial());
 
   Future<void> register(
     String name,
@@ -45,8 +40,7 @@ class RegisterCubit extends Cubit<RegisterState> {
         token: token,
         requiresOnboarding: requiresOnboarding,
       );
-      categoryCubit.fetchCategories();
-      transactionHistoryCubit.getFreshTransactionHistory();
+      _eventBus.fire(const RefreshCategoriesEvent());
 
       emit(RegisterSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {
