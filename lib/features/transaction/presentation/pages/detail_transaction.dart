@@ -10,13 +10,10 @@ import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_state.dart';
-import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
-import 'package:money_management_mobile/injection_container.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TransactionDetailPage extends StatefulWidget {
@@ -68,12 +65,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           child: BlocConsumer<TransactionDetailCubit, TransactionDetailState>(
             listener: (context, state) async {
               if (state is TransactionDetailDeleted) {
-                await _refreshTransactionAndDashboardMetrics();
-
-                if (!mounted) {
-                  return;
-                }
-
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(state.message),
@@ -206,25 +197,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       return;
     }
 
-    await _refreshTransactionAndDashboardMetrics();
-
-    if (!mounted) {
-      return;
-    }
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Transaksi berhasil diperbarui.'),
         backgroundColor: AppColors.primary,
       ),
     );
-  }
-
-  Future<void> _refreshTransactionAndDashboardMetrics() {
-    return Future.wait([
-      context.read<TransactionHistoryCubit>().getFreshTransactionHistory(),
-      getIt<DashboardMetricCubit>().fetchDashboardMetrics(),
-    ]);
   }
 
   Future<void> _showDeleteConfirmationDialog(

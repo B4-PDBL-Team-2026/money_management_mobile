@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
@@ -11,12 +15,36 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/d
 class DashboardMetricCubit extends Cubit<DashboardMetricState> {
   final DashboardRepository _dashboardRepository;
   final CalculateDashboardMetricsUsecase _calculateDashboardMetricsUsecase;
+  final EventBus _eventBus;
+  late final List<StreamSubscription<dynamic>> _refreshSubscription;
   final _log = Logger('DashboardMetricCubit');
 
   DashboardMetricCubit(
     this._calculateDashboardMetricsUsecase,
     this._dashboardRepository,
-  ) : super(DashboardMetricInitial());
+    this._eventBus,
+  ) : super(DashboardMetricInitial()) {
+    _refreshSubscription = [
+      _eventBus.on<FixedCostTemplateChangesEvent>().listen(
+        (_) => fetchDashboardMetrics(),
+      ),
+      _eventBus.on<FixedCostOccurrencesChangesEvent>().listen(
+        (_) => fetchDashboardMetrics(),
+      ),
+      _eventBus.on<TransactionChangesEvent>().listen(
+        (_) => fetchDashboardMetrics(),
+      ),
+    ];
+  }
+
+  @override
+  Future<void> close() {
+    for (var subscription in _refreshSubscription) {
+      subscription.cancel();
+    }
+
+    return super.close();
+  }
 
   Future<void> fetchDashboardMetrics() async {
     emit(DashboardMetricLoading());

@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
@@ -11,10 +13,11 @@ import 'package:money_management_mobile/features/transaction/presentation/cubit/
 @Injectable()
 class TransactionDetailCubit extends Cubit<TransactionDetailState> {
   final TransactionRepository _transactionRepository;
+  final EventBus _eventBus;
 
   final _log = Logger('TransactionDetailCubit');
 
-  TransactionDetailCubit(this._transactionRepository)
+  TransactionDetailCubit(this._transactionRepository, this._eventBus)
     : super(TransactionDetailInitial());
 
   Future<void> getTransactionDetail({required int id}) async {
@@ -71,6 +74,7 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
         note: note,
       );
 
+      _eventBus.fire(const TransactionChangesEvent());
       await getTransactionDetail(id: id);
       return true;
     } on ServerException catch (e) {
@@ -106,6 +110,7 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
 
     try {
       await _transactionRepository.deleteTransaction(id: id);
+      _eventBus.fire(const TransactionChangesEvent());
       emit(TransactionDetailDeleted('Transaksi berhasil dihapus.'));
       return true;
     } on ServerException catch (e) {

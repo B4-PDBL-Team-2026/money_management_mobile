@@ -10,11 +10,13 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i361;
+import 'package:event_bus/event_bus.dart' as _i1017;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import 'core/network/http.dart' as _i1026;
+import 'core/utils/event_bus.dart' as _i503;
 import 'core/utils/local_storage.dart' as _i600;
 import 'features/auth/data/data_sources/local/auth_local_data_source.dart'
     as _i465;
@@ -85,11 +87,13 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final localStorage = _$LocalStorage();
+    final eventBusModule = _$EventBusModule();
     final http = _$Http();
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => localStorage.prefs,
       preResolve: true,
     );
+    gh.lazySingleton<_i1017.EventBus>(() => eventBusModule.eventBus);
     gh.lazySingleton<_i103.CalculateFinancialProfileUseCase>(
       () => _i103.CalculateFinancialProfileUseCase(),
     );
@@ -147,6 +151,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i844.CategoryLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i928.UnpaidFixedCostOccurrencesCubit>(
+      () => _i928.UnpaidFixedCostOccurrencesCubit(
+        gh<_i1017.EventBus>(),
+        gh<_i557.DashboardRepository>(),
+      ),
+    );
     gh.factory<_i111.DeleteAccountCubit>(
       () => _i111.DeleteAccountCubit(
         gh<_i1015.AuthRepository>(),
@@ -159,78 +169,75 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i693.RegisterUseCase>(
       () => _i693.RegisterUseCase(gh<_i1015.AuthRepository>()),
     );
+    gh.lazySingleton<_i478.CategoryCubit>(
+      () => _i478.CategoryCubit(
+        gh<_i5.CategoryRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
     gh.lazySingleton<_i463.TransactionRepository>(
       () => _i16.TransactionRepositoryImpl(
         gh<_i1023.TransactionRemoteDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i626.ProfileRepository>(
-      () => _i277.ProfileRepositoryImpl(gh<_i959.ProfileRemoteDataSource>()),
-    );
-    gh.factory<_i83.CalculateDashboardMetricsUsecase>(
-      () => _i83.CalculateDashboardMetricsUsecase(
-        gh<_i557.DashboardRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i478.CategoryCubit>(
-      () => _i478.CategoryCubit(gh<_i5.CategoryRepository>()),
-    );
-    gh.lazySingleton<_i900.TransactionHistoryCubit>(
-      () => _i900.TransactionHistoryCubit(gh<_i463.TransactionRepository>()),
-    );
-    gh.factory<_i555.TransactionDetailCubit>(
-      () => _i555.TransactionDetailCubit(gh<_i463.TransactionRepository>()),
-    );
-    gh.lazySingleton<_i1023.DashboardMetricCubit>(
-      () => _i1023.DashboardMetricCubit(
-        gh<_i83.CalculateDashboardMetricsUsecase>(),
-        gh<_i557.DashboardRepository>(),
       ),
     );
     gh.factory<_i622.RegisterCubit>(
       () => _i622.RegisterCubit(
         gh<_i693.RegisterUseCase>(),
         gh<_i410.SessionCubit>(),
-        gh<_i478.CategoryCubit>(),
-        gh<_i900.TransactionHistoryCubit>(),
+        gh<_i1017.EventBus>(),
       ),
     );
-    gh.lazySingleton<_i928.UnpaidFixedCostOccurrencesCubit>(
-      () => _i928.UnpaidFixedCostOccurrencesCubit(
-        gh<_i1023.DashboardMetricCubit>(),
-        gh<_i900.TransactionHistoryCubit>(),
-        gh<_i557.DashboardRepository>(),
-      ),
-    );
-    gh.factory<_i1024.AddTransactionCubit>(
-      () => _i1024.AddTransactionCubit(
-        gh<_i463.TransactionRepository>(),
-        gh<_i900.TransactionHistoryCubit>(),
-        gh<_i1023.DashboardMetricCubit>(),
-      ),
+    gh.lazySingleton<_i626.ProfileRepository>(
+      () => _i277.ProfileRepositoryImpl(gh<_i959.ProfileRemoteDataSource>()),
     );
     gh.lazySingleton<_i463.FixedCostOccurrencesCubit>(
       () => _i463.FixedCostOccurrencesCubit(
         gh<_i626.ProfileRepository>(),
-        gh<_i928.UnpaidFixedCostOccurrencesCubit>(),
-        gh<_i1023.DashboardMetricCubit>(),
-      ),
-    );
-    gh.factory<_i262.SubmitFinancialProfileCubit>(
-      () => _i262.SubmitFinancialProfileCubit(
-        gh<_i626.ProfileRepository>(),
-        gh<_i410.SessionCubit>(),
-        gh<_i463.FixedCostOccurrencesCubit>(),
-        gh<_i900.TransactionHistoryCubit>(),
+        gh<_i1017.EventBus>(),
       ),
     );
     gh.factory<_i250.LoginCubit>(
       () => _i250.LoginCubit(
         gh<_i206.LoginUseCase>(),
         gh<_i410.SessionCubit>(),
-        gh<_i478.CategoryCubit>(),
-        gh<_i900.TransactionHistoryCubit>(),
-        gh<_i463.FixedCostOccurrencesCubit>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i83.CalculateDashboardMetricsUsecase>(
+      () => _i83.CalculateDashboardMetricsUsecase(
+        gh<_i557.DashboardRepository>(),
+      ),
+    );
+    gh.factory<_i262.SubmitFinancialProfileCubit>(
+      () => _i262.SubmitFinancialProfileCubit(
+        gh<_i626.ProfileRepository>(),
+        gh<_i410.SessionCubit>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i1024.AddTransactionCubit>(
+      () => _i1024.AddTransactionCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i555.TransactionDetailCubit>(
+      () => _i555.TransactionDetailCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.lazySingleton<_i900.TransactionHistoryCubit>(
+      () => _i900.TransactionHistoryCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.lazySingleton<_i1023.DashboardMetricCubit>(
+      () => _i1023.DashboardMetricCubit(
+        gh<_i83.CalculateDashboardMetricsUsecase>(),
+        gh<_i557.DashboardRepository>(),
+        gh<_i1017.EventBus>(),
       ),
     );
     return this;
@@ -238,5 +245,7 @@ extension GetItInjectableX on _i174.GetIt {
 }
 
 class _$LocalStorage extends _i600.LocalStorage {}
+
+class _$EventBusModule extends _i503.EventBusModule {}
 
 class _$Http extends _i1026.Http {}
