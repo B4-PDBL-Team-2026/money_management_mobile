@@ -1,4 +1,4 @@
-# 03-State-Management.md
+# 03 - State Management
 
 Dokumen ini menjelaskan standar implementasi _state management_ menggunakan **Bloc/Cubit** (`flutter_bloc`). Tujuannya adalah mencegah _memory leak_, menjaga sinkronisasi data, dan menghindari _error_ navigasi.
 

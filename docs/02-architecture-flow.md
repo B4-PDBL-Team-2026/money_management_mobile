@@ -1,4 +1,4 @@
-# 02-Architecture-Flow.md
+# 02 - Architecture Flow
 
 Dokumen ini menjelaskan struktur arsitektur, aliran data (_flow_), dan prinsip-prinsip pengembangan yang diterapkan dalam proyek ini. Proyek ini mengadopsi variasi dari **Clean Architecture** yang disesuaikan untuk efisiensi pengembangan.
 
