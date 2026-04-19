@@ -35,8 +35,8 @@ class SubmitFinancialProfileCubit extends Cubit<SubmitFinancialProfileState> {
       await _profileRepository.submitFinancialProfile(financialProfile);
       await sessionCubit.markOnboardingAsDone();
       _eventBus.fire(const TransactionChangesEvent());
-      _eventBus.fire(const FixedCostOccurrencesChangesEvent());
       _eventBus.fire(const FixedCostTemplateChangesEvent());
+      _eventBus.fire(const FixedCostOccurrencesChangesEvent());
 
       emit(SubmitFinancialProfileSuccess());
     } on ServerException catch (e) {

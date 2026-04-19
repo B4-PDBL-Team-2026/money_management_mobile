@@ -9,7 +9,7 @@ import 'package:money_management_mobile/features/category/domain/entities/catego
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
@@ -58,7 +58,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
 
   void _showEditExpenseBottomSheet({
     required int index,
-    required FixedCostEntity item,
+    required FixedCostTemplateEntity item,
   }) {
     final draftCubit = context.read<FinancialProfileDraftCubit>();
     final isMainCycleWeekly =

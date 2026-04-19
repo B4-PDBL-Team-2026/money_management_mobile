@@ -62,8 +62,8 @@ import 'features/profile/domain/usecases/calculate_financial_profile_usecase.dar
     as _i103;
 import 'features/profile/presentation/cubit/financial_profile_draft_cubit.dart'
     as _i715;
-import 'features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart'
-    as _i463;
+import 'features/profile/presentation/cubit/fixed_cost_template_cubit.dart'
+    as _i324;
 import 'features/profile/presentation/cubit/submit_financial_profile_cubit.dart'
     as _i262;
 import 'features/transaction/data/data_sources/remote/transaction_remote_data_source.dart'
@@ -151,8 +151,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i844.CategoryLocalDataSource>(),
       ),
     );
-    gh.lazySingleton<_i928.UnpaidFixedCostOccurrencesCubit>(
-      () => _i928.UnpaidFixedCostOccurrencesCubit(
+    gh.lazySingleton<_i928.UnpaidFixedCostTemplateCubit>(
+      () => _i928.UnpaidFixedCostTemplateCubit(
         gh<_i1017.EventBus>(),
         gh<_i557.DashboardRepository>(),
       ),
@@ -190,8 +190,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i626.ProfileRepository>(
       () => _i277.ProfileRepositoryImpl(gh<_i959.ProfileRemoteDataSource>()),
     );
-    gh.lazySingleton<_i463.FixedCostOccurrencesCubit>(
-      () => _i463.FixedCostOccurrencesCubit(
+    gh.lazySingleton<_i324.FixedCostTemplateCubit>(
+      () => _i324.FixedCostTemplateCubit(
         gh<_i626.ProfileRepository>(),
         gh<_i1017.EventBus>(),
       ),

@@ -11,45 +11,45 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/u
 import 'package:event_bus/event_bus.dart';
 
 @LazySingleton()
-class UnpaidFixedCostOccurrencesCubit
-    extends Cubit<UnpaidFixedCostOccurrencesState> {
+class UnpaidFixedCostTemplateCubit
+    extends Cubit<UnpaidFixedCostTemplateState> {
   final DashboardRepository _dashboardRepository;
   final EventBus _eventBus;
   late final StreamSubscription<dynamic> _refreshSubscription;
 
-  final _log = Logger('UnpaidFixedCostOccurrencesCubit');
+  final _log = Logger('UnpaidFixedCostTemplateCubit');
 
-  UnpaidFixedCostOccurrencesCubit(this._eventBus, this._dashboardRepository)
-    : super(UnpaidFixedCostOccurrencesInitial()) {
+  UnpaidFixedCostTemplateCubit(this._eventBus, this._dashboardRepository)
+    : super(UnpaidFixedCostTemplateInitial()) {
     _refreshSubscription = _eventBus.on<FixedCostTemplateChangesEvent>().listen(
       (_) => fetchUnpaidFixedCosts(),
     );
   }
 
   Future<void> fetchUnpaidFixedCosts() async {
-    emit(UnpaidFixedCostOccurrencesLoading());
+    emit(UnpaidFixedCostTemplateLoading());
 
     try {
-      final items = await _dashboardRepository.getUnpaidFixedCostOccurrences();
-      emit(UnpaidFixedCostOccurrencesLoaded(items));
+      final items = await _dashboardRepository.getUnpaidFixedCostTemplate();
+      emit(UnpaidFixedCostTemplateLoaded(items));
     } on ServerException catch (e) {
       _log.severe('Error fetching unpaid fixed cost occurrences', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
     } on NetworkException catch (e) {
       _log.severe('Error fetching unpaid fixed cost occurrences', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
     } on UnexpectedException catch (e) {
       _log.severe('Error fetching unpaid fixed cost occurrences', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
     } catch (e) {
       _log.severe('Error fetching unpaid fixed cost occurrences', e);
       if (kDebugMode) {
         emit(
-          UnpaidFixedCostOccurrencesError('Terjadi kesalahan: ${e.toString()}'),
+          UnpaidFixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'),
         );
       } else {
         emit(
-          UnpaidFixedCostOccurrencesError(
+          UnpaidFixedCostTemplateError(
             'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
           ),
         );
@@ -65,25 +65,25 @@ class UnpaidFixedCostOccurrencesCubit
       return true;
     } on ServerException catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
       return false;
     } on NetworkException catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
       return false;
     } on UnexpectedException catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
       return false;
     } catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
       if (kDebugMode) {
         emit(
-          UnpaidFixedCostOccurrencesError('Terjadi kesalahan: ${e.toString()}'),
+          UnpaidFixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'),
         );
       } else {
         emit(
-          UnpaidFixedCostOccurrencesError(
+          UnpaidFixedCostTemplateError(
             'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
           ),
         );
@@ -100,25 +100,25 @@ class UnpaidFixedCostOccurrencesCubit
       return true;
     } on ServerException catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
       return false;
     } on NetworkException catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
       return false;
     } on UnexpectedException catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
-      emit(UnpaidFixedCostOccurrencesError(e.message));
+      emit(UnpaidFixedCostTemplateError(e.message));
       return false;
     } catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
       if (kDebugMode) {
         emit(
-          UnpaidFixedCostOccurrencesError('Terjadi kesalahan: ${e.toString()}'),
+          UnpaidFixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'),
         );
       } else {
         emit(
-          UnpaidFixedCostOccurrencesError(
+          UnpaidFixedCostTemplateError(
             'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
           ),
         );

@@ -1,21 +1,21 @@
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 
-sealed class UnpaidFixedCostOccurrencesState {}
+sealed class UnpaidFixedCostTemplateState {}
 
-class UnpaidFixedCostOccurrencesInitial
-    extends UnpaidFixedCostOccurrencesState {}
+class UnpaidFixedCostTemplateInitial
+    extends UnpaidFixedCostTemplateState {}
 
-class UnpaidFixedCostOccurrencesLoading
-    extends UnpaidFixedCostOccurrencesState {}
+class UnpaidFixedCostTemplateLoading
+    extends UnpaidFixedCostTemplateState {}
 
-class UnpaidFixedCostOccurrencesLoaded extends UnpaidFixedCostOccurrencesState {
-  final List<UnpaidFixedCostEntity> items;
+class UnpaidFixedCostTemplateLoaded extends UnpaidFixedCostTemplateState {
+  final List<UnpaidFixedCostTemplateEntity> items;
 
-  UnpaidFixedCostOccurrencesLoaded(this.items);
+  UnpaidFixedCostTemplateLoaded(this.items);
 }
 
-class UnpaidFixedCostOccurrencesError extends UnpaidFixedCostOccurrencesState {
+class UnpaidFixedCostTemplateError extends UnpaidFixedCostTemplateState {
   final String message;
 
-  UnpaidFixedCostOccurrencesError(this.message);
+  UnpaidFixedCostTemplateError(this.message);
 }

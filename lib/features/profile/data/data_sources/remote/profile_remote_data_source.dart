@@ -32,7 +32,7 @@ class ProfileRemoteDataSource {
     }
   }
 
-  Future<List<FixedCostOccurrenceModel>> getFixedCostOccurrences() async {
+  Future<List<FixedCostOccurrenceModel>> getFixedCostTemplate() async {
     if (AppEnv.useMockApi) {
       await Future.delayed(const Duration(seconds: 1));
 

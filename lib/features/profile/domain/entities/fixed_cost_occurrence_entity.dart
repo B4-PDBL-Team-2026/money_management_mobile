@@ -1,4 +1,4 @@
-enum FixedCostOccurrenceStatus {
+enum FixedCostOccurenceStatus {
   paid('paid'),
   pending('pending'),
   overdue('overdue'),
@@ -7,16 +7,16 @@ enum FixedCostOccurrenceStatus {
 
   final String value;
 
-  const FixedCostOccurrenceStatus(this.value);
+  const FixedCostOccurenceStatus(this.value);
 
-  static FixedCostOccurrenceStatus fromValue(String? rawValue) {
+  static FixedCostOccurenceStatus fromValue(String? rawValue) {
     if (rawValue == null || rawValue.trim().isEmpty) {
-      return FixedCostOccurrenceStatus.pending;
+      return FixedCostOccurenceStatus.pending;
     }
 
-    return FixedCostOccurrenceStatus.values.firstWhere(
+    return FixedCostOccurenceStatus.values.firstWhere(
       (status) => status.value == rawValue,
-      orElse: () => FixedCostOccurrenceStatus.pending,
+      orElse: () => FixedCostOccurenceStatus.pending,
     );
   }
 }
@@ -29,7 +29,7 @@ class FixedCostOccurrenceEntity {
   final int categoryId;
   final String cycleType;
   final DateTime dueDate;
-  final FixedCostOccurrenceStatus status;
+  final FixedCostOccurenceStatus status;
 
   const FixedCostOccurrenceEntity({
     required this.id,

@@ -5,7 +5,7 @@ import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
 
@@ -23,7 +23,7 @@ class AddFixedCostBottomSheet extends StatefulWidget {
   final bool isMainCycleWeekly;
   final List<CategoryEntity> expenseCategories;
   final int? editingIndex;
-  final FixedCostEntity? initialItem;
+  final FixedCostTemplateEntity? initialItem;
 
   bool get isEditing => editingIndex != null && initialItem != null;
 

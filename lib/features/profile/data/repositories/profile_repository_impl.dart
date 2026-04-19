@@ -3,7 +3,7 @@ import 'package:money_management_mobile/features/profile/data/data_sources/remot
 import 'package:money_management_mobile/features/profile/data/models/financial_profile_model.dart';
 import 'package:money_management_mobile/features/profile/data/models/fixed_cost_model.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/repositories/profile_repository.dart';
 
@@ -21,20 +21,20 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<List<FixedCostOccurrenceEntity>> getFixedCostOccurrences() async {
-    final models = await remoteDataSource.getFixedCostOccurrences();
+  Future<List<FixedCostOccurrenceEntity>> getFixedCostTemplate() async {
+    final models = await remoteDataSource.getFixedCostTemplate();
     return models.map((model) => model.toEntity()).toList();
   }
 
   @override
-  Future<void> createFixedCost(FixedCostEntity payload) async {
+  Future<void> createFixedCost(FixedCostTemplateEntity payload) async {
     await remoteDataSource.createFixedCost(FixedCostModel.fromEntity(payload));
   }
 
   @override
   Future<void> updateFixedCost(
     int fixedCostTemplateId,
-    FixedCostEntity payload,
+    FixedCostTemplateEntity payload,
   ) async {
     await remoteDataSource.updateFixedCost(
       fixedCostTemplateId,

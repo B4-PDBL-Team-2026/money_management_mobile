@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_state.dart';
 
@@ -42,9 +42,9 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
     required FinancialCycle cycle,
     required int dueValue,
   }) {
-    final updatedFixedCosts = List<FixedCostEntity>.from(state.fixedCosts)
+    final updatedFixedCosts = List<FixedCostTemplateEntity>.from(state.fixedCosts)
       ..add(
-        FixedCostEntity(
+        FixedCostTemplateEntity(
           name: name,
           amount: amount,
           category: category,
@@ -64,7 +64,7 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
       return;
     }
 
-    final updatedFixedCosts = List<FixedCostEntity>.from(state.fixedCosts)
+    final updatedFixedCosts = List<FixedCostTemplateEntity>.from(state.fixedCosts)
       ..removeAt(index);
 
     emit(state.copyWith(fixedCosts: updatedFixedCosts));
@@ -85,8 +85,8 @@ class FinancialProfileDraftCubit extends Cubit<FinancialProfileDraftState> {
       return;
     }
 
-    final updatedFixedCosts = List<FixedCostEntity>.from(state.fixedCosts)
-      ..[index] = FixedCostEntity(
+    final updatedFixedCosts = List<FixedCostTemplateEntity>.from(state.fixedCosts)
+      ..[index] = FixedCostTemplateEntity(
         name: name,
         amount: amount,
         category: category,
