@@ -1,7 +1,7 @@
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 
-class FixedCostModel extends FixedCostTemplateEntity {
-  const FixedCostModel({
+class FixedCostTemplateModel extends FixedCostTemplateEntity {
+  const FixedCostTemplateModel({
     required super.name,
     required super.amount,
     required super.category,
@@ -12,8 +12,8 @@ class FixedCostModel extends FixedCostTemplateEntity {
     required super.dueValue,
   });
 
-  factory FixedCostModel.fromEntity(FixedCostTemplateEntity entity) {
-    return FixedCostModel(
+  factory FixedCostTemplateModel.fromEntity(FixedCostTemplateEntity entity) {
+    return FixedCostTemplateModel(
       name: entity.name,
       amount: entity.amount,
       category: entity.category,

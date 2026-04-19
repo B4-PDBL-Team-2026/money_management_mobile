@@ -53,10 +53,16 @@ import 'features/dashboard/presentation/cubits/delete_account_cubit.dart'
     as _i111;
 import 'features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart'
     as _i928;
+import 'features/profile/data/data_sources/remote/fixed_cost_template_remote_data_source.dart'
+    as _i270;
 import 'features/profile/data/data_sources/remote/profile_remote_data_source.dart'
     as _i959;
+import 'features/profile/data/repositories/fixed_cost_template_repository_impl.dart'
+    as _i1050;
 import 'features/profile/data/repositories/profile_repository_impl.dart'
     as _i277;
+import 'features/profile/domain/repositories/fixed_cost_template_repository.dart'
+    as _i121;
 import 'features/profile/domain/repositories/profile_repository.dart' as _i626;
 import 'features/profile/domain/usecases/calculate_financial_profile_usecase.dart'
     as _i103;
@@ -117,6 +123,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i553.DashboardRemoteDataSource>(
       () => _i553.DashboardRemoteDataSource(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i270.FixedCostTemplateRemoteDataSource>(
+      () => _i270.FixedCostTemplateRemoteDataSource(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i959.ProfileRemoteDataSource>(
       () => _i959.ProfileRemoteDataSource(gh<_i361.Dio>()),
     );
@@ -151,6 +160,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i844.CategoryLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i121.FixedCostTemplateRepository>(
+      () => _i1050.FixedCostTemplateRepositoryImpl(
+        gh<_i270.FixedCostTemplateRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i928.UnpaidFixedCostTemplateCubit>(
       () => _i928.UnpaidFixedCostTemplateCubit(
         gh<_i1017.EventBus>(),
@@ -180,6 +194,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1023.TransactionRemoteDataSource>(),
       ),
     );
+    gh.lazySingleton<_i324.FixedCostTemplateCubit>(
+      () => _i324.FixedCostTemplateCubit(
+        gh<_i121.FixedCostTemplateRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
     gh.factory<_i622.RegisterCubit>(
       () => _i622.RegisterCubit(
         gh<_i693.RegisterUseCase>(),
@@ -189,12 +209,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i626.ProfileRepository>(
       () => _i277.ProfileRepositoryImpl(gh<_i959.ProfileRemoteDataSource>()),
-    );
-    gh.lazySingleton<_i324.FixedCostTemplateCubit>(
-      () => _i324.FixedCostTemplateCubit(
-        gh<_i626.ProfileRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
     );
     gh.factory<_i250.LoginCubit>(
       () => _i250.LoginCubit(
