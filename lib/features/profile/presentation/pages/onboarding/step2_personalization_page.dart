@@ -83,19 +83,20 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                     const SizedBox(height: AppSizes.spacing2),
                     AppCurrencyTextField(
                       controller: _ceilingController,
+                      max: 1000000000,
                       hint: 'Rp. 0',
                       textAlign: TextAlign.center,
                       validator: (value) {
                         if (value == null) {
-                          return 'Batas atas wajib diisi';
+                          return requiredFieldMessage('Batas atas');
                         }
 
                         if (value <= 0) {
-                          return 'Batas atas harus lebih dari 0';
+                          return positiveNumberMessage('Batas atas');
                         }
 
                         if (value > state.initialBalance) {
-                          return 'Batas atas tidak boleh lebih besar dari saldo awal';
+                          return maxValueMessage('Batas atas', state.initialBalance);
                         }
 
                         return null;
@@ -110,15 +111,16 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                     const SizedBox(height: AppSizes.spacing2),
                     AppCurrencyTextField(
                       controller: _flooringController,
+                      max: 1000000000,
                       hint: 'Rp. 0',
                       textAlign: TextAlign.center,
                       validator: (value) {
                         if (value == null) {
-                          return 'Batas bawah wajib diisi';
+                          return requiredFieldMessage('Batas bawah');
                         }
 
-                        if (value <= 0 || value.isNegative) {
-                          return 'Batas bawah harus lebih dari 0';
+                        if (value <= 0) {
+                          return positiveNumberMessage('Batas bawah');
                         }
 
                         final ceilingLimit = CurrencyFormatter.parse(
@@ -126,7 +128,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                         );
 
                         if (value > ceilingLimit) {
-                          return 'Batas bawah tidak boleh lebih tinggi dari batas atas';
+                          return maxValueMessage('Batas bawah', ceilingLimit);
                         }
 
                         return null;

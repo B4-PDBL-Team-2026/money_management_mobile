@@ -14,6 +14,8 @@ class AppCurrencyTextField extends StatefulWidget {
   final TextAlign textAlign;
   final String? errorText;
   final bool? isDisabled;
+  final int? max;
+  final int? min;
 
   const AppCurrencyTextField({
     super.key,
@@ -27,6 +29,8 @@ class AppCurrencyTextField extends StatefulWidget {
     this.errorText,
     this.isDisabled = false,
     this.initialValue,
+    this.max,
+    this.min,
   });
 
   @override
@@ -68,7 +72,11 @@ class _AppCurrencyTextFieldState extends State<AppCurrencyTextField> {
           autocorrect: false,
           validator: (value) {
             if (widget.validator != null) {
-              int unformattedValue = CurrencyFormatter.parse(value ?? '');
+              if (value == null || value.trim().isEmpty) {
+                return widget.validator!(null);
+              }
+
+              final unformattedValue = CurrencyFormatter.parse(value);
               return widget.validator!(unformattedValue);
             }
 
@@ -77,7 +85,27 @@ class _AppCurrencyTextFieldState extends State<AppCurrencyTextField> {
           onChanged: widget.onChanged,
           enabled: widget.isDisabled != true,
           style: Theme.of(context).textTheme.titleLarge,
-          inputFormatters: [_currencyFormatter],
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            TextInputFormatter.withFunction((oldValue, newValue) {
+              if (newValue.text.isEmpty) {
+                return newValue.copyWith(text: '');
+              }
+
+              int numericValue = CurrencyFormatter.parse(newValue.text);
+
+              if (widget.max != null && numericValue > widget.max!) {
+                return oldValue;
+              }
+
+              if (widget.min != null && numericValue < widget.min!) {
+                return oldValue;
+              }
+
+              return newValue;
+            }),
+            _currencyFormatter,
+          ],
           errorBuilder: (context, errorText) => switch (widget.textAlign) {
             TextAlign.center => Center(
               child: Text(

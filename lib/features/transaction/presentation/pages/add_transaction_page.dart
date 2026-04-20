@@ -270,13 +270,18 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         controller: _amountController,
                         isDisabled: state is AddTransactionLoading,
                         errorText: serverErrors?['amount']?[0],
+                        max: 1000000000,
                         validator: (value) {
                           if (value == null) {
-                            return 'Nominal tidak boleh kosong';
+                            return requiredFieldMessage('Nominal');
                           }
 
                           if (value <= 0) {
-                            return 'Nominal harus lebih besar dari nol';
+                            return positiveNumberMessage('Nominal');
+                          }
+
+                          if (value > 1000000000) {
+                            return maxValueMessage('Nominal', 1000000000);
                           }
 
                           final fashboardMetricState = context
@@ -287,12 +292,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             if (_selectedTransactionType ==
                                     TransactionType.expense &&
                                 value > fashboardMetricState.metrics.balance) {
-                              return 'Nominal pengeluaran tidak boleh lebih besar dari saldo saat ini';
+                              return maxValueMessage(
+                                'Nominal pengeluaran',
+                                fashboardMetricState.metrics.balance,
+                              );
                             }
-                          }
-
-                          if (value > 1000000000) {
-                            return 'Nominal tidak boleh lebih dari 1.000.000.000';
                           }
 
                           return null;
@@ -306,12 +310,12 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         isDisabled: state is AddTransactionLoading,
                         errorText: serverErrors?['name']?[0],
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Judul transaksi tidak boleh kosong';
+                          if (value == null || value.trim().isEmpty) {
+                            return requiredFieldMessage('Judul transaksi');
                           }
 
                           if (value.length > 255) {
-                            return 'Judul transaksi tidak boleh lebih dari 255 karakter';
+                            return maxLengthMessage('Judul transaksi', 255);
                           }
 
                           return null;
@@ -397,7 +401,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         validator: (value) {
                           if (value != null) {
                             if (value.length > 1000) {
-                              return 'Catatan tidak boleh lebih dari 1000 karakter';
+                              return maxLengthMessage('Catatan', 1000);
                             }
                           }
 

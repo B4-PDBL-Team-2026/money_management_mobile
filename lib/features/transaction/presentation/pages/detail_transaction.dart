@@ -376,7 +376,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                 controller: _nameController,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Nama transaksi wajib diisi';
+                    return requiredFieldMessage('Nama transaksi');
                   }
 
                   return null;
@@ -387,13 +387,18 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                 label: 'Nominal',
                 hint: 'Masukkan nominal',
                 controller: _amountController,
+                max: 1000000000,
                 validator: (value) {
                   if (value == null) {
-                    return 'Nominal wajib diisi';
+                    return requiredFieldMessage('Nominal');
                   }
 
-                  if (value < 1) {
-                    return 'Nominal minimal 1';
+                  if (value <= 0) {
+                    return positiveNumberMessage('Nominal');
+                  }
+
+                  if (value > 1000000000) {
+                    return maxValueMessage('Nominal', 1000000000);
                   }
 
                   return null;
@@ -409,7 +414,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
               ),
               const SizedBox(height: AppSizes.spacing2),
               DropdownButtonFormField<int>(
-                value: _selectedCategoryId,
+                initialValue: _selectedCategoryId,
                 items: categories
                     .map(
                       (category) => DropdownMenuItem<int>(
@@ -448,7 +453,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                 maxLines: null,
                 validator: (value) {
                   if (value != null && value.length > 1000) {
-                    return 'Catatan maksimal 1000 karakter';
+                    return maxLengthMessage('Catatan', 1000);
                   }
                   return null;
                 },

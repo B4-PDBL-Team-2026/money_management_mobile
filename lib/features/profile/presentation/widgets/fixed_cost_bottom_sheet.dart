@@ -143,7 +143,7 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
                   final trimmedName = value?.trim() ?? '';
 
                   if (trimmedName.isEmpty) {
-                    return 'Nama biaya wajib diisi';
+                    return requiredFieldMessage('Nama biaya');
                   }
 
                   return null;
@@ -157,13 +157,18 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
                   Icons.attach_money,
                   color: AppColors.trunks,
                 ),
+                max: 1000000000,
                 validator: (value) {
                   if (value == null) {
-                    return 'Nominal harus lebih besar dari 0';
+                    return requiredFieldMessage('Nominal');
                   }
 
                   if (value <= 0) {
-                    return 'Nominal harus lebih besar dari 0';
+                    return positiveNumberMessage('Nominal');
+                  }
+
+                  if (value > 1000000000) {
+                    return maxValueMessage('Nominal', 1000000000);
                   }
 
                   return null;
