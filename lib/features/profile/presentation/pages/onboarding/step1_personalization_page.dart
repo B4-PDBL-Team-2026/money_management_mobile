@@ -105,13 +105,11 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                       hint: 'Rp. 0',
                       textAlign: TextAlign.center,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null) {
                           return 'Nominal saldo awal wajib diisi';
                         }
 
-                        final amount = CurrencyFormatter.parse(value);
-
-                        if (amount <= 0) {
+                        if (value <= 0 || value.isNegative) {
                           return 'Nominal saldo awal harus lebih dari 0';
                         }
 

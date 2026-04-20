@@ -23,6 +23,7 @@ dependencies:
   sentry: ^9.16.0
   injectable: ^2.7.1+4
   event_bus: ^2.0.1
+  currency_text_input_formatter: ^2.3.0
 
 dev_dependencies:
   flutter_test:

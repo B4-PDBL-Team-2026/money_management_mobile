@@ -271,13 +271,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         isDisabled: state is AddTransactionLoading,
                         errorText: serverErrors?['amount']?[0],
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null) {
                             return 'Nominal tidak boleh kosong';
                           }
 
-                          final numericValue = CurrencyFormatter.parse(value);
-
-                          if (numericValue <= 0) {
+                          if (value <= 0) {
                             return 'Nominal harus lebih besar dari nol';
                           }
 
@@ -288,13 +286,12 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                           if (fashboardMetricState is DashboardMetricLoaded) {
                             if (_selectedTransactionType ==
                                     TransactionType.expense &&
-                                numericValue >
-                                    fashboardMetricState.metrics.balance) {
+                                value > fashboardMetricState.metrics.balance) {
                               return 'Nominal pengeluaran tidak boleh lebih besar dari saldo saat ini';
                             }
                           }
 
-                          if (numericValue > 1000000000) {
+                          if (value > 1000000000) {
                             return 'Nominal tidak boleh lebih dari 1.000.000.000';
                           }
 

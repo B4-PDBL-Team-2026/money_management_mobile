@@ -388,12 +388,11 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                 hint: 'Masukkan nominal',
                 controller: _amountController,
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null) {
                     return 'Nominal wajib diisi';
                   }
 
-                  final amount = CurrencyFormatter.parse(value);
-                  if (amount < 1) {
+                  if (value < 1) {
                     return 'Nominal minimal 1';
                   }
 

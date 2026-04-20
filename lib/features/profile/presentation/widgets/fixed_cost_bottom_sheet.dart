@@ -158,9 +158,11 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
                   color: AppColors.trunks,
                 ),
                 validator: (value) {
-                  final amount = CurrencyFormatter.parse(value ?? '');
+                  if (value == null) {
+                    return 'Nominal harus lebih besar dari 0';
+                  }
 
-                  if (amount <= 0) {
+                  if (value <= 0) {
                     return 'Nominal harus lebih besar dari 0';
                   }
 

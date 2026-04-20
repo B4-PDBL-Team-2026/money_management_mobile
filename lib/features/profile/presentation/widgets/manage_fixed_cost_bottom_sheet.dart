@@ -162,9 +162,14 @@ class _ManageFixedCostBottomSheetState
                   color: AppColors.trunks,
                 ),
                 validator: (value) {
-                  if ((value ?? '').isEmpty) {
+                  if (value == null) {
                     return 'Nominal wajib diisi';
                   }
+
+                  if (value <= 0) {
+                    return 'Nominal harus lebih besar dari nol';
+                  }
+
                   return null;
                 },
               ),

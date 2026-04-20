@@ -86,17 +86,15 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                       hint: 'Rp. 0',
                       textAlign: TextAlign.center,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null) {
                           return 'Batas atas wajib diisi';
                         }
 
-                        final ceilingLimit = CurrencyFormatter.parse(value);
-
-                        if (ceilingLimit <= 0) {
+                        if (value <= 0) {
                           return 'Batas atas harus lebih dari 0';
                         }
 
-                        if (ceilingLimit > state.initialBalance) {
+                        if (value > state.initialBalance) {
                           return 'Batas atas tidak boleh lebih besar dari saldo awal';
                         }
 
@@ -115,13 +113,11 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                       hint: 'Rp. 0',
                       textAlign: TextAlign.center,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null) {
                           return 'Batas bawah wajib diisi';
                         }
 
-                        final flooringLimit = CurrencyFormatter.parse(value);
-
-                        if (flooringLimit <= 0) {
+                        if (value <= 0 || value.isNegative) {
                           return 'Batas bawah harus lebih dari 0';
                         }
 
@@ -129,7 +125,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                           _ceilingController.text,
                         );
 
-                        if (flooringLimit > ceilingLimit) {
+                        if (value > ceilingLimit) {
                           return 'Batas bawah tidak boleh lebih tinggi dari batas atas';
                         }
 
