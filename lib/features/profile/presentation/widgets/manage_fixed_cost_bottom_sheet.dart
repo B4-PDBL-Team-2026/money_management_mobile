@@ -148,7 +148,7 @@ class _ManageFixedCostBottomSheetState
                 validator: (value) {
                   final trimmedName = value?.trim() ?? '';
                   if (trimmedName.isEmpty) {
-                    return 'Nama biaya wajib diisi';
+                    return requiredFieldMessage('Nama biaya');
                   }
                   return null;
                 },
@@ -161,10 +161,20 @@ class _ManageFixedCostBottomSheetState
                   Icons.attach_money,
                   color: AppColors.trunks,
                 ),
+                max: 1000000000,
                 validator: (value) {
-                  if ((value ?? '').isEmpty) {
-                    return 'Nominal wajib diisi';
+                  if (value == null) {
+                    return requiredFieldMessage('Nominal');
                   }
+
+                  if (value <= 0) {
+                    return positiveNumberMessage('Nominal');
+                  }
+
+                  if (value > 1000000000) {
+                    return maxValueMessage('Nominal', 1000000000);
+                  }
+
                   return null;
                 },
               ),

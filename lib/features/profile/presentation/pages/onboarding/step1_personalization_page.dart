@@ -104,15 +104,18 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                       controller: _amountController,
                       hint: 'Rp. 0',
                       textAlign: TextAlign.center,
+                      max: 1000000000,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Nominal saldo awal wajib diisi';
+                        if (value == null) {
+                          return requiredFieldMessage('Saldo awal');
                         }
 
-                        final amount = CurrencyFormatter.parse(value);
+                        if (value <= 0) {
+                          return positiveNumberMessage('Saldo awal');
+                        }
 
-                        if (amount <= 0) {
-                          return 'Nominal saldo awal harus lebih dari 0';
+                        if (value > 1000000000) {
+                          return maxValueMessage('Saldo awal', 1000000000);
                         }
 
                         return null;

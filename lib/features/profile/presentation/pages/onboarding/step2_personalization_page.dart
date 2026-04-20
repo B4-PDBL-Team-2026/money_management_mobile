@@ -83,21 +83,20 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                     const SizedBox(height: AppSizes.spacing2),
                     AppCurrencyTextField(
                       controller: _ceilingController,
+                      max: 1000000000,
                       hint: 'Rp. 0',
                       textAlign: TextAlign.center,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Batas atas wajib diisi';
+                        if (value == null) {
+                          return requiredFieldMessage('Batas atas');
                         }
 
-                        final ceilingLimit = CurrencyFormatter.parse(value);
-
-                        if (ceilingLimit <= 0) {
-                          return 'Batas atas harus lebih dari 0';
+                        if (value <= 0) {
+                          return positiveNumberMessage('Batas atas');
                         }
 
-                        if (ceilingLimit > state.initialBalance) {
-                          return 'Batas atas tidak boleh lebih besar dari saldo awal';
+                        if (value > state.initialBalance) {
+                          return maxValueMessage('Batas atas', state.initialBalance);
                         }
 
                         return null;
@@ -112,25 +111,24 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                     const SizedBox(height: AppSizes.spacing2),
                     AppCurrencyTextField(
                       controller: _flooringController,
+                      max: 1000000000,
                       hint: 'Rp. 0',
                       textAlign: TextAlign.center,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Batas bawah wajib diisi';
+                        if (value == null) {
+                          return requiredFieldMessage('Batas bawah');
                         }
 
-                        final flooringLimit = CurrencyFormatter.parse(value);
-
-                        if (flooringLimit <= 0) {
-                          return 'Batas bawah harus lebih dari 0';
+                        if (value <= 0) {
+                          return positiveNumberMessage('Batas bawah');
                         }
 
                         final ceilingLimit = CurrencyFormatter.parse(
                           _ceilingController.text,
                         );
 
-                        if (flooringLimit > ceilingLimit) {
-                          return 'Batas bawah tidak boleh lebih tinggi dari batas atas';
+                        if (value > ceilingLimit) {
+                          return maxValueMessage('Batas bawah', ceilingLimit);
                         }
 
                         return null;
