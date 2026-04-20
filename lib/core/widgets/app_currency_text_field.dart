@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:flutter/services.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/utils/currency_formatter.dart';
 
 class AppCurrencyTextField extends StatefulWidget {
   final String hint;
@@ -33,20 +34,14 @@ class AppCurrencyTextField extends StatefulWidget {
 }
 
 class _AppCurrencyTextFieldState extends State<AppCurrencyTextField> {
-  final _currencyFormatter = CurrencyTextInputFormatter.currency(
-    locale: 'id_ID',
-    decimalDigits: 0,
-    symbol: '',
-  );
+  final _currencyFormatter = AppCurrencyInputFormatter();
 
   @override
   void initState() {
     super.initState();
 
     if (widget.initialValue != null) {
-      widget.controller.text = _currencyFormatter.formatString(
-        widget.initialValue.toString(),
-      );
+      widget.controller.text = CurrencyFormatter.format(widget.initialValue!);
     }
   }
 
@@ -72,9 +67,9 @@ class _AppCurrencyTextFieldState extends State<AppCurrencyTextField> {
           enableSuggestions: false,
           autocorrect: false,
           validator: (value) {
-            debugPrint('Validating input: $value');
             if (widget.validator != null) {
-              return widget.validator!(_currencyFormatter.getDouble().toInt());
+              int unformattedValue = CurrencyFormatter.parse(value ?? '');
+              return widget.validator!(unformattedValue);
             }
 
             return null;
@@ -130,6 +125,62 @@ class _AppCurrencyTextFieldState extends State<AppCurrencyTextField> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class AppCurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.text.isEmpty) {
+      return newValue.copyWith(text: '');
+    }
+
+    final cleanText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (cleanText.isEmpty) {
+      return const TextEditingValue(
+        text: '',
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    int digitsBeforeCursor = 0;
+    int cursorPosition = newValue.selection.baseOffset;
+
+    if (cursorPosition > newValue.text.length) {
+      cursorPosition = newValue.text.length;
+    }
+
+    for (int i = 0; i < cursorPosition; i++) {
+      if (RegExp(r'[0-9]').hasMatch(newValue.text[i])) {
+        digitsBeforeCursor++;
+      }
+    }
+
+    String formattedText = CurrencyFormatter.formatString(cleanText);
+
+    int newCursorOffset = 0;
+    int digitsCounted = 0;
+
+    for (int i = 0; i < formattedText.length; i++) {
+      if (digitsCounted == digitsBeforeCursor) {
+        break;
+      }
+
+      if (RegExp(r'[0-9]').hasMatch(formattedText[i])) {
+        digitsCounted++;
+      }
+
+      newCursorOffset++;
+    }
+
+    return TextEditingValue(
+      text: formattedText,
+      selection: TextSelection.collapsed(offset: newCursorOffset),
     );
   }
 }
