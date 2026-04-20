@@ -1,4 +1,4 @@
-import 'package:money_management_mobile/features/profile/data/models/fixed_cost_model.dart';
+import 'package:money_management_mobile/features/profile/data/models/fixed_cost_template_model.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/main.dart';
 
@@ -18,7 +18,7 @@ class FinancialProfileModel extends FinancialProfileEntity {
       safetyCeiling: entity.safetyCeiling,
       safetyFlooring: entity.safetyFlooring,
       fixedCosts: entity.fixedCosts
-          .map(FixedCostModel.fromEntity)
+          .map(FixedCostTemplateModel.fromEntity)
           .toList(growable: false),
     );
   }
@@ -31,7 +31,7 @@ class FinancialProfileModel extends FinancialProfileEntity {
       'ceilingLimit': safetyCeiling,
       'timezone': localTimezone.identifier,
       'fixedCosts': fixedCosts
-          .map((item) => FixedCostModel.fromEntity(item).toJson())
+          .map((item) => FixedCostTemplateModel.fromEntity(item).toJson())
           .toList(growable: false),
     };
   }

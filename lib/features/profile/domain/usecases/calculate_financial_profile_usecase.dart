@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 
 enum BudgetHealthScenario {
   surplus('Surplus'),
@@ -16,7 +16,7 @@ enum BudgetHealthScenario {
 }
 
 class FixedCostCalculationItem {
-  final FixedCostEntity fixedCost;
+  final FixedCostTemplateEntity fixedCost;
   final int scaledAmount;
 
   const FixedCostCalculationItem({
@@ -69,7 +69,7 @@ class CalculateFinancialProfileUseCase {
 
     final validFixedCosts = profile.fixedCosts
         .map((item) {
-          final occurrences = _countFixedCostOccurrences(
+          final occurrences = _countFixedCostTemplate(
             item: item,
             now: referenceDate,
             remainingDays: safeRemainingDays,
@@ -186,8 +186,8 @@ class CalculateFinancialProfileUseCase {
     return daysUntilEndOfWeek + 1;
   }
 
-  int _countFixedCostOccurrences({
-    required FixedCostEntity item,
+  int _countFixedCostTemplate({
+    required FixedCostTemplateEntity item,
     required DateTime now,
     required int remainingDays,
   }) {

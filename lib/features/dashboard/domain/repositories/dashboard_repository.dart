@@ -4,7 +4,7 @@ import 'package:money_management_mobile/features/dashboard/domain/entities/unpai
 abstract class DashboardRepository {
   Future<BudgetSnapshotEntity> getBudgetSnapshot();
 
-  Future<List<UnpaidFixedCostEntity>> getUnpaidFixedCostOccurrences();
+  Future<List<UnpaidFixedCostTemplateEntity>> getUnpaidFixedCostTemplate();
 
   Future<void> confirmFixedCostOccurrence(int occurrenceId);
 

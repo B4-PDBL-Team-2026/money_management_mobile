@@ -45,11 +45,11 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               BlocConsumer<
-                UnpaidFixedCostOccurrencesCubit,
-                UnpaidFixedCostOccurrencesState
+                UnpaidFixedCostTemplateCubit,
+                UnpaidFixedCostTemplateState
               >(
                 listener: (context, state) {
-                  if (state is UnpaidFixedCostOccurrencesError) {
+                  if (state is UnpaidFixedCostTemplateError) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         backgroundColor: AppColors.danger100,
@@ -59,7 +59,7 @@ class HomePage extends StatelessWidget {
                   }
                 },
                 builder: (context, state) {
-                  if (state is! UnpaidFixedCostOccurrencesLoaded ||
+                  if (state is! UnpaidFixedCostTemplateLoaded ||
                       state.items.isEmpty) {
                     return const SizedBox.shrink();
                   }
@@ -192,7 +192,7 @@ class HomePage extends StatelessWidget {
 
 class _FixedCostSection extends StatelessWidget {
   final String title;
-  final List<UnpaidFixedCostEntity> items;
+  final List<UnpaidFixedCostTemplateEntity> items;
 
   const _FixedCostSection({required this.title, required this.items});
 
@@ -224,7 +224,7 @@ class _FixedCostSection extends StatelessWidget {
               isPayEnabled: isPayEnabled,
               onPay: () async {
                 final success = await context
-                    .read<UnpaidFixedCostOccurrencesCubit>()
+                    .read<UnpaidFixedCostTemplateCubit>()
                     .confirmFixedCostOccurrence(item.occurrenceId);
 
                 if (!success || !context.mounted) {
@@ -242,7 +242,7 @@ class _FixedCostSection extends StatelessWidget {
               },
               onCancel: () async {
                 final success = await context
-                    .read<UnpaidFixedCostOccurrencesCubit>()
+                    .read<UnpaidFixedCostTemplateCubit>()
                     .cancelFixedCostOccurrence(item.occurrenceId);
 
                 if (!success || !context.mounted) {

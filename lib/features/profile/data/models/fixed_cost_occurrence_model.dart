@@ -45,7 +45,7 @@ class FixedCostOccurrenceModel extends FixedCostOccurrenceEntity {
         cycleType: cycleType,
         dueDay: parsedDueDay,
       ),
-      status: FixedCostOccurrenceStatus.fromValue(json['status'] as String?),
+      status: FixedCostOccurenceStatus.fromValue(json['status'] as String?),
     );
   }
 

@@ -17,8 +17,8 @@ class DashboardRepositoryImpl extends DashboardRepository {
   }
 
   @override
-  Future<List<UnpaidFixedCostEntity>> getUnpaidFixedCostOccurrences() async {
-    final models = await remoteDataSource.fetchUnpaidFixedCostOccurrences();
+  Future<List<UnpaidFixedCostTemplateEntity>> getUnpaidFixedCostTemplate() async {
+    final models = await remoteDataSource.fetchUnpaidFixedCostTemplate();
     return models.map((model) => model.toEntity()).toList(growable: false);
   }
 

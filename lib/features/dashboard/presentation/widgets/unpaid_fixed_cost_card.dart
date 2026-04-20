@@ -7,7 +7,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/widgets/
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 
 class UnpaidFixedCostCard extends StatelessWidget {
-  final UnpaidFixedCostEntity item;
+  final UnpaidFixedCostTemplateEntity item;
   final bool isPayEnabled;
   final VoidCallback? onPay;
   final VoidCallback? onCancel;
@@ -101,7 +101,7 @@ class UnpaidFixedCostCard extends StatelessWidget {
     );
   }
 
-  String _dueText(UnpaidFixedCostEntity item) {
+  String _dueText(UnpaidFixedCostTemplateEntity item) {
     const weekdayLabel = {
       1: 'Senin',
       2: 'Selasa',

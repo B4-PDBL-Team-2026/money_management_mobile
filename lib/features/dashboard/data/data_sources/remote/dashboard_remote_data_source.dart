@@ -15,7 +15,7 @@ class DashboardRemoteDataSource {
 
   DashboardRemoteDataSource(this.dio);
 
-  Future<List<UnpaidFixedCostModel>> fetchUnpaidFixedCostOccurrences() async {
+  Future<List<UnpaidFixedCostModel>> fetchUnpaidFixedCostTemplate() async {
     if (AppEnv.useMockApi) {
       await Future.delayed(const Duration(seconds: 1));
 

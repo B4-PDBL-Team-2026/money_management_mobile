@@ -11,7 +11,7 @@ class BudgetSnapshotEntity {
   final int todayLimit;
   final int tomorrowLimitPrediction;
   final int actualDailyAllowance;
-  final List<UnpaidFixedCostEntity> unpaidFixedCosts;
+  final List<UnpaidFixedCostTemplateEntity> unpaidFixedCosts;
 
   const BudgetSnapshotEntity({
     required this.timestamp,

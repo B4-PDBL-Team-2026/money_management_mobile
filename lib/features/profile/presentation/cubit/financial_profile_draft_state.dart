@@ -1,12 +1,12 @@
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 
 class FinancialProfileDraftState {
   final FinancialCycle budgetCycle;
   final int initialBalance;
   final int safetyCeiling;
   final int safetyFlooring;
-  final List<FixedCostEntity> fixedCosts;
+  final List<FixedCostTemplateEntity> fixedCosts;
 
   const FinancialProfileDraftState({
     required this.budgetCycle,
@@ -31,7 +31,7 @@ class FinancialProfileDraftState {
     int? initialBalance,
     int? safetyCeiling,
     int? safetyFlooring,
-    List<FixedCostEntity>? fixedCosts,
+    List<FixedCostTemplateEntity>? fixedCosts,
   }) {
     return FinancialProfileDraftState(
       budgetCycle: budgetCycle ?? this.budgetCycle,
