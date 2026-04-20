@@ -15,6 +15,10 @@ class AppProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final progress = this.progress.isNaN
+        ? 0.0
+        : this.progress.clamp(0.0, double.infinity);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
