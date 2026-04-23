@@ -23,11 +23,13 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    _log.severe(
-      '<-- ERROR ${err.response?.statusCode} ${err.requestOptions.uri}',
-    );
-    _log.severe('Message: ${err.message}');
-    _log.severe('Error Data: ${err.response?.data}');
+    if (err.response?.statusCode != 401) {
+      _log.severe(
+        '<-- ERROR ${err.response?.statusCode} ${err.requestOptions.uri}',
+      );
+      _log.severe('Message: ${err.message}');
+      _log.severe('Error Data: ${err.response?.data}');
+    }
 
     super.onError(err, handler);
   }
