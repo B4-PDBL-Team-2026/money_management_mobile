@@ -60,45 +60,45 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                     const StepProgressIndicator(currentStep: 1, totalSteps: 4),
                     const SizedBox(height: AppSizes.spacing7),
                     Text(
-                      'Saldo Awal & Siklus Budget',
+                      'Saldo Awal',
                       style: Theme.of(context).textTheme.displayMedium
                           ?.copyWith(color: AppColors.primary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSizes.spacing2),
                     Text(
-                      'Pilih siklus budget dan masukkan saldo awal Anda.',
+                      'Masukkin saldo awal kamu.',
                       textAlign: TextAlign.center,
                       style: Theme.of(
                         context,
                       ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
                     ),
                     const SizedBox(height: AppSizes.spacing10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildCycleCard(
-                            title: 'Bulanan',
-                            icon: Icons.calendar_month_outlined,
-                            isSelected: !isWeekly,
-                            onTap: () => context
-                                .read<FinancialProfileDraftCubit>()
-                                .updateFinancialCycle(FinancialCycle.monthly),
-                          ),
-                        ),
-                        const SizedBox(width: AppSizes.spacing4),
-                        Expanded(
-                          child: _buildCycleCard(
-                            title: 'Mingguan',
-                            icon: Icons.wb_sunny_outlined,
-                            isSelected: isWeekly,
-                            onTap: () => context
-                                .read<FinancialProfileDraftCubit>()
-                                .updateFinancialCycle(FinancialCycle.weekly),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: _buildCycleCard(
+                    //         title: 'Bulanan',
+                    //         icon: Icons.calendar_month_outlined,
+                    //         isSelected: !isWeekly,
+                    //         onTap: () => context
+                    //             .read<FinancialProfileDraftCubit>()
+                    //             .updateFinancialCycle(FinancialCycle.monthly),
+                    //       ),
+                    //     ),
+                    //     const SizedBox(width: AppSizes.spacing4),
+                    //     Expanded(
+                    //       child: _buildCycleCard(
+                    //         title: 'Mingguan',
+                    //         icon: Icons.wb_sunny_outlined,
+                    //         isSelected: isWeekly,
+                    //         onTap: () => context
+                    //             .read<FinancialProfileDraftCubit>()
+                    //             .updateFinancialCycle(FinancialCycle.weekly),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(height: AppSizes.spacing5),
                     AppCurrencyTextField(
                       controller: _amountController,
