@@ -10,7 +10,7 @@ enum CategoryType {
   const CategoryType(this.value);
 }
 
-class FixedCostEntity {
+class FixedCostTemplateEntity {
   final String name;
   final int amount;
   final String category;
@@ -20,7 +20,7 @@ class FixedCostEntity {
   final FinancialCycle cycle;
   final int dueValue;
 
-  const FixedCostEntity({
+  const FixedCostTemplateEntity({
     required this.name,
     required this.amount,
     required this.category,

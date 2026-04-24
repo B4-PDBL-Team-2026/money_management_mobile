@@ -1,6 +1,6 @@
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 
-class UnpaidFixedCostEntity {
+class UnpaidFixedCostTemplateEntity {
   final int occurrenceId;
   final String name;
   final int amount;
@@ -8,7 +8,7 @@ class UnpaidFixedCostEntity {
   final int dueValue;
   final DateTime? dueDate;
 
-  const UnpaidFixedCostEntity({
+  const UnpaidFixedCostTemplateEntity({
     required this.occurrenceId,
     required this.name,
     required this.amount,

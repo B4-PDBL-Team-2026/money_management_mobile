@@ -5,7 +5,7 @@ import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart'
     as category;
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
 
@@ -148,7 +148,7 @@ class _ManageFixedCostBottomSheetState
                 validator: (value) {
                   final trimmedName = value?.trim() ?? '';
                   if (trimmedName.isEmpty) {
-                    return 'Nama biaya wajib diisi';
+                    return requiredFieldMessage('Nama biaya');
                   }
                   return null;
                 },
@@ -161,10 +161,20 @@ class _ManageFixedCostBottomSheetState
                   Icons.attach_money,
                   color: AppColors.trunks,
                 ),
+                max: 1000000000,
                 validator: (value) {
-                  if ((value ?? '').isEmpty) {
-                    return 'Nominal wajib diisi';
+                  if (value == null) {
+                    return requiredFieldMessage('Nominal');
                   }
+
+                  if (value <= 0) {
+                    return positiveNumberMessage('Nominal');
+                  }
+
+                  if (value > 1000000000) {
+                    return maxValueMessage('Nominal', 1000000000);
+                  }
+
                   return null;
                 },
               ),
@@ -349,7 +359,7 @@ class _ManageFixedCostBottomSheetState
                     final cycle = _frequency;
                     final dueDay = _selectedDueValue;
 
-                    final payload = FixedCostEntity(
+                    final payload = FixedCostTemplateEntity(
                       name: _nameController.text.trim(),
                       amount: CurrencyFormatter.parse(_amountController.text),
                       category: selectedCategory.name,

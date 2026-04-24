@@ -1,7 +1,7 @@
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 
-class UnpaidFixedCostModel extends UnpaidFixedCostEntity {
+class UnpaidFixedCostModel extends UnpaidFixedCostTemplateEntity {
   const UnpaidFixedCostModel({
     required super.occurrenceId,
     required super.name,
@@ -64,8 +64,8 @@ class UnpaidFixedCostModel extends UnpaidFixedCostEntity {
     return FinancialCycle.monthly;
   }
 
-  UnpaidFixedCostEntity toEntity() {
-    return UnpaidFixedCostEntity(
+  UnpaidFixedCostTemplateEntity toEntity() {
+    return UnpaidFixedCostTemplateEntity(
       occurrenceId: occurrenceId,
       name: name,
       amount: amount,

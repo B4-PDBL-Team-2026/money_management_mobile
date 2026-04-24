@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CurrencyFormatter {
@@ -12,7 +13,7 @@ class CurrencyFormatter {
   /// Returns empty string if input is empty or invalid
   static String formatString(String amount) {
     if (amount.isEmpty) return '';
-    
+
     try {
       int value = int.parse(amount);
       return format(value);
@@ -25,12 +26,13 @@ class CurrencyFormatter {
   /// Returns 0 if input is empty or invalid
   static int parse(String formattedAmount) {
     if (formattedAmount.isEmpty) return 0;
-    
+
     try {
       // Remove dots (thousand separators) and parse
       String cleanAmount = formattedAmount.replaceAll('.', '');
       return int.parse(cleanAmount);
     } catch (e) {
+      debugPrint("Error parsing amount: $e");
       return 0;
     }
   }

@@ -1,4 +1,4 @@
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 
 enum FinancialCycle {
   weekly('weekly'),
@@ -13,7 +13,7 @@ class FinancialProfileEntity {
   final int initialBalance;
   final int safetyCeiling;
   final int safetyFlooring;
-  final List<FixedCostEntity> fixedCosts;
+  final List<FixedCostTemplateEntity> fixedCosts;
 
   const FinancialProfileEntity({
     required this.budgetCycle,

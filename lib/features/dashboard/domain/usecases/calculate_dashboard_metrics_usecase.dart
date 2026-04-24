@@ -263,7 +263,7 @@ class CalculateDashboardMetricsUsecase {
   }
 
   int _calculateTotalUnpaidFixedCost(
-    List<UnpaidFixedCostEntity> unpaidFixedCosts,
+    List<UnpaidFixedCostTemplateEntity> unpaidFixedCosts,
   ) {
     final totalUnpaidFixedCost = unpaidFixedCosts.fold(
       0,
@@ -309,7 +309,7 @@ class DashboardMetricsResult {
   final String limitName;
   final int remainingDaysInCycle;
   final int totalUnpaidFixedCost;
-  final List<UnpaidFixedCostEntity> unpaidFixedCosts;
+  final List<UnpaidFixedCostTemplateEntity> unpaidFixedCosts;
   final DashboardMetric firstMetric;
   final DashboardMetric secondMetric;
   final BudgetHealthScenario healthScenario;

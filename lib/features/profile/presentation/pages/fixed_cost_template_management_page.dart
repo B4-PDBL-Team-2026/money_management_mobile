@@ -12,27 +12,28 @@ import 'package:money_management_mobile/features/category/presentation/cubit/cat
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_cubit.dart';
-import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_occurrences_state.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_template_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_template_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/active_fixed_cost_item_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/manage_fixed_cost_bottom_sheet.dart';
 
-class FixedCostsManagementPage extends StatefulWidget {
-  const FixedCostsManagementPage({super.key});
+class FixedCostTemplateManagementPage extends StatefulWidget {
+  const FixedCostTemplateManagementPage({super.key});
 
   @override
-  State<FixedCostsManagementPage> createState() =>
-      _FixedCostsManagementPageState();
+  State<FixedCostTemplateManagementPage> createState() =>
+      _FixedCostTemplateManagementPageState();
 }
 
-class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
+class _FixedCostTemplateManagementPageState
+    extends State<FixedCostTemplateManagementPage> {
   @override
   void initState() {
     super.initState();
-    context.read<FixedCostOccurrencesCubit>().fetchFixedCostOccurrences();
+    context.read<FixedCostTemplateCubit>().fetchFixedCostTemplate();
   }
 
   Future<void> _showAddFixedCostBottomSheet() async {
@@ -54,7 +55,7 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
       return;
     }
 
-    final payload = await showModalBottomSheet<FixedCostEntity>(
+    final payload = await showModalBottomSheet<FixedCostTemplateEntity>(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -70,7 +71,7 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
       return;
     }
 
-    await context.read<FixedCostOccurrencesCubit>().createFixedCost(payload);
+    await context.read<FixedCostTemplateCubit>().createFixedCost(payload);
   }
 
   Future<void> _showEditFixedCostBottomSheet(
@@ -78,7 +79,7 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
   ) async {
     final isMainCycleWeekly = await _resolveIsMainCycleWeekly();
 
-    final payload = await showModalBottomSheet<FixedCostEntity>(
+    final payload = await showModalBottomSheet<FixedCostTemplateEntity>(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -108,7 +109,7 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
         ? fixedCost.fixedCostTemplateId
         : fixedCost.id;
 
-    await context.read<FixedCostOccurrencesCubit>().updateFixedCost(
+    await context.read<FixedCostTemplateCubit>().updateFixedCost(
       targetId,
       payload,
     );
@@ -207,20 +208,20 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
         ? fixedCost.fixedCostTemplateId
         : fixedCost.id;
 
-    await context.read<FixedCostOccurrencesCubit>().deleteFixedCost(targetId);
+    await context.read<FixedCostTemplateCubit>().deleteFixedCost(targetId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<FixedCostOccurrencesCubit, FixedCostOccurrencesState>(
+      body: BlocBuilder<FixedCostTemplateCubit, FixedCostTemplateState>(
         builder: (context, state) {
-          if (state is FixedCostOccurrencesLoading ||
-              state is FixedCostOccurrencesInitial) {
+          if (state is FixedCostTemplateLoading ||
+              state is FixedCostTemplateInitial) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is FixedCostOccurrencesError) {
+          if (state is FixedCostTemplateError) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(AppSizes.spacing6),
@@ -236,8 +237,8 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
                     ElevatedButton(
                       onPressed: () {
                         context
-                            .read<FixedCostOccurrencesCubit>()
-                            .fetchFixedCostOccurrences(forceRefresh: true);
+                            .read<FixedCostTemplateCubit>()
+                            .fetchFixedCostTemplate(forceRefresh: true);
                       },
                       child: const Text('Coba lagi'),
                     ),
@@ -247,14 +248,14 @@ class _FixedCostsManagementPageState extends State<FixedCostsManagementPage> {
             );
           }
 
-          final items = (state as FixedCostOccurrencesSuccess).items;
+          final items = (state as FixedCostTemplateSuccess).items;
           final categoryState = context.watch<CategoryCubit>().state;
 
           return RefreshIndicator(
             onRefresh: () {
               return context
-                  .read<FixedCostOccurrencesCubit>()
-                  .fetchFixedCostOccurrences(forceRefresh: true);
+                  .read<FixedCostTemplateCubit>()
+                  .fetchFixedCostTemplate(forceRefresh: true);
             },
             child: CustomScrollView(
               slivers: [
