@@ -92,17 +92,25 @@ class ErrorHandler {
           e,
         );
 
-        Map<String, dynamic>? fieldErrors;
+        Map<String, List<String>>? fieldErrors;
         final responseData = e.response?.data;
 
         if (responseData is Map<String, dynamic>) {
-          final rawData = responseData['data'] ?? responseData['errors'];
-          if (rawData is Map) {
-            fieldErrors = Map<String, dynamic>.from(rawData);
+          final dynamic rawData = responseData['data'] ?? responseData['errors'];
+
+          if (rawData is Map<String, dynamic>) {
+            fieldErrors = rawData.map((String key, dynamic value) {
+              if (value is List) {
+                final List<String> stringList = value.map((dynamic item) => item.toString()).toList();
+                return MapEntry(key, stringList);
+              }
+
+              return MapEntry(key, <String>[value.toString()]);
+            });
           }
         }
 
-        return ValidationException(fieldErrors);
+        return BusinessRuleException(message, fieldErrors);
       }
 
       // client Error lainnya (402 - 499)
