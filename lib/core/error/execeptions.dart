@@ -30,6 +30,16 @@ class ValidationException implements Exception {
   String toString() => "Data yang diberikan tidak valid";
 }
 
+class BusinessRuleException implements Exception {
+  final String message;
+  final Map<String, List<String>>? errors;
+
+  BusinessRuleException(this.message, [this.errors]);
+
+  @override
+  String toString() => message;
+}
+
 class CacheNotFoundException implements Exception {
   final String message;
   CacheNotFoundException([this.message = "Data tidak ditemukan di cache"]);
