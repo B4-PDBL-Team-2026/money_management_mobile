@@ -8,6 +8,7 @@ enum TransactionType {
 }
 
 class TransactionEntity {
+  final int? id;
   final String name;
   final int amount;
   final TransactionType type;
@@ -22,5 +23,6 @@ class TransactionEntity {
     required this.categoryId,
     required this.transactionAt,
     this.note,
+    this.id,
   });
 }

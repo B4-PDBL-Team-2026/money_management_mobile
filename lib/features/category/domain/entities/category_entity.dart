@@ -1,27 +1,23 @@
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
-// TODO: tipe kategori tidak konsisten di backend, kadang 'App\\Models\\SystemCategory', kadang 'system'. Perlu disesuaikan agar konsisten
-enum RealCategoryType {
-  system('system'),
-  custom('custom');
-
-  final String value;
-
-  const RealCategoryType(this.value);
-}
-
 class CategoryEntity {
   final int id;
+  final int? userId;
   final String name;
   final String icon;
+  final bool isSystem;
   final TransactionType type;
-  final RealCategoryType categoryType;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   CategoryEntity({
     required this.id,
+    this.userId,
     required this.name,
     required this.icon,
     required this.type,
-    required this.categoryType,
+    required this.isSystem,
+    this.createdAt,
+    this.updatedAt,
   });
 }

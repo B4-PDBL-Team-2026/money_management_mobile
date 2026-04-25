@@ -188,7 +188,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           amount: payload.amount,
           type: payload.type,
           categoryId: payload.categoryId,
-          categoryType: payload.categoryType,
           transactionAt: payload.transactionAt,
           note: payload.note,
         );
@@ -248,7 +247,6 @@ class _UpdateTransactionPayload {
   final int amount;
   final TransactionType type;
   final int categoryId;
-  final RealCategoryType categoryType;
   final DateTime transactionAt;
   final String? note;
 
@@ -257,7 +255,6 @@ class _UpdateTransactionPayload {
     required this.amount,
     required this.type,
     required this.categoryId,
-    required this.categoryType,
     required this.transactionAt,
     required this.note,
   });
@@ -486,7 +483,6 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                             ),
                             type: _selectedType,
                             categoryId: _selectedCategoryId,
-                            categoryType: _selectedCategoryType(),
                             transactionAt: _selectedDate,
                             note: _noteController.text.trim().isEmpty
                                 ? null
@@ -515,7 +511,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
           name: 'Kategori #${widget.detail.categoryId}',
           icon: 'question',
           type: type,
-          categoryType: RealCategoryType.system,
+          isSystem: true,
         ),
       ];
     }
@@ -543,16 +539,6 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
 
   String _formatDate(DateTime date) {
     return DateFormat('dd MMMM yyyy', 'id_ID').format(date);
-  }
-
-  RealCategoryType _selectedCategoryType() {
-    for (final category in widget.categories) {
-      if (category.id == _selectedCategoryId) {
-        return category.categoryType;
-      }
-    }
-
-    return RealCategoryType.system;
   }
 }
 

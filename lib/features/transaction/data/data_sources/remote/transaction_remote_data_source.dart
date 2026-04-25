@@ -5,7 +5,6 @@ import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/data/models/paginated_model.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
-import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_detail_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_history_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
@@ -96,7 +95,6 @@ class TransactionRemoteDataSource {
     required int amount,
     required TransactionType type,
     required int categoryId,
-    required RealCategoryType categoryType,
     required DateTime transactionAt,
     String? note,
   }) async {
@@ -113,7 +111,6 @@ class TransactionRemoteDataSource {
           'amount': amount,
           'type': type.value,
           'categoryId': categoryId,
-          'categoryType': categoryType.value,
           'note': note,
           'transactionAt': transactionAt.toIso8601String().split('T').first,
         },

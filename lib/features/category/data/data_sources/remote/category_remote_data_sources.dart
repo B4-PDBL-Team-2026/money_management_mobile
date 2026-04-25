@@ -5,7 +5,6 @@ import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/data/models/category_model.dart';
-import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
 @LazySingleton()
@@ -25,21 +24,27 @@ class CategoryRemoteDataSource {
           name: 'Gaji',
           icon: 'wallet',
           type: TransactionType.income,
-          categoryType: RealCategoryType.system,
+          isSystem: true,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         ),
         CategoryModel(
           id: 2,
           name: 'Makanan',
           icon: 'bowl_food',
+          isSystem: false,
           type: TransactionType.expense,
-          categoryType: RealCategoryType.system,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         ),
         CategoryModel(
           id: 3,
           name: 'Transportasi',
           icon: 'taxi',
+          isSystem: false,
           type: TransactionType.expense,
-          categoryType: RealCategoryType.system,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         ),
       ];
     }
@@ -48,9 +53,7 @@ class CategoryRemoteDataSource {
       final response = await dio.get('/category/system');
       final data = response.data['data'] as List<dynamic>;
 
-      return data
-          .map((json) => CategoryModel.fromJson(json, RealCategoryType.system))
-          .toList();
+      return data.map((json) => CategoryModel.fromJson(json)).toList();
     } on DioException catch (e) {
       throw ErrorHandler.handleRemoteException(e, _log, 'getSystemCategories');
     } catch (e) {
