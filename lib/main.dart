@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -8,8 +10,10 @@ import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
+import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_template_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
+import 'package:money_management_mobile/firebase_options.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:sentry/sentry.dart';
 
@@ -19,6 +23,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final hasSentryDsn = AppEnv.sentryDsn.trim().isNotEmpty;
+
   if (!hasSentryDsn) {
     await _bootstrapAndRunApp(enableSentry: false);
     return;
@@ -37,16 +42,25 @@ void main() async {
   );
 }
 
-Future<void> _bootstrapAndRunApp({required bool enableSentry}) async {
-  AppLogger.init(enableSentry: enableSentry);
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
 
+Future<void> _bootstrapAndRunApp({required bool enableSentry}) async {
   await configureDependencies();
+
+  AppLogger.init(enableSentry: enableSentry);
   localTimezone = await FlutterTimezone.getLocalTimezone();
 
   await Future.wait([
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     initializeDateFormatting('id_ID'),
     getIt<SessionCubit>().restoreSession(),
   ]);
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await getIt<NotificationCubit>().initialize();
 
   runApp(const MyApp());
 }
@@ -67,6 +81,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<FixedCostTemplateCubit>.value(
           value: getIt<FixedCostTemplateCubit>(),
+        ),
+        BlocProvider<NotificationCubit>.value(
+          value: getIt<NotificationCubit>(),
         ),
       ],
       child: MaterialApp.router(

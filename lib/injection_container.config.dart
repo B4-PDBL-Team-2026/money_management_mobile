@@ -53,6 +53,11 @@ import 'features/dashboard/presentation/cubits/delete_account_cubit.dart'
     as _i111;
 import 'features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart'
     as _i928;
+import 'features/notification/data/data_source/local/notification_local_data_source.dart'
+    as _i312;
+import 'features/notification/data/services/notification_service.dart' as _i856;
+import 'features/notification/presentation/cubit/notification_cubit.dart'
+    as _i421;
 import 'features/profile/data/data_sources/remote/fixed_cost_template_remote_data_source.dart'
     as _i270;
 import 'features/profile/data/data_sources/remote/profile_remote_data_source.dart'
@@ -109,6 +114,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i844.CategoryLocalDataSource>(
       () => _i844.CategoryLocalDataSource(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i312.NotificationLocalDataSource>(
+      () => _i312.NotificationLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i715.FinancialProfileDraftCubit>(
       () => _i715.FinancialProfileDraftCubit(
         gh<_i103.CalculateFinancialProfileUseCase>(),
@@ -116,6 +124,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i361.Dio>(
       () => http.dio(gh<_i465.AuthLocalDataSource>()),
+    );
+    gh.lazySingleton<_i856.NotificationService>(
+      () => _i856.NotificationService(gh<_i312.NotificationLocalDataSource>()),
+    );
+    gh.lazySingleton<_i421.NotificationCubit>(
+      () => _i421.NotificationCubit(
+        gh<_i856.NotificationService>(),
+        gh<_i1017.EventBus>(),
+      ),
     );
     gh.lazySingleton<_i300.CategoryRemoteDataSource>(
       () => _i300.CategoryRemoteDataSource(gh<_i361.Dio>()),
