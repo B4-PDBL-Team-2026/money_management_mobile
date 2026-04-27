@@ -25,11 +25,17 @@ class ShellContainer extends StatelessWidget {
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
           selectedFontSize: 12,
           unselectedFontSize: 12,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
           items: const [
+            BottomNavigationBarItem(
+              icon: PhosphorIcon(PhosphorIconsRegular.bell),
+              activeIcon: PhosphorIcon(PhosphorIconsFill.bell),
+              label: 'Notifikasi',
+              tooltip: 'Notifikasi',
+            ),
             BottomNavigationBarItem(
               icon: PhosphorIcon(PhosphorIconsRegular.receipt),
               activeIcon: PhosphorIcon(PhosphorIconsFill.receipt),
@@ -43,6 +49,12 @@ class ShellContainer extends StatelessWidget {
               tooltip: 'Beranda',
             ),
             BottomNavigationBarItem(
+              icon: PhosphorIcon(PhosphorIconsRegular.fileLock),
+              activeIcon: PhosphorIcon(PhosphorIconsFill.fileLock),
+              label: 'Biaya Tetap',
+              tooltip: 'Biaya tetap',
+            ),
+            BottomNavigationBarItem(
               icon: PhosphorIcon(PhosphorIconsRegular.dotsThreeCircle),
               activeIcon: PhosphorIcon(PhosphorIconsFill.dotsThreeCircle),
               label: 'Lainnya',
@@ -51,7 +63,8 @@ class ShellContainer extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: navigationShell.currentIndex == 1
+      floatingActionButton:
+          navigationShell.currentIndex == 1 || navigationShell.currentIndex == 2
           ? FloatingActionButton(
               onPressed: () => context.push(AppRouter.addTransaction),
               backgroundColor: AppColors.secondary,

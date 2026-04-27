@@ -55,9 +55,10 @@ class AppRouter {
   static const String step4Personalization = '/personalization/step-4';
 
   static const String dashboard = '/';
+  static const String notification = '/notification';
   static const String history = '/history';
   static const String other = '/other';
-  static const String fixedCostsManagement = '/other/fixed-costs';
+  static const String fixedCostsManagement = '/fixed-costs';
   static const String deleteAccount = '/other/delete-account';
 
   static const String addTransaction = '/transaction/add';
@@ -160,6 +161,17 @@ class AppRouter {
               StatefulShellBranch(
                 routes: [
                   GoRoute(
+                    path: notification,
+                    builder: (context, state) => Scaffold(
+                      appBar: AppBar(title: const Text('Notifikasi')),
+                      body: const Center(child: Text('Halaman notifikasi')),
+                    ),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
                     path: history,
                     builder: (context, state) => const TransactionHistoryPage(),
                   ),
@@ -188,6 +200,15 @@ class AppRouter {
               StatefulShellBranch(
                 routes: [
                   GoRoute(
+                    path: fixedCostsManagement,
+                    builder: (context, state) =>
+                        const FixedCostTemplateManagementPage(),
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
                     path: other,
                     builder: (context, state) => MultiBlocProvider(
                       providers: [
@@ -199,11 +220,6 @@ class AppRouter {
                       child: const OtherPage(),
                     ),
                     routes: [
-                      GoRoute(
-                        path: 'fixed-costs',
-                        builder: (context, state) =>
-                            const FixedCostTemplateManagementPage(),
-                      ),
                       GoRoute(
                         path: 'delete-account',
                         builder: (context, state) => BlocProvider(
