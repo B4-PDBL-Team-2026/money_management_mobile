@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
@@ -27,19 +27,17 @@ class NotificationService {
         importance: Importance.high,
       );
 
+  final _log = Logger('NotificationService');
   final NotificationLocalDataSource _notificationLocalDataSource;
+
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  final _log = Logger('NotificationService');
-
   final StreamController<RemoteMessage> _foregroundMessageController =
       StreamController<RemoteMessage>.broadcast();
-
   final StreamController<RemoteMessage> _openedMessageController =
       StreamController<RemoteMessage>.broadcast();
-
   final StreamController<String> _tokenRefreshController =
       StreamController<String>.broadcast();
 
@@ -96,7 +94,7 @@ class NotificationService {
   }
 
   Future<bool> _requestNotificationPermission() async {
-    if (_isAndroid) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
       return await _requestAndroidNotificationPermission();
     }
 
@@ -126,8 +124,6 @@ class NotificationService {
     return await androidLocalNotifications.requestNotificationsPermission() ??
         false;
   }
-
-  bool get _isAndroid => defaultTargetPlatform == TargetPlatform.android;
 
   Future<void> _initializeLocalNotifications() async {
     const androidSettings = AndroidInitializationSettings(
@@ -159,11 +155,27 @@ class NotificationService {
   }
 
   Future<void> _initializeFcmToken() async {
-    final token = await _fcm.getToken();
+    int retryCount = 0;
+    const maxRetries = 3;
 
-    if (token != null && token.isNotEmpty) {
-      await _notificationLocalDataSource.saveFcmToken(token);
-      _tokenRefreshController.add(token);
+    while (retryCount < maxRetries) {
+      try {
+        final token = await _fcm.getToken();
+
+        if (token != null && token.isNotEmpty) {
+          await _notificationLocalDataSource.saveFcmToken(token);
+          _tokenRefreshController.add(token);
+
+          break;
+        }
+      } catch (e) {
+        retryCount++;
+        _log.warning('Attempt $retryCount failed to get FCM token: $e');
+
+        if (retryCount >= maxRetries) rethrow;
+
+        await Future.delayed(Duration(seconds: retryCount * 2));
+      }
     }
 
     _onTokenRefreshSubscription ??= _fcm.onTokenRefresh.listen((

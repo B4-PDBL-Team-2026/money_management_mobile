@@ -59,8 +59,8 @@ Future<void> _bootstrapAndRunApp({required bool enableSentry}) async {
     getIt<SessionCubit>().restoreSession(),
   ]);
 
+  getIt<NotificationCubit>().initialize();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await getIt<NotificationCubit>().initialize();
 
   runApp(const MyApp());
 }

@@ -129,10 +129,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i856.NotificationService(gh<_i312.NotificationLocalDataSource>()),
     );
     gh.lazySingleton<_i421.NotificationCubit>(
-      () => _i421.NotificationCubit(
-        gh<_i856.NotificationService>(),
-        gh<_i1017.EventBus>(),
-      ),
+      () => _i421.NotificationCubit(gh<_i856.NotificationService>()),
     );
     gh.lazySingleton<_i300.CategoryRemoteDataSource>(
       () => _i300.CategoryRemoteDataSource(gh<_i361.Dio>()),
