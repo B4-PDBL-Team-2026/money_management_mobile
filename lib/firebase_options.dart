@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -65,4 +62,15 @@ class DefaultFirebaseOptions {
     storageBucket: 'moco-5bda4.firebasestorage.app',
     iosBundleId: 'com.moco.moneycontrol',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyABDsaN8DgdULZDaqpCy4ljlncXv79fbh0',
+    appId: '1:520920693154:web:313a8592058c80359c5afb',
+    messagingSenderId: '520920693154',
+    projectId: 'moco-5bda4',
+    authDomain: 'moco-5bda4.firebaseapp.com',
+    storageBucket: 'moco-5bda4.firebasestorage.app',
+    measurementId: 'G-DCW9N7M6W2',
+  );
+
 }
