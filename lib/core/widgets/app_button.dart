@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 
-import '../theme/app_text_styles.dart';
-
 enum AppButtonType { primary, secondary, danger }
 
 enum AppButtonVariant { filled, outlined, ghost }

@@ -22,6 +22,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/layouts/
 import 'package:money_management_mobile/features/dashboard/presentation/pages/delete_account_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
+import 'package:money_management_mobile/features/notification/presentation/pages/notification_center_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_template_management_page.dart';
@@ -162,10 +163,7 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: notification,
-                    builder: (context, state) => Scaffold(
-                      appBar: AppBar(title: const Text('Notifikasi')),
-                      body: const Center(child: Text('Halaman notifikasi')),
-                    ),
+                    builder: (context, state) => const NotificationCenterPage(),
                   ),
                 ],
               ),
