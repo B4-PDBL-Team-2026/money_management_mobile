@@ -17,7 +17,6 @@ import 'package:money_management_mobile/features/auth/presentation/pages/registe
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
-import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/delete_account_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
@@ -181,19 +180,7 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: dashboard,
-                    builder: (context, state) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(
-                          value: getIt<DashboardMetricCubit>()
-                            ..fetchDashboardMetrics(),
-                        ),
-                        BlocProvider.value(
-                          value: getIt<UnpaidFixedCostTemplateCubit>()
-                            ..fetchUnpaidFixedCosts(),
-                        ),
-                      ],
-                      child: const HomePage(),
-                    ),
+                    builder: (context, state) => const HomePage(),
                   ),
                 ],
               ),

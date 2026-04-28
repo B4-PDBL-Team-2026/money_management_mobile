@@ -11,6 +11,8 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/u
 import 'package:event_bus/event_bus.dart';
 
 @LazySingleton()
+// TODO: mengganti nama class menjadi FixedCostOccurencesCubit dan State
+// TODO: memindahkan fixed cost ke fitur baru
 class UnpaidFixedCostTemplateCubit
     extends Cubit<UnpaidFixedCostTemplateState> {
   final DashboardRepository _dashboardRepository;

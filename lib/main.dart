@@ -10,6 +10,8 @@ import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_template_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
@@ -72,18 +74,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SessionCubit>.value(value: getIt<SessionCubit>()),
-        BlocProvider<CategoryCubit>.value(
-          value: getIt<CategoryCubit>()..fetchCategories(),
-        ),
-        BlocProvider<TransactionHistoryCubit>.value(
+        BlocProvider.value(value: getIt<SessionCubit>()),
+        BlocProvider.value(value: getIt<CategoryCubit>()..fetchCategories()),
+        BlocProvider.value(
           value: getIt<TransactionHistoryCubit>()..getFreshTransactionHistory(),
         ),
-        BlocProvider<FixedCostTemplateCubit>.value(
-          value: getIt<FixedCostTemplateCubit>(),
+        BlocProvider.value(value: getIt<FixedCostTemplateCubit>()),
+        BlocProvider.value(value: getIt<NotificationCubit>()),
+        BlocProvider.value(
+          value: getIt<UnpaidFixedCostTemplateCubit>()..fetchUnpaidFixedCosts(),
         ),
-        BlocProvider<NotificationCubit>.value(
-          value: getIt<NotificationCubit>(),
+        BlocProvider.value(
+          value: getIt<DashboardMetricCubit>()..fetchDashboardMetrics(),
         ),
       ],
       child: MaterialApp.router(
