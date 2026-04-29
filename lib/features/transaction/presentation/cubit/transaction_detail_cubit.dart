@@ -1,11 +1,10 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
-import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_state.dart';
@@ -56,7 +55,6 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
     required int amount,
     required TransactionType type,
     required int categoryId,
-    required RealCategoryType categoryType,
     required DateTime transactionAt,
     String? note,
   }) async {
@@ -69,7 +67,6 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
         amount: amount,
         type: type,
         categoryId: categoryId,
-        categoryType: categoryType,
         transactionAt: transactionAt,
         note: note,
       );
