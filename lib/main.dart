@@ -8,6 +8,8 @@ import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_template_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/injection_container.dart';
@@ -67,6 +69,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<FixedCostTemplateCubit>.value(
           value: getIt<FixedCostTemplateCubit>(),
+        ),
+        BlocProvider.value(
+          value: getIt<DashboardMetricCubit>()..fetchDashboardMetrics(),
+        ),
+        BlocProvider.value(
+          value: getIt<UnpaidFixedCostTemplateCubit>()..fetchUnpaidFixedCosts(),
         ),
       ],
       child: MaterialApp.router(

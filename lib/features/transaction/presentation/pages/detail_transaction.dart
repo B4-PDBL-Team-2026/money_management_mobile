@@ -10,6 +10,8 @@ import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
@@ -234,6 +236,23 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
     if (isDeleteConfirmed != true || !mounted) {
       return;
+    }
+
+    final dashboardMetricState = context.read<DashboardMetricCubit>().state;
+
+    if (dashboardMetricState is DashboardMetricLoaded) {
+      if (dashboardMetricState.metrics.balance - detail.amount < 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Penghapusan transaksi ini akan menyebabkan saldo menjadi negatif. Hapus transaksi lain atau tambahkan pemasukan terlebih dahulu.',
+            ),
+            backgroundColor: AppColors.warning100,
+          ),
+        );
+
+        return;
+      }
     }
 
     await context.read<TransactionDetailCubit>().deleteTransaction(
@@ -729,6 +748,7 @@ class _DetailContent extends StatelessWidget {
     return switch (source) {
       'manual' => 'Pencatatan Manual',
       'fixed_cost_payment' => 'Pembayaran Fixed Cost',
+      'initial_balance' => 'Saldo Awal',
       _ => source,
     };
   }
