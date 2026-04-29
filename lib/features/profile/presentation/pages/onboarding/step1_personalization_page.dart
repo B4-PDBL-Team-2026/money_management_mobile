@@ -6,7 +6,6 @@ import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
@@ -46,8 +45,6 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<FinancialProfileDraftCubit, FinancialProfileDraftState>(
       builder: (context, state) {
-        final isWeekly = state.budgetCycle == FinancialCycle.weekly;
-
         return Scaffold(
           body: SafeArea(
             child: SingleChildScrollView(
@@ -74,6 +71,10 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                       ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
                     ),
                     const SizedBox(height: AppSizes.spacing10),
+                    AppAlert(
+                      message:
+                          'Secara default, saldo kamu akan dibagi rata untuk satu bulan ke depan. Pembagian dimulai berdasarkan tanggal hari ini.',
+                    ),
                     const SizedBox(height: AppSizes.spacing5),
                     AppCurrencyTextField(
                       controller: _amountController,
@@ -95,11 +96,6 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
 
                         return null;
                       },
-                    ),
-                    const SizedBox(height: AppSizes.spacing3),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: _buildCycleHint(isWeekly),
                     ),
                     const SizedBox(height: AppSizes.spacing10),
                     Row(
@@ -142,77 +138,6 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildCycleHint(bool isWeekly) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          isWeekly ? 'Siklus Mingguan' : 'Siklus Bulanan',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppColors.trunks,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(width: AppSizes.spacing1),
-        Tooltip(
-          message: isWeekly
-              ? 'Budget dibagi untuk sisa hari sampai akhir minggu ini.'
-              : 'Budget dibagi untuk sisa hari sampai akhir bulan ini.',
-          child: const Icon(
-            Icons.info_outline,
-            size: 16,
-            color: AppColors.trunks,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCycleCard({
-    required String title,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSizes.spacing4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppSizes.radiusNm),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.beerus,
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? AppColors.primary : AppColors.trunks,
-              size: 20,
-            ),
-            const SizedBox(width: AppSizes.spacing2),
-            Expanded(
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: isSelected ? AppColors.primary : AppColors.bulma,
-                ),
-              ),
-            ),
-            Icon(
-              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-              size: 16,
-              color: isSelected ? AppColors.primary : AppColors.trunks,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
