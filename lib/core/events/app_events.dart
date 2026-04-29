@@ -13,3 +13,7 @@ class FixedCostTemplateChangesEvent {
 class FixedCostOccurrencesChangesEvent {
   const FixedCostOccurrencesChangesEvent();
 }
+
+class NotificationCenterChangesEvent {
+  const NotificationCenterChangesEvent();
+}

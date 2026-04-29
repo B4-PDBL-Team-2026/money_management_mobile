@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
-import 'package:money_management_mobile/features/notification/data/data_source/local/notification_local_data_source.dart';
+import 'package:money_management_mobile/features/notification/data/data_sources/local/notification_local_data_source.dart';
 
 class NotificationBootstrapResult {
   final String? token;
