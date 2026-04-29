@@ -53,6 +53,9 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       emit(AddTransactionError(e.message));
     } on ValidationException catch (e) {
       emit(AddTransactionValidationError(e.fieldErrors));
+    } on BusinessRuleException catch (e) {
+      _log.severe('[BusinessRuleException]', e.message);
+      emit(AddTransactionError(e.message));
     } catch (e) {
       if (kDebugMode) {
         emit(AddTransactionError('Terjadi kesalahan: ${e.toString()}'));

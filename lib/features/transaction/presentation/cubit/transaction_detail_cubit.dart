@@ -89,6 +89,10 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
       _log.severe('Unexpected error while updating transaction detail', e);
       emit(TransactionDetailError(e.message));
       return false;
+    } on BusinessRuleException catch (e) {
+      _log.severe('[BusinessRuleException]', e.message);
+      emit(TransactionDetailError(e.message));
+      return false;
     } catch (e) {
       _log.severe('Unhandled error while updating transaction detail', e);
       if (kDebugMode) {
@@ -123,6 +127,10 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
       return false;
     } on UnexpectedException catch (e) {
       _log.severe('Unexpected error while deleting transaction detail', e);
+      emit(TransactionDetailError(e.message));
+      return false;
+    }  on BusinessRuleException catch (e) {
+      _log.severe('[BusinessRuleException]', e.message);
       emit(TransactionDetailError(e.message));
       return false;
     } catch (e) {
