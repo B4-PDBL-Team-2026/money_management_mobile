@@ -41,6 +41,7 @@ class LoginCubit extends Cubit<LoginState> {
       _eventBus.fire(const TransactionChangesEvent());
       _eventBus.fire(const FixedCostTemplateChangesEvent());
       _eventBus.fire(const FixedCostOccurrencesChangesEvent());
+      _eventBus.fire(const NotificationInitializeEvent());
       emit(LoginSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {
       emit(LoginError(e.message));

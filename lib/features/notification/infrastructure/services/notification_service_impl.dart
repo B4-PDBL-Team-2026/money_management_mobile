@@ -5,20 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
-import 'package:money_management_mobile/features/notification/data/data_sources/local/notification_local_data_source.dart';
+import 'package:money_management_mobile/features/notification/domain/services/notification_service.dart';
 
-class NotificationBootstrapResult {
-  final String? token;
-  final bool isPermissionGranted;
-
-  NotificationBootstrapResult({
-    required this.token,
-    required this.isPermissionGranted,
-  });
-}
-
-@LazySingleton()
-class NotificationService {
+@LazySingleton(as: NotificationService)
+class NotificationServiceImpl implements NotificationService {
   static const AndroidNotificationChannel _highImportanceChannel =
       AndroidNotificationChannel(
         'high_importance_channel', // Unique channel ID
@@ -27,8 +17,7 @@ class NotificationService {
         importance: Importance.high,
       );
 
-  final _log = Logger('NotificationService');
-  final NotificationLocalDataSource _notificationLocalDataSource;
+  final _log = Logger('NotificationServiceImpl');
 
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
@@ -46,20 +35,22 @@ class NotificationService {
   StreamSubscription<String>? _onTokenRefreshSubscription;
 
   bool _isInitialized = false;
+  NotificationBootstrapResult? _bootstrapResult;
 
-  NotificationService(this._notificationLocalDataSource);
-
+  @override
   Stream<RemoteMessage> get foregroundMessages =>
       _foregroundMessageController.stream;
+
+  @override
   Stream<RemoteMessage> get openedMessages => _openedMessageController.stream;
+
+  @override
   Stream<String> get tokenRefreshes => _tokenRefreshController.stream;
 
+  @override
   Future<NotificationBootstrapResult> initialize() async {
     if (_isInitialized) {
-      return NotificationBootstrapResult(
-        token: _notificationLocalDataSource.getFcmToken(),
-        isPermissionGranted: true,
-      );
+      return _bootstrapResult!;
     }
 
     try {
@@ -68,7 +59,7 @@ class NotificationService {
       await _fcm.setAutoInitEnabled(true);
       await _initializeLocalNotifications();
       await _ensureNotificationChannelIsCreated();
-      await _initializeFcmToken();
+      final token = await _initializeFcmToken();
       await _initializeMessageListeners();
 
       final initialMessage = await _fcm.getInitialMessage();
@@ -77,11 +68,12 @@ class NotificationService {
       }
 
       _isInitialized = true;
-
-      return NotificationBootstrapResult(
-        token: _notificationLocalDataSource.getFcmToken(),
+      _bootstrapResult = NotificationBootstrapResult(
+        token: token,
         isPermissionGranted: isPermissionGranted,
       );
+
+      return _bootstrapResult!;
     } catch (error, stackTrace) {
       _log.severe(
         'Failed to initialize notification service.',
@@ -154,7 +146,7 @@ class NotificationService {
     );
   }
 
-  Future<void> _initializeFcmToken() async {
+  Future<String?> _initializeFcmToken() async {
     int retryCount = 0;
     const maxRetries = 3;
 
@@ -163,10 +155,9 @@ class NotificationService {
         final token = await _fcm.getToken();
 
         if (token != null && token.isNotEmpty) {
-          await _notificationLocalDataSource.saveFcmToken(token);
           _tokenRefreshController.add(token);
 
-          break;
+          return token;
         }
       } catch (e) {
         retryCount++;
@@ -178,12 +169,11 @@ class NotificationService {
       }
     }
 
-    _onTokenRefreshSubscription ??= _fcm.onTokenRefresh.listen((
-      newToken,
-    ) async {
-      await _notificationLocalDataSource.saveFcmToken(newToken);
+    _onTokenRefreshSubscription ??= _fcm.onTokenRefresh.listen((newToken) {
       _tokenRefreshController.add(newToken);
     });
+
+    return null;
   }
 
   Future<void> _initializeMessageListeners() async {
@@ -223,5 +213,21 @@ class NotificationService {
         ),
       ),
     );
+  }
+
+  @disposeMethod
+  void dispose() {
+    _onForegroundMessageSubscription?.cancel();
+    _onForegroundMessageSubscription = null;
+
+    _onOpenedMessageSubscription?.cancel();
+    _onOpenedMessageSubscription = null;
+
+    _onTokenRefreshSubscription?.cancel();
+    _onTokenRefreshSubscription = null;
+
+    _foregroundMessageController.close();
+    _openedMessageController.close();
+    _tokenRefreshController.close();
   }
 }

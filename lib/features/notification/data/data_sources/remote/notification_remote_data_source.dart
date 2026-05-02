@@ -1,11 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/error/error_handler.dart';
+import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/notification/data/models/notification_model.dart';
+import 'package:money_management_mobile/features/notification/data/models/notification_registration_model.dart';
 import 'package:money_management_mobile/features/notification/domain/entities/notification_entity.dart';
 
 @LazySingleton()
 class NotificationRemoteDataSource {
   final _log = Logger('NotificationRemoteDataSource');
+  final Dio _dio;
+
+  NotificationRemoteDataSource(this._dio);
 
   final List<NotificationModel> _notifications = <NotificationModel>[
     NotificationModel(
@@ -105,5 +112,26 @@ class NotificationRemoteDataSource {
     _notifications[targetIndex] = _notifications[targetIndex].copyWith(
       isRead: true,
     );
+  }
+
+  Future<void> registerNotificationToken(
+    NotificationRegistrationModel registrationData,
+  ) async {
+    try {
+      await _dio.post('/notifications/device', data: registrationData.toJson());
+
+      _log.info('Device notification token registered successfully');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'RegisterNotificationToken',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while registering notification token', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat mendaftar token notifikasi',
+      );
+    }
   }
 }

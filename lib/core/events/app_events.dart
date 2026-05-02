@@ -17,3 +17,7 @@ class FixedCostOccurrencesChangesEvent {
 class NotificationCenterChangesEvent {
   const NotificationCenterChangesEvent();
 }
+
+class NotificationInitializeEvent {
+  const NotificationInitializeEvent();
+}

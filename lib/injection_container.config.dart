@@ -59,9 +59,17 @@ import 'features/notification/data/data_sources/remote/notification_remote_data_
     as _i545;
 import 'features/notification/data/repositories/notification_center_repository_impl.dart'
     as _i1007;
-import 'features/notification/data/services/notification_service.dart' as _i856;
 import 'features/notification/domain/repositories/notification_center_repository.dart'
     as _i862;
+import 'features/notification/domain/services/device_service.dart' as _i929;
+import 'features/notification/domain/services/notification_service.dart'
+    as _i747;
+import 'features/notification/domain/usecases/notification_init_usecase.dart'
+    as _i874;
+import 'features/notification/infrastructure/services/device_service_impl.dart'
+    as _i690;
+import 'features/notification/infrastructure/services/notification_service_impl.dart'
+    as _i187;
 import 'features/notification/presentation/cubit/notification_center_cubit.dart'
     as _i356;
 import 'features/notification/presentation/cubit/notification_cubit.dart'
@@ -113,12 +121,10 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.lazySingleton<_i1017.EventBus>(() => eventBusModule.eventBus);
-    gh.lazySingleton<_i545.NotificationRemoteDataSource>(
-      () => _i545.NotificationRemoteDataSource(),
-    );
     gh.lazySingleton<_i103.CalculateFinancialProfileUseCase>(
       () => _i103.CalculateFinancialProfileUseCase(),
     );
+    gh.lazySingleton<_i929.DeviceService>(() => _i690.DeviceServiceImpl());
     gh.lazySingleton<_i465.AuthLocalDataSource>(
       () => _i465.AuthLocalDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -128,33 +134,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i437.NotificationLocalDataSource>(
       () => _i437.NotificationLocalDataSource(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i856.NotificationService>(
-      () => _i856.NotificationService(gh<_i437.NotificationLocalDataSource>()),
-    );
     gh.lazySingleton<_i715.FinancialProfileDraftCubit>(
       () => _i715.FinancialProfileDraftCubit(
         gh<_i103.CalculateFinancialProfileUseCase>(),
       ),
     );
+    gh.lazySingleton<_i747.NotificationService>(
+      () => _i187.NotificationServiceImpl(),
+      dispose: (i) => i.dispose(),
+    );
     gh.lazySingleton<_i361.Dio>(
       () => http.dio(gh<_i465.AuthLocalDataSource>()),
-    );
-    gh.lazySingleton<_i862.NotificationCenterRepository>(
-      () => _i1007.NotificationCenterRepositoryImpl(
-        gh<_i545.NotificationRemoteDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i421.NotificationCubit>(
-      () => _i421.NotificationCubit(
-        gh<_i856.NotificationService>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
-    gh.lazySingleton<_i356.NotificationCenterCubit>(
-      () => _i356.NotificationCenterCubit(
-        gh<_i862.NotificationCenterRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
     );
     gh.lazySingleton<_i300.CategoryRemoteDataSource>(
       () => _i300.CategoryRemoteDataSource(gh<_i361.Dio>()),
@@ -179,6 +169,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i711.AuthRemoteDataSource>(),
         gh<_i465.AuthLocalDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i545.NotificationRemoteDataSource>(
+      () => _i545.NotificationRemoteDataSource(gh<_i361.Dio>()),
     );
     gh.factory<_i801.ResetPasswordCubit>(
       () => _i801.ResetPasswordCubit(gh<_i1015.AuthRepository>()),
@@ -216,6 +209,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i410.SessionCubit>(),
       ),
     );
+    gh.lazySingleton<_i862.NotificationCenterRepository>(
+      () => _i1007.NotificationCenterRepositoryImpl(
+        gh<_i545.NotificationRemoteDataSource>(),
+        gh<_i437.NotificationLocalDataSource>(),
+      ),
+    );
     gh.factory<_i206.LoginUseCase>(
       () => _i206.LoginUseCase(gh<_i1015.AuthRepository>()),
     );
@@ -246,8 +245,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
+    gh.lazySingleton<_i356.NotificationCenterCubit>(
+      () => _i356.NotificationCenterCubit(
+        gh<_i862.NotificationCenterRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
     gh.lazySingleton<_i626.ProfileRepository>(
       () => _i277.ProfileRepositoryImpl(gh<_i959.ProfileRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i874.NotificationInitUsecase>(
+      () => _i874.NotificationInitUsecase(
+        gh<_i747.NotificationService>(),
+        gh<_i929.DeviceService>(),
+        gh<_i862.NotificationCenterRepository>(),
+      ),
+      dispose: (i) => i.dispose(),
     );
     gh.factory<_i250.LoginCubit>(
       () => _i250.LoginCubit(
@@ -283,6 +296,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i900.TransactionHistoryCubit>(
       () => _i900.TransactionHistoryCubit(
         gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.lazySingleton<_i421.NotificationCubit>(
+      () => _i421.NotificationCubit(
+        gh<_i874.NotificationInitUsecase>(),
         gh<_i1017.EventBus>(),
       ),
     );

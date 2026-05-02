@@ -9,24 +9,29 @@ import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/features/notification/domain/entities/notification_entity.dart';
-import 'package:money_management_mobile/features/notification/data/services/notification_service.dart';
+import 'package:money_management_mobile/features/notification/domain/usecases/notification_init_usecase.dart';
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_state.dart';
 
 @LazySingleton()
 class NotificationCubit extends Cubit<NotificationState> {
-  final NotificationService _notificationService;
+  final NotificationInitUsecase _notificationInitUsecase;
   final EventBus _eventBus;
+  late final StreamSubscription<dynamic> _initSubscription;
 
   final _log = Logger('NotificationCubit');
 
   StreamSubscription<RemoteMessage>? _foregroundMessageSubscription;
   StreamSubscription<RemoteMessage>? _openedMessageSubscription;
-  StreamSubscription<String>? _tokenRefreshSubscription;
 
-  NotificationCubit(this._notificationService, this._eventBus)
-    : super(NotificationInitial());
+  NotificationCubit(this._notificationInitUsecase, this._eventBus)
+    : super(NotificationInitial()) {
+    _initSubscription = _eventBus.on<NotificationInitializeEvent>().listen(
+      (_) => initialize(),
+    );
+  }
 
   Future<void> initialize() async {
+    _log.info('Starting notification cubit initialization.');
     if (super.state is NotificationReady ||
         super.state is NotificationInitializing) {
       return;
@@ -35,24 +40,16 @@ class NotificationCubit extends Cubit<NotificationState> {
     emit(NotificationInitializing());
 
     try {
-      _foregroundMessageSubscription = _notificationService.foregroundMessages
-          .listen(_handleForegroundMessage);
-      _openedMessageSubscription = _notificationService.openedMessages.listen(
-        _handleOpenedMessage,
-      );
-      _tokenRefreshSubscription = _notificationService.tokenRefreshes.listen(
-        _handleTokenRefresh,
-      );
+      // _foregroundMessageSubscription = _notificationService.foregroundMessages
+      //     .listen(_handleForegroundMessage);
+      // _openedMessageSubscription = _notificationService.openedMessages.listen(
+      //   _handleOpenedMessage,
+      // );
 
       // Subscribe before bootstrap so initial/opened FCM events are not missed.
-      final bootstrapResult = await _notificationService.initialize();
+      await _notificationInitUsecase.execute();
 
-      emit(
-        NotificationReady(
-          token: bootstrapResult.token,
-          isPermissionGranted: bootstrapResult.isPermissionGranted,
-        ),
-      );
+      emit(NotificationReady());
     } catch (error, stackTrace) {
       _log.severe(
         'Failed to initialize notification cubit.',
@@ -94,14 +91,6 @@ class NotificationCubit extends Cubit<NotificationState> {
     });
   }
 
-  void _handleTokenRefresh(String token) {
-    final currentState = state;
-
-    if (currentState is NotificationReady) {
-      emit(currentState.copyWith(token: token));
-    }
-  }
-
   String? _resolveRoutePath(Map<String, dynamic> data) {
     final rawCode =
         data['notificationCode'] as String? ??
@@ -115,7 +104,7 @@ class NotificationCubit extends Cubit<NotificationState> {
   Future<void> close() {
     _foregroundMessageSubscription?.cancel();
     _openedMessageSubscription?.cancel();
-    _tokenRefreshSubscription?.cancel();
+    _initSubscription.cancel();
     return super.close();
   }
 }
