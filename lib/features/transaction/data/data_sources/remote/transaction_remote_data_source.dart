@@ -294,9 +294,7 @@ class TransactionRemoteDataSource {
           'search': search,
           'categoryId': categoryId,
           'month': month,
-          'year': year,
-          // TODO: BERBAHAYA, hapus jika sudah ada fitur custom category
-          'categoryType': 'system',
+          'year': year
         },
       );
 
