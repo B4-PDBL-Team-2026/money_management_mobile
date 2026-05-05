@@ -38,9 +38,15 @@ class FixedCostOccurencePage extends StatelessWidget {
               >(
                 listener: (context, state) {},
                 builder: (context, state) {
-                  if (state is! UnpaidFixedCostTemplateLoaded ||
-                      state.items.isEmpty) {
-                    return const SizedBox.shrink();
+                  if (state is! UnpaidFixedCostTemplateLoaded) {
+                    return const _LoadingState();
+                  }
+
+                  if (state.items.isEmpty) {
+                    return _EmptyFixedCostState(
+                      onManage: () =>
+                          context.push(AppRouter.fixedCostsManagement),
+                    );
                   }
 
                   final now = DateTime.now();
@@ -167,12 +173,7 @@ class _FixedCostSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontSize: 16),
-        ),
+        Text(title, style: AppTextStyles.h2),
         const SizedBox(height: AppSizes.spacing3),
         ListView.separated(
           shrinkWrap: true,
@@ -224,6 +225,84 @@ class _FixedCostSection extends StatelessWidget {
           itemCount: items.length,
         ),
       ],
+    );
+  }
+}
+
+class _LoadingState extends StatelessWidget {
+  const _LoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: AppSizes.spacing12),
+      child: const CircularProgressIndicator(),
+    );
+  }
+}
+
+class _EmptyFixedCostState extends StatelessWidget {
+  final VoidCallback onManage;
+
+  const _EmptyFixedCostState({required this.onManage});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: AppSizes.spacing12,
+        horizontal: AppSizes.spacing4,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(AppSizes.spacing6),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: PhosphorIcon(
+              PhosphorIconsLight.receipt,
+              size: 48,
+              color: AppColors.primary,
+            ),
+          ),
+          SizedBox(height: AppSizes.spacing6),
+          Text(
+            'Tidak Ada Biaya Tetap',
+            style: AppTextStyles.h2.copyWith(color: AppColors.primary),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppSizes.spacing2),
+          Text(
+            'Anda belum memiliki biaya tetap yang dijadwalkan untuk minggu atau bulan ini.',
+            style: AppTextStyles.bodyMain.copyWith(color: AppColors.bulma),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppSizes.spacing6),
+          GestureDetector(
+            onTap: onManage,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSizes.spacing4,
+                vertical: AppSizes.spacing3,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+              ),
+              child: Text(
+                'Kelola Biaya Tetap',
+                style: AppTextStyles.bodyMain.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

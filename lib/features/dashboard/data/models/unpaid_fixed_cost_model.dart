@@ -14,9 +14,9 @@ class UnpaidFixedCostModel extends UnpaidFixedCostTemplateEntity {
   factory UnpaidFixedCostModel.fromJson(Map<String, dynamic> json) {
     final rawOccurrenceId = json['occurrence_id'] ?? json['id'];
     final rawAmount = json['amount'];
-    final rawCycle = json['cycle'] ?? json['cycle_type'] ?? json['cycle_key'];
+    final rawCycle = json['cycle'] ?? json['cycle_type'] ?? json['cycleType'] ?? json['cycle_key'];
     final rawDueValue = json['due_value'];
-    final dueDate = DateTime.tryParse(json['due_date'] as String? ?? '');
+    final dueDate = DateTime.tryParse(json['due_date'] ?? json['dueDate'] as String? ?? '');
 
     final cycle = _parseCycle(rawCycle?.toString());
     final dueValue = dueDate != null
