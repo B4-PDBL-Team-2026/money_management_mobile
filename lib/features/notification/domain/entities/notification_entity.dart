@@ -38,6 +38,7 @@ class NotificationEntity {
     required this.message,
     required this.isRead,
     required this.notificationCode,
+    this.targetId,
   });
 
   final String id;
@@ -46,4 +47,5 @@ class NotificationEntity {
   final String message;
   final bool isRead;
   final NotificationCode notificationCode;
+  final String? targetId;
 }

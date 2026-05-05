@@ -178,6 +178,22 @@ class _NotificationCenterPageState extends State<NotificationCenterPage> {
 
                             return widgets;
                           }),
+                        if (groupedNotifications.isNotEmpty &&
+                            successState.hasMore) ...[
+                          const SizedBox(height: AppSizes.spacing2),
+                          AppButton(
+                            isLoading: successState.isLoadingMore,
+                            text: 'Muat Lebih Banyak',
+                            onPressed: () {
+                              if (!successState.isLoadingMore) {
+                                context
+                                    .read<NotificationCenterCubit>()
+                                    .loadMoreNotifications();
+                              }
+                            },
+                            variant: AppButtonVariant.ghost,
+                          ),
+                        ],
                       ],
                     ),
                   ),

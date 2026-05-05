@@ -17,10 +17,18 @@ class NotificationCenterError extends NotificationCenterState {
 class NotificationCenterSuccess extends NotificationCenterState {
   final List<NotificationEntity> allNotifications;
   final NotificationCenterFilter selectedFilter;
+  final int currentPage;
+  final int totalPages;
+  final int totalItems;
+  final bool isLoadingMore;
 
   NotificationCenterSuccess({
     required this.allNotifications,
     required this.selectedFilter,
+    required this.currentPage,
+    required this.totalPages,
+    required this.totalItems,
+    this.isLoadingMore = false,
   });
 
   List<NotificationEntity> get visibleNotifications {
@@ -34,13 +42,23 @@ class NotificationCenterSuccess extends NotificationCenterState {
     }
   }
 
+  bool get hasMore => currentPage < totalPages;
+
   NotificationCenterSuccess copyWith({
     List<NotificationEntity>? allNotifications,
     NotificationCenterFilter? selectedFilter,
+    int? currentPage,
+    int? totalPages,
+    int? totalItems,
+    bool? isLoadingMore,
   }) {
     return NotificationCenterSuccess(
       allNotifications: allNotifications ?? this.allNotifications,
       selectedFilter: selectedFilter ?? this.selectedFilter,
+      currentPage: currentPage ?? this.currentPage,
+      totalPages: totalPages ?? this.totalPages,
+      totalItems: totalItems ?? this.totalItems,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 }

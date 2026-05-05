@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_env.dart';
+import 'package:money_management_mobile/core/data/models/paginated_model.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/notification/data/models/notification_model.dart';
@@ -89,10 +91,62 @@ class NotificationRemoteDataSource {
     ),
   ];
 
-  Future<List<NotificationModel>> getNotifications() async {
-    final notifications = _notifications.toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    return notifications;
+  Future<PaginatedModel<NotificationModel>> getNotifications({
+    int? page,
+    int? perPage,
+  }) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      final sortedNotifications = _notifications.toList()
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      final safePage = page != null && page > 0 ? page : 1;
+      final safePerPage = perPage != null && perPage > 0 ? perPage : 10;
+      final startIndex = (safePage - 1) * safePerPage;
+      var endIndex = startIndex + safePerPage;
+
+      if (endIndex > sortedNotifications.length) {
+        endIndex = sortedNotifications.length;
+      }
+
+      final pagedItems = startIndex >= sortedNotifications.length
+          ? const <NotificationModel>[]
+          : sortedNotifications.sublist(startIndex, endIndex);
+
+      return PaginatedModel(
+        items: pagedItems,
+        currentPage: safePage,
+        totalPages: (sortedNotifications.length / safePerPage).ceil(),
+        totalItems: sortedNotifications.length,
+      );
+    }
+
+    try {
+      final response = await _dio.get(
+        '/notifications',
+        queryParameters: {
+          'page': page,
+          'per_page': perPage,
+        },
+      );
+
+      return PaginatedModel.fromJson(
+        response.data as Map<String, dynamic>,
+        NotificationModel.fromJson,
+      );
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Get Notifications',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while fetching notifications', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat mengambil notifikasi',
+      );
+    }
   }
 
   Future<void> dismissNotification(String notificationId) async {

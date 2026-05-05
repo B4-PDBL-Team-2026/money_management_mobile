@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
 import 'package:money_management_mobile/features/notification/data/data_sources/local/notification_local_data_source.dart';
 import 'package:money_management_mobile/features/notification/data/data_sources/remote/notification_remote_data_source.dart';
 import 'package:money_management_mobile/features/notification/data/models/notification_registration_model.dart';
@@ -17,9 +18,15 @@ class NotificationCenterRepositoryImpl implements NotificationCenterRepository {
   );
 
   @override
-  Future<List<NotificationEntity>> getNotifications() async {
-    final models = await _remoteDataSource.getNotifications();
-    return models.map((item) => item.toEntity()).toList();
+  Future<PaginatedEntity<NotificationEntity>> getNotifications({
+    int? page,
+    int? perPage,
+  }) async {
+    final model = await _remoteDataSource.getNotifications(
+      page: page,
+      perPage: perPage,
+    );
+    return model.toEntity((item) => item.toEntity());
   }
 
   @override

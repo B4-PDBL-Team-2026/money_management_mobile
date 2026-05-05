@@ -40,13 +40,17 @@ class NotificationCenterCubit extends Cubit<NotificationCenterState> {
     emit(NotificationCenterLoading());
 
     try {
-      final notifications = await _notificationCenterRepository
-          .getNotifications();
+      final result = await _notificationCenterRepository.getNotifications(
+        page: 1,
+      );
 
       emit(
         NotificationCenterSuccess(
-          allNotifications: notifications,
+          allNotifications: result.items,
           selectedFilter: selectedFilter,
+          currentPage: result.currentPage,
+          totalPages: result.totalPages,
+          totalItems: result.totalItems,
         ),
       );
     } on NetworkException catch (e) {
@@ -55,6 +59,53 @@ class NotificationCenterCubit extends Cubit<NotificationCenterState> {
       emit(NotificationCenterError(e.message));
     } catch (e) {
       _log.severe('Unexpected error while fetching notifications', e);
+      if (kDebugMode) {
+        emit(NotificationCenterError('Terjadi kesalahan: ${e.toString()}'));
+      } else {
+        emit(
+          NotificationCenterError(
+            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> loadMoreNotifications() async {
+    final currentState = state;
+
+    if (currentState is! NotificationCenterSuccess) {
+      return;
+    }
+
+    if (currentState.isLoadingMore || !currentState.hasMore) {
+      return;
+    }
+
+    emit(currentState.copyWith(isLoadingMore: true));
+
+    try {
+      final result = await _notificationCenterRepository.getNotifications(
+        page: currentState.currentPage + 1,
+      );
+
+      emit(
+        currentState.copyWith(
+          allNotifications: [...currentState.allNotifications, ...result.items],
+          currentPage: result.currentPage,
+          totalPages: result.totalPages,
+          totalItems: result.totalItems,
+          isLoadingMore: false,
+        ),
+      );
+    } on NetworkException catch (e) {
+      _log.severe('Error fetching more notifications', e);
+      emit(NotificationCenterError(e.message));
+    } on UnexpectedException catch (e) {
+      _log.severe('Error fetching more notifications', e);
+      emit(NotificationCenterError(e.message));
+    } catch (e) {
+      _log.severe('Error fetching more notifications', e);
       if (kDebugMode) {
         emit(NotificationCenterError('Terjadi kesalahan: ${e.toString()}'));
       } else {
@@ -96,6 +147,7 @@ class NotificationCenterCubit extends Cubit<NotificationCenterState> {
         message: item.message,
         isRead: true,
         notificationCode: item.notificationCode,
+        targetId: item.targetId,
       );
     }).toList();
 
