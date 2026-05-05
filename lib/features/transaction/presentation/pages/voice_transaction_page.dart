@@ -16,18 +16,12 @@ import 'package:money_management_mobile/features/transaction/presentation/widget
 import 'package:money_management_mobile/features/transaction/presentation/widgets/voice_error_view.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/voice_success_view.dart';
 
-class VoiceTransactionPage extends StatefulWidget {
+class VoiceTransactionPage extends StatelessWidget {
   const VoiceTransactionPage({super.key});
 
-  @override
-  State<VoiceTransactionPage> createState() => _VoiceTransactionPageState();
-}
+  // Category helpers
 
-class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
-  int? _overrideCategoryId;
-  String? _overrideCategoryName;
-
-  List<CategoryEntity> _categoriesFor(TransactionType type) {
+  List<CategoryEntity> _categoriesFor(BuildContext context, TransactionType type) {
     final s = context.read<CategoryCubit>().state;
     if (s is CategoryLoaded) {
       return type == TransactionType.expense
@@ -37,14 +31,16 @@ class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
     return [];
   }
 
-  Future<void> _showCategoryPicker(
-      ParsedTransactionData data,
+  /// Opens [CategoryBottomSheet] and returns the picked category id, or null.
+  Future<int?> _showCategoryPicker(
+      BuildContext context,
+      TransactionType type,
       int currentId,
-      ) async {
-    final categories = _categoriesFor(data.type);
-    if (categories.isEmpty) return;
+      ) {
+    final categories = _categoriesFor(context, type);
+    if (categories.isEmpty) return Future.value(null);
 
-    final result = await showModalBottomSheet<int>(
+    return showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -56,23 +52,9 @@ class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
         selectedCategory: currentId,
       ),
     );
-
-    if (result != null && mounted) {
-      final picked = categories.firstWhere(
-            (c) => c.id == result,
-        orElse: () => categories.first,
-      );
-      setState(() {
-        _overrideCategoryId = picked.id;
-        _overrideCategoryName = picked.name;
-      });
-    }
   }
 
-  void _resetOverride() {
-    _overrideCategoryId = null;
-    _overrideCategoryName = null;
-  }
+  // Build
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +66,6 @@ class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
                 style: const TextStyle(color: AppColors.gohan)),
             backgroundColor: AppColors.danger100,
           ));
-        }
-        if (state is VoiceTransactionInitial || state is VoiceTransactionParsed) {
-          _resetOverride();
         }
       },
       builder: (context, state) {
@@ -102,7 +81,8 @@ class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
                   position: Tween<Offset>(
                     begin: const Offset(0, 0.03),
                     end: Offset.zero,
-                  ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
+                  ).animate(
+                      CurvedAnimation(parent: anim, curve: Curves.easeOut)),
                   child: child,
                 ),
               ),
@@ -129,9 +109,11 @@ class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.gohan, size: 20),
-              onPressed: () =>
-              context.canPop() ? context.pop() : context.go(AppRouter.dashboard),
+              icon: const Icon(Icons.arrow_back,
+                  color: AppColors.gohan, size: 20),
+              onPressed: () => context.canPop()
+                  ? context.pop()
+                  : context.go(AppRouter.dashboard),
             ),
           ),
         ),
@@ -164,24 +146,11 @@ class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
       VoiceTransactionParsed(parsedData: final d) => VoiceParsedView(
         key: const ValueKey('parsed'),
         data: d,
-        overrideCategoryId: _overrideCategoryId,
-        overrideCategoryName: _overrideCategoryName,
-        onShowCategoryPicker: _showCategoryPicker,
-        onSave: () {
-          if (_overrideCategoryId != null) {
-            cubit.overrideParsedData(ParsedTransactionData(
-              amount: d.amount,
-              type: d.type,
-              name: d.name,
-              categoryName: _overrideCategoryName ?? d.categoryName,
-              categoryId: _overrideCategoryId!,
-              transactionAt: d.transactionAt,
-              note: d.note,
-            ));
-          } else {
-            cubit.saveTransaction();
-          }
-        },
+        // Pass the real backend category list — view resolves/validates internally
+        categories: _categoriesFor(context, d.type),
+        onShowCategoryPicker: (currentId) =>
+            _showCategoryPicker(context, d.type, currentId),
+        onSave: (resolved) => cubit.overrideParsedData(resolved),
         onReset: cubit.reset,
       ),
       VoiceTransactionParseError(rawInput: final raw) => VoiceErrorView(
@@ -196,10 +165,12 @@ class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
       VoiceTransactionSuccess(transaction: final t) => VoiceSuccessView(
         key: const ValueKey('success'),
         transaction: t,
-        onHome: () =>
-        context.canPop() ? context.pop() : context.go(AppRouter.dashboard),
-        onDetail: () =>
-        context.canPop() ? context.pop() : context.go(AppRouter.dashboard),
+        onHome: () => context.canPop()
+            ? context.pop()
+            : context.go(AppRouter.dashboard),
+        onDetail: () => context.canPop()
+            ? context.pop()
+            : context.go(AppRouter.dashboard),
         onRecordAgain: cubit.reset,
       ),
       VoiceTransactionError() => VoiceIdleView(
@@ -211,7 +182,6 @@ class _VoiceTransactionPageState extends State<VoiceTransactionPage> {
   }
 }
 
-// Inline — too small to deserve its own file
 class _LoadingView extends StatelessWidget {
   final String label;
   const _LoadingView({super.key, required this.label});
@@ -224,7 +194,8 @@ class _LoadingView extends StatelessWidget {
         children: [
           const CircularProgressIndicator(color: AppColors.primary),
           const SizedBox(height: 20),
-          Text(label, style: const TextStyle(color: AppColors.trunks, fontSize: 15)),
+          Text(label,
+              style: const TextStyle(color: AppColors.trunks, fontSize: 15)),
         ],
       ),
     );
