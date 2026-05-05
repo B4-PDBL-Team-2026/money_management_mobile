@@ -57,14 +57,14 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                     const StepProgressIndicator(currentStep: 1, totalSteps: 4),
                     const SizedBox(height: AppSizes.spacing7),
                     Text(
-                      'Saldo Awal',
+                      'Atur Saldo Awal',
                       style: Theme.of(context).textTheme.displayMedium
                           ?.copyWith(color: AppColors.primary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSizes.spacing2),
                     Text(
-                      'Masukkin saldo awal kamu.',
+                      'Masukkin saldo awal kamu untuk mulai.',
                       textAlign: TextAlign.center,
                       style: Theme.of(
                         context,
