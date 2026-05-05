@@ -150,6 +150,26 @@ class NotificationRemoteDataSource {
   }
 
   Future<void> dismissNotification(String notificationId) async {
+    if (AppEnv.useMockApi) {
+      _notifications.removeWhere((item) => item.id == notificationId);
+      return;
+    }
+
+    try {
+      await _dio.delete('/notifications/$notificationId');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Dismiss Notification',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while dismissing notification', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat menghapus notifikasi',
+      );
+    }
+
     _notifications.removeWhere((item) => item.id == notificationId);
   }
 
