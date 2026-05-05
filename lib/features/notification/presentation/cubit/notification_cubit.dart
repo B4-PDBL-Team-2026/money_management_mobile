@@ -36,16 +36,33 @@ class NotificationCubit extends Cubit<NotificationState> {
   Future<void> initialize() async {
     if (super.state is NotificationReady ||
         super.state is NotificationInitializing) {
+      _log.info('Notification already initialized or initializing, skipping.');
       return;
     }
 
     emit(NotificationInitializing());
 
     try {
-      _foregroundMessageSubscription ??= _notificationService.foregroundMessages
-          .listen(_handleForegroundMessage);
-      _openedMessageSubscription ??= _notificationService.openedMessages.listen(
+      await _foregroundMessageSubscription?.cancel();
+      await _openedMessageSubscription?.cancel();
+
+      _foregroundMessageSubscription = _notificationService.foregroundMessages
+          .listen(
+            _handleForegroundMessage,
+            onError: (error, stackTrace) {
+              _log.severe(
+                'Error in foreground message stream',
+                error,
+                stackTrace,
+              );
+            },
+          );
+
+      _openedMessageSubscription = _notificationService.openedMessages.listen(
         _handleOpenedMessage,
+        onError: (error, stackTrace) {
+          _log.severe('Error in opened message stream', error, stackTrace);
+        },
       );
 
       await _notificationInitUsecase.execute();
@@ -66,7 +83,15 @@ class NotificationCubit extends Cubit<NotificationState> {
   }
 
   void _handleForegroundMessage(NotificationPayload message) {
-    _eventBus.fire(const NotificationCenterChangesEvent());
+    try {
+      _eventBus.fire(const NotificationCenterChangesEvent());
+    } catch (e, stackTrace) {
+      _log.severe(
+        'Failed to fire NotificationCenterChangesEvent',
+        e,
+        stackTrace,
+      );
+    }
   }
 
   void _handleOpenedMessage(NotificationPayload message) {

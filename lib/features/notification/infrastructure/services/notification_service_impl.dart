@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -196,27 +197,54 @@ class NotificationServiceImpl implements NotificationService {
     RemoteMessage message,
     StreamController<NotificationPayload> controller,
   ) {
-    final payload = _toNotificationPayload(message);
-    if (payload == null) {
-      return;
-    }
+    try {
+      final payload = _toNotificationPayload(message);
+      if (payload == null) {
+        return;
+      }
 
-    controller.add(payload);
+      if (controller.isClosed) {
+        _log.warning('Cannot add payload: controller is closed');
+        return;
+      }
+
+      controller.add(payload);
+    } catch (e, stackTrace) {
+      _log.severe('Error emitting payload', e, stackTrace);
+    }
   }
 
   NotificationPayload? _toNotificationPayload(RemoteMessage message) {
     final data = message.data;
-    final rawCode = data['notificationCode'] ?? data['notification_code'];
-    final notificationCode = NotificationCode.fromValue(rawCode as String?);
+    
+    // Try to extract payload from nested JSON string first
+    String? rawCode;
+    String? rawTargetId;
+    
+    try {
+      final payloadStr = data['payload'];
+      if (payloadStr != null && payloadStr.isNotEmpty) {
+        final parsedPayload = jsonDecode(payloadStr) as Map<String, dynamic>;
+        rawCode = parsedPayload['notificationCode'] as String?;
+        rawTargetId = parsedPayload['targetId'] as String? ?? parsedPayload['occurrenceId'] as String?;
+      }
+    } catch (e) {
+      _log.warning('Failed to parse payload JSON: $e');
+    }
+    
+    // Fallback to top-level fields
+    rawCode ??= data['notificationCode'] as String? ?? data['notification_code'] as String?;
+    rawTargetId ??= data['targetId'] as String? ?? data['target_id'] as String?;
+    
+    final notificationCode = NotificationCode.fromValue(rawCode);
     if (notificationCode == null) {
+      _log.warning('Skipping notification: unknown code "$rawCode"');
       return null;
     }
 
-    final rawTargetId = data['targetId'] ?? data['target_id'];
-
     return NotificationPayload(
       code: notificationCode,
-      targetId: rawTargetId as String?,
+      targetId: rawTargetId,
     );
   }
 
