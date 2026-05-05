@@ -4,8 +4,8 @@ import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
-import 'package:money_management_mobile/features/profile/data/models/fixed_cost_template_model.dart';
 import 'package:money_management_mobile/features/profile/data/models/fixed_cost_occurrence_model.dart';
+import 'package:money_management_mobile/features/profile/data/models/fixed_cost_template_model.dart';
 
 @LazySingleton()
 class FixedCostTemplateRemoteDataSource {
@@ -45,8 +45,7 @@ class FixedCostTemplateRemoteDataSource {
         '/fixed-costs',
         queryParameters: {'per_page': 100},
       );
-      final rawEnvelope = response.data['data'] as Map<String, dynamic>? ?? {};
-      final rawData = rawEnvelope['data'] as List<dynamic>? ?? [];
+      final rawData = response.data['data'] as List<dynamic>? ?? {};
 
       return rawData
           .whereType<Map>()

@@ -13,12 +13,12 @@ class FixedCostOccurrenceModel extends FixedCostOccurrenceEntity {
   });
 
   factory FixedCostOccurrenceModel.fromJson(Map<String, dynamic> json) {
-    final rawCycleType = json['cycle_type'] as String?;
-    final fallbackCycleKey = json['cycle_key'] as String?;
+    final rawCycleType = json['cycleType'] as String?;
+    final fallbackCycleKey = json['cycleKey'] as String?;
     final rawId = json['id'];
-    final rawTemplateId = json['fixed_cost_template_id'] ?? json['id'];
-    final rawCategoryId = json['category_id'];
-    final rawDueDay = json['due_day'] ?? json['due_value'];
+    final rawTemplateId = json['fixedCostTemplateId'] ?? json['id'];
+    final rawCategoryId = json['categoryId'];
+    final rawDueDay = json['dueDay'] ?? json['dueValue'];
 
     final parsedOccurrenceId = rawId is int
         ? rawId
@@ -41,7 +41,7 @@ class FixedCostOccurrenceModel extends FixedCostOccurrenceEntity {
           : int.tryParse(rawCategoryId?.toString() ?? '') ?? 0,
       cycleType: rawCycleType ?? fallbackCycleKey ?? '-',
       dueDate: _resolveDueDate(
-        dueDateRaw: json['due_date'] as String?,
+        dueDateRaw: json['dueDate'] as String?,
         cycleType: cycleType,
         dueDay: parsedDueDay,
       ),
