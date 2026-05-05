@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/features/notification/domain/entities/notification_entity.dart';
 import 'package:money_management_mobile/features/notification/domain/services/notification_service.dart';
 
 @LazySingleton(as: NotificationService)
@@ -23,10 +24,10 @@ class NotificationServiceImpl implements NotificationService {
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  final StreamController<RemoteMessage> _foregroundMessageController =
-      StreamController<RemoteMessage>.broadcast();
-  final StreamController<RemoteMessage> _openedMessageController =
-      StreamController<RemoteMessage>.broadcast();
+  final StreamController<NotificationPayload> _foregroundMessageController =
+      StreamController<NotificationPayload>.broadcast();
+  final StreamController<NotificationPayload> _openedMessageController =
+      StreamController<NotificationPayload>.broadcast();
   final StreamController<String> _tokenRefreshController =
       StreamController<String>.broadcast();
 
@@ -38,11 +39,12 @@ class NotificationServiceImpl implements NotificationService {
   NotificationBootstrapResult? _bootstrapResult;
 
   @override
-  Stream<RemoteMessage> get foregroundMessages =>
+  Stream<NotificationPayload> get foregroundMessages =>
       _foregroundMessageController.stream;
 
   @override
-  Stream<RemoteMessage> get openedMessages => _openedMessageController.stream;
+  Stream<NotificationPayload> get openedMessages =>
+      _openedMessageController.stream;
 
   @override
   Stream<String> get tokenRefreshes => _tokenRefreshController.stream;
@@ -64,7 +66,7 @@ class NotificationServiceImpl implements NotificationService {
 
       final initialMessage = await _fcm.getInitialMessage();
       if (initialMessage != null) {
-        _openedMessageController.add(initialMessage);
+        _emitPayloadIfValid(initialMessage, _openedMessageController);
       }
 
       _isInitialized = true;
@@ -181,13 +183,41 @@ class NotificationServiceImpl implements NotificationService {
       message,
     ) {
       _showForegroundNotification(message);
-      _foregroundMessageController.add(message);
+      _emitPayloadIfValid(message, _foregroundMessageController);
     });
 
     _onOpenedMessageSubscription ??= FirebaseMessaging.onMessageOpenedApp
         .listen((message) {
-          _openedMessageController.add(message);
+          _emitPayloadIfValid(message, _openedMessageController);
         });
+  }
+
+  void _emitPayloadIfValid(
+    RemoteMessage message,
+    StreamController<NotificationPayload> controller,
+  ) {
+    final payload = _toNotificationPayload(message);
+    if (payload == null) {
+      return;
+    }
+
+    controller.add(payload);
+  }
+
+  NotificationPayload? _toNotificationPayload(RemoteMessage message) {
+    final data = message.data;
+    final rawCode = data['notificationCode'] ?? data['notification_code'];
+    final notificationCode = NotificationCode.fromValue(rawCode as String?);
+    if (notificationCode == null) {
+      return null;
+    }
+
+    final rawTargetId = data['targetId'] ?? data['target_id'];
+
+    return NotificationPayload(
+      code: notificationCode,
+      targetId: rawTargetId as String?,
+    );
   }
 
   void _showForegroundNotification(RemoteMessage message) {

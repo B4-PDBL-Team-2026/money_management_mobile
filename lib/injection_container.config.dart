@@ -299,16 +299,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
-    gh.lazySingleton<_i421.NotificationCubit>(
-      () => _i421.NotificationCubit(
-        gh<_i874.NotificationInitUsecase>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
     gh.lazySingleton<_i1023.DashboardMetricCubit>(
       () => _i1023.DashboardMetricCubit(
         gh<_i83.CalculateDashboardMetricsUsecase>(),
         gh<_i557.DashboardRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.lazySingleton<_i421.NotificationCubit>(
+      () => _i421.NotificationCubit(
+        gh<_i874.NotificationInitUsecase>(),
+        gh<_i747.NotificationService>(),
         gh<_i1017.EventBus>(),
       ),
     );

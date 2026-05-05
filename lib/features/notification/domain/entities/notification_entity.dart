@@ -1,6 +1,7 @@
 enum NotificationCode {
   transactionRecordingReminder('TRANSACTION_RECORDING_REMINDER'),
-  fixedCostDue('FIXED_COST_DUE');
+  fixedCostDue('FIXED_COST_DUE'),
+  testPush('TEST_PUSH');
 
   const NotificationCode(this.value);
 
@@ -26,6 +27,8 @@ enum NotificationCode {
         return '/transaction/add';
       case NotificationCode.fixedCostDue:
         return '/fixed-costs';
+      default:
+        return null;
     }
   }
 }

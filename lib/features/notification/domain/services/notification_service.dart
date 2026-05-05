@@ -1,4 +1,11 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:money_management_mobile/features/notification/domain/entities/notification_entity.dart';
+
+class NotificationPayload {
+  final NotificationCode code;
+  final String? targetId;
+
+  NotificationPayload({required this.code, this.targetId});
+}
 
 class NotificationBootstrapResult {
   final String? token;
@@ -11,8 +18,8 @@ class NotificationBootstrapResult {
 }
 
 abstract class NotificationService {
-  Stream<RemoteMessage> get foregroundMessages;
-  Stream<RemoteMessage> get openedMessages;
+  Stream<NotificationPayload> get foregroundMessages;
+  Stream<NotificationPayload> get openedMessages;
   Stream<String> get tokenRefreshes;
 
   Future<NotificationBootstrapResult> initialize();
