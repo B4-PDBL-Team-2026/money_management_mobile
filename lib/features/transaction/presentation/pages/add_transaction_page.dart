@@ -131,6 +131,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     final currentCategories = isExpenseSelected
         ? _expenseCategories
         : _incomeCategories;
+    
+    final String dynamicHint = isExpenseSelected 
+        ? 'Contoh: Tempat Tinggal, Makan Siang' 
+        : 'Contoh: Gaji Bulanan, Uang Saku';
 
     return Scaffold(
       appBar: AppBar(
@@ -305,7 +309,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       const SizedBox(height: AppSizes.spacing4),
                       AppTextField(
                         label: 'Judul/Nama Transaksi',
-                        hint: 'Contoh: Geprek Cibus',
+                        hint: dynamicHint,
                         controller: _nameController,
                         isDisabled: state is AddTransactionLoading,
                         errorText: serverErrors?['name']?[0],
