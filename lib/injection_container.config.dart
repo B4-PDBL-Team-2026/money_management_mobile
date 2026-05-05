@@ -84,6 +84,8 @@ import 'features/transaction/presentation/cubit/transaction_detail_cubit.dart'
     as _i555;
 import 'features/transaction/presentation/cubit/transaction_history_cubit.dart'
     as _i900;
+import 'features/transaction/presentation/cubit/voice_transaction_cubit.dart'
+    as _i966;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -237,6 +239,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i555.TransactionDetailCubit>(
       () => _i555.TransactionDetailCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i966.VoiceTransactionCubit>(
+      () => _i966.VoiceTransactionCubit(
         gh<_i463.TransactionRepository>(),
         gh<_i1017.EventBus>(),
       ),

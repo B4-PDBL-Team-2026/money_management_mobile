@@ -30,9 +30,11 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/voice_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/voice_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/outer_shell.dart';
 
@@ -60,6 +62,7 @@ class AppRouter {
   static const String deleteAccount = '/other/delete-account';
 
   static const String addTransaction = '/transaction/add';
+  static const String voiceTransaction = '/transaction/voice';
   static const String transactionDetailBase = '/transaction';
   static const String transactionDetail = '/transaction/:id';
 
@@ -214,6 +217,13 @@ class AppRouter {
                 BlocProvider.value(value: getIt<DashboardMetricCubit>()),
               ],
               child: const AddTransactionPage(),
+            ),
+          ),
+          GoRoute(
+            path: voiceTransaction,
+            builder: (context, state) => BlocProvider(
+              create: (_) => getIt<VoiceTransactionCubit>(),
+              child: const VoiceTransactionPage(),
             ),
           ),
           GoRoute(
