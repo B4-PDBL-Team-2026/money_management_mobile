@@ -53,8 +53,6 @@ import 'features/dashboard/presentation/cubits/delete_account_cubit.dart'
     as _i111;
 import 'features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart'
     as _i928;
-import 'features/notification/data/data_sources/local/notification_local_data_source.dart'
-    as _i437;
 import 'features/notification/data/data_sources/remote/notification_remote_data_source.dart'
     as _i545;
 import 'features/notification/data/repositories/notification_center_repository_impl.dart'
@@ -131,9 +129,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i844.CategoryLocalDataSource>(
       () => _i844.CategoryLocalDataSource(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i437.NotificationLocalDataSource>(
-      () => _i437.NotificationLocalDataSource(gh<_i460.SharedPreferences>()),
-    );
     gh.lazySingleton<_i715.FinancialProfileDraftCubit>(
       () => _i715.FinancialProfileDraftCubit(
         gh<_i103.CalculateFinancialProfileUseCase>(),
@@ -192,6 +187,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i844.CategoryLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i862.NotificationCenterRepository>(
+      () => _i1007.NotificationCenterRepositoryImpl(
+        gh<_i545.NotificationRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i121.FixedCostTemplateRepository>(
       () => _i1050.FixedCostTemplateRepositoryImpl(
         gh<_i270.FixedCostTemplateRemoteDataSource>(),
@@ -207,12 +207,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i111.DeleteAccountCubit(
         gh<_i1015.AuthRepository>(),
         gh<_i410.SessionCubit>(),
-      ),
-    );
-    gh.lazySingleton<_i862.NotificationCenterRepository>(
-      () => _i1007.NotificationCenterRepositoryImpl(
-        gh<_i545.NotificationRemoteDataSource>(),
-        gh<_i437.NotificationLocalDataSource>(),
       ),
     );
     gh.factory<_i206.LoginUseCase>(

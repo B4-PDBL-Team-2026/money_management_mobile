@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
-import 'package:money_management_mobile/features/notification/data/data_sources/local/notification_local_data_source.dart';
 import 'package:money_management_mobile/features/notification/data/data_sources/remote/notification_remote_data_source.dart';
 import 'package:money_management_mobile/features/notification/data/models/notification_registration_model.dart';
 import 'package:money_management_mobile/features/notification/domain/entities/notification_entity.dart';
@@ -10,12 +9,8 @@ import 'package:money_management_mobile/features/notification/domain/repositorie
 @LazySingleton(as: NotificationCenterRepository)
 class NotificationCenterRepositoryImpl implements NotificationCenterRepository {
   final NotificationRemoteDataSource _remoteDataSource;
-  final NotificationLocalDataSource _localDataSource;
 
-  NotificationCenterRepositoryImpl(
-    this._remoteDataSource,
-    this._localDataSource,
-  );
+  NotificationCenterRepositoryImpl(this._remoteDataSource);
 
   @override
   Future<PaginatedEntity<NotificationEntity>> getNotifications({
@@ -40,8 +35,8 @@ class NotificationCenterRepositoryImpl implements NotificationCenterRepository {
   }
 
   @override
-  Future<String?> getRegisteredToken() async {
-    return _localDataSource.getFcmToken();
+  Future<List<NotificationRegistrationEntity>> getRegisteredDevices() async {
+    return _remoteDataSource.getRegisteredDevices();
   }
 
   @override
@@ -51,6 +46,5 @@ class NotificationCenterRepositoryImpl implements NotificationCenterRepository {
     final model = NotificationRegistrationModel.fromEntity(registrationData);
 
     await _remoteDataSource.registerNotificationToken(model);
-    await _localDataSource.saveFcmToken(model.token);
   }
 }

@@ -7,6 +7,26 @@ class NotificationRegistrationModel extends NotificationRegistrationEntity {
     required super.deviceType,
   });
 
+  factory NotificationRegistrationModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    final deviceTypeValue = json['deviceType'];
+    final normalizedDeviceType = deviceTypeValue
+        ?.toString()
+        .trim()
+        .toLowerCase();
+    final deviceType = DeviceType.values.firstWhere(
+      (type) => type.value == normalizedDeviceType,
+      orElse: () => DeviceType.android,
+    );
+
+    return NotificationRegistrationModel(
+      deviceId: json['deviceId']?.toString() ?? '',
+      token: (json['fcmToken'] ?? json['token'])?.toString() ?? '',
+      deviceType: deviceType,
+    );
+  }
+
   factory NotificationRegistrationModel.fromEntity(
     NotificationRegistrationEntity entity,
   ) {

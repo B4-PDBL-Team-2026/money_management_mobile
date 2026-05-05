@@ -154,6 +154,39 @@ class NotificationRemoteDataSource {
   }
 
   Future<void> markAsRead(String notificationId) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      final targetIndex = _notifications.indexWhere(
+        (item) => item.id == notificationId,
+      );
+
+      if (targetIndex < 0) {
+        _log.warning('Notification not found for markAsRead: $notificationId');
+        return;
+      }
+
+      _notifications[targetIndex] = _notifications[targetIndex].copyWith(
+        isRead: true,
+      );
+      return;
+    }
+
+    try {
+      await _dio.post('/notifications/$notificationId/read');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Mark Notification Read',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while marking notification as read', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat menandai notifikasi terbaca',
+      );
+    }
+
     final targetIndex = _notifications.indexWhere(
       (item) => item.id == notificationId,
     );
@@ -166,6 +199,36 @@ class NotificationRemoteDataSource {
     _notifications[targetIndex] = _notifications[targetIndex].copyWith(
       isRead: true,
     );
+  }
+
+  Future<List<NotificationRegistrationModel>> getRegisteredDevices() async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      return <NotificationRegistrationModel>[];
+    }
+
+    try {
+      final response = await _dio.get('/notifications/device');
+      final responseData = response.data as Map<String, dynamic>?;
+      final data = responseData?['data'];
+      final items = data is List ? data : const <dynamic>[];
+
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(NotificationRegistrationModel.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Get Registered Notification Devices',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while fetching notification devices', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat mengambil data perangkat notifikasi',
+      );
+    }
   }
 
   Future<void> registerNotificationToken(

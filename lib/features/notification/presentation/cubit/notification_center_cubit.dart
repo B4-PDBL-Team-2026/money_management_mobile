@@ -155,13 +155,13 @@ class NotificationCenterCubit extends Cubit<NotificationCenterState> {
 
     try {
       await _notificationCenterRepository.markAsRead(notificationId);
-      _eventBus.fire(const NotificationCenterChangesEvent());
     } catch (error, stackTrace) {
       _log.warning(
         'Failed to mark notification as read, reloading list.',
         error,
         stackTrace,
       );
+
       await fetchNotifications(forceRefresh: true);
     }
   }
@@ -181,7 +181,6 @@ class NotificationCenterCubit extends Cubit<NotificationCenterState> {
 
     try {
       await _notificationCenterRepository.dismissNotification(notificationId);
-      _eventBus.fire(const NotificationCenterChangesEvent());
     } catch (error, stackTrace) {
       _log.warning(
         'Failed to dismiss notification, reloading list.',

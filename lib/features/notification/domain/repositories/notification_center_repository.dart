@@ -9,7 +9,7 @@ abstract class NotificationCenterRepository {
   });
   Future<void> dismissNotification(String notificationId);
   Future<void> markAsRead(String notificationId);
-  Future<String?> getRegisteredToken();
+  Future<List<NotificationRegistrationEntity>> getRegisteredDevices();
   Future<void> registerDeviceForNotifications(
     NotificationRegistrationEntity registrationData,
   );
