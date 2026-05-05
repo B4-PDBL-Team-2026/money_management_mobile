@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_state.dart';
@@ -7,7 +9,10 @@ import 'package:money_management_mobile/features/dashboard/domain/usecases/calcu
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/financial_health_badge.dart';
+import 'package:money_management_mobile/features/notification/presentation/cubit/notification_center_cubit.dart';
+import 'package:money_management_mobile/features/notification/presentation/cubit/notification_center_state.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({super.key});
@@ -21,50 +26,94 @@ class DashboardHeader extends StatelessWidget {
 
     final dashboardState = context.watch<DashboardMetricCubit>().state;
 
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Hai, $username!',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: AppSizes.spacing2),
-
-              if (dashboardState is DashboardMetricLoaded) ...[
-                Text(
-                  _resolveMessage(
-                    dashboardState.metrics.healthScenario,
-                    dashboardState.metrics.limitState,
-                    dashboardState.metrics.balance,
-                    dashboardState.metrics.totalUnpaidFixedCost,
-                  ),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ] else if (dashboardState is DashboardMetricLoading) ...[
-                Text(
-                  'Memuat data dashboard...',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ] else ...[
-                Text(
-                  'Gagal memuat data dashboard',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                ),
-              ],
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Hai, $username!',
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+            if (dashboardState is DashboardMetricLoaded) ...[
+              const Spacer(),
+              BudgetHealthBadge(status: dashboardState.metrics.healthScenario),
+              const SizedBox(width: AppSizes.spacing4),
+              _buildNotificationButton(context),
             ],
-          ),
+          ],
         ),
+        const SizedBox(height: AppSizes.spacing2),
         if (dashboardState is DashboardMetricLoaded) ...[
-          const SizedBox(width: AppSizes.spacing4),
-          BudgetHealthBadge(status: dashboardState.metrics.healthScenario),
+          Text(
+            _resolveMessage(
+              dashboardState.metrics.healthScenario,
+              dashboardState.metrics.limitState,
+              dashboardState.metrics.balance,
+              dashboardState.metrics.totalUnpaidFixedCost,
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ] else if (dashboardState is DashboardMetricLoading) ...[
+          Text(
+            'Memuat data dashboard...',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ] else ...[
+          Text(
+            'Gagal memuat data dashboard',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
         ],
       ],
+    );
+  }
+
+  Widget _buildNotificationButton(BuildContext context) {
+    return BlocBuilder<NotificationCenterCubit, NotificationCenterState>(
+      builder: (context, notificationState) {
+        final hasUnreadNotifications =
+            notificationState is NotificationCenterSuccess &&
+            notificationState.allNotifications.any((n) => !n.isRead);
+
+        return Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                context.go(AppRouter.notification);
+              },
+              child: Container(
+                padding: const EdgeInsets.all(AppSizes.spacing2),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: PhosphorIcon(
+                  PhosphorIconsRegular.bell,
+                  size: 28,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+            if (hasUnreadNotifications)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: AppColors.danger100,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 

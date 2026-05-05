@@ -163,14 +163,6 @@ class AppRouter {
               StatefulShellBranch(
                 routes: [
                   GoRoute(
-                    path: notification,
-                    builder: (context, state) => const NotificationCenterPage(),
-                  ),
-                ],
-              ),
-              StatefulShellBranch(
-                routes: [
-                  GoRoute(
                     path: history,
                     builder: (context, state) => const TransactionHistoryPage(),
                   ),
@@ -181,6 +173,13 @@ class AppRouter {
                   GoRoute(
                     path: dashboard,
                     builder: (context, state) => const HomePage(),
+                    routes: [
+                      GoRoute(
+                        path: 'notification',
+                        builder: (context, state) =>
+                            const NotificationCenterPage(),
+                      ),
+                    ],
                   ),
                 ],
               ),

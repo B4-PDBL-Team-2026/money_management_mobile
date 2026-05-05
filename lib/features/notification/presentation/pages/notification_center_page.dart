@@ -80,11 +80,17 @@ class _NotificationCenterPageState extends State<NotificationCenterPage> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Notifikasi',
-                            style: AppTextStyles.h1.copyWith(
-                              color: AppColors.primary,
-                            ),
+                          Row(
+                            children: [
+                              BackButton(color: AppColors.primary),
+                              const SizedBox(width: AppSizes.spacing2),
+                              Text(
+                                'Notifikasi',
+                                style: AppTextStyles.h1.copyWith(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: AppSizes.spacing5),
                           AppSegmentedControl<NotificationCenterFilter>(
@@ -166,7 +172,8 @@ class _NotificationCenterPageState extends State<NotificationCenterPage> {
                                             onDismissed: () {
                                               context
                                                   .read<
-                                                      NotificationCenterCubit>()
+                                                    NotificationCenterCubit
+                                                  >()
                                                   .dismissNotification(
                                                     entry.value[index].id,
                                                   );

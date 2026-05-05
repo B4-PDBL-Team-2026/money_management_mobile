@@ -31,12 +31,6 @@ class ShellContainer extends StatelessWidget {
           showUnselectedLabels: false,
           items: const [
             BottomNavigationBarItem(
-              icon: PhosphorIcon(PhosphorIconsRegular.bell),
-              activeIcon: PhosphorIcon(PhosphorIconsFill.bell),
-              label: 'Notifikasi',
-              tooltip: 'Notifikasi',
-            ),
-            BottomNavigationBarItem(
               icon: PhosphorIcon(PhosphorIconsRegular.receipt),
               activeIcon: PhosphorIcon(PhosphorIconsFill.receipt),
               label: 'Riwayat',
