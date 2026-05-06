@@ -21,8 +21,10 @@ import 'package:money_management_mobile/features/dashboard/presentation/layouts/
 import 'package:money_management_mobile/features/dashboard/presentation/pages/delete_account_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
+import 'package:money_management_mobile/features/notification/presentation/pages/notification_center_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_occurence_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_template_management_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
@@ -54,9 +56,11 @@ class AppRouter {
   static const String step4Personalization = '/personalization/step-4';
 
   static const String dashboard = '/';
+  static const String notification = '/notification';
   static const String history = '/history';
   static const String other = '/other';
-  static const String fixedCostsManagement = '/other/fixed-costs';
+  static const String fixedCostsOccurence = '/fixed-costs';
+  static const String fixedCostsManagement = '/fixed-costs/manage';
   static const String deleteAccount = '/other/delete-account';
 
   static const String addTransaction = '/transaction/add';
@@ -169,6 +173,28 @@ class AppRouter {
                   GoRoute(
                     path: dashboard,
                     builder: (context, state) => const HomePage(),
+                    routes: [
+                      GoRoute(
+                        path: 'notification',
+                        builder: (context, state) =>
+                            const NotificationCenterPage(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: fixedCostsOccurence,
+                    builder: (context, state) => const FixedCostOccurencePage(),
+                    routes: [
+                      GoRoute(
+                        path: 'manage',
+                        builder: (context, state) =>
+                            const FixedCostTemplateManagementPage(),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -186,11 +212,6 @@ class AppRouter {
                       child: const OtherPage(),
                     ),
                     routes: [
-                      GoRoute(
-                        path: 'fixed-costs',
-                        builder: (context, state) =>
-                            const FixedCostTemplateManagementPage(),
-                      ),
                       GoRoute(
                         path: 'delete-account',
                         builder: (context, state) => BlocProvider(

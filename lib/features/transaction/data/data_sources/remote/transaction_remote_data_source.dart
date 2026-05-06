@@ -44,20 +44,15 @@ class TransactionRemoteDataSource {
 
       return TransactionDetailModel(
         id: id,
-        userId: 1,
-        categoryType: 'system',
         categoryId: 1,
-        fixedCostOccurrenceId: null,
+        categoryName: 'Belanja',
+        categoryIcon: 'shopping_bag',
         type: TransactionType.expense,
         source: 'manual',
         name: 'Makan Siang',
         amount: 30000,
         transactionAt: DateTime.now(),
-        effectiveAt: null,
         note: 'Mock detail transaction',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        deletedAt: null,
       );
     }
 
@@ -291,9 +286,7 @@ class TransactionRemoteDataSource {
           'search': search,
           'categoryId': categoryId,
           'month': month,
-          'year': year,
-          // TODO: BERBAHAYA, hapus jika sudah ada fitur custom category
-          'categoryType': 'system',
+          'year': year
         },
       );
 

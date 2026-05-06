@@ -25,8 +25,6 @@ class CategoryRemoteDataSource {
           icon: 'wallet',
           type: TransactionType.income,
           isSystem: true,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
         ),
         CategoryModel(
           id: 2,
@@ -34,8 +32,6 @@ class CategoryRemoteDataSource {
           icon: 'bowl_food',
           isSystem: false,
           type: TransactionType.expense,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
         ),
         CategoryModel(
           id: 3,
@@ -43,8 +39,6 @@ class CategoryRemoteDataSource {
           icon: 'taxi',
           isSystem: false,
           type: TransactionType.expense,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
         ),
       ];
     }
