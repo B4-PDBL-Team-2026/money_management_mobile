@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
@@ -93,6 +94,8 @@ class HomePage extends StatelessWidget {
                         const SizedBox(height: AppSizes.spacing6),
                         _FixedCostSection(
                           title: 'Fixed Cost Mingguan di Minggu Ini',
+                          helpMessage:
+                              'Jumlah tagihan tetap (fixed cost) yang mendekati jatuh tempo pembayaran. Jumlah ini disisihkan dari saldo Anda untuk menghitung jatah harian.',
                           items: weeklyItems,
                         ),
                       ],
@@ -101,6 +104,8 @@ class HomePage extends StatelessWidget {
                         const SizedBox(height: AppSizes.spacing6),
                         _FixedCostSection(
                           title: 'Fixed Cost Bulanan di Bulan Ini',
+                          helpMessage:
+                              'Jumlah tagihan tetap (fixed cost) yang mendekati jatuh tempo pembayaran. Jumlah ini disisihkan dari saldo Anda untuk menghitung jatah harian.',
                           items: monthlyItems,
                         ),
                       ],
@@ -192,9 +197,14 @@ class HomePage extends StatelessWidget {
 
 class _FixedCostSection extends StatelessWidget {
   final String title;
+  final String? helpMessage;
   final List<UnpaidFixedCostTemplateEntity> items;
 
-  const _FixedCostSection({required this.title, required this.items});
+  const _FixedCostSection({
+    required this.title,
+    required this.items,
+    this.helpMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -206,12 +216,23 @@ class _FixedCostSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontSize: 16),
-        ),
+        if (helpMessage != null)
+          AppHelpTooltip(
+            message: helpMessage!,
+            child: Text(
+              title,
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(fontSize: 16),
+            ),
+          )
+        else
+          Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontSize: 16),
+          ),
         const SizedBox(height: AppSizes.spacing3),
         ListView.separated(
           shrinkWrap: true,

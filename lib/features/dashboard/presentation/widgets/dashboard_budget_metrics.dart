@@ -152,9 +152,13 @@ class DashboardBudgetMetrics extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            'Saldo aman untuk $remainingDaysInCycle hari ',
-            style: Theme.of(context).textTheme.bodySmall,
+          AppHelpTooltip(
+            message:
+                'Estimasi sisa uang Anda di akhir siklus keuangan saat ini. Sisa jatah harian hari ini akan ditambahkan ke tabungan Anda untuk cycle berikutnya.',
+            child: Text(
+              'Saldo aman untuk $remainingDaysInCycle hari ',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
           Text(
             'Rp ${CurrencyFormatter.format(safeBalance)}',
