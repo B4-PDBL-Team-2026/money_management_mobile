@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
@@ -76,6 +77,8 @@ class UnpaidFixedCostCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSizes.spacing3),
+            _categoryChip(context, item),
+            const SizedBox(height: AppSizes.spacing3),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -97,6 +100,44 @@ class UnpaidFixedCostCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _categoryChip(
+    BuildContext context,
+    UnpaidFixedCostTemplateEntity item,
+  ) {
+    final icon =
+        GlobalConstant.categoryIconsMapping[item.categoryIcon] ??
+        GlobalConstant.categoryIconsMapping['question'];
+
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.spacing2,
+            vertical: AppSizes.spacing1,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.lightPrimary,
+            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 14, color: AppColors.primary),
+              const SizedBox(width: AppSizes.spacing1),
+              Text(
+                item.categoryName,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

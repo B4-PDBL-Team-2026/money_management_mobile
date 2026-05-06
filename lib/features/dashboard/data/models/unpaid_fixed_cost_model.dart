@@ -5,6 +5,8 @@ class UnpaidFixedCostModel extends UnpaidFixedCostTemplateEntity {
   const UnpaidFixedCostModel({
     required super.occurrenceId,
     required super.categoryId,
+    required super.categoryName,
+    required super.categoryIcon,
     required super.name,
     required super.amount,
     required super.cycle,
@@ -17,14 +19,17 @@ class UnpaidFixedCostModel extends UnpaidFixedCostTemplateEntity {
     final rawAmount = json['amount'];
     final rawCycle = json['cycleType'];
     final dueDate = DateTime.tryParse(json['dueDate'] as String? ?? '');
+    final category = rawCategory is Map
+        ? Map<String, dynamic>.from(rawCategory)
+        : <String, dynamic>{};
 
     final cycle = _parseCycle(rawCycle?.toString());
 
     return UnpaidFixedCostModel(
       occurrenceId: _parseInt(rawOccurrenceId),
-      categoryId: _parseInt(
-        rawCategory is Map ? rawCategory['id'] : null,
-      ),
+      categoryId: _parseInt(category['id']),
+      categoryName: category['name'] as String? ?? '-',
+      categoryIcon: category['icon'] as String? ?? 'question',
       name: json['name'] as String,
       amount: _parseInt(rawAmount),
       cycle: cycle,
@@ -67,6 +72,8 @@ class UnpaidFixedCostModel extends UnpaidFixedCostTemplateEntity {
     return UnpaidFixedCostTemplateEntity(
       occurrenceId: occurrenceId,
       categoryId: categoryId,
+      categoryName: categoryName,
+      categoryIcon: categoryIcon,
       name: name,
       amount: amount,
       cycle: cycle,

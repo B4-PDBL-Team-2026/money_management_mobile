@@ -23,6 +23,8 @@ class DashboardRemoteDataSource {
         UnpaidFixedCostModel(
           occurrenceId: 1,
           categoryId: 6,
+          categoryName: 'Belanja',
+          categoryIcon: 'shopping_bag',
           name: 'Sewa Kos',
           amount: 100000,
           cycle: FinancialCycle.monthly,
@@ -31,6 +33,8 @@ class DashboardRemoteDataSource {
         UnpaidFixedCostModel(
           occurrenceId: 2,
           categoryId: 7,
+          categoryName: 'Kesehatan',
+          categoryIcon: 'heart_beat',
           name: 'Listrik',
           amount: 50000,
           cycle: FinancialCycle.monthly,
@@ -87,6 +91,8 @@ class DashboardRemoteDataSource {
           UnpaidFixedCostModel(
             occurrenceId: 1,
             categoryId: 6,
+            categoryName: 'Belanja',
+            categoryIcon: 'shopping_bag',
             name: 'Sewa Kos',
             amount: 100000,
             cycle: FinancialCycle.monthly,
@@ -95,6 +101,8 @@ class DashboardRemoteDataSource {
           UnpaidFixedCostModel(
             occurrenceId: 2,
             categoryId: 7,
+            categoryName: 'Kesehatan',
+            categoryIcon: 'heart_beat',
             name: 'Listrik',
             amount: 50000,
             cycle: FinancialCycle.monthly,

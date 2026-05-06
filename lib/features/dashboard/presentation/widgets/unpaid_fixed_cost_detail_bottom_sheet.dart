@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
@@ -65,6 +66,8 @@ class UnpaidFixedCostDetailBottomSheet extends StatelessWidget {
             item.cycle == FinancialCycle.weekly ? 'Mingguan' : 'Bulanan',
           ),
           const SizedBox(height: AppSizes.spacing2),
+          _detailRowWidget(context, _categoryValue(context, item)),
+          const SizedBox(height: AppSizes.spacing2),
           _detailRow(context, 'Jatuh tempo', _dueText(item)),
           const SizedBox(height: AppSizes.spacing2),
           _detailRow(
@@ -119,6 +122,48 @@ class UnpaidFixedCostDetailBottomSheet extends StatelessWidget {
         ),
         Text(
           value,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppColors.primary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _detailRowWidget(
+    BuildContext context,
+    Widget value,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Kategori',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppColors.trunks,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        value,
+      ],
+    );
+  }
+
+  Widget _categoryValue(
+    BuildContext context,
+    UnpaidFixedCostTemplateEntity item,
+  ) {
+    final icon = GlobalConstant.categoryIconsMapping[item.categoryIcon] ??
+        GlobalConstant.categoryIconsMapping['question'];
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: AppColors.primary),
+        const SizedBox(width: AppSizes.spacing1),
+        Text(
+          item.categoryName,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: AppColors.primary,
             fontWeight: FontWeight.w700,
