@@ -213,6 +213,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 padding: const EdgeInsets.all(AppSizes.spacing6),
                 child: Form(
                   key: _formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
                     children: [
                       AppSegmentedControl<TransactionType>(
@@ -249,8 +250,25 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         onChanged: (value) {
                           setState(() {
                             _selectedTransactionType = value;
+                            
+                            // 6. Reset Validasi
+                            _formKey.currentState?.reset();
+                            
+                            // 1. Reset Nominal
+                            _amountController.clear();
+                            
+                            // 2. Reset Judul
+                            _nameController.clear();
+                            
+                            // 3. Reset Catatan
+                            _noteController.clear();
+                            
+                            // 4. Reset Tanggal ke hari ini
+                            _selectedDate = DateTime.now();
+                            _dateController.text = _formatDate(_selectedDate);
+                            
+                            // 5. Reset Kategori ke default awal tipe tersebut
                             _selectedCategory = 0;
-
                             if (value == TransactionType.expense) {
                               if (_expenseCategories.isNotEmpty) {
                                 _selectedCategory = _expenseCategories.first.id;
