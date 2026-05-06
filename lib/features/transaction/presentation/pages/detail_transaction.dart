@@ -527,7 +527,7 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
       return [
         CategoryEntity(
           id: widget.detail.categoryId,
-          name: 'Kategori #${widget.detail.categoryId}',
+          name: widget.detail.categoryName,
           icon: 'question',
           type: type,
           isSystem: true,
@@ -581,7 +581,7 @@ class _DetailContent extends StatelessWidget {
     final chipTextColor = isExpense
         ? AppColors.danger100
         : AppColors.success100;
-    final categoryIcon = _resolveCategoryIcon(category);
+    final categoryIcon = _resolveCategoryIcon(category, detail);
     final dateLabel = DateFormat(
       'dd MMMM yyyy',
       'id_ID',
@@ -643,7 +643,7 @@ class _DetailContent extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.spacing3),
                 Text(
-                  category?.name ?? 'Kategori #${detail.categoryId}',
+                  category?.name ?? detail.categoryName,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.gohan,
                     fontWeight: FontWeight.w700,
@@ -734,13 +734,25 @@ class _DetailContent extends StatelessWidget {
     return null;
   }
 
-  IconData _resolveCategoryIcon(CategoryEntity? category) {
+  IconData _resolveCategoryIcon(
+    CategoryEntity? category,
+    TransactionDetailEntity detail,
+  ) {
+    if (category?.icon != null) {
+      return GlobalConstant.categoryIconsMapping[category!.icon] ??
+          PhosphorIconsRegular.question;
+    }
+
+    if (detail.categoryIcon != null) {
+      return GlobalConstant.categoryIconsMapping[detail.categoryIcon!] ??
+          PhosphorIconsRegular.question;
+    }
+
     if (category == null) {
       return PhosphorIconsRegular.question;
     }
 
-    return GlobalConstant.categoryIconsMapping[category.icon] ??
-        PhosphorIconsRegular.question;
+    return PhosphorIconsRegular.question;
   }
 
   // TODO: refactor ini di masa depan menggunakan enum terpisah di entitas transaction detail agar lebih type-safe dan mudah di-maintain
