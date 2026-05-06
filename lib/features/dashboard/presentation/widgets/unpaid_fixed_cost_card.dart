@@ -4,7 +4,6 @@ import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/unpaid_fixed_cost_detail_bottom_sheet.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
 
 class UnpaidFixedCostCard extends StatelessWidget {
   final UnpaidFixedCostTemplateEntity item;
@@ -134,10 +133,6 @@ class UnpaidFixedCostCard extends StatelessWidget {
       return '$weekday, ${dueDate.day} $month ${dueDate.year}';
     }
 
-    if (item.cycle == FinancialCycle.monthly) {
-      return 'Tanggal ${item.dueValue}';
-    }
-
-    return '${weekdayLabel[item.dueValue] ?? '-'}, -';
+    return '-';
   }
 }

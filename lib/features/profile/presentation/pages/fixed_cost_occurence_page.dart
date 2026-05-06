@@ -179,7 +179,7 @@ class _FixedCostSection extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            final item = items[index];
+            final item = items[index];            
 
             return UnpaidFixedCostCard(
               item: item,

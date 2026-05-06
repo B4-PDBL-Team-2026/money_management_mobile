@@ -161,10 +161,6 @@ class UnpaidFixedCostDetailBottomSheet extends StatelessWidget {
       return '$weekday, ${dueDate.day} $month ${dueDate.year}';
     }
 
-    if (item.cycle == FinancialCycle.monthly) {
-      return 'Tanggal ${item.dueValue}';
-    }
-
-    return '${weekdayLabel[item.dueValue] ?? '-'}, -';
+    return '-';
   }
 }

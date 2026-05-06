@@ -58,7 +58,7 @@ class ShellContainer extends StatelessWidget {
         ),
       ),
       floatingActionButton:
-          navigationShell.currentIndex == 1 || navigationShell.currentIndex == 2
+          navigationShell.currentIndex == 0 || navigationShell.currentIndex == 1
           ? FloatingActionButton(
               onPressed: () => context.push(AppRouter.addTransaction),
               backgroundColor: AppColors.secondary,

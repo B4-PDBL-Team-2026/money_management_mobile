@@ -17,8 +17,8 @@ class FixedCostOccurrenceModel extends FixedCostOccurrenceEntity {
     final fallbackCycleKey = json['cycleKey'] as String?;
     final rawId = json['id'];
     final rawTemplateId = json['fixedCostTemplateId'] ?? json['id'];
-    final rawCategoryId = json['categoryId'];
-    final rawDueDay = json['dueDay'] ?? json['dueValue'];
+    final rawCategoryId = json['category']['id'];
+    final rawDueDay = json['dueDay'];
 
     final parsedOccurrenceId = rawId is int
         ? rawId

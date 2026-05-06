@@ -41,13 +41,12 @@ class NotificationInitUsecase {
   }
 
   Future<void> _registerDeviceToNotification(String token) async {
-    _log.info('FCM token obtained: $token');
-    _cachedDeviceInfo ??= await _deviceService.getDeviceInfo();
+    String? existingToken;
 
     final registeredDevices = await _notificationCenterRepository
         .getRegisteredDevices();
+    _cachedDeviceInfo ??= await _deviceService.getDeviceInfo();
     final deviceId = _cachedDeviceInfo!.deviceId;
-    String? existingToken;
 
     for (final registration in registeredDevices) {
       if (registration.deviceId == deviceId) {
@@ -56,12 +55,9 @@ class NotificationInitUsecase {
       }
     }
 
-    _log.info('Server FCM token for device $deviceId: $existingToken');
-
     if (existingToken == null ||
         existingToken.isEmpty ||
         existingToken != token) {
-      _log.info('Registering device for notifications.');
       await _notificationCenterRepository.registerDeviceForNotifications(
         NotificationRegistrationEntity(
           deviceId: _cachedDeviceInfo!.deviceId,

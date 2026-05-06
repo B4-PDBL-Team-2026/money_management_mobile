@@ -22,18 +22,18 @@ class DashboardRemoteDataSource {
       return [
         UnpaidFixedCostModel(
           occurrenceId: 1,
+          categoryId: 6,
           name: 'Sewa Kos',
           amount: 100000,
           cycle: FinancialCycle.monthly,
-          dueValue: 30,
           dueDate: DateTime(2026, 4, 30),
         ),
         UnpaidFixedCostModel(
           occurrenceId: 2,
+          categoryId: 7,
           name: 'Listrik',
           amount: 50000,
           cycle: FinancialCycle.monthly,
-          dueValue: 28,
           dueDate: DateTime(2026, 4, 28),
         ),
       ];
@@ -49,8 +49,8 @@ class DashboardRemoteDataSource {
           .map((item) => Map<String, dynamic>.from(item))
           .where((item) {
             final status = item['status']?.toString().toLowerCase() ?? '';
-            final paidAt = item['paid_at'];
-            final voidedAt = item['voided_at'];
+            final paidAt = item['paidAt'];
+            final voidedAt = item['voidedAt'];
             final isUnpaidStatus = status == 'pending' || status == 'overdue';
             return isUnpaidStatus && paidAt == null && voidedAt == null;
           })
@@ -86,18 +86,18 @@ class DashboardRemoteDataSource {
         unpaidFixedCosts: [
           UnpaidFixedCostModel(
             occurrenceId: 1,
+            categoryId: 6,
             name: 'Sewa Kos',
             amount: 100000,
             cycle: FinancialCycle.monthly,
-            dueValue: 30,
             dueDate: DateTime(2026, 4, 30),
           ),
           UnpaidFixedCostModel(
             occurrenceId: 2,
+            categoryId: 7,
             name: 'Listrik',
             amount: 50000,
             cycle: FinancialCycle.monthly,
-            dueValue: 28,
             dueDate: DateTime(2026, 4, 28),
           ),
         ],

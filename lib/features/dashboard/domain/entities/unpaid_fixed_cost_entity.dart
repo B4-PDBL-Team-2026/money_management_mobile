@@ -2,18 +2,18 @@ import 'package:money_management_mobile/features/profile/domain/entities/financi
 
 class UnpaidFixedCostTemplateEntity {
   final int occurrenceId;
+  final int categoryId;
   final String name;
   final int amount;
   final FinancialCycle cycle;
-  final int dueValue;
   final DateTime? dueDate;
 
   const UnpaidFixedCostTemplateEntity({
     required this.occurrenceId,
+    required this.categoryId,
     required this.name,
     required this.amount,
     required this.cycle,
-    required this.dueValue,
     this.dueDate,
   });
 }

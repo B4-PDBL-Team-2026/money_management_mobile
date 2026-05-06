@@ -150,6 +150,10 @@ class NotificationServiceImpl implements NotificationService {
   }
 
   Future<String?> _initializeFcmToken() async {
+    _onTokenRefreshSubscription ??= _fcm.onTokenRefresh.listen((newToken) {
+      _tokenRefreshController.add(newToken);
+    });
+    
     int retryCount = 0;
     const maxRetries = 3;
 
@@ -162,6 +166,8 @@ class NotificationServiceImpl implements NotificationService {
 
           return token;
         }
+
+        throw Exception('Received empty FCM token');
       } catch (e) {
         retryCount++;
         _log.warning('Attempt $retryCount failed to get FCM token: $e');
@@ -171,10 +177,6 @@ class NotificationServiceImpl implements NotificationService {
         await Future.delayed(Duration(seconds: retryCount * 2));
       }
     }
-
-    _onTokenRefreshSubscription ??= _fcm.onTokenRefresh.listen((newToken) {
-      _tokenRefreshController.add(newToken);
-    });
 
     return null;
   }
