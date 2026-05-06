@@ -76,7 +76,9 @@ class _ShellContainerState extends State<ShellContainer>
 
   @override
   Widget build(BuildContext context) {
-    final showFab = widget.navigationShell.currentIndex == 1;
+    final showFab =
+        widget.navigationShell.currentIndex == 0 ||
+        widget.navigationShell.currentIndex == 1;
 
     return Stack(
       children: [
@@ -95,8 +97,8 @@ class _ShellContainerState extends State<ShellContainer>
               },
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.white,
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
               selectedFontSize: 12,
               unselectedFontSize: 12,
               items: const [
@@ -111,6 +113,12 @@ class _ShellContainerState extends State<ShellContainer>
                   activeIcon: PhosphorIcon(PhosphorIconsFill.house),
                   label: 'Beranda',
                   tooltip: 'Beranda',
+                ),
+                BottomNavigationBarItem(
+                  icon: PhosphorIcon(PhosphorIconsRegular.invoice),
+                  activeIcon: PhosphorIcon(PhosphorIconsFill.invoice),
+                  label: 'Biaya tetap',
+                  tooltip: 'Biaya tetap',
                 ),
                 BottomNavigationBarItem(
                   icon: PhosphorIcon(PhosphorIconsRegular.dotsThreeCircle),

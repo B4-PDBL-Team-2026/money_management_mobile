@@ -4,31 +4,35 @@ import 'package:money_management_mobile/features/profile/domain/entities/financi
 class UnpaidFixedCostModel extends UnpaidFixedCostTemplateEntity {
   const UnpaidFixedCostModel({
     required super.occurrenceId,
+    required super.categoryId,
+    required super.categoryName,
+    required super.categoryIcon,
     required super.name,
     required super.amount,
     required super.cycle,
-    required super.dueValue,
     super.dueDate,
   });
 
   factory UnpaidFixedCostModel.fromJson(Map<String, dynamic> json) {
-    final rawOccurrenceId = json['occurrence_id'] ?? json['id'];
+    final rawOccurrenceId = json['id'];
+    final rawCategory = json['category'];
     final rawAmount = json['amount'];
-    final rawCycle = json['cycle'] ?? json['cycle_type'] ?? json['cycle_key'];
-    final rawDueValue = json['due_value'];
-    final dueDate = DateTime.tryParse(json['due_date'] as String? ?? '');
+    final rawCycle = json['cycleType'];
+    final dueDate = DateTime.tryParse(json['dueDate'] as String? ?? '');
+    final category = rawCategory is Map
+        ? Map<String, dynamic>.from(rawCategory)
+        : <String, dynamic>{};
 
     final cycle = _parseCycle(rawCycle?.toString());
-    final dueValue = dueDate != null
-        ? (cycle == FinancialCycle.weekly ? dueDate.weekday : dueDate.day)
-        : _parseInt(rawDueValue);
 
     return UnpaidFixedCostModel(
       occurrenceId: _parseInt(rawOccurrenceId),
+      categoryId: _parseInt(category['id']),
+      categoryName: category['name'] as String? ?? '-',
+      categoryIcon: category['icon'] as String? ?? 'question',
       name: json['name'] as String,
       amount: _parseInt(rawAmount),
       cycle: cycle,
-      dueValue: dueValue,
       dueDate: dueDate,
     );
   }
@@ -67,10 +71,12 @@ class UnpaidFixedCostModel extends UnpaidFixedCostTemplateEntity {
   UnpaidFixedCostTemplateEntity toEntity() {
     return UnpaidFixedCostTemplateEntity(
       occurrenceId: occurrenceId,
+      categoryId: categoryId,
+      categoryName: categoryName,
+      categoryIcon: categoryIcon,
       name: name,
       amount: amount,
       cycle: cycle,
-      dueValue: dueValue,
       dueDate: dueDate,
     );
   }

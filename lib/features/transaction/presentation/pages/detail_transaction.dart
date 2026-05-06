@@ -10,6 +10,8 @@ import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
+import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
@@ -188,7 +190,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           amount: payload.amount,
           type: payload.type,
           categoryId: payload.categoryId,
-          categoryType: payload.categoryType,
           transactionAt: payload.transactionAt,
           note: payload.note,
         );
@@ -237,6 +238,23 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       return;
     }
 
+    final dashboardMetricState = context.read<DashboardMetricCubit>().state;
+
+    if (dashboardMetricState is DashboardMetricLoaded) {
+      if (dashboardMetricState.metrics.balance - detail.amount < 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Penghapusan transaksi ini akan menyebabkan saldo menjadi negatif. Hapus transaksi lain atau tambahkan pemasukan terlebih dahulu.',
+            ),
+            backgroundColor: AppColors.warning100,
+          ),
+        );
+
+        return;
+      }
+    }
+
     await context.read<TransactionDetailCubit>().deleteTransaction(
       id: detail.id,
     );
@@ -248,7 +266,6 @@ class _UpdateTransactionPayload {
   final int amount;
   final TransactionType type;
   final int categoryId;
-  final RealCategoryType categoryType;
   final DateTime transactionAt;
   final String? note;
 
@@ -257,7 +274,6 @@ class _UpdateTransactionPayload {
     required this.amount,
     required this.type,
     required this.categoryId,
-    required this.categoryType,
     required this.transactionAt,
     required this.note,
   });
@@ -486,7 +502,6 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
                             ),
                             type: _selectedType,
                             categoryId: _selectedCategoryId,
-                            categoryType: _selectedCategoryType(),
                             transactionAt: _selectedDate,
                             note: _noteController.text.trim().isEmpty
                                 ? null
@@ -512,10 +527,10 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
       return [
         CategoryEntity(
           id: widget.detail.categoryId,
-          name: 'Kategori #${widget.detail.categoryId}',
+          name: widget.detail.categoryName,
           icon: 'question',
           type: type,
-          categoryType: RealCategoryType.system,
+          isSystem: true,
         ),
       ];
     }
@@ -544,16 +559,6 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
   String _formatDate(DateTime date) {
     return DateFormat('dd MMMM yyyy', 'id_ID').format(date);
   }
-
-  RealCategoryType _selectedCategoryType() {
-    for (final category in widget.categories) {
-      if (category.id == _selectedCategoryId) {
-        return category.categoryType;
-      }
-    }
-
-    return RealCategoryType.system;
-  }
 }
 
 class _DetailContent extends StatelessWidget {
@@ -576,7 +581,7 @@ class _DetailContent extends StatelessWidget {
     final chipTextColor = isExpense
         ? AppColors.danger100
         : AppColors.success100;
-    final categoryIcon = _resolveCategoryIcon(category);
+    final categoryIcon = _resolveCategoryIcon(category, detail);
     final dateLabel = DateFormat(
       'dd MMMM yyyy',
       'id_ID',
@@ -638,7 +643,7 @@ class _DetailContent extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.spacing3),
                 Text(
-                  category?.name ?? 'Kategori #${detail.categoryId}',
+                  category?.name ?? detail.categoryName,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.gohan,
                     fontWeight: FontWeight.w700,
@@ -729,13 +734,25 @@ class _DetailContent extends StatelessWidget {
     return null;
   }
 
-  IconData _resolveCategoryIcon(CategoryEntity? category) {
+  IconData _resolveCategoryIcon(
+    CategoryEntity? category,
+    TransactionDetailEntity detail,
+  ) {
+    if (category?.icon != null) {
+      return GlobalConstant.categoryIconsMapping[category!.icon] ??
+          PhosphorIconsRegular.question;
+    }
+
+    if (detail.categoryIcon != null) {
+      return GlobalConstant.categoryIconsMapping[detail.categoryIcon!] ??
+          PhosphorIconsRegular.question;
+    }
+
     if (category == null) {
       return PhosphorIconsRegular.question;
     }
 
-    return GlobalConstant.categoryIconsMapping[category.icon] ??
-        PhosphorIconsRegular.question;
+    return PhosphorIconsRegular.question;
   }
 
   // TODO: refactor ini di masa depan menggunakan enum terpisah di entitas transaction detail agar lebih type-safe dan mudah di-maintain
@@ -743,6 +760,7 @@ class _DetailContent extends StatelessWidget {
     return switch (source) {
       'manual' => 'Pencatatan Manual',
       'fixed_cost_payment' => 'Pembayaran Fixed Cost',
+      'initial_balance' => 'Saldo Awal',
       _ => source,
     };
   }

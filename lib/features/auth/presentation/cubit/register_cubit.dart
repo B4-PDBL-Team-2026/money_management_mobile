@@ -41,6 +41,7 @@ class RegisterCubit extends Cubit<RegisterState> {
         requiresOnboarding: requiresOnboarding,
       );
       _eventBus.fire(const RefreshCategoriesEvent());
+      _eventBus.fire(const NotificationInitializeEvent());
 
       emit(RegisterSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {

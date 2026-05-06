@@ -53,6 +53,25 @@ import 'features/dashboard/presentation/cubits/delete_account_cubit.dart'
     as _i111;
 import 'features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_cubit.dart'
     as _i928;
+import 'features/notification/data/data_sources/remote/notification_remote_data_source.dart'
+    as _i545;
+import 'features/notification/data/repositories/notification_center_repository_impl.dart'
+    as _i1007;
+import 'features/notification/domain/repositories/notification_center_repository.dart'
+    as _i862;
+import 'features/notification/domain/services/device_service.dart' as _i929;
+import 'features/notification/domain/services/notification_service.dart'
+    as _i747;
+import 'features/notification/domain/usecases/notification_init_usecase.dart'
+    as _i874;
+import 'features/notification/infrastructure/services/device_service_impl.dart'
+    as _i690;
+import 'features/notification/infrastructure/services/notification_service_impl.dart'
+    as _i187;
+import 'features/notification/presentation/cubit/notification_center_cubit.dart'
+    as _i356;
+import 'features/notification/presentation/cubit/notification_cubit.dart'
+    as _i421;
 import 'features/profile/data/data_sources/remote/fixed_cost_template_remote_data_source.dart'
     as _i270;
 import 'features/profile/data/data_sources/remote/profile_remote_data_source.dart'
@@ -105,6 +124,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i103.CalculateFinancialProfileUseCase>(
       () => _i103.CalculateFinancialProfileUseCase(),
     );
+    gh.lazySingleton<_i929.DeviceService>(() => _i690.DeviceServiceImpl());
     gh.lazySingleton<_i465.AuthLocalDataSource>(
       () => _i465.AuthLocalDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -115,6 +135,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i715.FinancialProfileDraftCubit(
         gh<_i103.CalculateFinancialProfileUseCase>(),
       ),
+    );
+    gh.lazySingleton<_i747.NotificationService>(
+      () => _i187.NotificationServiceImpl(),
+      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i361.Dio>(
       () => http.dio(gh<_i465.AuthLocalDataSource>()),
@@ -143,6 +167,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i465.AuthLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i545.NotificationRemoteDataSource>(
+      () => _i545.NotificationRemoteDataSource(gh<_i361.Dio>()),
+    );
     gh.factory<_i801.ResetPasswordCubit>(
       () => _i801.ResetPasswordCubit(gh<_i1015.AuthRepository>()),
     );
@@ -160,6 +187,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i44.CategoryRepositoryImpl(
         gh<_i300.CategoryRemoteDataSource>(),
         gh<_i844.CategoryLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i862.NotificationCenterRepository>(
+      () => _i1007.NotificationCenterRepositoryImpl(
+        gh<_i545.NotificationRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i121.FixedCostTemplateRepository>(
@@ -209,8 +241,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
+    gh.lazySingleton<_i356.NotificationCenterCubit>(
+      () => _i356.NotificationCenterCubit(
+        gh<_i862.NotificationCenterRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
     gh.lazySingleton<_i626.ProfileRepository>(
       () => _i277.ProfileRepositoryImpl(gh<_i959.ProfileRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i874.NotificationInitUsecase>(
+      () => _i874.NotificationInitUsecase(
+        gh<_i747.NotificationService>(),
+        gh<_i929.DeviceService>(),
+        gh<_i862.NotificationCenterRepository>(),
+      ),
+      dispose: (i) => i.dispose(),
     );
     gh.factory<_i250.LoginCubit>(
       () => _i250.LoginCubit(
@@ -259,6 +305,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1023.DashboardMetricCubit(
         gh<_i83.CalculateDashboardMetricsUsecase>(),
         gh<_i557.DashboardRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.lazySingleton<_i421.NotificationCubit>(
+      () => _i421.NotificationCubit(
+        gh<_i874.NotificationInitUsecase>(),
+        gh<_i747.NotificationService>(),
         gh<_i1017.EventBus>(),
       ),
     );

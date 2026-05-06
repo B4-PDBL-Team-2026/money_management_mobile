@@ -58,10 +58,13 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
   CategoryEntity _resolveCategory() {
     if (widget.categories.isEmpty) {
       // No categories loaded yet — use inferred data as a placeholder.
-      return _syntheticCategory(widget.data.categoryId, widget.data.categoryName);
+      return _syntheticCategory(
+        widget.data.categoryId,
+        widget.data.categoryName,
+      );
     }
     return widget.categories.firstWhere(
-          (c) => c.id == widget.data.categoryId,
+      (c) => c.id == widget.data.categoryId,
       orElse: () => widget.categories.first,
     );
   }
@@ -72,7 +75,7 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
       name: name,
       icon: '',
       type: widget.data.type,
-      categoryType: RealCategoryType.system,
+      isSystem: true,
     );
   }
 
@@ -106,7 +109,7 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
     final pickedId = await widget.onShowCategoryPicker(_category.id);
     if (pickedId == null || !mounted) return;
     final picked = widget.categories.firstWhere(
-          (c) => c.id == pickedId,
+      (c) => c.id == pickedId,
       orElse: () => _category,
     );
     setState(() => _category = picked);
@@ -190,12 +193,11 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
                   icon: isExpense
                       ? Icons.arrow_circle_up_rounded
                       : Icons.arrow_circle_down_rounded,
-                  iconColor:
-                  isExpense ? AppColors.danger100 : AppColors.success100,
+                  iconColor: isExpense
+                      ? AppColors.danger100
+                      : AppColors.success100,
                   label: 'Tipe',
-                  value: isExpense
-                      ? 'Pengeluaran (Beli)'
-                      : 'Pemasukan (Dapat)',
+                  value: isExpense ? 'Pengeluaran (Beli)' : 'Pemasukan (Dapat)',
                 ),
                 const Divider(height: 1, indent: 72),
 
@@ -235,8 +237,11 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
                 ),
                 elevation: 0,
               ),
-              icon: const Icon(Icons.check_circle_outline_rounded,
-                  color: Colors.white, size: 20),
+              icon: const Icon(
+                Icons.check_circle_outline_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
               label: Text(
                 'Simpan Transaksi',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -251,8 +256,11 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
 
           TextButton.icon(
             onPressed: widget.onReset,
-            icon: const Icon(Icons.refresh_rounded,
-                size: 18, color: AppColors.trunks),
+            icon: const Icon(
+              Icons.refresh_rounded,
+              size: 18,
+              color: AppColors.trunks,
+            ),
             label: Text(
               'Coba Lagi',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -325,7 +333,9 @@ class _TappableRow extends StatelessWidget {
           children: [
             _IconBox(child: Icon(icon, color: iconColor, size: 22)),
             const SizedBox(width: 16),
-            Expanded(child: _LabelValue(label: label, value: value)),
+            Expanded(
+              child: _LabelValue(label: label, value: value),
+            ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
@@ -335,8 +345,11 @@ class _TappableRow extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.edit_outlined,
-                      size: 12, color: AppColors.primary),
+                  const Icon(
+                    Icons.edit_outlined,
+                    size: 12,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(width: 3),
                   Text(
                     'Ubah',

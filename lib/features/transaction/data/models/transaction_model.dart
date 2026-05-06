@@ -1,4 +1,4 @@
-import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
+import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
 class TransactionModel extends TransactionEntity {
@@ -19,7 +19,9 @@ class TransactionModel extends TransactionEntity {
           ? TransactionType.income
           : TransactionType.expense,
       categoryId: json['categoryId'] as int,
-      transactionAt: DateTime.parse(json['transaction_at'] as String).toLocal(),
+      transactionAt: TimezoneConverter.toLocal(
+        json['transaction_at'] as String,
+      ),
       note: json['note'] as String?,
     );
   }
@@ -36,20 +38,13 @@ class TransactionModel extends TransactionEntity {
   }
 
   Map<String, dynamic> toJson() {
-    // final transactionMonth = transactionAt.month < 10
-    //     ? '0${transactionAt.month}'
-    //     : transactionAt.month;
-
     return {
       'name': name,
       'amount': amount,
       'type': type.value,
       'categoryId': categoryId,
-      'transactionAt': transactionAt.toUtc().toIso8601String(),
+      'transactionAt': TimezoneConverter.toUtcString(transactionAt),
       'note': note,
-      // TODO: hardcode categoryType karena API butuh, tapi seharusnya bisa diambil dari categoryId
-      // ganti dengan entity menyimpan category langsung, bukan id
-      'categoryType': RealCategoryType.system.value,
     };
   }
 }
