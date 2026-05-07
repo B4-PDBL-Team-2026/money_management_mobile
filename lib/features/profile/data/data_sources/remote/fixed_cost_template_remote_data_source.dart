@@ -45,13 +45,52 @@ class FixedCostTemplateRemoteDataSource {
         '/fixed-costs',
         queryParameters: {'per_page': 100},
       );
-      final rawData = response.data['data'] as List<dynamic>? ?? {};
+      final rawData = response.data['data'] as List<dynamic>? ?? [];
 
       return rawData
           .whereType<Map>()
           .map((item) => Map<String, dynamic>.from(item))
-          .map(FixedCostOccurrenceModel.fromJson)
-          .toList();
+          .map((item) {
+        // If backend returns a template object (no dueDate, category may be null),
+        // convert it into the shape expected by FixedCostOccurrenceModel.fromJson
+        final hasCycle = item.containsKey('cycleType') || item.containsKey('cycle_type') || item.containsKey('cycle');
+
+        if (hasCycle) {
+          final rawId = item['id'];
+          final parsedId = rawId is int ? rawId : int.tryParse(rawId?.toString() ?? '') ?? 0;
+
+          final amountRaw = item['amount']?.toString() ?? '0';
+
+          Map<String, dynamic>? categoryMap;
+          final rawCategory = item['category'];
+          if (rawCategory is Map && rawCategory.containsKey('id')) {
+            categoryMap = {'id': rawCategory['id'], 'name': rawCategory['name']};
+          } else if (item.containsKey('categoryId') || item.containsKey('category_id')) {
+            final rawCategoryId = item['categoryId'] ?? item['category_id'];
+            categoryMap = {'id': rawCategoryId};
+          } else {
+            categoryMap = null;
+          }
+
+          final cycleType = item['cycleType'] ?? item['cycle_type'] ?? item['cycle'] ?? '-';
+          final dueDay = item['dueDay'] ?? item['due_day'];
+
+          final occurrenceMap = <String, dynamic>{
+            'id': parsedId,
+            'fixedCostTemplateId': parsedId,
+            'name': item['name'] ?? '-',
+            'amount': amountRaw,
+            'category': categoryMap,
+            'cycleType': cycleType,
+            'dueDay': dueDay,
+            'status': item['status'] ?? 'pending',
+          };
+
+          return FixedCostOccurrenceModel.fromJson(occurrenceMap);
+        }
+
+        return FixedCostOccurrenceModel.fromJson(item);
+      }).toList();
     } on DioException catch (e) {
       throw ErrorHandler.handleRemoteException(
         e,

@@ -17,8 +17,11 @@ class FixedCostOccurrenceModel extends FixedCostOccurrenceEntity {
     final fallbackCycleKey = json['cycleKey'] as String?;
     final rawId = json['id'];
     final rawTemplateId = json['fixedCostTemplateId'] ?? json['id'];
-    final rawCategoryId = json['category']['id'];
-    final rawDueDay = json['dueDay'];
+    final rawCategory = json['category'];
+    final rawCategoryId = rawCategory is Map
+        ? rawCategory['id']
+        : (json['categoryId'] ?? json['category_id'] ?? rawCategory);
+    final rawDueDay = json['dueDay'] ?? json['due_day'];
 
     final parsedOccurrenceId = rawId is int
         ? rawId
@@ -34,8 +37,8 @@ class FixedCostOccurrenceModel extends FixedCostOccurrenceEntity {
     return FixedCostOccurrenceModel(
       id: parsedOccurrenceId,
       fixedCostTemplateId: parsedTemplateId,
-      name: json['name'] as String? ?? '-',
-      amountRaw: json['amount'] as String? ?? '0',
+        name: json['name'] as String? ?? '-',
+        amountRaw: json['amount']?.toString() ?? '0',
       categoryId: rawCategoryId is int
           ? rawCategoryId
           : int.tryParse(rawCategoryId?.toString() ?? '') ?? 0,
