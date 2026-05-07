@@ -14,6 +14,10 @@ class FixedCostOccurrencesChangesEvent {
   const FixedCostOccurrencesChangesEvent();
 }
 
+class SessionExpiredEvent {
+  const SessionExpiredEvent();
+}
+
 class NotificationCenterChangesEvent {
   const NotificationCenterChangesEvent();
 }

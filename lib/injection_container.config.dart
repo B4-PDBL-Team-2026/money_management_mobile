@@ -170,14 +170,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i545.NotificationRemoteDataSource>(
       () => _i545.NotificationRemoteDataSource(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i410.SessionCubit>(
+      () => _i410.SessionCubit(
+        gh<_i1015.AuthRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
     gh.factory<_i801.ResetPasswordCubit>(
       () => _i801.ResetPasswordCubit(gh<_i1015.AuthRepository>()),
     );
     gh.factory<_i217.VerifyEmailCubit>(
       () => _i217.VerifyEmailCubit(gh<_i1015.AuthRepository>()),
-    );
-    gh.lazySingleton<_i410.SessionCubit>(
-      () => _i410.SessionCubit(gh<_i1015.AuthRepository>()),
     );
     gh.lazySingleton<_i557.DashboardRepository>(
       () =>

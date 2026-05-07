@@ -34,6 +34,12 @@ class DashboardMetricCubit extends Cubit<DashboardMetricState> {
       _eventBus.on<TransactionChangesEvent>().listen(
         (_) => fetchDashboardMetrics(),
       ),
+      _eventBus.on<SessionExpiredEvent>().listen(
+        (_) {
+          // Reset state when session expires to prevent retry loops
+          emit(DashboardMetricInitial());
+        },
+      ),
     ];
   }
 
@@ -53,6 +59,9 @@ class DashboardMetricCubit extends Cubit<DashboardMetricState> {
       final metricsResult = await _calculateDashboardMetricsUsecase.execute();
       emit(DashboardMetricLoaded(metrics: metricsResult));
     } on ServerException catch (e) {
+      _log.severe('Error fetching dashboard metric', e);
+      emit(DashboardMetricError(message: e.message));
+    } on UnauthorizedException catch (e) {
       _log.severe('Error fetching dashboard metric', e);
       emit(DashboardMetricError(message: e.message));
     } on NetworkException catch (e) {
@@ -85,6 +94,9 @@ class DashboardMetricCubit extends Cubit<DashboardMetricState> {
     } on ServerException catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
       emit(DashboardMetricError(message: e.message));
+    } on UnauthorizedException catch (e) {
+      _log.severe('Error confirming fixed cost occurrence', e);
+      emit(DashboardMetricError(message: e.message));
     } on NetworkException catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
       emit(DashboardMetricError(message: e.message));
@@ -113,6 +125,9 @@ class DashboardMetricCubit extends Cubit<DashboardMetricState> {
       await _dashboardRepository.cancelFixedCostOccurrence(occurrenceId);
       await fetchDashboardMetrics();
     } on ServerException catch (e) {
+      _log.severe('Error cancelling fixed cost occurrence', e);
+      emit(DashboardMetricError(message: e.message));
+    } on UnauthorizedException catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
       emit(DashboardMetricError(message: e.message));
     } on NetworkException catch (e) {
