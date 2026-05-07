@@ -5,6 +5,7 @@ import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/theme/app_text_styles.dart';
+import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
@@ -38,11 +39,27 @@ class FixedCostOccurencePage extends StatelessWidget {
               >(
                 listener: (context, state) {},
                 builder: (context, state) {
-                  if (state is! UnpaidFixedCostTemplateLoaded) {
+                  if (state is UnpaidFixedCostTemplateInitial ||
+                      state is UnpaidFixedCostTemplateLoading) {
                     return const _LoadingState();
                   }
 
-                  if (state.items.isEmpty) {
+                  if (state is UnpaidFixedCostTemplateError) {
+                    return _ErrorFixedCostState(
+                      message: state.message,
+                      onRetry: () {
+                        context
+                            .read<UnpaidFixedCostTemplateCubit>()
+                            .fetchUnpaidFixedCosts();
+                      },
+                      onManage: () =>
+                          context.push(AppRouter.fixedCostsManagement),
+                    );
+                  }
+
+                  final loadedState = state as UnpaidFixedCostTemplateLoaded;
+
+                  if (loadedState.items.isEmpty) {
                     return _EmptyFixedCostState(
                       onManage: () =>
                           context.push(AppRouter.fixedCostsManagement),
@@ -51,7 +68,7 @@ class FixedCostOccurencePage extends StatelessWidget {
 
                   final now = DateTime.now();
 
-                  final weeklyItems = state.items
+                  final weeklyItems = loadedState.items
                       .where(
                         (item) =>
                             item.cycle == FinancialCycle.weekly &&
@@ -59,7 +76,7 @@ class FixedCostOccurencePage extends StatelessWidget {
                       )
                       .toList(growable: false);
 
-                  final monthlyItems = state.items
+                  final monthlyItems = loadedState.items
                       .where(
                         (item) =>
                             item.cycle == FinancialCycle.monthly &&
@@ -179,7 +196,7 @@ class _FixedCostSection extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            final item = items[index];            
+            final item = items[index];
 
             return UnpaidFixedCostCard(
               item: item,
@@ -300,6 +317,70 @@ class _EmptyFixedCostState extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorFixedCostState extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+  final VoidCallback onManage;
+
+  const _ErrorFixedCostState({
+    required this.message,
+    required this.onRetry,
+    required this.onManage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: AppSizes.spacing12,
+        horizontal: AppSizes.spacing4,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(AppSizes.spacing6),
+            decoration: BoxDecoration(
+              color: AppColors.danger100.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: PhosphorIcon(
+              PhosphorIconsLight.warning,
+              size: 48,
+              color: AppColors.danger100,
+            ),
+          ),
+          SizedBox(height: AppSizes.spacing6),
+          Text(
+            'Gagal memuat biaya tetap',
+            style: AppTextStyles.h2.copyWith(color: AppColors.primary),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppSizes.spacing2),
+          Text(
+            message,
+            style: AppTextStyles.bodyMain.copyWith(color: AppColors.bulma),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppSizes.spacing6),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppButton(text: 'Coba lagi', onPressed: onRetry),
+              SizedBox(height: AppSizes.spacing3),
+              AppButton(
+                text: 'Kelola',
+                onPressed: onManage,
+                variant: AppButtonVariant.outlined,
+              ),
+            ],
           ),
         ],
       ),
