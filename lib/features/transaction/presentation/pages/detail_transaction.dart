@@ -241,7 +241,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     final dashboardMetricState = context.read<DashboardMetricCubit>().state;
 
     if (dashboardMetricState is DashboardMetricLoaded) {
-      if (dashboardMetricState.metrics.balance - detail.amount < 0) {
+      final isIncome = detail.type == TransactionType.income;
+      final willBeNegative = dashboardMetricState.metrics.balance - detail.amount < 0;
+      
+      if (isIncome && willBeNegative) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
