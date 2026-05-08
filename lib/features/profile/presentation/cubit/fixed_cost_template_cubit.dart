@@ -15,6 +15,7 @@ class FixedCostTemplateCubit extends Cubit<FixedCostTemplateState> {
   final FixedCostTemplateRepository _fixedCostTemplateRepository;
   final EventBus _eventBus;
   late final StreamSubscription<dynamic> _refreshSubscription;
+  late final StreamSubscription<dynamic> _sessionExpiredSubscription;
 
   final _log = Logger('FixedCostTemplateCubit');
 
@@ -22,6 +23,13 @@ class FixedCostTemplateCubit extends Cubit<FixedCostTemplateState> {
     : super(FixedCostTemplateInitial()) {
     _refreshSubscription = _eventBus.on<FixedCostTemplateChangesEvent>().listen(
       (_) => fetchFixedCostTemplate(forceRefresh: true),
+    );
+    
+    _sessionExpiredSubscription = _eventBus.on<SessionExpiredEvent>().listen(
+      (_) {
+        // Reset state when session expires to prevent retry loops
+        emit(FixedCostTemplateInitial());
+      },
     );
   }
 
@@ -132,6 +140,7 @@ class FixedCostTemplateCubit extends Cubit<FixedCostTemplateState> {
   @override
   Future<void> close() {
     _refreshSubscription.cancel();
+    _sessionExpiredSubscription.cancel();
     return super.close();
   }
 }

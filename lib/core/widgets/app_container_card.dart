@@ -8,6 +8,7 @@ class AppContainerCard extends StatelessWidget {
   final Color? backgroundColor;
   final BoxBorder? border;
   final EdgeInsetsGeometry? padding;
+  final BoxConstraints? constraints;
 
   const AppContainerCard({
     super.key,
@@ -17,6 +18,7 @@ class AppContainerCard extends StatelessWidget {
     this.width,
     this.height,
     this.padding,
+    this.constraints,
   });
 
   @override
@@ -25,6 +27,7 @@ class AppContainerCard extends StatelessWidget {
       width: width,
       height: height,
       padding: padding ?? EdgeInsets.all(AppSizes.spacing4),
+      constraints: constraints,
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.primary,
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),

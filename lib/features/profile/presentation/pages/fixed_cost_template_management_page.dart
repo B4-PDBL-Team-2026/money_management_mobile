@@ -2,23 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
-import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_occurrence_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_template_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/fixed_cost_template_state.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/active_fixed_cost_item_card.dart';
 import 'package:money_management_mobile/features/profile/presentation/widgets/manage_fixed_cost_bottom_sheet.dart';
+import 'package:money_management_mobile/injection_container.dart';
 
 class FixedCostTemplateManagementPage extends StatefulWidget {
   const FixedCostTemplateManagementPage({super.key});
@@ -263,7 +262,7 @@ class _FixedCostTemplateManagementPageState
                   leading: BackButton(
                     color: AppColors.gohan,
                     onPressed: () {
-                      context.go(AppRouter.other);
+                      context.pop();
                     },
                   ),
                   title: Text('Fixed Cost Management'),

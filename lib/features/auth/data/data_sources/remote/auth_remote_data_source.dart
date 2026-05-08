@@ -78,7 +78,7 @@ class AuthRemoteDataSource {
       final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
       final token = data['token'] as String;
       final requiresOnboarding = _parseRequiresOnboarding(
-        data['requires_onboarding'],
+        data['requiresOnboarding'],
         defaultValue: true,
       );
 
@@ -123,7 +123,7 @@ class AuthRemoteDataSource {
       final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
       final token = data['token'] as String;
       final requiresOnboarding = _parseRequiresOnboarding(
-        data['requires_onboarding'],
+        data['requiresOnboarding'],
         defaultValue: false,
       );
 

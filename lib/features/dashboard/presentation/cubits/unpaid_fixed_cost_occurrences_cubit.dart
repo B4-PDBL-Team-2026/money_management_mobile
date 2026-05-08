@@ -11,11 +11,14 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/u
 import 'package:event_bus/event_bus.dart';
 
 @LazySingleton()
+// TODO: mengganti nama class menjadi FixedCostOccurencesCubit dan State
+// TODO: memindahkan fixed cost ke fitur baru
 class UnpaidFixedCostTemplateCubit
     extends Cubit<UnpaidFixedCostTemplateState> {
   final DashboardRepository _dashboardRepository;
   final EventBus _eventBus;
   late final StreamSubscription<dynamic> _refreshSubscription;
+  late final StreamSubscription<dynamic> _sessionExpiredSubscription;
 
   final _log = Logger('UnpaidFixedCostTemplateCubit');
 
@@ -23,6 +26,13 @@ class UnpaidFixedCostTemplateCubit
     : super(UnpaidFixedCostTemplateInitial()) {
     _refreshSubscription = _eventBus.on<FixedCostTemplateChangesEvent>().listen(
       (_) => fetchUnpaidFixedCosts(),
+    );
+    
+    _sessionExpiredSubscription = _eventBus.on<SessionExpiredEvent>().listen(
+      (_) {
+        // Reset state when session expires to prevent retry loops
+        emit(UnpaidFixedCostTemplateInitial());
+      },
     );
   }
 
@@ -33,6 +43,9 @@ class UnpaidFixedCostTemplateCubit
       final items = await _dashboardRepository.getUnpaidFixedCostTemplate();
       emit(UnpaidFixedCostTemplateLoaded(items));
     } on ServerException catch (e) {
+      _log.severe('Error fetching unpaid fixed cost occurrences', e);
+      emit(UnpaidFixedCostTemplateError(e.message));
+    } on UnauthorizedException catch (e) {
       _log.severe('Error fetching unpaid fixed cost occurrences', e);
       emit(UnpaidFixedCostTemplateError(e.message));
     } on NetworkException catch (e) {
@@ -130,6 +143,7 @@ class UnpaidFixedCostTemplateCubit
   @override
   Future<void> close() {
     _refreshSubscription.cancel();
+    _sessionExpiredSubscription.cancel();
     return super.close();
   }
 }

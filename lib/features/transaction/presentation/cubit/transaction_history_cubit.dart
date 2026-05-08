@@ -16,12 +16,20 @@ class TransactionHistoryCubit extends Cubit<TransactionHistoryState> {
   final TransactionRepository _transactionRepository;
   final EventBus _eventBus;
   late final StreamSubscription<dynamic> _refreshSubscription;
+  late final StreamSubscription<dynamic> _sessionExpiredSubscription;
   final _log = Logger('TransactionHistoryCubit');
 
   TransactionHistoryCubit(this._transactionRepository, this._eventBus)
     : super(TransactionHistoryInitial()) {
     _refreshSubscription = _eventBus.on<TransactionChangesEvent>().listen(
       (_) => getFreshTransactionHistory(),
+    );
+    
+    _sessionExpiredSubscription = _eventBus.on<SessionExpiredEvent>().listen(
+      (_) {
+        // Reset state when session expires to prevent retry loops
+        emit(TransactionHistoryInitial());
+      },
     );
   }
 
@@ -56,6 +64,9 @@ class TransactionHistoryCubit extends Cubit<TransactionHistoryState> {
         ),
       );
     } on NetworkException catch (e) {
+      _log.severe('Error fetching transaction history', e);
+      emit(TransactionHistoryError(e.message));
+    } on UnauthorizedException catch (e) {
       _log.severe('Error fetching transaction history', e);
       emit(TransactionHistoryError(e.message));
     } on UnexpectedException catch (e) {
@@ -134,6 +145,7 @@ class TransactionHistoryCubit extends Cubit<TransactionHistoryState> {
   @override
   Future<void> close() {
     _refreshSubscription.cancel();
+    _sessionExpiredSubscription.cancel();
     return super.close();
   }
 }

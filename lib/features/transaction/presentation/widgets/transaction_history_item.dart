@@ -19,7 +19,7 @@ class TransactionHistoryItem extends StatelessWidget {
     name: 'Tidak Diketahui',
     icon: 'question',
     type: TransactionType.expense,
-    categoryType: RealCategoryType.system,
+    isSystem: true,
   );
 
   const TransactionHistoryItem({super.key, required this.transaction});

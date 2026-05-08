@@ -15,7 +15,7 @@ class AppProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final progress = this.progress.isNaN
+    final progress = this.progress.isNaN || this.progress.isInfinite
         ? 0.0
         : this.progress.clamp(0.0, double.infinity);
 
