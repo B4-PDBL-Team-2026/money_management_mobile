@@ -131,9 +131,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     final currentCategories = isExpenseSelected
         ? _expenseCategories
         : _incomeCategories;
-    
-    final String dynamicHint = isExpenseSelected 
-        ? 'Contoh: Tempat Tinggal, Makan Siang' 
+
+    final dynamicHint = isExpenseSelected
+        ? 'Contoh: Tempat Tinggal, Makan Siang'
         : 'Contoh: Gaji Bulanan, Uang Saku';
 
     return Scaffold(
