@@ -7,13 +7,11 @@ class CategoryModel extends CategoryEntity {
     required super.name,
     required super.icon,
     required super.type,
-    required super.categoryType,
+    required super.isSystem,
+    super.userId,
   });
 
-  factory CategoryModel.fromJson(
-    Map<String, dynamic> json,
-    RealCategoryType categoryType,
-  ) {
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: json['id'] as int,
       name: json['name'] as String,
@@ -21,21 +19,30 @@ class CategoryModel extends CategoryEntity {
       type: json['type'] as String == 'income'
           ? TransactionType.income
           : TransactionType.expense,
-      categoryType: categoryType,
+      userId: json['userId'] as int?,
+      isSystem: json['isSystem'] as bool,
     );
   }
 
   CategoryEntity toEntity() {
     return CategoryEntity(
       id: id,
+      userId: userId,
       name: name,
       icon: icon,
       type: type,
-      categoryType: categoryType,
+      isSystem: isSystem,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name, 'icon': icon, 'type': type.value};
+    return {
+      'id': id,
+      'name': name,
+      'icon': icon,
+      'type': type.value,
+      'userId': userId,
+      'isSystem': isSystem,
+    };
   }
 }

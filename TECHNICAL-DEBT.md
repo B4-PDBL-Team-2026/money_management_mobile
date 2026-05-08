@@ -18,3 +18,7 @@ Tuliskan semua technical debt yang ada di proyek ini, termasuk alasan mengapa te
 
 - **Alasan**: Saat ini, masih ada beberapa bagian kode pengiriman tanggal atau waktu ke backend tanpa parsing ke ISO8601. Hal ini dapat menyebabkan masalah kompatibilitas dan kesalahan dalam penanganan tanggal di backend. Begitu juga saat penerimaan tanggal dari backend, kita belum melakukan parsing ke format yang konsisten, yang dapat menyebabkan masalah dalam penggunaan tanggal di frontend.
 - **Rencana**: Kita berencana untuk memastikan bahwa semua tanggal yang dikirim ke backend diparsing ke format ISO8601, dan semua tanggal yang diterima dari backend diparsing ke format yang konsisten di frontend. Ini akan meningkatkan kompatibilitas dan mengurangi risiko kesalahan dalam penanganan tanggal di seluruh proyek.
+
+### Fitur Fixed Cost
+- **Alasan**: Saat ini, fitur fixed cost (occurences dan template) masih tersebar di scope fitur `profile` dan `dashboard`. Hal ini membuat kode antar fitur saling berkaitan dan tidak teratur dan berpotensi membuat kebingungan di masa depan.
+- **Rencana**: Kita berencana untuk memindahkan fitur fixed cost occurences dan template ke fitur baru `fixed_cost`. Ini akan mempermudah tim developer di masa depan tanpa bingung melihat kode yang saling bergantung antar fitur.

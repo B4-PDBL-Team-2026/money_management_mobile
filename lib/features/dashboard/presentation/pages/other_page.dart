@@ -164,29 +164,6 @@ class OtherPage extends StatelessWidget {
               const OtherProfileCard(),
               const SizedBox(height: AppSizes.spacing8),
               Text(
-                'KEUANGAN',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.trunks,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: AppSizes.spacing4),
-              OtherSettingsCard(
-                children: [
-                  OtherSettingsTile(
-                    icon: Icons.edit_outlined,
-                    title: 'Managemen Fixed Cost',
-                    subtitle: 'Atur pengeluaran tetap anda',
-                    iconBackground: AppColors.lightPrimary,
-                    iconColor: AppColors.primary,
-                    onTap: () {
-                      context.go(AppRouter.fixedCostsManagement);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSizes.spacing6),
-              Text(
                 'AKUN',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: AppColors.trunks,

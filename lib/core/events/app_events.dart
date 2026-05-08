@@ -13,3 +13,15 @@ class FixedCostTemplateChangesEvent {
 class FixedCostOccurrencesChangesEvent {
   const FixedCostOccurrencesChangesEvent();
 }
+
+class SessionExpiredEvent {
+  const SessionExpiredEvent();
+}
+
+class NotificationCenterChangesEvent {
+  const NotificationCenterChangesEvent();
+}
+
+class NotificationInitializeEvent {
+  const NotificationInitializeEvent();
+}

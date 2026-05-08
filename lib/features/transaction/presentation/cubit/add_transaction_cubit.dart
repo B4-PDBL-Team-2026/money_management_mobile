@@ -68,4 +68,8 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       }
     }
   }
+
+  void reset() {
+    emit(AddTransactionInitial());
+  }
 }

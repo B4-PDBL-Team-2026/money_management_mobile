@@ -132,6 +132,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         ? _expenseCategories
         : _incomeCategories;
 
+    final dynamicHint = isExpenseSelected
+        ? 'Contoh: Tempat Tinggal, Makan Siang'
+        : 'Contoh: Gaji Bulanan, Uang Saku';
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -213,6 +217,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 padding: const EdgeInsets.all(AppSizes.spacing6),
                 child: Form(
                   key: _formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
                     children: [
                       AppSegmentedControl<TransactionType>(
@@ -249,8 +254,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         onChanged: (value) {
                           setState(() {
                             _selectedTransactionType = value;
-                            _selectedCategory = 0;
 
+                            context.read<AddTransactionCubit>().reset();
+                            _amountController.clear();
+                            _nameController.clear();
+                            _noteController.clear();
+
+                            _selectedCategory = 0;
                             if (value == TransactionType.expense) {
                               if (_expenseCategories.isNotEmpty) {
                                 _selectedCategory = _expenseCategories.first.id;
@@ -260,6 +270,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                 _selectedCategory = _incomeCategories.first.id;
                               }
                             }
+
+                            _formKey.currentState?.reset();
+                            _dateController.text = _formatDate(DateTime.now());
                           });
                         },
                       ),
@@ -305,7 +318,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       const SizedBox(height: AppSizes.spacing4),
                       AppTextField(
                         label: 'Judul/Nama Transaksi',
-                        hint: 'Contoh: Geprek Cibus',
+                        hint: dynamicHint,
                         controller: _nameController,
                         isDisabled: state is AddTransactionLoading,
                         errorText: serverErrors?['name']?[0],

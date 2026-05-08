@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:money_management_mobile/features/auth/domain/repositories/auth_repository.dart';
 
@@ -9,9 +13,21 @@ import 'session_state.dart';
 @LazySingleton()
 class SessionCubit extends Cubit<SessionState> {
   final AuthRepository _authRepository;
+  final EventBus _eventBus;
+  late final StreamSubscription<dynamic> _sessionExpiredSubscription;
   final _log = Logger('SessionCubit');
 
-  SessionCubit(this._authRepository) : super(SessionUnauthenticated());
+  SessionCubit(this._authRepository, this._eventBus)
+    : super(SessionUnauthenticated()) {
+    _sessionExpiredSubscription = _eventBus.on<SessionExpiredEvent>().listen(
+      (_) {
+        // Only trigger logout if currently authenticated to prevent infinite loops
+        if (state is SessionAuthenticated) {
+          unawaited(logout());
+        }
+      },
+    );
+  }
 
   Future<void> restoreSession() async {
     _log.info('Restoring local auth session');
@@ -73,5 +89,11 @@ class SessionCubit extends Cubit<SessionState> {
     }
 
     emit(SessionUnauthenticated());
+  }
+
+  @override
+  Future<void> close() async {
+    await _sessionExpiredSubscription.cancel();
+    return super.close();
   }
 }

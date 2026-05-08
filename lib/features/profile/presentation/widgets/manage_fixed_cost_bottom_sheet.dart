@@ -3,10 +3,8 @@ import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
-import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart'
-    as category;
-import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
+import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
 import 'package:money_management_mobile/features/profile/presentation/utils/profile_utils.dart';
 
 class ManageFixedCostBottomSheet extends StatefulWidget {
@@ -364,9 +362,7 @@ class _ManageFixedCostBottomSheetState
                       amount: CurrencyFormatter.parse(_amountController.text),
                       category: selectedCategory.name,
                       categoryId: selectedCategory.id,
-                      categoryType:
-                          selectedCategory.categoryType ==
-                              category.RealCategoryType.system
+                      categoryType: selectedCategory.isSystem
                           ? CategoryType.system
                           : CategoryType.custom,
                       cycle: cycle,
