@@ -1,8 +1,20 @@
 import 'package:dio/dio.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
+import 'package:money_management_mobile/injection_container.dart';
 
 class ErrorHandler {
+  static bool _isSessionRelatedError(String message) {
+    final lowerMessage = message.toLowerCase();
+    return lowerMessage.contains('route [login]') ||
+        lowerMessage.contains('unauthorized') ||
+        lowerMessage.contains('session') ||
+        lowerMessage.contains('token') ||
+        lowerMessage.contains('authentication');
+  }
+
   static String _extractMessage(dynamic responseData) {
     if (responseData is! Map<String, dynamic>) {
       return 'Terjadi kesalahan'; // UBAH: dari return menjadi return
@@ -72,6 +84,13 @@ class ErrorHandler {
 
       if (statusCode != null && statusCode >= 500) {
         log.severe('$context failed: Server error ($statusCode): $message', e);
+        
+        // If error message indicates session/auth issue, trigger logout
+        if (_isSessionRelatedError(message)) {
+          log.warning('Session-related error detected in 500 response, firing session expired event');
+          getIt<EventBus>().fire(const SessionExpiredEvent());
+        }
+        
         return ServerException(
           "Terjadi masalah pada server. Silakan coba lagi nanti.",
         );
@@ -79,6 +98,7 @@ class ErrorHandler {
 
       if (statusCode == 401) {
         log.warning('$context failed: Unauthorized (401)', e);
+        getIt<EventBus>().fire(const SessionExpiredEvent());
         return UnauthorizedException(
           message.isNotEmpty
               ? message
@@ -92,17 +112,25 @@ class ErrorHandler {
           e,
         );
 
-        Map<String, dynamic>? fieldErrors;
+        Map<String, List<String>>? fieldErrors;
         final responseData = e.response?.data;
 
         if (responseData is Map<String, dynamic>) {
-          final rawData = responseData['data'] ?? responseData['errors'];
-          if (rawData is Map) {
-            fieldErrors = Map<String, dynamic>.from(rawData);
+          final dynamic rawData = responseData['data'] ?? responseData['errors'];
+
+          if (rawData is Map<String, dynamic>) {
+            fieldErrors = rawData.map((String key, dynamic value) {
+              if (value is List) {
+                final List<String> stringList = value.map((dynamic item) => item.toString()).toList();
+                return MapEntry(key, stringList);
+              }
+
+              return MapEntry(key, <String>[value.toString()]);
+            });
           }
         }
 
-        return ValidationException(fieldErrors);
+        return BusinessRuleException(message, fieldErrors);
       }
 
       // client Error lainnya (402 - 499)

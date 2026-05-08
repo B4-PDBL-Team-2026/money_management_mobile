@@ -14,12 +14,20 @@ class CategoryCubit extends Cubit<CategoryState> {
   final CategoryRepository _categoryRepository;
   final EventBus _eventBus;
   late final StreamSubscription<dynamic> _refreshSubscription;
+  late final StreamSubscription<dynamic> _sessionExpiredSubscription;
 
   CategoryCubit(this._categoryRepository, this._eventBus)
     : super(CategoryInitial()) {
     _refreshSubscription = _eventBus
         .on<RefreshCategoriesEvent>()
         .listen((_) => fetchCategories());
+    
+    _sessionExpiredSubscription = _eventBus
+        .on<SessionExpiredEvent>()
+        .listen((_) {
+          // Reset state when session expires to prevent retry loops
+          emit(CategoryInitial());
+        });
   }
 
   Future<void> fetchCategories() async {
@@ -35,6 +43,9 @@ class CategoryCubit extends Cubit<CategoryState> {
       emit(CategoryErrorAndRetry(e.message, fetchCategories));
     } on CacheNotFoundException catch (e) {
       emit(CategoryErrorAndRetry(e.message, fetchCategories));
+    } on UnauthorizedException catch (e) {
+      // Do not retry on unauthorized; session expired event already triggered logout
+      emit(CategoryError(e.message));
     } on ServerException catch (e) {
       emit(CategoryError(e.message));
     } on UnexpectedException catch (e) {
@@ -60,6 +71,7 @@ class CategoryCubit extends Cubit<CategoryState> {
   @override
   Future<void> close() {
     _refreshSubscription.cancel();
+    _sessionExpiredSubscription.cancel();
     return super.close();
   }
 }

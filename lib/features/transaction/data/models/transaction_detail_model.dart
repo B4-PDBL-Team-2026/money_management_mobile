@@ -4,78 +4,72 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 class TransactionDetailModel extends TransactionDetailEntity {
   TransactionDetailModel({
     required super.id,
-    required super.userId,
-    required super.categoryType,
     required super.categoryId,
-    required super.fixedCostOccurrenceId,
+    required super.categoryName,
+    super.categoryIcon,
     required super.type,
     required super.source,
     required super.name,
     required super.amount,
     required super.transactionAt,
-    required super.effectiveAt,
     required super.note,
-    required super.createdAt,
-    required super.updatedAt,
-    required super.deletedAt,
   });
 
   factory TransactionDetailModel.fromJson(Map<String, dynamic> json) {
+    final category = json['category'] is Map
+        ? Map<String, dynamic>.from(json['category'] as Map)
+        : <String, dynamic>{};
     final typeValue = json['type'] as String?;
 
     return TransactionDetailModel(
-      id: json['id'] as int,
-      userId: json['user_id'] as int,
-      categoryType: (json['category_type'] as String?) ?? 'system',
-      categoryId: json['category_id'] as int,
-      fixedCostOccurrenceId: json['fixed_cost_occurrence_id'] as int?,
+      id: _parseInt(json['id']),
+      categoryId: _parseInt(category['id']),
+      categoryName: category['name'] as String? ?? '-',
+      categoryIcon: category['icon'] as String?,
       type: _parseTransactionType(typeValue),
       source: (json['source'] as String?) ?? '-',
       name: (json['name'] as String?) ?? '-',
       amount: _parseAmount(json['amount']),
       transactionAt:
           DateTime.tryParse(
-            (json['transaction_at'] as String?) ?? '',
+            (json['transactionAt'] as String?) ??
+                (json['transaction_at'] as String?) ??
+                '',
           )?.toLocal() ??
           DateTime.now(),
-      effectiveAt: _parseDateTime(json['effective_at']),
       note: json['note'] as String?,
-      createdAt: _parseDateTime(json['created_at']),
-      updatedAt: _parseDateTime(json['updated_at']),
-      deletedAt: _parseDateTime(json['deleted_at']),
     );
   }
 
   TransactionDetailEntity toEntity() {
     return TransactionDetailEntity(
       id: id,
-      userId: userId,
-      categoryType: categoryType,
       categoryId: categoryId,
-      fixedCostOccurrenceId: fixedCostOccurrenceId,
+      categoryName: categoryName,
+      categoryIcon: categoryIcon,
       type: type,
       source: source,
       name: name,
       amount: amount,
       transactionAt: transactionAt,
-      effectiveAt: effectiveAt,
       note: note,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-      deletedAt: deletedAt,
     );
   }
 
-  static DateTime? _parseDateTime(dynamic value) {
-    if (value == null) {
-      return null;
+  static int _parseInt(dynamic value) {
+    if (value is int) {
+      return value;
     }
 
-    if (value is String && value.isNotEmpty) {
-      return DateTime.tryParse(value);
+    if (value is double) {
+      return value.toInt();
     }
 
-    return null;
+    if (value is String) {
+      return int.tryParse(value) ?? 0;
+    }
+
+    return int.tryParse(value?.toString() ?? '') ?? 0;
   }
 
   static int _parseAmount(dynamic value) {

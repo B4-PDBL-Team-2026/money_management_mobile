@@ -1,7 +1,7 @@
 name: money_management_mobile
 description: 'A new Flutter project.'
 publish_to: 'none'
-version: 0.1.0+2
+version: 1.0.0+5
 
 environment:
   sdk: ^3.10.8
@@ -23,6 +23,12 @@ dependencies:
   sentry: ^9.16.0
   injectable: ^2.7.1+4
   event_bus: ^2.0.1
+  speech_to_text: ^7.3.0
+  firebase_messaging: ^16.2.0
+  flutter_local_notifications: ^21.0.0
+  firebase_core: ^4.7.0
+  device_info_plus: ^13.1.0
+  android_id: ^0.5.1
 
 dev_dependencies:
   flutter_test:
