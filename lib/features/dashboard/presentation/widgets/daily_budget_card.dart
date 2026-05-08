@@ -54,11 +54,15 @@ class DailyBudgetCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                limitName,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.gohan,
-                  fontWeight: FontWeight.bold,
+              AppHelpTooltip(
+                iconColor: AppColors.gohan,
+                message: 'Uang aman untuk dibelanjakan hari ini.',
+                child: Text(
+                  limitName,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.gohan,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               Text(

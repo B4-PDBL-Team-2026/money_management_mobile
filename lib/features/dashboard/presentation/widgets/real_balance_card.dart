@@ -23,11 +23,15 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
       backgroundColor: Colors.white,
       child: Row(
         children: [
-          Text(
-            'Saldo sebenarnya',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+          AppHelpTooltip(
+            message:
+                'Saldo total Anda saat ini, akumulasi dari semua pemasukan yang tercatat. Ini bukan jumlah yang aman untuk dibelanjakan.',
+            child: Text(
+              'Saldo sebenarnya',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
           ),
           const Spacer(),
           Text(
