@@ -69,8 +69,7 @@ class _AppHelpTooltipState extends State<AppHelpTooltip>
       return;
     }
 
-    final renderBox =
-        _iconKey.currentContext?.findRenderObject() as RenderBox?;
+    final renderBox = _iconKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) {
       return;
     }
@@ -139,7 +138,7 @@ class _AppHelpTooltipState extends State<AppHelpTooltip>
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Flexible(child: widget.child!),
+          widget.child!,
           const SizedBox(width: AppSizes.spacing1),
           GestureDetector(
             key: _iconKey,
@@ -163,7 +162,7 @@ class _AppHelpTooltipState extends State<AppHelpTooltip>
       onTap: _showTooltip,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: const EdgeInsets.all(AppSizes.spacing1),
         child: PhosphorIcon(
           PhosphorIconsFill.info,
           size: widget.iconSize,
@@ -184,9 +183,9 @@ class _TooltipBubble extends StatelessWidget {
   final double maxWidth;
   final VoidCallback onDismiss;
 
-  static const double _arrowSize = 8.0;
-  static const double _horizontalPadding = 16.0;
-  static const double _verticalGap = 6.0;
+  static const double _arrowSize = AppSizes.spacing2;
+  static const double _horizontalPadding = AppSizes.spacing4;
+  static const double _verticalGap = AppSizes.spacing1;
 
   const _TooltipBubble({
     required this.message,
@@ -204,20 +203,23 @@ class _TooltipBubble extends StatelessWidget {
     // but clamp to keep within screen bounds.
     final iconCenterX = iconPosition.dx + iconSize.width / 2;
     double left = iconCenterX - maxWidth / 2;
-    left = left.clamp(_horizontalPadding, screenSize.width - maxWidth - _horizontalPadding);
+    left = left.clamp(
+      _horizontalPadding,
+      screenSize.width - maxWidth - _horizontalPadding,
+    );
 
     // Arrow points to the icon center
     final arrowLeft = (iconCenterX - left - _arrowSize).clamp(
-      12.0,
-      maxWidth - _arrowSize - 12.0,
+      AppSizes.spacing3,
+      maxWidth - _arrowSize - AppSizes.spacing3,
     );
 
     // Calculate vertical position
     double top;
     if (showAbove) {
-      top = iconPosition.dy - _verticalGap - _arrowSize;
+      top = iconPosition.dy - _verticalGap;
     } else {
-      top = iconPosition.dy + iconSize.height + _verticalGap + _arrowSize;
+      top = iconPosition.dy + iconSize.height + _verticalGap;
     }
 
     return Positioned(
@@ -249,7 +251,7 @@ class _TooltipBubble extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
+                    color: AppColors.bulma.withValues(alpha: 0.25),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
