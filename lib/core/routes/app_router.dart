@@ -21,8 +21,10 @@ import 'package:money_management_mobile/features/dashboard/presentation/layouts/
 import 'package:money_management_mobile/features/dashboard/presentation/pages/delete_account_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/home_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/pages/other_page.dart';
+import 'package:money_management_mobile/features/notification/presentation/pages/notification_center_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_occurence_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_template_management_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
@@ -30,9 +32,11 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/voice_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/voice_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/outer_shell.dart';
 
@@ -54,12 +58,15 @@ class AppRouter {
   static const String step4Personalization = '/personalization/step-4';
 
   static const String dashboard = '/';
+  static const String notification = '/notification';
   static const String history = '/history';
   static const String other = '/other';
-  static const String fixedCostsManagement = '/other/fixed-costs';
+  static const String fixedCostsOccurence = '/fixed-costs';
+  static const String fixedCostsManagement = '/fixed-costs/manage';
   static const String deleteAccount = '/other/delete-account';
 
   static const String addTransaction = '/transaction/add';
+  static const String voiceTransaction = '/transaction/voice';
   static const String transactionDetailBase = '/transaction';
   static const String transactionDetail = '/transaction/:id';
 
@@ -169,6 +176,28 @@ class AppRouter {
                   GoRoute(
                     path: dashboard,
                     builder: (context, state) => const HomePage(),
+                    routes: [
+                      GoRoute(
+                        path: 'notification',
+                        builder: (context, state) =>
+                            const NotificationCenterPage(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: fixedCostsOccurence,
+                    builder: (context, state) => const FixedCostOccurencePage(),
+                    routes: [
+                      GoRoute(
+                        path: 'manage',
+                        builder: (context, state) =>
+                            const FixedCostTemplateManagementPage(),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -186,11 +215,6 @@ class AppRouter {
                       child: const OtherPage(),
                     ),
                     routes: [
-                      GoRoute(
-                        path: 'fixed-costs',
-                        builder: (context, state) =>
-                            const FixedCostTemplateManagementPage(),
-                      ),
                       GoRoute(
                         path: 'delete-account',
                         builder: (context, state) => BlocProvider(
@@ -214,6 +238,13 @@ class AppRouter {
                 BlocProvider.value(value: getIt<DashboardMetricCubit>()),
               ],
               child: const AddTransactionPage(),
+            ),
+          ),
+          GoRoute(
+            path: voiceTransaction,
+            builder: (context, state) => BlocProvider(
+              create: (_) => getIt<VoiceTransactionCubit>(),
+              child: const VoiceTransactionPage(),
             ),
           ),
           GoRoute(

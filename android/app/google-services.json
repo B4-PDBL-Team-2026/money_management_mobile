@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "520920693154",
+    "project_id": "moco-5bda4",
+    "storage_bucket": "moco-5bda4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520920693154:android:abab33160f2553b99c5afb",
+        "android_client_info": {
+          "package_name": "com.moco.moneycontrol"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ7bQeDXGfshXckrOPJyUF0Knbo7GPLL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

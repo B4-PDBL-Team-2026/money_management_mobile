@@ -7,8 +7,6 @@ class CategoryEntity {
   final String icon;
   final bool isSystem;
   final TransactionType type;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
 
   CategoryEntity({
     required this.id,
@@ -17,7 +15,5 @@ class CategoryEntity {
     required this.icon,
     required this.type,
     required this.isSystem,
-    this.createdAt,
-    this.updatedAt,
   });
 }

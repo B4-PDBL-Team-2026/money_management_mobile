@@ -1,4 +1,3 @@
-import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 
@@ -9,8 +8,6 @@ class CategoryModel extends CategoryEntity {
     required super.icon,
     required super.type,
     required super.isSystem,
-    super.createdAt,
-    super.updatedAt,
     super.userId,
   });
 
@@ -22,10 +19,8 @@ class CategoryModel extends CategoryEntity {
       type: json['type'] as String == 'income'
           ? TransactionType.income
           : TransactionType.expense,
-      userId: json['user_id'] as int?,
-      createdAt: TimezoneConverter.toLocal(json['created_at'] as String),
-      updatedAt: TimezoneConverter.toLocal(json['updated_at'] as String),
-      isSystem: json['is_system'] as bool,
+      userId: json['userId'] as int?,
+      isSystem: json['isSystem'] as bool,
     );
   }
 
@@ -36,8 +31,6 @@ class CategoryModel extends CategoryEntity {
       name: name,
       icon: icon,
       type: type,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
       isSystem: isSystem,
     );
   }
@@ -48,14 +41,8 @@ class CategoryModel extends CategoryEntity {
       'name': name,
       'icon': icon,
       'type': type.value,
-      'user_id': userId,
-      'is_system': isSystem,
-      'created_at': createdAt != null
-          ? TimezoneConverter.toUtcString(createdAt!)
-          : null,
-      'updated_at': updatedAt != null
-          ? TimezoneConverter.toUtcString(updatedAt!)
-          : null,
+      'userId': userId,
+      'isSystem': isSystem,
     };
   }
 }
