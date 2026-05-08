@@ -24,8 +24,8 @@ class MetricCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (metric.type == MetricType.blocked) {
       return AppContainerCard(
-        height: 85,
         backgroundColor: backgroundColor ?? AppColors.danger100,
+        constraints: BoxConstraints(minHeight: 85),
         child: Center(
           child: Text(
             metric.name,
@@ -47,7 +47,7 @@ class MetricCard extends StatelessWidget {
     return AppContainerCard(
       width: width,
       border: boxBorder,
-      height: 85,
+      constraints: BoxConstraints(minHeight: 85),
       backgroundColor: backgroundColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

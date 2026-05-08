@@ -156,6 +156,7 @@ class _ShellContainerState extends State<ShellContainer>
                   label: 'Tambah Manual',
                   icon: Icons.edit_outlined,
                   onTap: _onManualTap,
+                  disabled: false,
                 ),
                 const SizedBox(height: 12),
 
@@ -177,6 +178,7 @@ class _ShellContainerState extends State<ShellContainer>
                   label: 'Voice',
                   icon: Icons.mic_none_rounded,
                   onTap: _onVoiceTap,
+                  disabled: false,
                 ),
                 const SizedBox(height: 16),
 
@@ -220,7 +222,7 @@ class _FabMenuItem extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.onTap,
-    this.disabled = false,
+    required this.disabled,
   });
 
   @override

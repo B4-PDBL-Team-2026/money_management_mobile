@@ -112,27 +112,36 @@ class DashboardBudgetMetrics extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.spacing3),
           if (metrics.healthScenario != BudgetHealthScenario.deficit) ...[
-            Row(
-              children: [
-                Expanded(child: MetricCard(metric: metrics.firstMetric)),
-                const SizedBox(width: AppSizes.spacing3),
-                Expanded(child: MetricCard(metric: metrics.secondMetric)),
-              ],
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: MetricCard(metric: metrics.firstMetric)),
+                  const SizedBox(width: AppSizes.spacing3),
+                  Expanded(child: MetricCard(metric: metrics.secondMetric)),
+                ],
+              ),
             ),
           ] else ...[
-            Row(
-              children: [
-                Expanded(child: MetricCard(metric: metrics.firstMetric)),
-                const SizedBox(width: AppSizes.spacing3),
-                Expanded(
-                  child: MetricCard(
-                    metric: metrics.secondMetric,
-                    backgroundColor: AppColors.danger10,
-                    textColor: AppColors.danger100,
-                    boxBorder: Border.all(color: AppColors.danger100, width: 1),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: MetricCard(metric: metrics.firstMetric)),
+                  const SizedBox(width: AppSizes.spacing3),
+                  Expanded(
+                    child: MetricCard(
+                      metric: metrics.secondMetric,
+                      backgroundColor: AppColors.danger10,
+                      textColor: AppColors.danger100,
+                      boxBorder: Border.all(
+                        color: AppColors.danger100,
+                        width: 1,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ],
