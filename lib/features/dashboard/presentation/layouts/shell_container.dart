@@ -137,7 +137,7 @@ class _ShellContainerState extends State<ShellContainer>
             child: GestureDetector(
               onTap: _close,
               behavior: HitTestBehavior.opaque,
-              child: Container(color: Colors.black.withOpacity(0.18)),
+              child: Container(color: AppColors.bulma.withValues(alpha: 0.18)),
             ),
           ),
 
@@ -245,11 +245,15 @@ class _FabMenuItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: disabled ? Colors.white.withOpacity(0.7) : Colors.white,
+                color: disabled
+                    ? Colors.white.withValues(alpha: 0.7)
+                    : Colors.white,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(disabled ? 0.04 : 0.10),
+                    color: AppColors.bulma.withValues(
+                      alpha: disabled ? 0.04 : 0.10,
+                    ),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
@@ -278,7 +282,9 @@ class _FabMenuItem extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(disabled ? 0.04 : 0.12),
+                      color: AppColors.bulma.withValues(
+                        alpha: disabled ? 0.04 : 0.12,
+                      ),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
                     ),
