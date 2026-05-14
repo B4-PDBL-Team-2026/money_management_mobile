@@ -114,7 +114,7 @@ class ErrorHandler {
           e,
         );
 
-        Map<String, List<String>>? fieldErrors;
+        Map<String, dynamic>? fieldErrors;
         final responseData = e.response?.data;
 
         if (responseData is Map<String, dynamic>) {
