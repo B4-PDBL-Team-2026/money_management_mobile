@@ -44,7 +44,7 @@ class SubmitFinancialProfileCubit extends Cubit<SubmitFinancialProfileState> {
     } on NetworkException catch (e) {
       emit(SubmitFinancialProfileFailure(e.message));
     } on ValidationException catch (e) {
-      emit(SubmitFinancialProfileFailure(e.toString()));
+      emit(SubmitFinancialProfileFailure(e.message));
     } on UnexpectedException catch (e) {
       emit(SubmitFinancialProfileFailure(e.message));
     } catch (e) {

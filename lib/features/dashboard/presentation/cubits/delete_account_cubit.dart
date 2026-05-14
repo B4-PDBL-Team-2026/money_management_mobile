@@ -29,7 +29,12 @@ class DeleteAccountCubit extends Cubit<DeleteAccountState> {
     } on UnexpectedException catch (e) {
       emit(DeleteAccountError(e.message));
     } on ValidationException catch (e) {
-      emit(DeleteAccountValidationError(e.fieldErrors));
+      final fieldErrors = e.fieldErrors;
+      if (fieldErrors != null && fieldErrors.isNotEmpty) {
+        emit(DeleteAccountValidationError(fieldErrors));
+      } else {
+        emit(DeleteAccountError(e.message));
+      }
     } catch (e) {
       if (kDebugMode) {
         emit(DeleteAccountError('Terjadi kesalahan: ${e.toString()}'));

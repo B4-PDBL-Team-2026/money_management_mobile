@@ -48,7 +48,12 @@ class RegisterCubit extends Cubit<RegisterState> {
     } on NetworkException catch (e) {
       emit(RegisterError(e.message));
     } on ValidationException catch (e) {
-      emit(RegisterValidationError(e.fieldErrors));
+      final fieldErrors = e.fieldErrors;
+      if (fieldErrors != null && fieldErrors.isNotEmpty) {
+        emit(RegisterValidationError(fieldErrors));
+      } else {
+        emit(RegisterError(e.message));
+      }
     } on UnexpectedException catch (e) {
       emit(RegisterError(e.message));
     } catch (e) {
