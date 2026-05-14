@@ -23,18 +23,14 @@ class UnexpectedException implements Exception {
 }
 
 class ValidationException implements Exception {
-  final Map<String, dynamic>? fieldErrors;
-  ValidationException([this.fieldErrors]);
-
-  @override
-  String toString() => "Data yang diberikan tidak valid";
-}
-
-class BusinessRuleException implements Exception {
+  /// Optional map of field errors, where the key is the field name and the value is the error message for that field.
   final String message;
-  final Map<String, List<String>>? errors;
+  final Map<String, dynamic>? fieldErrors;
 
-  BusinessRuleException(this.message, [this.errors]);
+  ValidationException([
+    this.fieldErrors,
+    this.message = "Data yang diberikan tidak valid",
+  ]);
 
   @override
   String toString() => message;
