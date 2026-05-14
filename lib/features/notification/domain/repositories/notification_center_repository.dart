@@ -13,4 +13,5 @@ abstract class NotificationCenterRepository {
   Future<void> registerDeviceForNotifications(
     NotificationRegistrationEntity registrationData,
   );
+  Future<void> unregisterDeviceForNotifications(String deviceId);
 }

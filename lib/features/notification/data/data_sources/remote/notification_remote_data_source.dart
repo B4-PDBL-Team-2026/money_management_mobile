@@ -271,4 +271,28 @@ class NotificationRemoteDataSource {
       );
     }
   }
+
+  Future<void> unregisterDevice(String deviceId) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      return;
+    }
+
+    try {
+      await _dio.delete('/notifications/device/$deviceId');
+
+      _log.info('Device notification registration removed successfully');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'UnregisterDevice',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while unregistering device', e);
+      throw UnexpectedException(
+        'Terjadi kesalahan sistem saat membatalkan pendaftaran perangkat',
+      );
+    }
+  }
 }

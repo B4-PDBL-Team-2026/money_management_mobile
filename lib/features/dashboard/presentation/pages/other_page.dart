@@ -14,6 +14,7 @@ import 'package:money_management_mobile/features/category/presentation/cubit/cat
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_profile_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_tile.dart';
+import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OtherPage extends StatelessWidget {
@@ -122,11 +123,7 @@ class OtherPage extends StatelessWidget {
     }
 
     try {
-      await context.read<CategoryCubit>().clearCategories();
-
-      if (context.mounted) {
-        await context.read<SessionCubit>().logout();
-      }
+      await context.read<NotificationCubit>().unregisterCurrentDevice();
     } catch (_) {
       if (!context.mounted) {
         return;
@@ -136,11 +133,41 @@ class OtherPage extends StatelessWidget {
         SnackBar(
           backgroundColor: AppColors.danger100,
           content: const Text(
-            'Gagal logout. Coba lagi.',
+            'Gagal membatalkan pendaftaran perangkat. Logout dibatalkan.',
             style: TextStyle(color: AppColors.gohan),
           ),
         ),
       );
+
+      return;
+    }
+
+    try {
+      if (!context.mounted) {
+        return;
+      }
+      
+      await context.read<CategoryCubit>().clearCategories();
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.danger100,
+          content: const Text(
+            'Gagal membersihkan kategori. Logout dibatalkan.',
+            style: TextStyle(color: AppColors.gohan),
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (context.mounted) {
+      await context.read<SessionCubit>().logout();
     }
   }
 
