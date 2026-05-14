@@ -141,14 +141,35 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                                       await context
                                           .read<NotificationCubit>()
                                           .unregisterCurrentDevice();
-                                    } catch (_) {
-                                    }
 
-                                    context
-                                        .read<DeleteAccountCubit>()
-                                        .deleteAccount(
-                                          _passwordController.text,
-                                        );
+                                      if (!context.mounted) {
+                                        return;
+                                      }
+
+                                      context
+                                          .read<DeleteAccountCubit>()
+                                          .deleteAccount(
+                                            _passwordController.text,
+                                          );
+                                    } catch (_) {
+                                      if (!context.mounted) {
+                                        return;
+                                      }
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: AppColors.danger100,
+                                          content: const Text(
+                                            'Gagal membatalkan pendaftaran perangkat. Silakan coba lagi.',
+                                            style: TextStyle(
+                                              color: AppColors.gohan,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                               ),

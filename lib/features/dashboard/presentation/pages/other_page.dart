@@ -143,6 +143,10 @@ class OtherPage extends StatelessWidget {
     }
 
     try {
+      if (!context.mounted) {
+        return;
+      }
+      
       await context.read<CategoryCubit>().clearCategories();
     } catch (_) {
       if (!context.mounted) {

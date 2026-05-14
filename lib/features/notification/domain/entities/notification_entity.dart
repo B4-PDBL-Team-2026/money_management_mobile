@@ -29,7 +29,7 @@ enum NotificationCode {
       case NotificationCode.fixedCostDue:
         return '/fixed-costs';
       default:
-        return '/';
+        return null;
     }
   }
 }
