@@ -64,6 +64,8 @@ import 'features/notification/domain/services/notification_service.dart'
     as _i747;
 import 'features/notification/domain/usecases/notification_init_usecase.dart'
     as _i874;
+import 'features/notification/domain/usecases/notification_unregister_usecase.dart'
+    as _i469;
 import 'features/notification/infrastructure/services/device_service_impl.dart'
     as _i690;
 import 'features/notification/infrastructure/services/notification_service_impl.dart'
@@ -250,6 +252,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
+    gh.factory<_i469.NotificationUnregisterUsecase>(
+      () => _i469.NotificationUnregisterUsecase(
+        gh<_i862.NotificationCenterRepository>(),
+        gh<_i929.DeviceService>(),
+      ),
+    );
     gh.lazySingleton<_i626.ProfileRepository>(
       () => _i277.ProfileRepositoryImpl(gh<_i959.ProfileRemoteDataSource>()),
     );
@@ -314,6 +322,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i421.NotificationCubit>(
       () => _i421.NotificationCubit(
         gh<_i874.NotificationInitUsecase>(),
+        gh<_i469.NotificationUnregisterUsecase>(),
         gh<_i747.NotificationService>(),
         gh<_i1017.EventBus>(),
       ),

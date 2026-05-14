@@ -6,6 +6,7 @@ import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_state.dart';
+import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
 
 class DeleteAccountPage extends StatefulWidget {
   const DeleteAccountPage({super.key});
@@ -134,8 +135,15 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                               child: AppButton(
                                 text: 'Hapus Akun',
                                 type: AppButtonType.danger,
-                                onPressed: () {
+                                onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
+                                    try {
+                                      await context
+                                          .read<NotificationCubit>()
+                                          .unregisterCurrentDevice();
+                                    } catch (_) {
+                                    }
+
                                     context
                                         .read<DeleteAccountCubit>()
                                         .deleteAccount(
