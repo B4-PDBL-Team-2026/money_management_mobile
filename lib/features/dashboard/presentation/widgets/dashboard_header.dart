@@ -154,7 +154,7 @@ class DashboardHeader extends StatelessWidget {
 
     if (scenario == BudgetHealthScenario.deficit) {
       if (balance <= 0 && totalUnpaidFixedCost > 0) {
-        return 'Anda tidak memiliki saldo untuk membayar fixed cost dan jajan harian!';
+        return 'Anda tidak memiliki saldo untuk membayar biaya tetap dan jajan harian!';
       }
 
       return 'Saldo Anda sudah minus. Setiap pengeluaran hari ini akan memperbesar total defisit Anda.';

@@ -214,7 +214,7 @@ class _FixedCostSection extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       backgroundColor: AppColors.success100,
-                      content: Text('Fixed cost berhasil dibayar'),
+                      content: Text('Biaya tetap berhasil dibayar'),
                     ),
                   );
                 }
@@ -231,7 +231,7 @@ class _FixedCostSection extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     backgroundColor: AppColors.warning100,
-                    content: Text('Fixed cost berhasil dibatalkan'),
+                    content: Text('Biaya tetap berhasil dibatalkan'),
                   ),
                 );
               },

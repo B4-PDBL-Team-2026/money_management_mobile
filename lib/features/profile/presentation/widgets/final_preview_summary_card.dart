@@ -98,7 +98,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
                 value: '$remainingDays hari',
               ),
               FinalPreviewSummaryRow(
-                label: 'Total Fixed Cost',
+                label: 'Total Biaya Tetap',
                 value: 'Rp ${CurrencyFormatter.format(totalFixedCost)}',
               ),
               FinalPreviewSummaryRow(
@@ -266,7 +266,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.spacing3),
           Text(
-            'Jatah tersebut dari batas minimal anda. Setiap pengeluaran akan memperbesar defisit Anda. Cari pemasukan atau pangkas fixed cost Anda!',
+            'Jatah tersebut dari batas minimal anda. Setiap pengeluaran akan memperbesar defisit Anda. Cari pemasukan atau pangkas biaya tetap Anda!',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: AppColors.danger100,
               fontWeight: FontWeight.w700,

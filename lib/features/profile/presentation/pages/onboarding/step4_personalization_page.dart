@@ -101,7 +101,7 @@ class Step4PersonalizationPage extends StatelessWidget {
                             ),
                             const SizedBox(height: AppSizes.spacing6),
                             Text(
-                              'Fixed Cost Valid',
+                              'Biaya Tetap Valid',
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
                                     color: AppColors.trunks,
@@ -112,7 +112,7 @@ class Step4PersonalizationPage extends StatelessWidget {
                             const SizedBox(height: AppSizes.spacing3),
                             if (calculation.validFixedCosts.isEmpty)
                               Text(
-                                'Tidak ada fixed cost valid pada sisa siklus ini.',
+                                'Tidak ada biaya tetap valid pada sisa siklus ini.',
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(color: AppColors.trunks),
                               )

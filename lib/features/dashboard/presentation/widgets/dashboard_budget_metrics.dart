@@ -66,7 +66,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Total fixed cost yang belum dibayar',
+                    'Total biaya tetap yang belum dibayar',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppColors.danger100,
                       fontWeight: FontWeight.bold,

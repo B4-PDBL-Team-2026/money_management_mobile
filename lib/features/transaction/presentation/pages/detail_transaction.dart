@@ -762,7 +762,7 @@ class _DetailContent extends StatelessWidget {
   String _resolveSourceText(String source) {
     return switch (source) {
       'manual' => 'Pencatatan Manual',
-      'fixed_cost_payment' => 'Pembayaran Fixed Cost',
+      'fixed_cost_payment' => 'Pembayaran Biaya Tetap',
       'initial_balance' => 'Saldo Awal',
       _ => source,
     };
