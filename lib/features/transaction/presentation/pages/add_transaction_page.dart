@@ -9,9 +9,9 @@ import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
+import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
-import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_state.dart';
@@ -424,7 +424,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       ),
                       const SizedBox(height: AppSizes.spacing8),
                       AppButton(
-                        isLoading: state is AddTransactionLoading,
+                        isLoading:
+                            state is AddTransactionLoading ||
+                            context.watch<DashboardMetricCubit>().state
+                                is DashboardMetricLoading,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             final amount = CurrencyFormatter.parse(
@@ -433,6 +436,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
                             bool shouldProceed = true;
 
+                            // TODO: Refactor this logic into a separate use case or method in the cubit
                             if (_selectedTransactionType ==
                                 TransactionType.expense) {
                               final dashboardMetricState = context
@@ -445,7 +449,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
                                 final isAlreadyOverBudget =
                                     metrics.limitState ==
-                                        DashboardLimitState.overLastLimit;
+                                    DashboardLimitState.overLastLimit;
 
                                 final willBeOverBudget =
                                     metrics.todaySpent + amount > metrics.limit;
@@ -464,7 +468,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               }
                             }
 
-                            if (shouldProceed && mounted) {
+                            if (shouldProceed && context.mounted) {
                               context
                                   .read<AddTransactionCubit>()
                                   .addTransaction(
