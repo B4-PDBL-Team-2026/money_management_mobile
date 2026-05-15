@@ -65,7 +65,7 @@ class VoiceErrorView extends StatelessWidget {
                   ),
                 const TextSpan(
                   text:
-                  '. Coba pakai format stKamur ya biar pencatatan\nkeuangan kamu lebih akurat.',
+                  '. Coba pakai format standar ya biar pencatatan\nkeuangan kamu lebih akurat.',
                 ),
               ],
             ),

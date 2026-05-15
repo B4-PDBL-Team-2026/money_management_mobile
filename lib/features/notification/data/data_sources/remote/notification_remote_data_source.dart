@@ -203,7 +203,7 @@ class NotificationRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while marking notification as read', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat menKamui notifikasi terbaca',
+        'Terjadi kesalahan sistem saat menandai notifikasi terbaca',
       );
     }
 
