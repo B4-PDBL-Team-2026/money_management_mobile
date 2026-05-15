@@ -74,9 +74,9 @@ class DashboardBudgetMetrics extends StatelessWidget {
                 Text(
                   'Saldo anda habis dan hutang anda masih ada. apakah anda lari dari tanggung jawab?',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.gohan,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.gohan),
                 ),
                 const SizedBox(height: AppSizes.spacing4),
                 Container(
@@ -87,9 +87,9 @@ class DashboardBudgetMetrics extends StatelessWidget {
                   ),
                   child: Text(
                     'Tidak ada transaksi lebih lanjut!',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.gohan,
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.gohan),
                   ),
                 ),
               ],
@@ -108,17 +108,17 @@ class DashboardBudgetMetrics extends StatelessWidget {
                       children: [
                         Text(
                           'Total Defisit Saat Ini',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.danger100,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppColors.danger100),
                         ),
                         const SizedBox(height: AppSizes.spacing2),
                         Text(
-                          '– Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost - metrics.balance)}',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: AppColors.danger100,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          '- Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost - metrics.balance)}',
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: AppColors.danger100,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ],
                     ),
@@ -134,17 +134,17 @@ class DashboardBudgetMetrics extends StatelessWidget {
                       children: [
                         Text(
                           'Saldo riil',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.danger100,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppColors.danger100),
                         ),
                         const SizedBox(height: AppSizes.spacing2),
                         Text(
                           'Rp 0',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: AppColors.danger100,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: AppColors.danger100,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ],
                     ),
@@ -169,8 +169,8 @@ class DashboardBudgetMetrics extends StatelessWidget {
                 Expanded(
                   child: MetricCard(
                     metric: metrics.firstMetric,
-                    backgroundColor: metrics.limitState ==
-                            DashboardLimitState.overLastLimit
+                    backgroundColor:
+                        metrics.limitState == DashboardLimitState.overLastLimit
                         ? AppColors.danger100
                         : null,
                   ),
@@ -181,16 +181,16 @@ class DashboardBudgetMetrics extends StatelessWidget {
                     metric: metrics.secondMetric,
                     backgroundColor:
                         metrics.healthScenario == BudgetHealthScenario.deficit
-                            ? AppColors.danger10
-                            : null,
+                        ? AppColors.danger10
+                        : null,
                     textColor:
                         metrics.healthScenario == BudgetHealthScenario.deficit
-                            ? AppColors.danger100
-                            : null,
+                        ? AppColors.danger100
+                        : null,
                     boxBorder:
                         metrics.healthScenario == BudgetHealthScenario.deficit
-                            ? Border.all(color: AppColors.danger100)
-                            : null,
+                        ? Border.all(color: AppColors.danger100)
+                        : null,
                   ),
                 ),
               ],
@@ -217,7 +217,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSizes.spacing2),
                 Text(
-                  '– Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost - metrics.balance)}',
+                  '- Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost > metrics.balance ? metrics.totalUnpaidFixedCost - metrics.balance : 0)}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.danger100,
@@ -228,36 +228,6 @@ class DashboardBudgetMetrics extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-
-  Widget _buildSafeBalanceCard(
-    BuildContext context,
-    int remainingDaysInCycle,
-    int safeBalance,
-  ) {
-    return AppContainerCard(
-      backgroundColor: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          AppHelpTooltip(
-            message:
-                'Estimasi sisa uang Anda di akhir siklus keuangan saat ini. Sisa jatah harian hari ini akan ditambahkan ke tabungan Anda untuk cycle berikutnya.',
-            child: Text(
-              'Saldo aman untuk $remainingDaysInCycle hari ',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-          Text(
-            'Rp ${CurrencyFormatter.format(safeBalance)}',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.bulma,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
