@@ -47,7 +47,12 @@ class LoginCubit extends Cubit<LoginState> {
     } on NetworkException catch (e) {
       emit(LoginError(e.message));
     } on ValidationException catch (e) {
-      emit(LoginValidationError(e.fieldErrors));
+      final fieldErrors = e.fieldErrors;
+      if (fieldErrors != null && fieldErrors.isNotEmpty) {
+        emit(LoginValidationError(fieldErrors));
+      } else {
+        emit(LoginError(e.message));
+      }
     } on UnexpectedException catch (e) {
       emit(LoginError(e.message));
     } catch (e) {

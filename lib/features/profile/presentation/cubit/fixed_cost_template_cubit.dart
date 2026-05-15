@@ -72,7 +72,7 @@ class FixedCostTemplateCubit extends Cubit<FixedCostTemplateState> {
     } on UnauthorizedException catch (e) {
       emit(FixedCostTemplateError(e.message));
     } on ValidationException catch (e) {
-      emit(FixedCostTemplateError(e.toString()));
+      emit(FixedCostTemplateError(e.message));
     } on UnexpectedException catch (e) {
       emit(FixedCostTemplateError(e.message));
     } catch (e) {

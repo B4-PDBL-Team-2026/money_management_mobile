@@ -157,9 +157,7 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
     } on NetworkException catch (e) {
       emit(VoiceTransactionError(message: e.message));
     } on ValidationException catch (e) {
-      emit(VoiceTransactionError(
-          message:
-          e.fieldErrors?.values.first?.toString() ?? 'Validasi gagal'));
+      emit(VoiceTransactionError(message: e.message));
     } on UnexpectedException catch (e) {
       emit(VoiceTransactionError(message: e.message));
     } catch (e) {

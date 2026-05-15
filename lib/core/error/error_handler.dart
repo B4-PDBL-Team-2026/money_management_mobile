@@ -84,13 +84,15 @@ class ErrorHandler {
 
       if (statusCode != null && statusCode >= 500) {
         log.severe('$context failed: Server error ($statusCode): $message', e);
-        
+
         // If error message indicates session/auth issue, trigger logout
         if (_isSessionRelatedError(message)) {
-          log.warning('Session-related error detected in 500 response, firing session expired event');
+          log.warning(
+            'Session-related error detected in 500 response, firing session expired event',
+          );
           getIt<EventBus>().fire(const SessionExpiredEvent());
         }
-        
+
         return ServerException(
           "Terjadi masalah pada server. Silakan coba lagi nanti.",
         );
@@ -112,16 +114,19 @@ class ErrorHandler {
           e,
         );
 
-        Map<String, List<String>>? fieldErrors;
+        Map<String, dynamic>? fieldErrors;
         final responseData = e.response?.data;
 
         if (responseData is Map<String, dynamic>) {
-          final dynamic rawData = responseData['data'] ?? responseData['errors'];
+          final dynamic rawData =
+              responseData['data'] ?? responseData['errors'];
 
           if (rawData is Map<String, dynamic>) {
             fieldErrors = rawData.map((String key, dynamic value) {
               if (value is List) {
-                final List<String> stringList = value.map((dynamic item) => item.toString()).toList();
+                final List<String> stringList = value
+                    .map((dynamic item) => item.toString())
+                    .toList();
                 return MapEntry(key, stringList);
               }
 
@@ -130,7 +135,7 @@ class ErrorHandler {
           }
         }
 
-        return BusinessRuleException(message, fieldErrors);
+        return ValidationException(fieldErrors, message);
       }
 
       // client Error lainnya (402 - 499)
