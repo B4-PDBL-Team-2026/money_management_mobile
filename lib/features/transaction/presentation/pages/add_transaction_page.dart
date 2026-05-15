@@ -291,7 +291,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                           }
 
                           if (value <= 0) {
-                            return positiveNumberMessage('Nominal');
+                            return moreThanFieldMessage('Nominal', '0');
                           }
 
                           if (value > 1000000000) {

@@ -91,12 +91,15 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                           return requiredFieldMessage('Batas atas');
                         }
 
-                        if (value <= 0) {
+                        if (value < 0) {
                           return positiveNumberMessage('Batas atas');
                         }
 
                         if (value > state.initialBalance) {
-                          return maxValueMessage('Batas atas', state.initialBalance);
+                          return maxValueMessage(
+                            'Batas atas',
+                            state.initialBalance,
+                          );
                         }
 
                         return null;

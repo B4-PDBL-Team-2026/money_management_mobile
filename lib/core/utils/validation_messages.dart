@@ -5,7 +5,7 @@ String requiredFieldMessage(String label) {
 }
 
 String positiveNumberMessage(String label) {
-  return '$label harus lebih besar dari 0';
+  return '$label tidak boleh kurang dari 0';
 }
 
 String maxValueMessage(String label, int max) {
@@ -14,4 +14,12 @@ String maxValueMessage(String label, int max) {
 
 String maxLengthMessage(String label, int max) {
   return '$label maksimal $max karakter';
+}
+
+String moreThanFieldMessage(String label, String otherLabel) {
+  return '$label harus lebih besar dari $otherLabel';
+}
+
+String moreThanOrEqualFieldMessage(String label, String otherLabel) {
+  return '$label harus lebih besar atau sama dengan $otherLabel';
 }
