@@ -29,11 +29,12 @@ class _ShellContainerState extends State<ShellContainer>
     );
     _fadeScaleAnim = CurvedAnimation(
       parent: _animController,
-      curve: Curves.easeOutBack,
+      curve: Curves.easeIn,
     );
-    _rotateAnim = Tween<double>(begin: 0.0, end: 0.375).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
-    );
+    _rotateAnim = Tween<double>(
+      begin: 0.0,
+      end: 0.375,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeIn));
   }
 
   @override
@@ -220,7 +221,7 @@ class _FabMenuItem extends StatelessWidget {
     // Stagger each item using an Interval on the shared animation
     final delayedAnim = CurvedAnimation(
       parent: animation,
-      curve: Interval(delay, 1.0, curve: Curves.easeOutBack),
+      curve: Interval(delay, 1.0, curve: Curves.easeIn),
     );
 
     return ScaleTransition(
