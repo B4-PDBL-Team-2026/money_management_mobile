@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io' deferred as dartIo;
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -19,10 +19,14 @@ class DeviceServiceImpl implements DeviceService {
     try {
       if (kIsWeb) {
         return await _getWebDeviceInfo();
-      } else if (Platform.isAndroid) {
-        return await _getAndroidDeviceInfo();
-      } else if (Platform.isIOS) {
-        return await _getIOSDeviceInfo();
+      } else {
+        await dartIo.loadLibrary();
+
+        if (dartIo.Platform.isAndroid) {
+          return await _getAndroidDeviceInfo();
+        } else if (dartIo.Platform.isIOS) {
+          return await _getIOSDeviceInfo();
+        }
       }
     } catch (e) {
       _log.severe('Error getting device info: $e');
@@ -56,8 +60,7 @@ class DeviceServiceImpl implements DeviceService {
 
     return DeviceInfo(
       deviceId:
-          webInfo.userAgent?.replaceAll(RegExp(r'[/\s();]+'), '-') ??
-          'unknown',
+          webInfo.userAgent?.replaceAll(RegExp(r'[/\s();]+'), '-') ?? 'unknown',
       deviceType: DeviceType.web,
     );
   }
