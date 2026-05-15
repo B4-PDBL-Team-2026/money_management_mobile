@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/features/notification/domain/entities/notification_registration_entity.dart';
@@ -16,7 +17,9 @@ class DeviceServiceImpl implements DeviceService {
   @override
   Future<DeviceInfo> getDeviceInfo() async {
     try {
-      if (Platform.isAndroid) {
+      if (kIsWeb) {
+        return await _getWebDeviceInfo();
+      } else if (Platform.isAndroid) {
         return await _getAndroidDeviceInfo();
       } else if (Platform.isIOS) {
         return await _getIOSDeviceInfo();
@@ -45,6 +48,17 @@ class DeviceServiceImpl implements DeviceService {
     return DeviceInfo(
       deviceId: iosInfo.identifierForVendor ?? 'unknown',
       deviceType: DeviceType.ios,
+    );
+  }
+
+  Future<DeviceInfo> _getWebDeviceInfo() async {
+    final webInfo = await _deviceInfoPlugin.webBrowserInfo;
+
+    return DeviceInfo(
+      deviceId:
+          webInfo.userAgent?.replaceAll(RegExp(r'[/\s();]+'), '-') ??
+          'unknown',
+      deviceType: DeviceType.web,
     );
   }
 }
