@@ -29,11 +29,12 @@ class _ShellContainerState extends State<ShellContainer>
     );
     _fadeScaleAnim = CurvedAnimation(
       parent: _animController,
-      curve: Curves.easeOutBack,
+      curve: Curves.easeIn,
     );
-    _rotateAnim = Tween<double>(begin: 0.0, end: 0.375).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
-    );
+    _rotateAnim = Tween<double>(
+      begin: 0.0,
+      end: 0.375,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeIn));
   }
 
   @override
@@ -76,58 +77,58 @@ class _ShellContainerState extends State<ShellContainer>
 
   @override
   Widget build(BuildContext context) {
+    // 1. Mengambil tinggi Safe Area dari gesture bar/navigasi sistem
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
+
     final showFab =
         widget.navigationShell.currentIndex == 0 ||
-        widget.navigationShell.currentIndex == 1;
+        widget.navigationShell.currentIndex == 2;
 
     return Stack(
       children: [
         Scaffold(
           body: widget.navigationShell,
-          bottomNavigationBar: SizedBox(
-            height: 64,
-            child: BottomNavigationBar(
-              currentIndex: widget.navigationShell.currentIndex,
-              onTap: (index) {
-                _close();
-                widget.navigationShell.goBranch(
-                  index,
-                  initialLocation: index == widget.navigationShell.currentIndex,
-                );
-              },
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              selectedFontSize: 12,
-              unselectedFontSize: 12,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: PhosphorIcon(PhosphorIconsRegular.receipt),
-                  activeIcon: PhosphorIcon(PhosphorIconsFill.receipt),
-                  label: 'Riwayat',
-                  tooltip: 'Riwayat transaksi',
-                ),
-                BottomNavigationBarItem(
-                  icon: PhosphorIcon(PhosphorIconsRegular.house),
-                  activeIcon: PhosphorIcon(PhosphorIconsFill.house),
-                  label: 'Beranda',
-                  tooltip: 'Beranda',
-                ),
-                BottomNavigationBarItem(
-                  icon: PhosphorIcon(PhosphorIconsRegular.invoice),
-                  activeIcon: PhosphorIcon(PhosphorIconsFill.invoice),
-                  label: 'Biaya tetap',
-                  tooltip: 'Biaya tetap',
-                ),
-                BottomNavigationBarItem(
-                  icon: PhosphorIcon(PhosphorIconsRegular.dotsThreeCircle),
-                  activeIcon: PhosphorIcon(PhosphorIconsFill.dotsThreeCircle),
-                  label: 'Lainnya',
-                  tooltip: 'Profil dan pengaturan',
-                ),
-              ],
-            ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: widget.navigationShell.currentIndex,
+            onTap: (index) {
+              _close();
+              widget.navigationShell.goBranch(
+                index,
+                initialLocation: index == widget.navigationShell.currentIndex,
+              );
+            },
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            selectedFontSize: 12,
+            unselectedFontSize: 12,
+            items: const [
+              BottomNavigationBarItem(
+                icon: PhosphorIcon(PhosphorIconsRegular.house),
+                activeIcon: PhosphorIcon(PhosphorIconsFill.house),
+                label: 'Beranda',
+                tooltip: 'Beranda',
+              ),
+              BottomNavigationBarItem(
+                icon: PhosphorIcon(PhosphorIconsRegular.invoice),
+                activeIcon: PhosphorIcon(PhosphorIconsFill.invoice),
+                label: 'Biaya tetap',
+                tooltip: 'Biaya tetap',
+              ),
+              BottomNavigationBarItem(
+                icon: PhosphorIcon(PhosphorIconsRegular.receipt),
+                activeIcon: PhosphorIcon(PhosphorIconsFill.receipt),
+                label: 'Riwayat',
+                tooltip: 'Riwayat transaksi',
+              ),
+              BottomNavigationBarItem(
+                icon: PhosphorIcon(PhosphorIconsRegular.dotsThreeCircle),
+                activeIcon: PhosphorIcon(PhosphorIconsFill.dotsThreeCircle),
+                label: 'Lainnya',
+                tooltip: 'Profil dan pengaturan',
+              ),
+            ],
           ),
         ),
 
@@ -145,7 +146,8 @@ class _ShellContainerState extends State<ShellContainer>
         if (showFab)
           Positioned(
             right: 16,
-            bottom: 64 + 16,
+            // 2. PERBAIKAN: Posisi FAB kini dinamis menyesuaikan navigasi navbar + safe area
+            bottom: kBottomNavigationBarHeight + 16 + bottomPadding,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -159,17 +161,6 @@ class _ShellContainerState extends State<ShellContainer>
                   disabled: false,
                 ),
                 const SizedBox(height: 12),
-
-                // Scan Struk (disabled)
-                // _FabMenuItem(
-                //   animation: _fadeScaleAnim,
-                //   delay: 0.15,
-                //   label: 'Scan Struk',
-                //   icon: Icons.crop_free_rounded,
-                //   disabled: true,
-                //   onTap: () {},
-                // ),
-                // const SizedBox(height: 12),
 
                 // Voice Input
                 _FabMenuItem(
@@ -230,7 +221,7 @@ class _FabMenuItem extends StatelessWidget {
     // Stagger each item using an Interval on the shared animation
     final delayedAnim = CurvedAnimation(
       parent: animation,
-      curve: Interval(delay, 1.0, curve: Curves.easeOutBack),
+      curve: Interval(delay, 1.0, curve: Curves.easeIn),
     );
 
     return ScaleTransition(

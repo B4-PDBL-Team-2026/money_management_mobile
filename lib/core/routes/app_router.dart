@@ -163,14 +163,7 @@ class AppRouter {
               return ShellContainer(navigationShell: navigationShell);
             },
             branches: [
-              StatefulShellBranch(
-                routes: [
-                  GoRoute(
-                    path: history,
-                    builder: (context, state) => const TransactionHistoryPage(),
-                  ),
-                ],
-              ),
+              // INDEX 0: Home
               StatefulShellBranch(
                 routes: [
                   GoRoute(
@@ -179,13 +172,13 @@ class AppRouter {
                     routes: [
                       GoRoute(
                         path: 'notification',
-                        builder: (context, state) =>
-                            const NotificationCenterPage(),
+                        builder: (context, state) => const NotificationCenterPage(),
                       ),
                     ],
                   ),
                 ],
               ),
+              // INDEX 1: Fixed Cost
               StatefulShellBranch(
                 routes: [
                   GoRoute(
@@ -194,13 +187,22 @@ class AppRouter {
                     routes: [
                       GoRoute(
                         path: 'manage',
-                        builder: (context, state) =>
-                            const FixedCostTemplateManagementPage(),
+                        builder: (context, state) => const FixedCostTemplateManagementPage(),
                       ),
                     ],
                   ),
                 ],
               ),
+              // INDEX 2: History
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: history,
+                    builder: (context, state) => const TransactionHistoryPage(),
+                  ),
+                ],
+              ),
+              // INDEX 3: Profile/Other
               StatefulShellBranch(
                 routes: [
                   GoRoute(
