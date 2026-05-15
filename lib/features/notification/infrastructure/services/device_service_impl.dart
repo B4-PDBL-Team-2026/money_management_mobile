@@ -1,5 +1,3 @@
-import 'dart:io' deferred as dartIo;
-
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -20,11 +18,9 @@ class DeviceServiceImpl implements DeviceService {
       if (kIsWeb) {
         return await _getWebDeviceInfo();
       } else {
-        await dartIo.loadLibrary();
-
-        if (dartIo.Platform.isAndroid) {
+        if (defaultTargetPlatform == TargetPlatform.android) {
           return await _getAndroidDeviceInfo();
-        } else if (dartIo.Platform.isIOS) {
+        } else if (defaultTargetPlatform == TargetPlatform.iOS) {
           return await _getIOSDeviceInfo();
         }
       }
