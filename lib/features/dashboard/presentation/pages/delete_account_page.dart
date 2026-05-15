@@ -65,7 +65,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
               const SizedBox(height: AppSizes.spacing4),
               const Text(
-                'Apakah Anda yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan. Semua data Anda akan dihapus secara permanen.',
+                'Apakah Kamu yakin ingin menghapus akun Kamu? Tindakan ini tidak dapat dibatalkan. Semua data Kamu akan dihapus secara permanen.',
               ),
               const SizedBox(height: AppSizes.spacing10),
               BlocConsumer<DeleteAccountCubit, DeleteAccountState>(
@@ -104,17 +104,17 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                       children: [
                         AppTextField(
                           controller: _passwordController,
-                          label: 'Masukkan password Anda untuk konfirmasi',
+                          label: 'Masukkan password kamu buat konfirmasi',
                           hint: 'Password',
                           isPassword: true,
                           errorText: serverErrors?['password']?[0],
                           validator: (password) {
                             if (password == null || password.isEmpty) {
-                              return "Password wajib diisi.";
+                              return "Password jangan dikosongin ya.";
                             }
 
                             if (password.length < 8) {
-                              return "Password minimal 8 karakter.";
+                              return "Password minimal 8 karakter ya.";
                             }
 
                             return null;

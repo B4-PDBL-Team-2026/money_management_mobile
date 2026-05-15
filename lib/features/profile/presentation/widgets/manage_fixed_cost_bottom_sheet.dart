@@ -197,7 +197,7 @@ class _ManageFixedCostBottomSheetState
                       const SizedBox(width: AppSizes.spacing2),
                       Expanded(
                         child: Text(
-                          'Siklus utama Anda mingguan, jadi biaya tetap hanya bisa mingguan dan tidak dapat diubah ke bulanan.',
+                          'Siklus utama Kamu mingguan, jadi biaya tetap hanya bisa mingguan dan tidak dapat diubah ke bulanan.',
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: AppColors.trunks),
                         ),

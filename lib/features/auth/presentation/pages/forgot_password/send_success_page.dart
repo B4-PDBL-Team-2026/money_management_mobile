@@ -44,14 +44,14 @@ class SendSuccessPage extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.spacing6),
                 Text(
-                  "Email Terkirim!",
+                  "Email terkirim!",
                   style: Theme.of(
                     context,
                   ).textTheme.displayMedium?.copyWith(color: AppColors.primary),
                 ),
                 const SizedBox(height: AppSizes.spacing4),
                 Text(
-                  "Kami telah mengirimkan instruksi pemulihan password ke email Anda. Silakan cek inbox atau folder spam Anda.",
+                  "Kami sudah ngirim instruksi pemulihan password ke email kamu. Cek inbox atau folder spam ya.",
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),

@@ -20,7 +20,7 @@ class NotificationRemoteDataSource {
     NotificationModel(
       id: 'today-budget-alert',
       createdAt: DateTime(2026, 4, 28),
-      title: 'Anggaran Hampir Habis!',
+      title: 'Anggaranmu Hampir Habis!',
       message:
           'Sisa anggaran harian kamu tinggal Rp 5000. Kurangi pengeluaran hari ini ya!',
       isRead: false,
@@ -29,9 +29,9 @@ class NotificationRemoteDataSource {
     NotificationModel(
       id: 'yesterday-budget-limit',
       createdAt: DateTime(2026, 4, 28),
-      title: 'Batas Anggaran Terlampaui',
+      title: 'Batas Anggaran Kelewatan',
       message:
-          'Kamu sudah melewati anggaran harian! Total pengeluaranmu hari ini Rp 9000 dari batas Rp 5000',
+          'Kamu udah kelewatan anggaran harian! Total pengeluaranmu hari ini Rp 9000 dari batas Rp 5000.',
       isRead: false,
       notificationCode: NotificationCode.fixedCostDue,
     ),
@@ -40,7 +40,7 @@ class NotificationRemoteDataSource {
       createdAt: DateTime(2026, 4, 27),
       title: 'Jangan Lupa Catat Pengeluaran',
       message:
-          'Kamu belum mencatat transaksi hari ini. Yuk mulai catat biar keuanganmu terkontrol',
+          'Kamu belum mencatat transaksi hari ini. Yuk mulai catat biar keuanganmu tetap kepegang.',
       isRead: false,
       notificationCode: NotificationCode.transactionRecordingReminder,
     ),
@@ -49,7 +49,7 @@ class NotificationRemoteDataSource {
       createdAt: DateTime(2026, 4, 27),
       title: 'Tips Hemat Minggu Ini',
       message:
-          'Coba batasi pengeluaran makan di luar maksimal 3x seminggu. Masak sendiri lebih hemat!',
+          'Coba batasi pengeluaran makan di luar maksimal 3x seminggu. Masak sendiri biasanya lebih hemat!',
       isRead: true,
       notificationCode: NotificationCode.transactionRecordingReminder,
     ),
@@ -58,7 +58,7 @@ class NotificationRemoteDataSource {
       createdAt: DateTime(2026, 4, 26),
       title: 'Jatuh Tempo - Netflix',
       message:
-          'Netflix Rp 40.000 jatuh tempo hari ini. Pilih tindakan sekarang.',
+          'Netflix Rp 40.000 jatuh tempo hari ini. Pilih tindakan sekarang ya.',
       isRead: true,
       notificationCode: NotificationCode.fixedCostDue,
     ),
@@ -67,7 +67,7 @@ class NotificationRemoteDataSource {
       createdAt: DateTime(2026, 4, 26),
       title: 'Rekap Bulan Februari',
       message:
-          'Selamat! Bulan Februari kamu berhasil menghemat Rp 860.000 dari target. Pertahankan di Maret!',
+          'Mantap! Bulan Februari kamu berhasil menghemat Rp 860.000 dari target. Pertahankan di Maret!',
       isRead: true,
       notificationCode: NotificationCode.transactionRecordingReminder,
     ),
@@ -76,7 +76,7 @@ class NotificationRemoteDataSource {
       createdAt: DateTime(2026, 4, 26),
       title: 'Jatuh Tempo - Cicilan Motor',
       message:
-          'Cicilan motor Rp 245.000 jatuh tempo hari ini. Pilih tindakan sekarang.',
+          'Cicilan motor Rp 245.000 jatuh tempo hari ini. Pilih tindakan sekarang ya.',
       isRead: true,
       notificationCode: NotificationCode.fixedCostDue,
     ),
@@ -85,7 +85,7 @@ class NotificationRemoteDataSource {
       createdAt: DateTime(2026, 4, 25),
       title: 'Jangan Lupa Catat Pengeluaran',
       message:
-          'Kamu belum mencatat transaksi hari ini. Yuk mulai catat biar keuanganmu terkontrol',
+          'Kamu belum mencatat transaksi hari ini. Yuk mulai catat biar keuanganmu tetap kepegang.',
       isRead: true,
       notificationCode: NotificationCode.transactionRecordingReminder,
     ),
@@ -203,7 +203,7 @@ class NotificationRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while marking notification as read', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat menandai notifikasi terbaca',
+        'Terjadi kesalahan sistem saat menKamui notifikasi terbaca',
       );
     }
 

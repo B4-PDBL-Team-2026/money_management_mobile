@@ -26,7 +26,7 @@ class ProfileRemoteDataSource {
       throw ErrorHandler.handleRemoteException(e, _log, 'Register');
     } catch (e) {
       _log.severe('Unexpected register error', e);
-      throw UnexpectedException('Terjadi kesalahan sistem saat registrasi');
+      throw UnexpectedException('Ada kendala pas simpan profil keuangan. Coba lagi ya.');
     }
   }
 }

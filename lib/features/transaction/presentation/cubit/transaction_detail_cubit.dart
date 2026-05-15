@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
@@ -54,11 +55,11 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
         stackTrace,
       );
       if (kDebugMode) {
-        emit(TransactionDetailError('Terjadi kesalahan: ${e.toString()}'));
+        emit(TransactionDetailError('Ada kendala: ${e.toString()}'));
       } else {
         emit(
           TransactionDetailError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
+            AppMessages.unknownError,
           ),
         );
       }
@@ -129,11 +130,11 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
         stackTrace,
       );
       if (kDebugMode) {
-        emit(TransactionDetailError('Terjadi kesalahan: ${e.toString()}'));
+        emit(TransactionDetailError('Ada kendala: ${e.toString()}'));
       } else {
         emit(
           TransactionDetailError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
+            AppMessages.unknownError,
           ),
         );
       }
@@ -181,11 +182,11 @@ class TransactionDetailCubit extends Cubit<TransactionDetailState> {
         stackTrace,
       );
       if (kDebugMode) {
-        emit(TransactionDetailError('Terjadi kesalahan: ${e.toString()}'));
+        emit(TransactionDetailError('Ada kendala: ${e.toString()}'));
       } else {
         emit(
           TransactionDetailError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
+            AppMessages.unknownError,
           ),
         );
       }

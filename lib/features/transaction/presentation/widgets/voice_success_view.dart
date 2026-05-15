@@ -89,7 +89,7 @@ class VoiceSuccessView extends StatelessWidget {
               ),
               icon: const Icon(Icons.arrow_forward_rounded, color: Colors.white),
               label: Text(
-                'Kembali ke Beranda',
+                'Kembali ke BerKamu',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,

@@ -197,7 +197,7 @@ class Step4PersonalizationPage extends StatelessWidget {
   String _shortDescriptionByScenario(BudgetHealthScenario scenario) {
     return switch (scenario) {
       BudgetHealthScenario.surplus =>
-        'Saldo aman, Anda berpotensi menabung di akhir siklus.',
+        'Saldo aman, Kamu berpotensi menabung di akhir siklus.',
       BudgetHealthScenario.moderate =>
         'Kondisi stabil, jaga pengeluaran tetap sesuai batas harian.',
       BudgetHealthScenario.critical =>

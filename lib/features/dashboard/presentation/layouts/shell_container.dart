@@ -111,8 +111,8 @@ class _ShellContainerState extends State<ShellContainer>
                 BottomNavigationBarItem(
                   icon: PhosphorIcon(PhosphorIconsRegular.house),
                   activeIcon: PhosphorIcon(PhosphorIconsFill.house),
-                  label: 'Beranda',
-                  tooltip: 'Beranda',
+                  label: 'BerKamu',
+                  tooltip: 'BerKamu',
                 ),
                 BottomNavigationBarItem(
                   icon: PhosphorIcon(PhosphorIconsRegular.invoice),

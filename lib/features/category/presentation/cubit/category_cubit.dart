@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
@@ -52,13 +53,9 @@ class CategoryCubit extends Cubit<CategoryState> {
       emit(CategoryError(e.message));
     } catch (e) {
       if (kDebugMode) {
-        emit(CategoryError('Terjadi kesalahan: ${e.toString()}'));
+        emit(CategoryError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          CategoryError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(CategoryError(AppMessages.unknownError));
       }
     }
   }

@@ -26,7 +26,7 @@ class OtherPage extends StatelessWidget {
     if (sessionState is! SessionAuthenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Sesi tidak valid. Silakan login ulang.'),
+          content: Text('Sesi kamu udah nggak valid. Login lagi ya.'),
           backgroundColor: AppColors.danger100,
         ),
       );
@@ -44,7 +44,7 @@ class OtherPage extends StatelessWidget {
     if (sessionState is! SessionAuthenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Sesi tidak valid. Silakan login ulang.'),
+          content: Text('Sesi kamu udah nggak valid. Login lagi ya.'),
           backgroundColor: AppColors.danger100,
         ),
       );
@@ -54,7 +54,7 @@ class OtherPage extends StatelessWidget {
     if (sessionState.user.emailVerifiedAt != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Email Anda sudah terverifikasi.'),
+          content: Text('Email kamu sudah terverifikasi.'),
           backgroundColor: AppColors.success100,
         ),
       );
@@ -101,7 +101,7 @@ class OtherPage extends StatelessWidget {
     await AppConfirmDialog.show(
       context: context,
       title: title,
-      content: '$message\n\nSilakan cek inbox atau folder spam Anda.',
+    content: '$message\n\nCek inbox atau folder spam ya.',
       confirmText: 'Mengerti',
       cancelText: 'Tutup',
       confirmButtonType: AppButtonType.primary,
@@ -112,7 +112,7 @@ class OtherPage extends StatelessWidget {
     final confirmed = await AppConfirmDialog.show(
       context: context,
       title: 'Keluar dari akun?',
-      content: 'Sesi login akan dihapus dari perangkat ini.',
+      content: 'Sesi login bakal dihapus dari perangkat ini.',
       confirmText: 'Keluar',
       cancelText: 'Batal',
       confirmButtonType: AppButtonType.danger,
@@ -133,7 +133,7 @@ class OtherPage extends StatelessWidget {
         SnackBar(
           backgroundColor: AppColors.danger100,
           content: const Text(
-            'Gagal membatalkan pendaftaran perangkat. Logout dibatalkan.',
+            'Gagal batalin pendaftaran perangkat. Logout dibatalkan.',
             style: TextStyle(color: AppColors.gohan),
           ),
         ),
@@ -157,7 +157,7 @@ class OtherPage extends StatelessWidget {
         SnackBar(
           backgroundColor: AppColors.danger100,
           content: const Text(
-            'Gagal membersihkan kategori. Logout dibatalkan.',
+            'Gagal bersihin kategori. Logout dibatalkan.',
             style: TextStyle(color: AppColors.gohan),
           ),
         ),
@@ -205,7 +205,7 @@ class OtherPage extends StatelessWidget {
                       if (state is ResetPasswordLoading) {
                         _showLoadingDialog(
                           context,
-                          message: 'Mengirim email reset password...',
+                          message: 'Lagi ngirim email reset password...',
                         );
                         return;
                       }
@@ -214,9 +214,9 @@ class OtherPage extends StatelessWidget {
                         _closeDialogIfOpen(context);
                         await _showSuccessDialog(
                           context,
-                          title: 'Reset Password Terkirim',
+                          title: 'Reset password terkirim',
                           message:
-                              'Email reset password telah dikirim. Silakan cek inbox atau folder spam Anda.',
+                              'Email reset password sudah dikirim. Cek inbox atau folder spam ya.',
                         );
                         return;
                       }
@@ -257,7 +257,7 @@ class OtherPage extends StatelessWidget {
                       if (state is VerifyEmailLoading) {
                         _showLoadingDialog(
                           context,
-                          message: 'Mengirim email verifikasi...',
+                          message: 'Lagi ngirim email verifikasi...',
                         );
                         return;
                       }
@@ -266,9 +266,9 @@ class OtherPage extends StatelessWidget {
                         _closeDialogIfOpen(context);
                         await _showSuccessDialog(
                           context,
-                          title: 'Verifikasi Email Terkirim',
+                          title: 'Verifikasi email terkirim',
                           message:
-                              'Email verifikasi telah dikirim. Silakan cek inbox atau folder spam Anda.',
+                              'Email verifikasi sudah dikirim. Cek inbox atau folder spam ya.',
                         );
                         return;
                       }

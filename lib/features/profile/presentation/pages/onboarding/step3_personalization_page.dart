@@ -213,7 +213,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
           ),
           const SizedBox(height: AppSizes.spacing1),
           Text(
-            'Anda bisa lewati langkah ini atau tambah satu biaya rutin terlebih dulu.',
+            'Kamu bisa lewati langkah ini atau tambah satu biaya rutin terlebih dulu.',
             textAlign: TextAlign.center,
             style: Theme.of(
               context,
