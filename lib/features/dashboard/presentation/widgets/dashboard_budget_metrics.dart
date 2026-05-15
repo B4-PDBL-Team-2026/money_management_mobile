@@ -51,55 +51,106 @@ class DashboardBudgetMetrics extends StatelessWidget {
   Widget _buildMetrics(BuildContext context, DashboardMetricsResult metrics) {
     return Column(
       children: [
-        if (metrics.healthScenario != BudgetHealthScenario.deficit) ...[
-          _buildSafeBalanceCard(
-            context,
-            metrics.remainingDaysInCycle,
-            metrics.safeBalance,
-          ),
-        ] else ...[
-          AppContainerCard(
-            backgroundColor: AppColors.danger10,
-            border: Border.all(color: AppColors.danger100, width: 1),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    'Total fixed cost yang belum dibayar',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.danger100,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSizes.spacing2),
-                Text(
-                  'Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost)}',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.danger100,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        RealBalanceCard(
+          balance: metrics.balance,
+          safeBalance: metrics.safeBalance,
+        ),
         const SizedBox(height: AppSizes.spacing3),
         if (metrics.balance == 0 &&
             metrics.healthScenario == BudgetHealthScenario.deficit) ...[
           AppContainerCard(
             width: double.infinity,
-            height: 150,
-            backgroundColor: AppColors.danger100,
-            child: Center(
-              child: Text(
-                'Saldo anda sudah habis',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.gohan,
-                  fontWeight: FontWeight.bold,
+            backgroundColor: AppColors.primary,
+            child: Column(
+              children: [
+                Text(
+                  'Serius!',
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    color: AppColors.gohan,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+                const SizedBox(height: AppSizes.spacing2),
+                Text(
+                  'Saldo anda habis dan hutang anda masih ada. apakah anda lari dari tanggung jawab?',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.gohan,
+                  ),
+                ),
+                const SizedBox(height: AppSizes.spacing4),
+                Container(
+                  padding: const EdgeInsets.all(AppSizes.spacing2),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                  ),
+                  child: Text(
+                    'Tidak ada transaksi lebih lanjut!',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.gohan,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSizes.spacing3),
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: AppContainerCard(
+                    backgroundColor: AppColors.danger10,
+                    border: Border.all(color: AppColors.danger100),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total Defisit Saat Ini',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppColors.danger100,
+                          ),
+                        ),
+                        const SizedBox(height: AppSizes.spacing2),
+                        Text(
+                          '– Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost - metrics.balance)}',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: AppColors.danger100,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSizes.spacing3),
+                Expanded(
+                  child: AppContainerCard(
+                    backgroundColor: AppColors.danger10,
+                    border: Border.all(color: AppColors.danger100),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Saldo riil',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppColors.danger100,
+                          ),
+                        ),
+                        const SizedBox(height: AppSizes.spacing2),
+                        Text(
+                          'Rp 0',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: AppColors.danger100,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ] else ...[
@@ -111,42 +162,71 @@ class DashboardBudgetMetrics extends StatelessWidget {
             healthScenario: metrics.healthScenario,
           ),
           const SizedBox(height: AppSizes.spacing3),
-          if (metrics.healthScenario != BudgetHealthScenario.deficit) ...[
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: MetricCard(metric: metrics.firstMetric)),
-                  const SizedBox(width: AppSizes.spacing3),
-                  Expanded(child: MetricCard(metric: metrics.secondMetric)),
-                ],
-              ),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: MetricCard(
+                    metric: metrics.firstMetric,
+                    backgroundColor: metrics.limitState ==
+                            DashboardLimitState.overLastLimit
+                        ? AppColors.danger100
+                        : null,
+                  ),
+                ),
+                const SizedBox(width: AppSizes.spacing3),
+                Expanded(
+                  child: MetricCard(
+                    metric: metrics.secondMetric,
+                    backgroundColor:
+                        metrics.healthScenario == BudgetHealthScenario.deficit
+                            ? AppColors.danger10
+                            : null,
+                    textColor:
+                        metrics.healthScenario == BudgetHealthScenario.deficit
+                            ? AppColors.danger100
+                            : null,
+                    boxBorder:
+                        metrics.healthScenario == BudgetHealthScenario.deficit
+                            ? Border.all(color: AppColors.danger100)
+                            : null,
+                  ),
+                ),
+              ],
             ),
-          ] else ...[
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: MetricCard(metric: metrics.firstMetric)),
-                  const SizedBox(width: AppSizes.spacing3),
-                  Expanded(
-                    child: MetricCard(
-                      metric: metrics.secondMetric,
-                      backgroundColor: AppColors.danger10,
-                      textColor: AppColors.danger100,
-                      boxBorder: Border.all(
-                        color: AppColors.danger100,
-                        width: 1,
-                      ),
+          ),
+        ],
+        if (metrics.healthScenario == BudgetHealthScenario.deficit &&
+            metrics.balance > 0) ...[
+          const SizedBox(height: AppSizes.spacing3),
+          AppContainerCard(
+            backgroundColor: AppColors.danger10,
+            border: Border.all(color: AppColors.danger100, width: 1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Total Defisit Saat Ini',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.danger100,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: AppSizes.spacing2),
+                Text(
+                  '– Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost - metrics.balance)}',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.danger100,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ],
-        const SizedBox(height: AppSizes.spacing3),
-        RealBalanceCard(balance: metrics.balance),
       ],
     );
   }

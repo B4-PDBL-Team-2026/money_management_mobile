@@ -119,7 +119,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                           return requiredFieldMessage('Batas bawah');
                         }
 
-                        if (value <= 0) {
+                        if (value < 0) {
                           return positiveNumberMessage('Batas bawah');
                         }
 
