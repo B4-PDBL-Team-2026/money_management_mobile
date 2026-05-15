@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
@@ -60,13 +61,9 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
       }
     } catch (e) {
       if (kDebugMode) {
-        emit(AddTransactionError('Terjadi kesalahan: ${e.toString()}'));
+        emit(AddTransactionError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          AddTransactionError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(AddTransactionError(AppMessages.unknownError));
       }
     }
   }

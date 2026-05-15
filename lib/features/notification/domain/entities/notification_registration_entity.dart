@@ -1,4 +1,5 @@
 enum DeviceType {
+  web('web'),
   android('android'),
   ios('ios');
 

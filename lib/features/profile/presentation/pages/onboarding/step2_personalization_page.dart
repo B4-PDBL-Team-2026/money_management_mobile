@@ -68,7 +68,7 @@ class _Step2PersonalizationPageState extends State<Step2PersonalizationPage> {
                     ),
                     const SizedBox(height: AppSizes.spacing2),
                     Text(
-                      'Tetapkan rentang aman pengeluaran harian Anda.',
+                      'Tetapkan rentang aman pengeluaran harian Kamu.',
                       textAlign: TextAlign.center,
                       style: Theme.of(
                         context,

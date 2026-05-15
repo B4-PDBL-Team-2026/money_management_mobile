@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/domain/repositories/auth_repository.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
@@ -37,13 +38,9 @@ class DeleteAccountCubit extends Cubit<DeleteAccountState> {
       }
     } catch (e) {
       if (kDebugMode) {
-        emit(DeleteAccountError('Terjadi kesalahan: ${e.toString()}'));
+        emit(DeleteAccountError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          DeleteAccountError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(DeleteAccountError(AppMessages.unknownError));
       }
     }
   }

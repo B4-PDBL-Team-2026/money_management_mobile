@@ -23,10 +23,10 @@ class ProfileRemoteDataSource {
     try {
       await dio.post('/onboarding', data: payload.toJson());
     } on DioException catch (e) {
-      throw ErrorHandler.handleRemoteException(e, _log, 'Register');
+      throw ErrorHandler.handleRemoteException(e, _log, 'submitFinancialProfile');
     } catch (e) {
-      _log.severe('Unexpected register error', e);
-      throw UnexpectedException('Terjadi kesalahan sistem saat registrasi');
+      _log.severe('Unexpected submitFinancialProfile error', e);
+      throw UnexpectedException('Ada kendala pas simpan profil keuangan. Coba lagi ya.');
     }
   }
 }

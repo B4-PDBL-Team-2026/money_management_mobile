@@ -90,14 +90,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: AppSizes.spacing4),
                     Text(
-                      "Buat Akun Baru",
+                      "Buat akun baru",
                       style: Theme.of(context).textTheme.displayMedium
                           ?.copyWith(color: AppColors.primary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSizes.spacing4),
                     Text(
-                      "Bergabunglah dengan Moco untuk mengelola keuangan Anda dengan lebih baik.",
+                      "Bergabunglah dengan Moco untuk mengelola keuangan Kamu dengan lebih baik.",
                       textAlign: TextAlign.center,
                       style: Theme.of(
                         context,
@@ -116,11 +116,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         final trimmedName = name?.trim() ?? '';
 
                         if (trimmedName.isEmpty) {
-                          return "Nama lengkap wajib diisi.";
+                          return "Nama lengkap jangan dikosongin ya.";
                         }
 
                         if (trimmedName.length > 255) {
-                          return "Nama lengkap maksimal 255 karakter.";
+                          return "Nama lengkap maksimal 255 karakter ya.";
                         }
 
                         return null;
@@ -140,17 +140,17 @@ class _RegisterPageState extends State<RegisterPage> {
                         final trimmedEmail = email?.trim() ?? '';
 
                         if (trimmedEmail.isEmpty) {
-                          return "Email wajib diisi.";
+                          return "Email jangan dikosongin ya.";
                         }
 
                         if (!RegExp(
                           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
                         ).hasMatch(trimmedEmail)) {
-                          return "Format email tidak valid.";
+                          return "Format emailnya belum pas nih.";
                         }
 
                         if (trimmedEmail.length > 255) {
-                          return "Email maksimal 255 karakter.";
+                          return "Email maksimal 255 karakter ya.";
                         }
 
                         return null;
@@ -168,11 +168,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       errorText: serverErrors?['password']?[0],
                       validator: (password) {
                         if (password == null || password.isEmpty) {
-                          return "Password wajib diisi.";
+                          return "Password jangan dikosongin ya.";
                         }
 
                         if (password.length < 8) {
-                          return "Password minimal 8 karakter.";
+                          return "Password minimal 8 karakter ya.";
                         }
 
                         return null;
@@ -193,11 +193,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
                         if (confirmPassword == null ||
                             confirmPassword.isEmpty) {
-                          return "Konfirmasi password wajib diisi.";
+                          return "Konfirmasi password jangan dikosongin ya.";
                         }
 
                         if (confirmPassword != password) {
-                          return "Konfirmasi password tidak cocok.";
+                          return "Konfirmasi passwordnya belum cocok nih.";
                         }
 
                         return null;

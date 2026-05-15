@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
@@ -44,7 +45,7 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
     final available = await _initSpeech();
     if (!available) {
       emit(VoiceTransactionError(
-          message: 'Mikrofon tidak tersedia di perangkat ini.'));
+          message: 'Mikrofon belum tersedia di perangkat ini.'));
       return;
     }
 
@@ -164,8 +165,8 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
       _log.severe('Unexpected error saving voice transaction', e);
       emit(VoiceTransactionError(
         message: kDebugMode
-            ? 'Error: ${e.toString()}'
-            : 'Terjadi kesalahan. Silakan coba lagi.',
+            ? 'Ada kendala: ${e.toString()}'
+            : AppMessages.unknownError,
       ));
     }
   }

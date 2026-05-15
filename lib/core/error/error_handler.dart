@@ -1,3 +1,4 @@
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:dio/dio.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:logging/logging.dart';
@@ -17,11 +18,11 @@ class ErrorHandler {
 
   static String _extractMessage(dynamic responseData) {
     if (responseData is! Map<String, dynamic>) {
-      return 'Terjadi kesalahan'; // UBAH: dari return menjadi return
+      return AppMessages.genericError;
     }
 
     final baseMessage =
-        responseData['message']?.toString() ?? 'Terjadi kesalahan';
+        responseData['message']?.toString() ?? AppMessages.genericError;
 
     final errors = responseData['data'] ?? responseData['errors'];
 
@@ -69,12 +70,12 @@ class ErrorHandler {
         e.type == DioExceptionType.receiveTimeout ||
         e.type == DioExceptionType.sendTimeout) {
       log.warning('$context failed: Connection timeout', e);
-      return NetworkException("Koneksi timeout, periksa internet Anda");
+      return NetworkException(AppMessages.timeoutProblem);
     }
 
     if (e.type == DioExceptionType.connectionError) {
       log.warning('$context failed: Connection error', e);
-      return NetworkException("Tidak dapat terhubung ke server");
+      return NetworkException(AppMessages.internetProblem);
     }
 
     if (e.response != null) {
@@ -94,7 +95,7 @@ class ErrorHandler {
         }
 
         return ServerException(
-          "Terjadi masalah pada server. Silakan coba lagi nanti.",
+          AppMessages.serverProblem,
         );
       }
 
@@ -104,7 +105,7 @@ class ErrorHandler {
         return UnauthorizedException(
           message.isNotEmpty
               ? message
-              : "Sesi telah berakhir, silakan login kembali",
+              : AppMessages.unauthorized,
         );
       }
 
@@ -145,6 +146,6 @@ class ErrorHandler {
 
     // fallback untuk error Dio lainnya
     log.warning('$context failed: Unknown network issue', e);
-    return NetworkException("Koneksi internet bermasalah");
+    return NetworkException(AppMessages.internetProblem);
   }
 }

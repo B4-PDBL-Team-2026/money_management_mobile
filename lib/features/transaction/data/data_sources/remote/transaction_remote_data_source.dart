@@ -33,7 +33,7 @@ class TransactionRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while adding transaction', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat menambah transaksi',
+        'Ada kendala pas nambah transaksi. Coba lagi ya.',
       );
     }
   }
@@ -62,7 +62,7 @@ class TransactionRemoteDataSource {
       final data = responseData?['data'] as Map<String, dynamic>?;
 
       if (data == null) {
-        throw UnexpectedException('Data detail transaksi tidak ditemukan.');
+        throw UnexpectedException('Detail transaksi belum ketemu.');
       }
 
       return TransactionDetailModel.fromJson(data);
@@ -79,7 +79,7 @@ class TransactionRemoteDataSource {
 
       _log.severe('Unexpected error while fetching transaction detail', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengambil detail transaksi',
+        'Ada kendala pas ambil detail transaksi. Coba lagi ya.',
       );
     }
   }
@@ -115,7 +115,7 @@ class TransactionRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while updating transaction', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat memperbarui transaksi',
+        'Ada kendala pas update transaksi. Coba lagi ya.',
       );
     }
   }
@@ -133,7 +133,7 @@ class TransactionRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while deleting transaction', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat menghapus transaksi',
+        'Ada kendala pas hapus transaksi. Coba lagi ya.',
       );
     }
   }
@@ -299,7 +299,7 @@ class TransactionRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while fetching transaction', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengambil transaksi',
+        'Ada kendala pas ambil data transaksi. Coba lagi ya.',
       );
     }
   }

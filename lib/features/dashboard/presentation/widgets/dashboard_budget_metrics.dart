@@ -31,13 +31,13 @@ class DashboardBudgetMetrics extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Text('Gagal memuat data dashboard'),
+              Text('Data dashboard belum bisa dimuat nih'),
               const SizedBox(height: AppSizes.spacing2),
               AppButton(
                 onPressed: () {
                   context.read<DashboardMetricCubit>().fetchDashboardMetrics();
                 },
-                text: 'Coba Lagi',
+                text: 'Coba lagi',
               ),
             ],
           ),
@@ -66,7 +66,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Total fixed cost yang belum dibayar',
+                    'Total biaya tetap yang belum dibayar',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppColors.danger100,
                       fontWeight: FontWeight.bold,
@@ -94,7 +94,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
             backgroundColor: AppColors.danger100,
             child: Center(
               child: Text(
-                'Saldo anda sudah habis',
+                'Saldo kamu udah habis',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.gohan,
                   fontWeight: FontWeight.bold,
@@ -163,7 +163,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
         children: [
           AppHelpTooltip(
             message:
-                'Estimasi sisa uang Anda di akhir siklus keuangan saat ini. Sisa jatah harian hari ini akan ditambahkan ke tabungan Anda untuk cycle berikutnya.',
+                'Estimasi sisa uang Kamu di akhir siklus keuangan saat ini. Sisa jatah harian hari ini akan ditambahkan ke tabungan Kamu untuk cycle berikutnya.',
             child: Text(
               'Saldo aman untuk $remainingDaysInCycle hari ',
               style: Theme.of(context).textTheme.bodySmall,

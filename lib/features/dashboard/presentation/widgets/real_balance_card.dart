@@ -25,7 +25,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
         children: [
           AppHelpTooltip(
             message:
-                'Saldo total Anda saat ini, akumulasi dari semua pemasukan yang tercatat. Ini bukan jumlah yang aman untuk dibelanjakan.',
+                'Saldo total Kamu saat ini, akumulasi dari semua pemasukan yang tercatat. Ini bukan jumlah yang aman untuk dibelanjakan.',
             child: Text(
               'Saldo sebenarnya',
               style: Theme.of(

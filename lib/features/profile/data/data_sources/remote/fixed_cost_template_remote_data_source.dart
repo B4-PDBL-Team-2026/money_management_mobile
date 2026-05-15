@@ -100,7 +100,7 @@ class FixedCostTemplateRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while fetching fixed cost templates', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengambil fixed cost templates',
+        'Terjadi kesalahan sistem saat mengambil template biaya tetap',
       );
     }
   }
@@ -113,7 +113,7 @@ class FixedCostTemplateRemoteDataSource {
       await Future.delayed(const Duration(seconds: 1));
 
       if (payload.name.toLowerCase() == 'error') {
-        throw ServerException('Simulasi gagal membuat fixed cost template');
+        throw ServerException('Simulasi gagal membuat template biaya tetap');
       }
 
       return;
@@ -130,7 +130,7 @@ class FixedCostTemplateRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while creating fixed cost template', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat menambahkan fixed cost template',
+        'Terjadi kesalahan sistem saat menambahkan template biaya tetap',
       );
     }
   }
@@ -146,7 +146,7 @@ class FixedCostTemplateRemoteDataSource {
       await Future.delayed(const Duration(seconds: 1));
 
       if (payload.name.toLowerCase() == 'error') {
-        throw ServerException('Simulasi gagal mengubah fixed cost template');
+        throw ServerException('Simulasi gagal mengubah template biaya tetap');
       }
 
       return;
@@ -166,7 +166,7 @@ class FixedCostTemplateRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while updating fixed cost template', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengubah fixed cost template',
+        'Terjadi kesalahan sistem saat mengubah template biaya tetap',
       );
     }
   }
@@ -191,7 +191,7 @@ class FixedCostTemplateRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while deleting fixed cost template', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat menghapus fixed cost template',
+        'Terjadi kesalahan sistem saat menghapus template biaya tetap',
       );
     }
   }
