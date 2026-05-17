@@ -18,7 +18,7 @@ class CategoryLoaded extends CategoryState {
   List<CategoryEntity> get incomeCategories =>
       categories.where((c) => c.type == TransactionType.income).toList();
 
-  CategoryEntity? getCategoryById(int id) => categories.firstWhere(
+  CategoryEntity? getCategoryById(int? id) => categories.firstWhere(
     (c) => c.id == id,
     orElse: () => CategoryEntity(
       id: 0,
