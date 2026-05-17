@@ -126,7 +126,7 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
               ),
               const SizedBox(height: AppSizes.spacing4),
               Text(
-                widget.isEditing ? 'Edit Fixed Cost' : 'Tambah Fixed Cost',
+                widget.isEditing ? 'Edit Biaya Tetap' : 'Tambah Biaya Tetap',
                 style: Theme.of(
                   context,
                 ).textTheme.headlineMedium?.copyWith(color: AppColors.primary),
@@ -287,7 +287,7 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
                   const SizedBox(width: AppSizes.spacing1),
                   const Tooltip(
                     message:
-                        'Jika tanggal sudah terlewat dalam siklus aktif, fixed cost tidak dihitung untuk proyeksi saat ini.',
+                        'Jika tanggal sudah terlewat dalam siklus aktif, biaya tetap tidak dihitung untuk proyeksi saat ini.',
                     child: Icon(
                       Icons.info_outline,
                       size: 16,

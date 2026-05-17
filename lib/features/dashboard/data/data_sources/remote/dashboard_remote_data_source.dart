@@ -69,7 +69,7 @@ class DashboardRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while fetching unpaid fixed costs', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengambil fixed cost yang belum dibayar',
+        'Terjadi kesalahan sistem saat mengambil biaya tetap yang belum dibayar',
       );
     }
   }
@@ -150,7 +150,7 @@ class DashboardRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while confirming fixed cost occurrence', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat konfirmasi pembayaran fixed cost',
+        'Terjadi kesalahan sistem saat konfirmasi pembayaran biaya tetap',
       );
     }
   }
@@ -172,7 +172,7 @@ class DashboardRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while cancelling fixed cost occurrence', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat membatalkan fixed cost',
+        'Terjadi kesalahan sistem saat membatalkan biaya tetap',
       );
     }
   }

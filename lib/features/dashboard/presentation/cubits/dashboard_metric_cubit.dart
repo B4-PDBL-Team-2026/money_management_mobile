@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
@@ -73,16 +74,9 @@ class DashboardMetricCubit extends Cubit<DashboardMetricState> {
     } catch (e) {
       _log.severe('Error fetching dashboard metric', e);
       if (kDebugMode) {
-        emit(
-          DashboardMetricError(message: 'Terjadi kesalahan: ${e.toString()}'),
-        );
+        emit(DashboardMetricError(message: 'Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          DashboardMetricError(
-            message:
-                'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(DashboardMetricError(message: AppMessages.unknownError));
       }
     }
   }
@@ -106,16 +100,9 @@ class DashboardMetricCubit extends Cubit<DashboardMetricState> {
     } catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
       if (kDebugMode) {
-        emit(
-          DashboardMetricError(message: 'Terjadi kesalahan: ${e.toString()}'),
-        );
+        emit(DashboardMetricError(message: 'Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          DashboardMetricError(
-            message:
-                'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(DashboardMetricError(message: AppMessages.unknownError));
       }
     }
   }
@@ -139,16 +126,9 @@ class DashboardMetricCubit extends Cubit<DashboardMetricState> {
     } catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
       if (kDebugMode) {
-        emit(
-          DashboardMetricError(message: 'Terjadi kesalahan: ${e.toString()}'),
-        );
+        emit(DashboardMetricError(message: 'Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          DashboardMetricError(
-            message:
-                'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(DashboardMetricError(message: AppMessages.unknownError));
       }
     }
   }

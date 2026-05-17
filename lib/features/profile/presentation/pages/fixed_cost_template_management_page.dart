@@ -191,9 +191,9 @@ class _FixedCostTemplateManagementPageState
   ) async {
     final isConfirmed = await AppConfirmDialog.show(
       context: context,
-      title: 'Hapus fixed cost?',
+      title: 'Hapus biaya tetap?',
       content:
-          'Fixed cost ${fixedCost.name} akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.',
+          'Biaya tetap ${fixedCost.name} akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.',
       confirmText: 'Hapus',
       cancelText: 'Batal',
       confirmButtonType: AppButtonType.danger,
@@ -258,14 +258,14 @@ class _FixedCostTemplateManagementPageState
             },
             child: CustomScrollView(
               slivers: [
-                SliverAppBar(
+                  SliverAppBar(
                   leading: BackButton(
                     color: AppColors.gohan,
                     onPressed: () {
                       context.pop();
                     },
                   ),
-                  title: Text('Fixed Cost Management'),
+                  title: Text('Manajemen Biaya Tetap'),
                   pinned: true,
                   elevation: 0,
                 ),
@@ -276,7 +276,7 @@ class _FixedCostTemplateManagementPageState
                       child: Padding(
                         padding: const EdgeInsets.all(AppSizes.spacing6),
                         child: Text(
-                          'Belum ada fixed cost',
+                          'Belum ada biaya tetap',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),

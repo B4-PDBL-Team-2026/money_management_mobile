@@ -1,6 +1,7 @@
 enum NotificationCode {
-  transactionRecordingReminder('TRANSACTION_RECORDING_REMINDER'),
-  fixedCostDue('FIXED_COST_DUE'),
+  // berdasarkan kode notifikasi yang disepakati dengan backend
+  transactionRecordingReminder('TRANSACTION_RECORD_REMINDER'),
+  fixedCostDue('FIXED_COST_REMINDER'),
   testPush('TEST_PUSH');
 
   const NotificationCode(this.value);

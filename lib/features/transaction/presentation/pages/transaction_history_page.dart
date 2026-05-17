@@ -189,7 +189,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 8),
-            Text('Memuat data transaksi...'),
+            Text('Lagi muat data transaksi...'),
           ],
         ),
       ),
@@ -204,11 +204,11 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Gagal memuat data transaksi'),
+            Text('Data transaksi belum bisa dimuat nih'),
             const SizedBox(height: AppSizes.spacing4),
             AppButton(
               width: 120,
-              text: 'Coba Lagi',
+              text: 'Coba lagi',
               onPressed: () {
                 context
                     .read<TransactionHistoryCubit>()

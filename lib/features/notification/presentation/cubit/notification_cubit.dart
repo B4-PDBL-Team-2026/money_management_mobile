@@ -5,15 +5,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/features/notification/domain/services/notification_service.dart';
 import 'package:money_management_mobile/features/notification/domain/usecases/notification_init_usecase.dart';
+import 'package:money_management_mobile/features/notification/domain/usecases/notification_unregister_usecase.dart';
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_state.dart';
 
 @LazySingleton()
 class NotificationCubit extends Cubit<NotificationState> {
   final NotificationInitUsecase _notificationInitUsecase;
+  final NotificationUnregisterUsecase _notificationUnregisterUsecase;
   final NotificationService _notificationService;
   final EventBus _eventBus;
   late final StreamSubscription<dynamic> _initSubscription;
@@ -25,6 +28,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   NotificationCubit(
     this._notificationInitUsecase,
+    this._notificationUnregisterUsecase,
     this._notificationService,
     this._eventBus,
   ) : super(NotificationInitial()) {
@@ -76,9 +80,22 @@ class NotificationCubit extends Cubit<NotificationState> {
       );
       emit(
         NotificationError(
-          'Gagal menginisialisasi notifikasi. Silakan coba lagi.',
+          AppMessages.unknownError,
         ),
       );
+    }
+  }
+
+  Future<void> unregisterCurrentDevice() async {
+    try {
+      await _notificationUnregisterUsecase.execute();
+    } catch (error, stackTrace) {
+      _log.warning(
+        'Failed to unregister current device from notifications.',
+        error,
+        stackTrace,
+      );
+      rethrow;
     }
   }
 

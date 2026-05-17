@@ -14,6 +14,7 @@ import 'package:money_management_mobile/features/category/presentation/cubit/cat
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_profile_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_card.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/other_settings_tile.dart';
+import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OtherPage extends StatelessWidget {
@@ -25,7 +26,7 @@ class OtherPage extends StatelessWidget {
     if (sessionState is! SessionAuthenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Sesi tidak valid. Silakan login ulang.'),
+          content: Text('Sesi kamu udah nggak valid. Login lagi ya.'),
           backgroundColor: AppColors.danger100,
         ),
       );
@@ -43,7 +44,7 @@ class OtherPage extends StatelessWidget {
     if (sessionState is! SessionAuthenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Sesi tidak valid. Silakan login ulang.'),
+          content: Text('Sesi kamu udah nggak valid. Login lagi ya.'),
           backgroundColor: AppColors.danger100,
         ),
       );
@@ -53,7 +54,7 @@ class OtherPage extends StatelessWidget {
     if (sessionState.user.emailVerifiedAt != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Email Anda sudah terverifikasi.'),
+          content: Text('Email kamu sudah terverifikasi.'),
           backgroundColor: AppColors.success100,
         ),
       );
@@ -100,7 +101,7 @@ class OtherPage extends StatelessWidget {
     await AppConfirmDialog.show(
       context: context,
       title: title,
-      content: '$message\n\nSilakan cek inbox atau folder spam Anda.',
+    content: '$message\n\nCek inbox atau folder spam ya.',
       confirmText: 'Mengerti',
       cancelText: 'Tutup',
       confirmButtonType: AppButtonType.primary,
@@ -111,7 +112,7 @@ class OtherPage extends StatelessWidget {
     final confirmed = await AppConfirmDialog.show(
       context: context,
       title: 'Keluar dari akun?',
-      content: 'Sesi login akan dihapus dari perangkat ini.',
+      content: 'Sesi login bakal dihapus dari perangkat ini.',
       confirmText: 'Keluar',
       cancelText: 'Batal',
       confirmButtonType: AppButtonType.danger,
@@ -122,11 +123,7 @@ class OtherPage extends StatelessWidget {
     }
 
     try {
-      await context.read<CategoryCubit>().clearCategories();
-
-      if (context.mounted) {
-        await context.read<SessionCubit>().logout();
-      }
+      await context.read<NotificationCubit>().unregisterCurrentDevice();
     } catch (_) {
       if (!context.mounted) {
         return;
@@ -136,11 +133,41 @@ class OtherPage extends StatelessWidget {
         SnackBar(
           backgroundColor: AppColors.danger100,
           content: const Text(
-            'Gagal logout. Coba lagi.',
+            'Gagal batalin pendaftaran perangkat. Logout dibatalkan.',
             style: TextStyle(color: AppColors.gohan),
           ),
         ),
       );
+
+      return;
+    }
+
+    try {
+      if (!context.mounted) {
+        return;
+      }
+      
+      await context.read<CategoryCubit>().clearCategories();
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.danger100,
+          content: const Text(
+            'Gagal bersihin kategori. Logout dibatalkan.',
+            style: TextStyle(color: AppColors.gohan),
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (context.mounted) {
+      await context.read<SessionCubit>().logout();
     }
   }
 
@@ -178,7 +205,7 @@ class OtherPage extends StatelessWidget {
                       if (state is ResetPasswordLoading) {
                         _showLoadingDialog(
                           context,
-                          message: 'Mengirim email reset password...',
+                          message: 'Lagi ngirim email reset password...',
                         );
                         return;
                       }
@@ -187,9 +214,9 @@ class OtherPage extends StatelessWidget {
                         _closeDialogIfOpen(context);
                         await _showSuccessDialog(
                           context,
-                          title: 'Reset Password Terkirim',
+                          title: 'Reset password terkirim',
                           message:
-                              'Email reset password telah dikirim. Silakan cek inbox atau folder spam Anda.',
+                              'Email reset password sudah dikirim. Cek inbox atau folder spam ya.',
                         );
                         return;
                       }
@@ -230,7 +257,7 @@ class OtherPage extends StatelessWidget {
                       if (state is VerifyEmailLoading) {
                         _showLoadingDialog(
                           context,
-                          message: 'Mengirim email verifikasi...',
+                          message: 'Lagi ngirim email verifikasi...',
                         );
                         return;
                       }
@@ -239,9 +266,9 @@ class OtherPage extends StatelessWidget {
                         _closeDialogIfOpen(context);
                         await _showSuccessDialog(
                           context,
-                          title: 'Verifikasi Email Terkirim',
+                          title: 'Verifikasi email terkirim',
                           message:
-                              'Email verifikasi telah dikirim. Silakan cek inbox atau folder spam Anda.',
+                              'Email verifikasi sudah dikirim. Cek inbox atau folder spam ya.',
                         );
                         return;
                       }

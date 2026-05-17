@@ -154,7 +154,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     if (selectedType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Tipe transaksi tidak valid untuk update.'),
+          content: Text('Tipe transaksinya belum cocok buat diupdate.'),
           backgroundColor: AppColors.warning100,
         ),
       );
@@ -762,7 +762,7 @@ class _DetailContent extends StatelessWidget {
   String _resolveSourceText(String source) {
     return switch (source) {
       'manual' => 'Pencatatan Manual',
-      'fixed_cost_payment' => 'Pembayaran Fixed Cost',
+      'fixed_cost_payment' => 'Pembayaran Biaya Tetap',
       'initial_balance' => 'Saldo Awal',
       _ => source,
     };
@@ -843,14 +843,14 @@ class _ErrorState extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Gagal memuat detail transaksi',
+            'Detail transaksi belum bisa dimuat nih',
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: AppColors.bulma),
           ),
           const SizedBox(height: AppSizes.spacing4),
           AppButton(
-            text: 'Coba Lagi',
+            text: 'Coba lagi',
             onPressed: onRetry,
             variant: AppButtonVariant.ghost,
           ),

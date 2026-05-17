@@ -34,7 +34,7 @@ class VoiceErrorView extends StatelessWidget {
           const SizedBox(height: 24),
 
           Text(
-            'Maaf, Format Tidak\nSesuai',
+            'Waduh, formatnya\nbelum pas',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: AppColors.bulma,
@@ -53,8 +53,7 @@ class VoiceErrorView extends StatelessWidget {
                 height: 1.6,
               ),
               children: [
-                const TextSpan(
-                    text: 'Kami belum bisa memproses kalimat\nseperti '),
+                const TextSpan(text: 'Kami belum bisa memproses kalimat\nseperti '),
                 if (rawInput.isNotEmpty)
                   TextSpan(
                     text: '"$rawInput"',
@@ -66,7 +65,7 @@ class VoiceErrorView extends StatelessWidget {
                   ),
                 const TextSpan(
                   text:
-                  '. Mohon ikuti\nstruktur standar agar pencatatan\nkeuangan Anda lebih akurat.',
+                  '. Coba pakai format standar ya biar pencatatan\nkeuangan kamu lebih akurat.',
                 ),
               ],
             ),
@@ -107,7 +106,7 @@ class VoiceErrorView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Gunakan format berikut:',
+                        'Pakai format berikut ya:',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.bulma,
                           fontWeight: FontWeight.w600,

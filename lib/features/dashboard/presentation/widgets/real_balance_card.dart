@@ -34,7 +34,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
               children: [
                 AppHelpTooltip(
                   message:
-                      'Estimasi sisa uang Anda di akhir siklus keuangan saat ini setelah dikurangi tagihan yang belum dibayar.',
+                      'Perkiraan sisa uang kamu di akhir bulan ini setelah dikurangi tagihan-tagihan yang belum dibayar.',
                   child: Text(
                     'Saldo aman digunakan',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -45,12 +45,12 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
                 ),
                 AppHelpTooltip(
                   message:
-                      'Saldo total Anda saat ini, akumulasi dari semua pemasukan yang tercatat. Ini bukan jumlah yang aman untuk dibelanjakan.',
+                      'Total saldo kamu saat ini dari semua pemasukan yang tercatat. Ingat ya, ini bukan jumlah aman yang bisa kamu belanjakan semuanya!',
                   child: Text(
                     'Saldo sebenarnya',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.trunks,
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
                   ),
                 ),
               ],
@@ -68,9 +68,9 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
               ),
               Text(
                 'Rp ${_isVisible ? CurrencyFormatter.format(widget.balance) : '••••••'}',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.trunks,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
               ),
             ],
           ),
@@ -83,7 +83,9 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
               });
             },
             child: PhosphorIcon(
-              _isVisible ? PhosphorIconsRegular.eye : PhosphorIconsRegular.eyeSlash,
+              _isVisible
+                  ? PhosphorIconsRegular.eye
+                  : PhosphorIconsRegular.eyeSlash,
               size: 28,
               color: AppColors.bulma,
             ),

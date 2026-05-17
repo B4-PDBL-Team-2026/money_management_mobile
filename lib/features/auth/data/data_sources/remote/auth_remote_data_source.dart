@@ -87,7 +87,7 @@ class AuthRemoteDataSource {
       throw ErrorHandler.handleRemoteException(e, _log, 'Register');
     } catch (e) {
       _log.severe('Unexpected register error', e);
-      throw UnexpectedException('Terjadi kesalahan sistem saat registrasi');
+      throw UnexpectedException('Ada kendala pas registrasi. Coba lagi ya.');
     }
   }
 
@@ -132,7 +132,7 @@ class AuthRemoteDataSource {
       throw ErrorHandler.handleRemoteException(e, _log, 'Login');
     } catch (e) {
       _log.severe('Unexpected login error', e);
-      throw UnexpectedException('Terjadi kesalahan sistem saat login');
+      throw UnexpectedException('Ada kendala pas login. Coba lagi ya.');
     }
   }
 
@@ -150,7 +150,7 @@ class AuthRemoteDataSource {
       throw ErrorHandler.handleRemoteException(e, _log, 'Logout');
     } catch (e) {
       _log.severe('Unexpected logout error', e);
-      throw UnexpectedException('Terjadi kesalahan sistem saat logout');
+      throw UnexpectedException('Ada kendala pas logout. Coba lagi ya.');
     }
   }
 
@@ -161,7 +161,7 @@ class AuthRemoteDataSource {
       );
       await Future.delayed(const Duration(seconds: 1));
 
-      return 'Link reset password berhasil dikirim ke email Anda.';
+      return 'Link reset password berhasil dikirim ke email Kamu.';
     }
 
     try {
@@ -173,7 +173,7 @@ class AuthRemoteDataSource {
       final responseData = response.data as Map<String, dynamic>?;
       final message = responseData?['message'] as String?;
 
-      return message ?? 'Silakan cek email Anda untuk langkah berikutnya.';
+      return message ?? 'Silakan cek email Kamu untuk langkah berikutnya.';
     } on DioException catch (e) {
       throw ErrorHandler.handleRemoteException(
         e,
@@ -183,7 +183,7 @@ class AuthRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected send password reset email error', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengirim email verifikasi',
+        'Ada kendala pas ngirim email reset. Coba lagi ya.',
       );
     }
   }
@@ -203,7 +203,7 @@ class AuthRemoteDataSource {
       final responseData = response.data as Map<String, dynamic>?;
       final message = responseData?['message'] as String?;
 
-      return message ?? 'Silakan cek email Anda untuk melakukan verifikasi.';
+      return message ?? 'Silakan cek email Kamu untuk melakukan verifikasi.';
     } on DioException catch (e) {
       throw ErrorHandler.handleRemoteException(
         e,
@@ -213,7 +213,7 @@ class AuthRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected request email verification error', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengirim email verifikasi',
+        'Ada kendala pas ngirim email verifikasi. Coba lagi ya.',
       );
     }
   }
@@ -240,7 +240,7 @@ class AuthRemoteDataSource {
       throw ErrorHandler.handleRemoteException(e, _log, 'Delete Account');
     } catch (e) {
       _log.severe('Unexpected delete account error', e);
-      throw UnexpectedException('Terjadi kesalahan sistem saat menghapus akun');
+      throw UnexpectedException('Ada kendala pas hapus akun. Coba lagi ya.');
     }
   }
 }

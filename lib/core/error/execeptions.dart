@@ -1,3 +1,5 @@
+import 'package:money_management_mobile/core/constants/app_messages.dart';
+
 class ServerException implements Exception {
   final String message;
   ServerException(this.message);
@@ -8,7 +10,7 @@ class ServerException implements Exception {
 
 class NetworkException implements Exception {
   final String message;
-  NetworkException([this.message = "Koneksi internet bermasalah"]);
+  NetworkException([this.message = AppMessages.internetProblem]);
 
   @override
   String toString() => message;
@@ -16,25 +18,21 @@ class NetworkException implements Exception {
 
 class UnexpectedException implements Exception {
   final String message;
-  UnexpectedException([this.message = "Terjadi kesalahan yang tidak terduga"]);
+  UnexpectedException([this.message = AppMessages.unknownError]);
 
   @override
   String toString() => message;
 }
 
 class ValidationException implements Exception {
-  final Map<String, dynamic>? fieldErrors;
-  ValidationException([this.fieldErrors]);
-
-  @override
-  String toString() => "Data yang diberikan tidak valid";
-}
-
-class BusinessRuleException implements Exception {
+  /// Optional map of field errors, where the key is the field name and the value is the error message for that field.
   final String message;
-  final Map<String, List<String>>? errors;
+  final Map<String, dynamic>? fieldErrors;
 
-  BusinessRuleException(this.message, [this.errors]);
+  ValidationException([
+    this.fieldErrors,
+    this.message = AppMessages.dataInvalid,
+  ]);
 
   @override
   String toString() => message;
@@ -42,7 +40,7 @@ class BusinessRuleException implements Exception {
 
 class CacheNotFoundException implements Exception {
   final String message;
-  CacheNotFoundException([this.message = "Data tidak ditemukan di cache"]);
+  CacheNotFoundException([this.message = AppMessages.cacheNotFound]);
 
   @override
   String toString() => message;
@@ -50,7 +48,7 @@ class CacheNotFoundException implements Exception {
 
 class NotFoundException implements Exception {
   final String message;
-  NotFoundException([this.message = "Data tidak ditemukan"]);
+  NotFoundException([this.message = AppMessages.dataNotFound]);
 
   @override
   String toString() => message;
@@ -58,7 +56,7 @@ class NotFoundException implements Exception {
 
 class UnauthorizedException implements Exception {
   final String message;
-  UnauthorizedException([this.message = "Akses tidak sah"]);
+  UnauthorizedException([this.message = AppMessages.unauthorized]);
 
   @override
   String toString() => message;

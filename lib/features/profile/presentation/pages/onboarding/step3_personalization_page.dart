@@ -102,7 +102,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                   ),
                   const SizedBox(height: AppSizes.spacing2),
                   Text(
-                    'Tambahkan fixed cost agar proyeksi budget lebih akurat.',
+                    'Tambahkan biaya tetap agar proyeksi budget lebih akurat.',
                     textAlign: TextAlign.center,
                     style: Theme.of(
                       context,
@@ -112,7 +112,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
                   _buildStepHint(cycleLabel, state.budgetCycle),
                   const SizedBox(height: AppSizes.spacing5),
                   AppButton(
-                    text: 'Tambah Fixed Cost',
+                    text: 'Tambah Biaya Tetap',
                     onPressed: _showAddExpenseBottomSheet,
                     variant: AppButtonVariant.outlined,
                   ),
@@ -204,7 +204,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
           ),
           const SizedBox(height: AppSizes.spacing2),
           Text(
-            'Belum ada fixed cost',
+            'Belum ada biaya tetap',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppColors.bulma,
@@ -213,7 +213,7 @@ class _Step3PersonalizationPageState extends State<Step3PersonalizationPage> {
           ),
           const SizedBox(height: AppSizes.spacing1),
           Text(
-            'Anda bisa lewati langkah ini atau tambah satu biaya rutin terlebih dulu.',
+            'Kamu bisa lewati langkah ini atau tambah satu biaya rutin terlebih dulu.',
             textAlign: TextAlign.center,
             style: Theme.of(
               context,

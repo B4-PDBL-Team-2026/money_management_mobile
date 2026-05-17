@@ -214,7 +214,7 @@ class _FixedCostSection extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       backgroundColor: AppColors.success100,
-                      content: Text('Fixed cost berhasil dibayar'),
+                      content: Text('Biaya tetap berhasil dibayar'),
                     ),
                   );
                 }
@@ -231,7 +231,7 @@ class _FixedCostSection extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     backgroundColor: AppColors.warning100,
-                    content: Text('Fixed cost berhasil dibatalkan'),
+                    content: Text('Biaya tetap berhasil dibatalkan'),
                   ),
                 );
               },
@@ -293,7 +293,7 @@ class _EmptyFixedCostState extends StatelessWidget {
           ),
           SizedBox(height: AppSizes.spacing2),
           Text(
-            'Anda belum memiliki biaya tetap yang dijadwalkan untuk minggu atau bulan ini.',
+            'Kamu belum memiliki biaya tetap yang dijadwalkan untuk minggu atau bulan ini.',
             style: AppTextStyles.bodyMain.copyWith(color: AppColors.bulma),
             textAlign: TextAlign.center,
           ),
@@ -359,7 +359,7 @@ class _ErrorFixedCostState extends StatelessWidget {
           ),
           SizedBox(height: AppSizes.spacing6),
           Text(
-            'Gagal memuat biaya tetap',
+            'Biaya tetap belum bisa dimuat nih',
             style: AppTextStyles.h2.copyWith(color: AppColors.primary),
             textAlign: TextAlign.center,
           ),

@@ -31,13 +31,13 @@ class DashboardBudgetMetrics extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Text('Gagal memuat data dashboard'),
+              Text('Data dashboard belum bisa dimuat nih'),
               const SizedBox(height: AppSizes.spacing2),
               AppButton(
                 onPressed: () {
                   context.read<DashboardMetricCubit>().fetchDashboardMetrics();
                 },
-                text: 'Coba Lagi',
+                text: 'Coba lagi',
               ),
             ],
           ),
@@ -56,12 +56,14 @@ class DashboardBudgetMetrics extends StatelessWidget {
           safeBalance: metrics.safeBalance,
         ),
         const SizedBox(height: AppSizes.spacing3),
+
         if (metrics.balance == 0 &&
             metrics.healthScenario == BudgetHealthScenario.deficit) ...[
           AppContainerCard(
             width: double.infinity,
             backgroundColor: AppColors.primary,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Serius!',
@@ -72,83 +74,10 @@ class DashboardBudgetMetrics extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.spacing2),
                 Text(
-                  'Saldo anda habis dan hutang anda masih ada. apakah anda lari dari tanggung jawab?',
-                  textAlign: TextAlign.center,
+                  'Saldo kamu udah habis, tapi tagihan masih ada nih. Jangan dicuekin ya, yuk pelan-pelan dilunasi.',
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: AppColors.gohan),
-                ),
-                const SizedBox(height: AppSizes.spacing4),
-                Container(
-                  padding: const EdgeInsets.all(AppSizes.spacing2),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                  ),
-                  child: Text(
-                    'Tidak ada transaksi lebih lanjut!',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColors.gohan),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSizes.spacing3),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: AppContainerCard(
-                    backgroundColor: AppColors.danger10,
-                    border: Border.all(color: AppColors.danger100),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Total Defisit Saat Ini',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppColors.danger100),
-                        ),
-                        const SizedBox(height: AppSizes.spacing2),
-                        Text(
-                          '- Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost - metrics.balance)}',
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: AppColors.danger100,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSizes.spacing3),
-                Expanded(
-                  child: AppContainerCard(
-                    backgroundColor: AppColors.danger10,
-                    border: Border.all(color: AppColors.danger100),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Saldo riil',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppColors.danger100),
-                        ),
-                        const SizedBox(height: AppSizes.spacing2),
-                        Text(
-                          'Rp 0',
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: AppColors.danger100,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -161,44 +90,46 @@ class DashboardBudgetMetrics extends StatelessWidget {
             limitState: metrics.limitState,
             healthScenario: metrics.healthScenario,
           ),
-          const SizedBox(height: AppSizes.spacing3),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: MetricCard(
-                    metric: metrics.firstMetric,
-                    backgroundColor:
-                        metrics.limitState == DashboardLimitState.overLastLimit
-                        ? AppColors.danger100
-                        : null,
-                  ),
-                ),
-                const SizedBox(width: AppSizes.spacing3),
-                Expanded(
-                  child: MetricCard(
-                    metric: metrics.secondMetric,
-                    backgroundColor:
-                        metrics.healthScenario == BudgetHealthScenario.deficit
-                        ? AppColors.danger10
-                        : null,
-                    textColor:
-                        metrics.healthScenario == BudgetHealthScenario.deficit
-                        ? AppColors.danger100
-                        : null,
-                    boxBorder:
-                        metrics.healthScenario == BudgetHealthScenario.deficit
-                        ? Border.all(color: AppColors.danger100)
-                        : null,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
+
+        const SizedBox(height: AppSizes.spacing3),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: MetricCard(
+                  metric: metrics.firstMetric,
+                  backgroundColor:
+                      metrics.limitState == DashboardLimitState.overLastLimit
+                      ? AppColors.danger100
+                      : null,
+                ),
+              ),
+              const SizedBox(width: AppSizes.spacing3),
+              Expanded(
+                child: MetricCard(
+                  metric: metrics.secondMetric,
+                  backgroundColor:
+                      metrics.healthScenario == BudgetHealthScenario.deficit
+                      ? AppColors.danger10
+                      : null,
+                  textColor:
+                      metrics.healthScenario == BudgetHealthScenario.deficit
+                      ? AppColors.danger100
+                      : null,
+                  boxBorder:
+                      metrics.healthScenario == BudgetHealthScenario.deficit
+                      ? Border.all(color: AppColors.danger100)
+                      : null,
+                ),
+              ),
+            ],
+          ),
+        ),
+
         if (metrics.healthScenario == BudgetHealthScenario.deficit &&
-            metrics.balance > 0) ...[
+            metrics.totalUnpaidFixedCost > 0) ...[
           const SizedBox(height: AppSizes.spacing3),
           AppContainerCard(
             backgroundColor: AppColors.danger10,
@@ -208,7 +139,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Total Defisit Saat Ini',
+                    'Total biaya tetap yang belum dibayar',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppColors.danger100,
                       fontWeight: FontWeight.bold,
@@ -217,7 +148,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSizes.spacing2),
                 Text(
-                  '- Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost > metrics.balance ? metrics.totalUnpaidFixedCost - metrics.balance : 0)}',
+                  'Rp ${CurrencyFormatter.format(metrics.totalUnpaidFixedCost)}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.danger100,

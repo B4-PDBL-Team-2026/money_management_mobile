@@ -2,6 +2,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/register_usecase.dart';
@@ -48,18 +49,19 @@ class RegisterCubit extends Cubit<RegisterState> {
     } on NetworkException catch (e) {
       emit(RegisterError(e.message));
     } on ValidationException catch (e) {
-      emit(RegisterValidationError(e.fieldErrors));
+      final fieldErrors = e.fieldErrors;
+      if (fieldErrors != null && fieldErrors.isNotEmpty) {
+        emit(RegisterValidationError(fieldErrors));
+      } else {
+        emit(RegisterError(e.message));
+      }
     } on UnexpectedException catch (e) {
       emit(RegisterError(e.message));
     } catch (e) {
       if (kDebugMode) {
-        emit(RegisterError('Terjadi kesalahan: ${e.toString()}'));
+        emit(RegisterError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          RegisterError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(RegisterError(AppMessages.unknownError));
       }
     }
   }

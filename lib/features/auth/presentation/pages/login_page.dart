@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                "Login berhasil!",
+                "Login berhasil, lanjut yuk!",
                 style: TextStyle(color: AppColors.gohan),
               ),
               backgroundColor: AppColors.primary,
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: AppSizes.spacing4),
                     Text(
-                      "Kami senang melihat Anda lagi! Masuk untuk melanjutkan perjalanan keuangan Anda.",
+                      "Kami senang melihat Kamu lagi! Masuk untuk melanjutkan perjalanan keuangan Kamu.",
                       textAlign: TextAlign.center,
                       style: Theme.of(
                         context,
@@ -125,17 +125,17 @@ class _LoginPageState extends State<LoginPage> {
                         final trimmedEmail = email?.trim() ?? '';
 
                         if (trimmedEmail.isEmpty) {
-                          return "Email wajib diisi.";
+                          return "Email jangan dikosongin ya.";
                         }
 
                         if (!RegExp(
                           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
                         ).hasMatch(trimmedEmail)) {
-                          return "Format email tidak valid.";
+                          return "Format emailnya belum pas nih.";
                         }
 
                         if (trimmedEmail.length > 255) {
-                          return "Email maksimal 255 karakter.";
+                          return "Email maksimal 255 karakter ya.";
                         }
 
                         return null;
@@ -153,11 +153,11 @@ class _LoginPageState extends State<LoginPage> {
                       errorText: serverErrors?['password']?[0],
                       validator: (password) {
                         if (password == null || password.isEmpty) {
-                          return "Password wajib diisi.";
+                          return "Password jangan dikosongin ya.";
                         }
 
                         if (password.length < 8) {
-                          return "Password minimal 8 karakter.";
+                          return "Password minimal 8 karakter ya.";
                         }
 
                         return null;
@@ -170,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                           context.go(AppRouter.forgotPassword);
                         },
                         child: Text(
-                          "Lupa Password?",
+                          "Lupa password?",
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(color: AppColors.trunks),
                         ),

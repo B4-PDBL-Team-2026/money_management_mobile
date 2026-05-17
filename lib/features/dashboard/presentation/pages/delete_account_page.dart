@@ -6,6 +6,7 @@ import 'package:money_management_mobile/core/widgets/app_button.dart';
 import 'package:money_management_mobile/core/widgets/app_text_field.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_state.dart';
+import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
 
 class DeleteAccountPage extends StatefulWidget {
   const DeleteAccountPage({super.key});
@@ -64,7 +65,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               ),
               const SizedBox(height: AppSizes.spacing4),
               const Text(
-                'Apakah Anda yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan. Semua data Anda akan dihapus secara permanen.',
+                'Apakah Kamu yakin ingin menghapus akun Kamu? Tindakan ini tidak dapat dibatalkan. Semua data Kamu akan dihapus secara permanen.',
               ),
               const SizedBox(height: AppSizes.spacing10),
               BlocConsumer<DeleteAccountCubit, DeleteAccountState>(
@@ -103,17 +104,17 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                       children: [
                         AppTextField(
                           controller: _passwordController,
-                          label: 'Masukkan password Anda untuk konfirmasi',
+                          label: 'Masukkan password kamu buat konfirmasi',
                           hint: 'Password',
                           isPassword: true,
                           errorText: serverErrors?['password']?[0],
                           validator: (password) {
                             if (password == null || password.isEmpty) {
-                              return "Password wajib diisi.";
+                              return "Password jangan dikosongin ya.";
                             }
 
                             if (password.length < 8) {
-                              return "Password minimal 8 karakter.";
+                              return "Password minimal 8 karakter ya.";
                             }
 
                             return null;
@@ -134,13 +135,41 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                               child: AppButton(
                                 text: 'Hapus Akun',
                                 type: AppButtonType.danger,
-                                onPressed: () {
+                                onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    context
-                                        .read<DeleteAccountCubit>()
-                                        .deleteAccount(
-                                          _passwordController.text,
-                                        );
+                                    try {
+                                      await context
+                                          .read<NotificationCubit>()
+                                          .unregisterCurrentDevice();
+
+                                      if (!context.mounted) {
+                                        return;
+                                      }
+
+                                      context
+                                          .read<DeleteAccountCubit>()
+                                          .deleteAccount(
+                                            _passwordController.text,
+                                          );
+                                    } catch (_) {
+                                      if (!context.mounted) {
+                                        return;
+                                      }
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: AppColors.danger100,
+                                          content: const Text(
+                                            'Gagal membatalkan pendaftaran perangkat. Silakan coba lagi.',
+                                            style: TextStyle(
+                                              color: AppColors.gohan,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                               ),

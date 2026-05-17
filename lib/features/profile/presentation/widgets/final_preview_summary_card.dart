@@ -98,7 +98,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
                 value: '$remainingDays hari',
               ),
               FinalPreviewSummaryRow(
-                label: 'Total Fixed Cost',
+                label: 'Total Biaya Tetap',
                 value: 'Rp ${CurrencyFormatter.format(totalFixedCost)}',
               ),
               FinalPreviewSummaryRow(
@@ -157,7 +157,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSizes.spacing3),
             Text(
-              'Anda memiliki potensi tabungan di akhir siklus jika disiplin',
+              'Kamu memiliki potensi tabungan di akhir siklus jika disiplin',
               style: Theme.of(
                 context,
               ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
@@ -243,7 +243,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Anda hidup dalam hutang',
+            'Kamu lagi hidup di mode defisit',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: AppColors.danger100,
               fontWeight: FontWeight.w700,
@@ -266,7 +266,7 @@ class FinalPreviewSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.spacing3),
           Text(
-            'Jatah tersebut dari batas minimal anda. Setiap pengeluaran akan memperbesar defisit Anda. Cari pemasukan atau pangkas fixed cost Anda!',
+            'Jatah ini masih di bawah batas minimal kamu. Setiap pengeluaran bakal bikin defisit makin besar. Cari pemasukan atau pangkas biaya tetap dulu ya!',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: AppColors.danger100,
               fontWeight: FontWeight.w700,
