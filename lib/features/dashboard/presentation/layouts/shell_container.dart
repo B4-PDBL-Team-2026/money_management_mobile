@@ -61,18 +61,13 @@ class _ShellContainerState extends State<ShellContainer>
     }
   }
 
-  void _onVoiceTap() {
-    _close();
-    Future.delayed(const Duration(milliseconds: 180), () {
-      if (mounted) context.push(AppRouter.voiceTransaction);
-    });
-  }
-
-  void _onManualTap() {
-    _close();
-    Future.delayed(const Duration(milliseconds: 180), () {
-      if (mounted) context.push(AppRouter.addTransaction);
-    });
+  VoidCallback _onNavigate(VoidCallback callback) {
+    return () {
+      _close();
+      Future.delayed(const Duration(milliseconds: 180), () {
+        if (mounted) callback();
+      });
+    };
   }
 
   @override
@@ -155,9 +150,23 @@ class _ShellContainerState extends State<ShellContainer>
                 _FabMenuItem(
                   animation: _fadeScaleAnim,
                   delay: 0.0,
+                  label: 'Tambah Dalam Batch',
+                  icon: PhosphorIconsRegular.stackPlus,
+                  onTap: _onNavigate(
+                    () => context.push(AppRouter.addBatchTransaction),
+                  ),
+                  disabled: false,
+                ),
+                const SizedBox(height: 12),
+
+                _FabMenuItem(
+                  animation: _fadeScaleAnim,
+                  delay: 0.0,
                   label: 'Tambah Manual',
-                  icon: Icons.edit_outlined,
-                  onTap: _onManualTap,
+                  icon: PhosphorIconsRegular.pencilSimple,
+                  onTap: _onNavigate(
+                    () => context.push(AppRouter.addTransaction),
+                  ),
                   disabled: false,
                 ),
                 const SizedBox(height: 12),
@@ -167,8 +176,10 @@ class _ShellContainerState extends State<ShellContainer>
                   animation: _fadeScaleAnim,
                   delay: 0.3,
                   label: 'Voice',
-                  icon: Icons.mic_none_rounded,
-                  onTap: _onVoiceTap,
+                  icon: PhosphorIconsRegular.microphone,
+                  onTap: _onNavigate(
+                    () => context.push(AppRouter.voiceTransaction),
+                  ),
                   disabled: false,
                 ),
                 const SizedBox(height: 16),

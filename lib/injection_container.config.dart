@@ -101,6 +101,8 @@ import 'features/transaction/domain/repositories/transaction_repository.dart'
     as _i463;
 import 'features/transaction/presentation/cubit/add_transaction_cubit.dart'
     as _i1024;
+import 'features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart'
+    as _i13;
 import 'features/transaction/presentation/cubit/transaction_detail_cubit.dart'
     as _i555;
 import 'features/transaction/presentation/cubit/transaction_history_cubit.dart'
@@ -188,12 +190,6 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i448.DashboardRepositoryImpl(gh<_i553.DashboardRemoteDataSource>()),
     );
-    gh.lazySingleton<_i5.CategoryRepository>(
-      () => _i44.CategoryRepositoryImpl(
-        gh<_i300.CategoryRemoteDataSource>(),
-        gh<_i844.CategoryLocalDataSource>(),
-      ),
-    );
     gh.lazySingleton<_i862.NotificationCenterRepository>(
       () => _i1007.NotificationCenterRepositoryImpl(
         gh<_i545.NotificationRemoteDataSource>(),
@@ -222,12 +218,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i693.RegisterUseCase>(
       () => _i693.RegisterUseCase(gh<_i1015.AuthRepository>()),
     );
-    gh.lazySingleton<_i478.CategoryCubit>(
-      () => _i478.CategoryCubit(
-        gh<_i5.CategoryRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
     gh.lazySingleton<_i463.TransactionRepository>(
       () => _i16.TransactionRepositoryImpl(
         gh<_i1023.TransactionRemoteDataSource>(),
@@ -245,6 +235,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i410.SessionCubit>(),
         gh<_i1017.EventBus>(),
       ),
+    );
+    gh.lazySingleton<_i5.CategoryRepository>(
+      () => _i44.CategoryRepositoryImpl(gh<_i300.CategoryRemoteDataSource>()),
     );
     gh.lazySingleton<_i356.NotificationCenterCubit>(
       () => _i356.NotificationCenterCubit(
@@ -294,6 +287,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
+    gh.factory<_i13.BatchTransactionSubmitCubit>(
+      () => _i13.BatchTransactionSubmitCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
     gh.factory<_i555.TransactionDetailCubit>(
       () => _i555.TransactionDetailCubit(
         gh<_i463.TransactionRepository>(),
@@ -316,6 +315,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1023.DashboardMetricCubit(
         gh<_i83.CalculateDashboardMetricsUsecase>(),
         gh<_i557.DashboardRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.lazySingleton<_i478.CategoryCubit>(
+      () => _i478.CategoryCubit(
+        gh<_i5.CategoryRepository>(),
         gh<_i1017.EventBus>(),
       ),
     );

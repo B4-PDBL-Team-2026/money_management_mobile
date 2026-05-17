@@ -31,9 +31,11 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/voice_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_form_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/voice_transaction_page.dart';
@@ -66,6 +68,7 @@ class AppRouter {
   static const String deleteAccount = '/other/delete-account';
 
   static const String addTransaction = '/transaction/add';
+  static const String addBatchTransaction = '/transaction/batch/add';
   static const String voiceTransaction = '/transaction/voice';
   static const String transactionDetailBase = '/transaction';
   static const String transactionDetail = '/transaction/:id';
@@ -172,7 +175,8 @@ class AppRouter {
                     routes: [
                       GoRoute(
                         path: 'notification',
-                        builder: (context, state) => const NotificationCenterPage(),
+                        builder: (context, state) =>
+                            const NotificationCenterPage(),
                       ),
                     ],
                   ),
@@ -187,7 +191,8 @@ class AppRouter {
                     routes: [
                       GoRoute(
                         path: 'manage',
-                        builder: (context, state) => const FixedCostTemplateManagementPage(),
+                        builder: (context, state) =>
+                            const FixedCostTemplateManagementPage(),
                       ),
                     ],
                   ),
@@ -233,13 +238,20 @@ class AppRouter {
 
           // transaction module
           GoRoute(
-            path: '/transaction/add',
+            path: addTransaction,
             builder: (context, state) => MultiBlocProvider(
               providers: [
                 BlocProvider(create: (_) => getIt<AddTransactionCubit>()),
                 BlocProvider.value(value: getIt<DashboardMetricCubit>()),
               ],
               child: const AddTransactionPage(),
+            ),
+          ),
+          GoRoute(
+            path: addBatchTransaction,
+            builder: (context, state) => BlocProvider(
+              create: (context) => getIt<BatchTransactionSubmitCubit>(),
+              child: const BatchTransactionFormPage(),
             ),
           ),
           GoRoute(
