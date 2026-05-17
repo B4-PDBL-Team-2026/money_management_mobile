@@ -17,6 +17,17 @@ class CategoryLoaded extends CategoryState {
       categories.where((c) => c.type == TransactionType.expense).toList();
   List<CategoryEntity> get incomeCategories =>
       categories.where((c) => c.type == TransactionType.income).toList();
+
+  CategoryEntity? getCategoryById(int id) => categories.firstWhere(
+    (c) => c.id == id,
+    orElse: () => CategoryEntity(
+      id: 0,
+      name: 'Tidak Diketahui',
+      icon: 'default',
+      type: TransactionType.expense,
+      isSystem: true,
+    ),
+  );
 }
 
 class CategoryError extends CategoryState {
