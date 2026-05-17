@@ -5,6 +5,20 @@ enum TransactionType {
   final String value;
 
   const TransactionType(this.value);
+
+  static TransactionType? fromValue(String? value) {
+    if (value == null) {
+      return null;
+    }
+
+    for (final transactionType in TransactionType.values) {
+      if (transactionType.value == value) {
+        return transactionType;
+      }
+    }
+
+    return null;
+  }
 }
 
 class TransactionEntity {

@@ -1,12 +1,13 @@
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/features/transaction/data/models/batch_transaction_item_model.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 
 class AddBatchTransactionModel {
   final String name;
   final DateTime transactionAt;
   final String? note;
-  final BatchTransactionSource source;
+  final TransactionSource source;
   final List<BatchTransactionItemModel> items;
 
   const AddBatchTransactionModel({
@@ -17,15 +18,15 @@ class AddBatchTransactionModel {
     this.note,
   });
 
-  factory AddBatchTransactionModel.fromEntity(AddBatchTransactionEntity entity) {
+  factory AddBatchTransactionModel.fromEntity(
+    AddBatchTransactionEntity entity,
+  ) {
     return AddBatchTransactionModel(
       name: entity.name.trim(),
       transactionAt: entity.transactionAt,
       note: _normalizeText(entity.note),
       source: entity.source,
-      items: entity.items
-          .map(BatchTransactionItemModel.fromEntity)
-          .toList(),
+      items: entity.items.map(BatchTransactionItemModel.fromEntity).toList(),
     );
   }
 

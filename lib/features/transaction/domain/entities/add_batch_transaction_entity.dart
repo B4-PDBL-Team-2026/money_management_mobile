@@ -1,21 +1,11 @@
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-
-enum BatchTransactionSource {
-  initialBalance('initial_balance'),
-  manual('manual'),
-  fixedCostPayment('fixed_cost_payment'),
-  receiptScan('receipt_scan');
-
-  final String value;
-
-  const BatchTransactionSource(this.value);
-}
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 
 class AddBatchTransactionEntity {
   final String name;
   final DateTime transactionAt;
   final String? note;
-  final BatchTransactionSource source;
+  final TransactionSource source;
   final List<TransactionEntity> items;
 
   const AddBatchTransactionEntity({

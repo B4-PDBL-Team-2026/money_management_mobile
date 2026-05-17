@@ -39,17 +39,16 @@ class TransactionRemoteDataSource {
     }
   }
 
-  Future<void> addBatchTransaction(AddBatchTransactionModel requestModel) async {
+  Future<void> addBatchTransaction(
+    AddBatchTransactionModel requestModel,
+  ) async {
     if (AppEnv.useMockApi) {
       await Future.delayed(const Duration(seconds: 1));
       return;
     }
 
     try {
-      await dio.post(
-        '/transaction/batch',
-        data: requestModel.toJson(),
-      );
+      await dio.post('/transaction/batch', data: requestModel.toJson());
     } on DioException catch (e) {
       throw ErrorHandler.handleRemoteException(
         e,
@@ -186,8 +185,6 @@ class TransactionRemoteDataSource {
           categoryId: 11,
           name: 'Gaji Bulanan',
           transactionAt: now,
-          createdAt: now,
-          updatedAt: now,
           type: TransactionType.income,
         ),
         TransactionHistoryModel(
@@ -196,8 +193,6 @@ class TransactionRemoteDataSource {
           categoryId: 1,
           name: 'Makan Siang (Nasi Padang)',
           transactionAt: now,
-          createdAt: now,
-          updatedAt: now,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -206,8 +201,6 @@ class TransactionRemoteDataSource {
           categoryId: 2,
           name: 'Ojek Online',
           transactionAt: now,
-          createdAt: now,
-          updatedAt: now,
           type: TransactionType.expense,
         ),
 
@@ -218,8 +211,6 @@ class TransactionRemoteDataSource {
           categoryId: 6,
           name: 'Belanja Mingguan',
           transactionAt: yesterday,
-          createdAt: yesterday,
-          updatedAt: yesterday,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -228,8 +219,6 @@ class TransactionRemoteDataSource {
           categoryId: 13,
           name: 'Hadiah Ulang Tahun',
           transactionAt: yesterday,
-          createdAt: yesterday,
-          updatedAt: yesterday,
           type: TransactionType.income,
         ),
         TransactionHistoryModel(
@@ -238,8 +227,6 @@ class TransactionRemoteDataSource {
           categoryId: 5,
           name: 'Tiket Bioskop',
           transactionAt: yesterday,
-          createdAt: yesterday,
-          updatedAt: yesterday,
           type: TransactionType.expense,
         ),
 
@@ -250,8 +237,6 @@ class TransactionRemoteDataSource {
           categoryId: 3,
           name: 'Bayar Listrik & WiFi',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -260,8 +245,6 @@ class TransactionRemoteDataSource {
           categoryId: 14,
           name: 'Dividen Saham',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.income,
         ),
         TransactionHistoryModel(
@@ -270,8 +253,6 @@ class TransactionRemoteDataSource {
           categoryId: 8,
           name: 'Donasi Panti Asuhan',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -280,8 +261,6 @@ class TransactionRemoteDataSource {
           categoryId: 7,
           name: 'Beli Obat Flu',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -290,8 +269,6 @@ class TransactionRemoteDataSource {
           categoryId: 15,
           name: 'Pinjaman Cair',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.income,
         ),
       ];
@@ -312,7 +289,7 @@ class TransactionRemoteDataSource {
           'search': search,
           'categoryId': categoryId,
           'month': month,
-          'year': year
+          'year': year,
         },
       );
 
