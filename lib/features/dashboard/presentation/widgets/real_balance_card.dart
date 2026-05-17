@@ -31,48 +31,82 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppHelpTooltip(
-                  message:
-                      'Perkiraan sisa uang kamu di akhir bulan ini setelah dikurangi tagihan-tagihan yang belum dibayar.',
-                  child: Text(
-                    'Saldo aman digunakan',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.bulma,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'Saldo aman digunakan',
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.bulma,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const AppHelpTooltip(
+                            message:
+                                'Perkiraan sisa uang kamu di akhir bulan ini setelah dikurangi tagihan-tagihan yang belum dibayar.',
+                            iconColor: AppColors.bulma,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: AppSizes.spacing2),
+                    Text(
+                      'Rp ${_isVisible ? CurrencyFormatter.format(widget.safeBalance) : '••••••'}',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.bulma,
+                      ),
+                    ),
+                  ],
                 ),
-                AppHelpTooltip(
-                  message:
-                      'Total saldo kamu saat ini dari semua pemasukan yang tercatat. Ingat ya, ini bukan jumlah aman yang bisa kamu belanjakan semuanya!',
-                  child: Text(
-                    'Saldo sebenarnya',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+                if (widget.safeBalance != widget.balance) ...[
+                  const SizedBox(height: AppSizes.spacing1),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                'Saldo sebenarnya',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const AppHelpTooltip(
+                              message:
+                                  'Total saldo kamu saat ini dari semua pemasukan yang tercatat. Ingat ya, ini bukan jumlah aman yang bisa kamu belanjakan semuanya!',
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: AppSizes.spacing2),
+                      Text(
+                        'Rp ${_isVisible ? CurrencyFormatter.format(widget.balance) : '••••••'}',
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+                      ),
+                    ],
                   ),
-                ),
+                ],
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'Rp ${_isVisible ? CurrencyFormatter.format(widget.safeBalance) : '••••••'}',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.bulma,
-                ),
-              ),
-              Text(
-                'Rp ${_isVisible ? CurrencyFormatter.format(widget.balance) : '••••••'}',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-              ),
-            ],
           ),
           const SizedBox(width: AppSizes.spacing4),
           GestureDetector(
