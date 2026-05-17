@@ -5,6 +5,7 @@ import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/data/models/paginated_model.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/features/transaction/data/models/add_batch_transaction_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_detail_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_history_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
@@ -34,6 +35,31 @@ class TransactionRemoteDataSource {
       _log.severe('Unexpected error while adding transaction', e);
       throw UnexpectedException(
         'Ada kendala pas nambah transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
+  Future<void> addBatchTransaction(AddBatchTransactionModel requestModel) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.post(
+        '/transaction/batch',
+        data: requestModel.toJson(),
+      );
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        ' Add Batch Transaction',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while adding batch transaction', e);
+      throw UnexpectedException(
+        'Ada kendala pas nambah batch transaksi. Coba lagi ya.',
       );
     }
   }

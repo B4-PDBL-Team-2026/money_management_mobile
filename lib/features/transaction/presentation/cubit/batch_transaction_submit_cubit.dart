@@ -6,7 +6,6 @@ import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_submit_state.dart';
 
@@ -28,18 +27,7 @@ class BatchTransactionSubmitCubit extends Cubit<BatchTransactionSubmitState> {
     emit(BatchTransactionSubmitLoading());
 
     try {
-      // for (final item in addBatchTransaction.items) {
-      //   await _transactionRepository.addTransaction(
-      //     TransactionEntity(
-      //       name: '${addBatchTransaction.name.trim()} > ${item.name}',
-      //       amount: item.amount,
-      //       type: item.type,
-      //       categoryId: item.categoryId,
-      //       transactionAt: addBatchTransaction.transactionAt,
-      //       note: addBatchTransaction.note,
-      //     ),
-      //   );
-      // }
+      await _transactionRepository.addBatchTransaction(addBatchTransaction);
 
       _eventBus.fire(const TransactionChangesEvent());
       emit(BatchTransactionSubmitSuccess());

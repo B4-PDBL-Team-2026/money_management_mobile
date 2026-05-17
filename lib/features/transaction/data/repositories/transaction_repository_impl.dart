@@ -1,7 +1,9 @@
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/data_sources/remote/transaction_remote_data_source.dart';
+import 'package:money_management_mobile/features/transaction/data/models/add_batch_transaction_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
@@ -19,6 +21,13 @@ class TransactionRepositoryImpl implements TransactionRepository {
       TransactionModel.fromEntity(entity),
     );
     return transactionModel;
+  }
+
+  @override
+  Future<void> addBatchTransaction(AddBatchTransactionEntity entity) async {
+    await remoteDataSource.addBatchTransaction(
+      AddBatchTransactionModel.fromEntity(entity),
+    );
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
@@ -162,12 +163,17 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
       return;
     }
 
-    // await context.read<BatchTransactionSubmitCubit>().submit(
-    //   title: draft.title,
-    //   transactionAt: draft.transactionAt,
-    //   items: _transactionItems,
-    //   note: draft.note,
-    // );
+    await context.read<BatchTransactionSubmitCubit>().submit(
+      addBatchTransaction: AddBatchTransactionEntity(
+        name: _titleController.text.trim(),
+        transactionAt: _transactionDate,
+        note: _noteController.text.trim().isEmpty
+            ? null
+            : _noteController.text.trim(),
+        source: BatchTransactionSource.manual,
+        items: _transactionItems.values.toList(),
+      ),
+    );
   }
 
   @override
