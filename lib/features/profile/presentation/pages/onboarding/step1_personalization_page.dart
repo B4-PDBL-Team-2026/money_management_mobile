@@ -87,7 +87,7 @@ class _Step1PersonalizationPageState extends State<Step1PersonalizationPage> {
                         }
 
                         if (value <= 0) {
-                          return positiveNumberMessage('Saldo awal');
+                          return moreThanFieldMessage('Saldo awal', '0');
                         }
 
                         if (value > 1000000000) {

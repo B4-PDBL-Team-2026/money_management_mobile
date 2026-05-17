@@ -75,11 +75,29 @@ class _HomePageState extends State<HomePage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Transaksi Terbaru',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineMedium?.copyWith(fontSize: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Transaksi Terbaru',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.headlineMedium?.copyWith(fontSize: 16),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              context.go(AppRouter.history);
+                            },
+                            child: Text(
+                              'Semua',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: AppSizes.spacing3),
                       ListView.separated(

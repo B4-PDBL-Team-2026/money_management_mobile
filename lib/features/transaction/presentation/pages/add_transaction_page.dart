@@ -9,6 +9,7 @@ import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
+import 'package:money_management_mobile/features/dashboard/domain/usecases/calculate_dashboard_metrics_usecase.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
@@ -290,7 +291,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                           }
 
                           if (value <= 0) {
-                            return positiveNumberMessage('Nominal');
+                            return moreThanFieldMessage('Nominal', '0');
                           }
 
                           if (value > 1000000000) {
@@ -423,21 +424,64 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       ),
                       const SizedBox(height: AppSizes.spacing8),
                       AppButton(
-                        isLoading: state is AddTransactionLoading,
-                        onPressed: () {
+                        isLoading:
+                            state is AddTransactionLoading ||
+                            context.watch<DashboardMetricCubit>().state
+                                is DashboardMetricLoading,
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            context.read<AddTransactionCubit>().addTransaction(
-                              amount: CurrencyFormatter.parse(
-                                _amountController.text,
-                              ),
-                              name: _nameController.text,
-                              categoryId: _selectedCategory,
-                              transactionAt: _selectedDate,
-                              note: _noteController.text.isEmpty
-                                  ? null
-                                  : _noteController.text,
-                              type: _selectedTransactionType,
+                            final amount = CurrencyFormatter.parse(
+                              _amountController.text,
                             );
+
+                            bool shouldProceed = true;
+
+                            // TODO: Refactor this logic into a separate use case or method in the cubit
+                            if (_selectedTransactionType ==
+                                TransactionType.expense) {
+                              final dashboardMetricState = context
+                                  .read<DashboardMetricCubit>()
+                                  .state;
+
+                              if (dashboardMetricState
+                                  is DashboardMetricLoaded) {
+                                final metrics = dashboardMetricState.metrics;
+
+                                final isAlreadyOverBudget =
+                                    metrics.limitState ==
+                                    DashboardLimitState.overLastLimit;
+
+                                final willBeOverBudget =
+                                    metrics.todaySpent + amount > metrics.limit;
+
+                                if (isAlreadyOverBudget || willBeOverBudget) {
+                                  shouldProceed = await AppConfirmDialog.show(
+                                    context: context,
+                                    title: 'Over Budget!',
+                                    content:
+                                        'Yakin ingin menambah transaksi pengeluaran lagi? kamu sudah overbudget!',
+                                    confirmText: 'Yakin',
+                                    cancelText: 'Batal',
+                                    confirmButtonType: AppButtonType.danger,
+                                  );
+                                }
+                              }
+                            }
+
+                            if (shouldProceed && context.mounted) {
+                              context
+                                  .read<AddTransactionCubit>()
+                                  .addTransaction(
+                                    amount: amount,
+                                    name: _nameController.text,
+                                    categoryId: _selectedCategory,
+                                    transactionAt: _selectedDate,
+                                    note: _noteController.text.isEmpty
+                                        ? null
+                                        : _noteController.text,
+                                    type: _selectedTransactionType,
+                                  );
+                            }
                           }
                         },
                         text: 'Simpan',
