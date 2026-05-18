@@ -238,6 +238,8 @@ class CalculateDashboardMetricsUsecase {
       secondMetric: secondMetric,
       healthScenario: scenario,
       limitState: limitState,
+      safetyCeiling: safetyCeiling,
+      safetyFlooring: safetyFlooring,
     );
   }
 
@@ -314,6 +316,8 @@ class DashboardMetricsResult {
   final DashboardMetric secondMetric;
   final BudgetHealthScenario healthScenario;
   final DashboardLimitState limitState;
+  final int safetyCeiling;
+  final int safetyFlooring;
 
   DashboardMetricsResult({
     required this.budgetCycle,
@@ -329,5 +333,7 @@ class DashboardMetricsResult {
     required this.secondMetric,
     required this.healthScenario,
     required this.limitState,
+    required this.safetyCeiling,
+    required this.safetyFlooring,
   });
 }

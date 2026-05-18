@@ -35,6 +35,9 @@ class DashboardMetricCubit extends Cubit<DashboardMetricState> {
       _eventBus.on<TransactionChangesEvent>().listen(
         (_) => fetchDashboardMetrics(),
       ),
+      _eventBus.on<BudgetLimitsChangesEvent>().listen(
+        (_) => fetchDashboardMetrics(),
+      ),
       _eventBus.on<SessionExpiredEvent>().listen(
         (_) {
           // Reset state when session expires to prevent retry loops

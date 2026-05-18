@@ -29,4 +29,29 @@ class ProfileRemoteDataSource {
       throw UnexpectedException('Ada kendala pas simpan profil keuangan. Coba lagi ya.');
     }
   }
+
+  Future<void> updateBudgetLimits({
+    required int safetyCeiling,
+    required int safetyFlooring,
+  }) async {
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, simulating budget limits update success');
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.patch('/settings/dailyLimit', data: {
+        'flooringLimit': safetyFlooring,
+        'ceilingLimit': safetyCeiling,
+        'safetyFlooring': safetyFlooring,
+        'safetyCeiling': safetyCeiling,
+      });
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'updateBudgetLimits');
+    } catch (e) {
+      _log.severe('Unexpected updateBudgetLimits error', e);
+      throw UnexpectedException('Ada kendala pas simpan perubahan budget harian. Coba lagi ya.');
+    }
+  }
 }

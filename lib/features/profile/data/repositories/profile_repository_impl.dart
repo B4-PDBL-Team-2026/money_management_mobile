@@ -16,4 +16,15 @@ class ProfileRepositoryImpl implements ProfileRepository {
       FinancialProfileModel.fromEntity(payload),
     );
   }
+
+  @override
+  Future<void> updateBudgetLimits({
+    required int safetyCeiling,
+    required int safetyFlooring,
+  }) async {
+    await remoteDataSource.updateBudgetLimits(
+      safetyCeiling: safetyCeiling,
+      safetyFlooring: safetyFlooring,
+    );
+  }
 }

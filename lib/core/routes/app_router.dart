@@ -24,6 +24,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/pages/ot
 import 'package:money_management_mobile/features/notification/presentation/pages/notification_center_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/update_budget_limits_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_occurence_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_template_management_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
@@ -213,6 +214,9 @@ class AppRouter {
                           create: (_) => getIt<ResetPasswordCubit>(),
                         ),
                         BlocProvider(create: (_) => getIt<VerifyEmailCubit>()),
+                        BlocProvider(
+                          create: (_) => getIt<UpdateBudgetLimitsCubit>(),
+                        ),
                       ],
                       child: const OtherPage(),
                     ),
