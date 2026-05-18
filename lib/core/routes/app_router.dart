@@ -31,10 +31,12 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/voice_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_detail_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_form_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
@@ -68,10 +70,12 @@ class AppRouter {
   static const String deleteAccount = '/other/delete-account';
 
   static const String addTransaction = '/transaction/add';
-  static const String addBatchTransaction = '/transaction/batch/add';
-  static const String voiceTransaction = '/transaction/voice';
   static const String transactionDetailBase = '/transaction';
   static const String transactionDetail = '/transaction/:id';
+  static const String addBatchTransaction = '/transaction/batch/add';
+  static const String batchTransactionDetailBase = '/transaction/batch';
+  static const String batchTransactionDetail = '/transaction/batch/:id';
+  static const String voiceTransaction = '/transaction/voice';
 
   static final SessionCubit _sessionCubit = getIt<SessionCubit>();
 
@@ -260,6 +264,24 @@ class AppRouter {
               create: (_) => getIt<VoiceTransactionCubit>(),
               child: const VoiceTransactionPage(),
             ),
+          ),
+          GoRoute(
+            path: batchTransactionDetail,
+            builder: (context, state) {
+              final idParam = state.pathParameters['id'];
+              final id = int.tryParse(idParam ?? '');
+
+              if (id == null) {
+                return const Scaffold(
+                  body: Center(child: Text('ID batch transaksi tidak valid.')),
+                );
+              }
+
+              return BlocProvider<BatchTransactionDetailCubit>(
+                create: (_) => getIt<BatchTransactionDetailCubit>(),
+                child: BatchTransactionDetailPage(batchId: id),
+              );
+            },
           ),
           GoRoute(
             path: transactionDetail,

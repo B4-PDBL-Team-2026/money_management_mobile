@@ -101,6 +101,8 @@ import 'features/transaction/domain/repositories/transaction_repository.dart'
     as _i463;
 import 'features/transaction/presentation/cubit/add_transaction_cubit.dart'
     as _i1024;
+import 'features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart'
+    as _i584;
 import 'features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart'
     as _i13;
 import 'features/transaction/presentation/cubit/transaction_detail_cubit.dart'
@@ -280,6 +282,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i410.SessionCubit>(),
         gh<_i1017.EventBus>(),
       ),
+    );
+    gh.factory<_i584.BatchTransactionDetailCubit>(
+      () =>
+          _i584.BatchTransactionDetailCubit(gh<_i463.TransactionRepository>()),
     );
     gh.factory<_i1024.AddTransactionCubit>(
       () => _i1024.AddTransactionCubit(

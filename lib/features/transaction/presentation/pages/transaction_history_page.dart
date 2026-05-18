@@ -8,6 +8,7 @@ import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_dialog_content.dart';
@@ -327,7 +328,13 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
             ],
             GestureDetector(
               onTap: () {
-                context.push('${AppRouter.transactionDetailBase}/${item.id}');
+                if (item.feedType == TransactionHistoryFeedType.batch) {
+                  context.push(
+                    '${AppRouter.batchTransactionDetailBase}/${item.id}',
+                  );
+                } else {
+                  context.push('${AppRouter.transactionDetailBase}/${item.id}');
+                }
               },
               child: TransactionHistoryItem(transaction: item),
             ),

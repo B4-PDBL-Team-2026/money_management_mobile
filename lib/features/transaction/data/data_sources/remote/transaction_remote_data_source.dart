@@ -6,6 +6,7 @@ import 'package:money_management_mobile/core/data/models/paginated_model.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/transaction/data/models/add_batch_transaction_model.dart';
+import 'package:money_management_mobile/features/transaction/data/models/batch_transaction_detail_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_detail_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_history_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
@@ -303,6 +304,62 @@ class TransactionRemoteDataSource {
       _log.severe('Unexpected error while fetching transaction', e);
       throw UnexpectedException(
         'Ada kendala pas ambil data transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
+  Future<BatchTransactionDetailModel> getBatchTransactionDetail({
+    required int id,
+  }) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return BatchTransactionDetailModel(
+        id: id,
+        name: 'Mock Batch Transaksi',
+        note: null,
+        totalAmount: 50000,
+        transactionAt: DateTime.now(),
+        items: [
+          BatchTransactionDetailItemModel(
+            id: 1,
+            name: 'Mock Item Batch',
+            amount: 50000,
+            type: TransactionType.income,
+            source: 'manual',
+            note: null,
+            transactionAt: DateTime.now(),
+            categoryId: 11,
+            categoryName: 'Gaji',
+            categoryIcon: 'wallet',
+          ),
+        ],
+      );
+    }
+
+    try {
+      final response = await dio.get('/transaction/batch/$id');
+      final responseData = response.data as Map<String, dynamic>?;
+      final data = responseData?['data'] as Map<String, dynamic>?;
+
+      if (data == null) {
+        throw UnexpectedException('Detail batch transaksi belum ketemu.');
+      }
+
+      return BatchTransactionDetailModel.fromJson(data);
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Get Batch Transaction Detail',
+      );
+    } catch (e) {
+      if (e is UnexpectedException) rethrow;
+      _log.severe(
+        'Unexpected error while fetching batch transaction detail',
+        e,
+      );
+      throw UnexpectedException(
+        'Ada kendala pas ambil detail batch transaksi. Coba lagi ya.',
       );
     }
   }

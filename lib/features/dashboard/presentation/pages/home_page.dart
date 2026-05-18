@@ -9,6 +9,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/d
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_budget_metrics.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_header.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_history_item.dart';
@@ -90,9 +91,16 @@ class _HomePageState extends State<HomePage> {
 
                           return GestureDetector(
                             onTap: () {
-                              context.push(
-                                '${AppRouter.transactionDetailBase}/${item.id}',
-                              );
+                              if (item.feedType ==
+                                  TransactionHistoryFeedType.batch) {
+                                context.push(
+                                  '${AppRouter.batchTransactionDetailBase}/${item.id}',
+                                );
+                              } else {
+                                context.push(
+                                  '${AppRouter.transactionDetailBase}/${item.id}',
+                                );
+                              }
                             },
                             child: TransactionHistoryItem(transaction: item),
                           );
