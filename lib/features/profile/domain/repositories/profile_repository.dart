@@ -2,4 +2,8 @@ import 'package:money_management_mobile/features/profile/domain/entities/financi
 
 abstract class ProfileRepository {
   Future<void> submitFinancialProfile(FinancialProfileEntity payload);
+  Future<void> updateBudgetLimits({
+    required int safetyCeiling,
+    required int safetyFlooring,
+  });
 }
