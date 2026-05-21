@@ -93,6 +93,8 @@ import 'features/profile/presentation/cubit/fixed_cost_template_cubit.dart'
     as _i324;
 import 'features/profile/presentation/cubit/submit_financial_profile_cubit.dart'
     as _i262;
+import 'features/profile/presentation/cubit/update_budget_limits_cubit.dart'
+    as _i827;
 import 'features/transaction/data/data_sources/remote/transaction_remote_data_source.dart'
     as _i1023;
 import 'features/transaction/data/repositories/transaction_repository_impl.dart'
@@ -268,6 +270,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i862.NotificationCenterRepository>(),
       ),
       dispose: (i) => i.dispose(),
+    );
+    gh.factory<_i827.UpdateBudgetLimitsCubit>(
+      () => _i827.UpdateBudgetLimitsCubit(
+        gh<_i626.ProfileRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
     );
     gh.factory<_i250.LoginCubit>(
       () => _i250.LoginCubit(

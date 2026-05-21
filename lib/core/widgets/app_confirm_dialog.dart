@@ -51,21 +51,24 @@ class AppConfirmDialog extends StatelessWidget {
       content: Text(content, style: Theme.of(context).textTheme.bodyMedium),
       actionsAlignment: MainAxisAlignment.end,
       actions: [
-        SizedBox(
-          width: 100,
-          child: AppButton(
-            onPressed: onCancel ?? () => Navigator.of(context).pop(false),
-            text: cancelText,
-            variant: AppButtonVariant.outlined,
-          ),
-        ),
-        SizedBox(
-          width: 100,
-          child: AppButton(
-            text: confirmText,
-            onPressed: onConfirm ?? () => Navigator.of(context).pop(true),
-            type: confirmButtonType,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: AppButton(
+                onPressed: onCancel ?? () => Navigator.of(context).pop(false),
+                text: cancelText,
+                variant: AppButtonVariant.outlined,
+              ),
+            ),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: AppButton(
+                text: confirmText,
+                onPressed: onConfirm ?? () => Navigator.of(context).pop(true),
+                type: confirmButtonType,
+              ),
+            ),
+          ],
         ),
       ],
     );
