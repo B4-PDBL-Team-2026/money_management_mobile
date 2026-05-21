@@ -1,10 +1,6 @@
-import 'package:dio/dio.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:money_management_mobile/core/constants/app_env.dart';
-import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
@@ -24,7 +20,6 @@ import 'package:money_management_mobile/features/dashboard/presentation/widgets/
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/update_budget_limits_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/update_budget_limits_state.dart';
-import 'package:money_management_mobile/injection_container.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OtherPage extends StatefulWidget {
@@ -174,7 +169,7 @@ class _OtherPageState extends State<OtherPage> {
       if (!context.mounted) {
         return;
       }
-      
+
       await context.read<CategoryCubit>().clearCategories();
     } catch (_) {
       if (!context.mounted) {
@@ -203,7 +198,7 @@ class _OtherPageState extends State<OtherPage> {
   Widget build(BuildContext context) {
     // Ambil data limit & hari ini dari DashboardMetricCubit
     final dashboardState = context.watch<DashboardMetricCubit>().state;
-    
+
     int safetyCeiling = 100000;
     int safetyFlooring = 30000;
 
@@ -213,8 +208,10 @@ class _OtherPageState extends State<OtherPage> {
     }
 
     // Format nilai Min & Max agar presisi dengan "RP X" di Mockup Figma
-    final formattedMin = 'RP ${CurrencyFormatter.format(safetyFlooring).replaceAll('Rp', '').trim()}';
-    final formattedMax = 'RP ${CurrencyFormatter.format(safetyCeiling).replaceAll('Rp', '').trim()}';
+    final formattedMin =
+        'RP ${CurrencyFormatter.format(safetyFlooring).replaceAll('Rp', '').trim()}';
+    final formattedMax =
+        'RP ${CurrencyFormatter.format(safetyCeiling).replaceAll('Rp', '').trim()}';
 
     return Scaffold(
       backgroundColor: AppColors.gohan,
@@ -262,10 +259,16 @@ class _OtherPageState extends State<OtherPage> {
                               Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(AppSizes.spacing2),
+                                    padding: const EdgeInsets.all(
+                                      AppSizes.spacing2,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        AppSizes.radiusMd,
+                                      ),
                                     ),
                                     child: const Icon(
                                       Icons.edit_outlined,
@@ -276,19 +279,21 @@ class _OtherPageState extends State<OtherPage> {
                                   const SizedBox(width: AppSizes.spacing3),
                                   Text(
                                     'Edit Batas Budget',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.bulma,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.bulma,
+                                        ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: AppSizes.spacing1),
                               Text(
                                 'Sesuaikan alokasi budget harian sesuai kebutuhan Anda',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: AppColors.trunks,
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: AppColors.trunks),
                               ),
                               const SizedBox(height: AppSizes.spacing5),
 
@@ -298,7 +303,9 @@ class _OtherPageState extends State<OtherPage> {
                                   Container(
                                     padding: const EdgeInsets.all(4),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.1),
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: const Icon(
@@ -310,11 +317,14 @@ class _OtherPageState extends State<OtherPage> {
                                   const SizedBox(width: AppSizes.spacing2),
                                   Text(
                                     'Maksimal Alokasi Budget Harian',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.bulma,
-                                      fontSize: 12,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.bulma,
+                                          fontSize: 12,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -341,7 +351,9 @@ class _OtherPageState extends State<OtherPage> {
                                   Container(
                                     padding: const EdgeInsets.all(4),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.1),
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: const Icon(
@@ -353,11 +365,14 @@ class _OtherPageState extends State<OtherPage> {
                                   const SizedBox(width: AppSizes.spacing2),
                                   Text(
                                     'Minimal Alokasi Budget Harian',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.bulma,
-                                      fontSize: 12,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.bulma,
+                                          fontSize: 12,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -386,20 +401,28 @@ class _OtherPageState extends State<OtherPage> {
                               const SizedBox(height: AppSizes.spacing6),
 
                               // Button Row (Mengatasi Bug Overflow Menggunakan Outlined Variant & overflow: true)
-                              BlocConsumer<UpdateBudgetLimitsCubit, UpdateBudgetLimitsState>(
+                              BlocConsumer<
+                                UpdateBudgetLimitsCubit,
+                                UpdateBudgetLimitsState
+                              >(
                                 listener: (context, state) {
                                   if (state is UpdateBudgetLimitsSuccess) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text('Batas budget harian berhasil diperbarui.'),
+                                        content: Text(
+                                          'Batas budget harian berhasil diperbarui.',
+                                        ),
                                         backgroundColor: AppColors.success100,
                                       ),
                                     );
                                     setState(() {
                                       _isEditMode = false;
                                     });
-                                    context.read<UpdateBudgetLimitsCubit>().reset();
-                                  } else if (state is UpdateBudgetLimitsFailure) {
+                                    context
+                                        .read<UpdateBudgetLimitsCubit>()
+                                        .reset();
+                                  } else if (state
+                                      is UpdateBudgetLimitsFailure) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(state.message),
@@ -409,7 +432,8 @@ class _OtherPageState extends State<OtherPage> {
                                   }
                                 },
                                 builder: (context, state) {
-                                  final isLoading = state is UpdateBudgetLimitsLoading;
+                                  final isLoading =
+                                      state is UpdateBudgetLimitsLoading;
                                   return Row(
                                     children: [
                                       Expanded(
@@ -431,16 +455,26 @@ class _OtherPageState extends State<OtherPage> {
                                           text: 'Simpan',
                                           isLoading: isLoading,
                                           onPressed: () {
-                                            if (_formKey.currentState?.validate() ?? false) {
-                                              final parsedCeiling = CurrencyFormatter.parse(
-                                                _ceilingController.text,
-                                              );
-                                              final parsedFlooring = CurrencyFormatter.parse(
-                                                _flooringController.text,
-                                              );
-                                              context.read<UpdateBudgetLimitsCubit>().updateLimits(
-                                                    safetyCeiling: parsedCeiling,
-                                                    safetyFlooring: parsedFlooring,
+                                            if (_formKey.currentState
+                                                    ?.validate() ??
+                                                false) {
+                                              final parsedCeiling =
+                                                  CurrencyFormatter.parse(
+                                                    _ceilingController.text,
+                                                  );
+                                              final parsedFlooring =
+                                                  CurrencyFormatter.parse(
+                                                    _flooringController.text,
+                                                  );
+                                              context
+                                                  .read<
+                                                    UpdateBudgetLimitsCubit
+                                                  >()
+                                                  .updateLimits(
+                                                    safetyCeiling:
+                                                        parsedCeiling,
+                                                    safetyFlooring:
+                                                        parsedFlooring,
                                                   );
                                             }
                                           },
@@ -466,10 +500,16 @@ class _OtherPageState extends State<OtherPage> {
                             Row(
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.all(AppSizes.spacing2),
+                                  padding: const EdgeInsets.all(
+                                    AppSizes.spacing2,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      AppSizes.radiusMd,
+                                    ),
                                   ),
                                   child: const Icon(
                                     Icons.track_changes_outlined,
@@ -480,32 +520,46 @@ class _OtherPageState extends State<OtherPage> {
                                 const SizedBox(width: AppSizes.spacing3),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Batas Budget Harian',
-                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.bulma,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.bulma,
+                                            ),
                                       ),
                                       const SizedBox(height: 1),
                                       GestureDetector(
                                         onTap: () {
                                           setState(() {
                                             _isEditMode = true;
-                                            _ceilingController.text = CurrencyFormatter.format(safetyCeiling);
-                                            _flooringController.text = CurrencyFormatter.format(safetyFlooring);
+                                            _ceilingController.text =
+                                                CurrencyFormatter.format(
+                                                  safetyCeiling,
+                                                );
+                                            _flooringController.text =
+                                                CurrencyFormatter.format(
+                                                  safetyFlooring,
+                                                );
                                           });
                                         },
                                         child: Text(
                                           'Atur alokasi budget harian Anda',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: AppColors.primary,
-                                            decoration: TextDecoration.underline,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 11,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: AppColors.primary,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 11,
+                                              ),
                                         ),
                                       ),
                                     ],
@@ -520,70 +574,41 @@ class _OtherPageState extends State<OtherPage> {
                               padding: const EdgeInsets.all(AppSizes.spacing4),
                               decoration: BoxDecoration(
                                 color: AppColors.beerus.withValues(alpha: 0.25),
-                                borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-                                border: Border.all(color: AppColors.beerus, width: 1),
+                                borderRadius: BorderRadius.circular(
+                                  AppSizes.radiusLg,
+                                ),
+                                border: Border.all(
+                                  color: AppColors.beerus,
+                                  width: 1,
+                                ),
                               ),
                               child: Column(
                                 children: [
                                   // Row of Stacked Allocations (Left) and Edit Button (Right)
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       // Stacked Allocations
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            // 1. Minimal Alokasi (Sesuai Desain Gambar 2)
+                                            // 1. Maksimal Alokasi
                                             Row(
                                               children: [
                                                 Container(
-                                                  padding: const EdgeInsets.all(3),
+                                                  padding: const EdgeInsets.all(
+                                                    3,
+                                                  ),
                                                   decoration: BoxDecoration(
-                                                    color: AppColors.primary.withValues(alpha: 0.1),
-                                                    borderRadius: BorderRadius.circular(4),
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.arrow_downward_rounded,
-                                                    color: AppColors.primary,
-                                                    size: 11,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: AppSizes.spacing2),
-                                                Expanded(
-                                                  child: Text(
-                                                    'Minimal Alokasi Budget Harian',
-                                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                      color: AppColors.trunks,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 22),
-                                              child: Text(
-                                                formattedMin,
-                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.primary,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: AppSizes.spacing3),
-
-                                            // 2. Maksimal Alokasi (Sesuai Desain Gambar 2)
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  padding: const EdgeInsets.all(3),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.primary.withValues(alpha: 0.1),
-                                                    borderRadius: BorderRadius.circular(4),
+                                                    color: AppColors.primary
+                                                        .withValues(alpha: 0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          4,
+                                                        ),
                                                   ),
                                                   child: const Icon(
                                                     Icons.arrow_upward_rounded,
@@ -591,29 +616,106 @@ class _OtherPageState extends State<OtherPage> {
                                                     size: 11,
                                                   ),
                                                 ),
-                                                const SizedBox(width: AppSizes.spacing2),
+                                                const SizedBox(
+                                                  width: AppSizes.spacing2,
+                                                ),
                                                 Expanded(
                                                   child: Text(
                                                     'Maksimal Alokasi Budget Harian',
-                                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                      color: AppColors.trunks,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 10,
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.copyWith(
+                                                          color:
+                                                              AppColors.trunks,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 10,
+                                                        ),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                             const SizedBox(height: 2),
                                             Padding(
-                                              padding: const EdgeInsets.only(left: 22),
+                                              padding: const EdgeInsets.only(
+                                                left: 22,
+                                              ),
                                               child: Text(
                                                 formattedMax,
-                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.bulma,
-                                                  fontSize: 15,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors.primary,
+                                                      fontSize: 15,
+                                                    ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: AppSizes.spacing3,
+                                            ),
+
+                                            // 2. Minimal Alokasi
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  padding: const EdgeInsets.all(
+                                                    3,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.primary
+                                                        .withValues(alpha: 0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          4,
+                                                        ),
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons
+                                                        .arrow_downward_rounded,
+                                                    color: AppColors.primary,
+                                                    size: 11,
+                                                  ),
                                                 ),
+                                                const SizedBox(
+                                                  width: AppSizes.spacing2,
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    'Minimal Alokasi Budget Harian',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.copyWith(
+                                                          color:
+                                                              AppColors.trunks,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 10,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 22,
+                                              ),
+                                              child: Text(
+                                                formattedMin,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors.primary,
+                                                      fontSize: 15,
+                                                    ),
                                               ),
                                             ),
                                           ],
@@ -626,15 +728,28 @@ class _OtherPageState extends State<OtherPage> {
                                         onTap: () {
                                           setState(() {
                                             _isEditMode = true;
-                                            _ceilingController.text = CurrencyFormatter.format(safetyCeiling);
-                                            _flooringController.text = CurrencyFormatter.format(safetyFlooring);
+                                            _ceilingController.text =
+                                                CurrencyFormatter.format(
+                                                  safetyCeiling,
+                                                );
+                                            _flooringController.text =
+                                                CurrencyFormatter.format(
+                                                  safetyFlooring,
+                                                );
                                           });
                                         },
                                         child: Container(
-                                          padding: const EdgeInsets.all(AppSizes.spacing3),
+                                          padding: const EdgeInsets.all(
+                                            AppSizes.spacing3,
+                                          ),
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                                            border: Border.all(color: AppColors.primary, width: 1.5),
+                                            borderRadius: BorderRadius.circular(
+                                              AppSizes.radiusSm,
+                                            ),
+                                            border: Border.all(
+                                              color: AppColors.primary,
+                                              width: 1.5,
+                                            ),
                                           ),
                                           child: const Icon(
                                             Icons.arrow_forward_ios_rounded,
