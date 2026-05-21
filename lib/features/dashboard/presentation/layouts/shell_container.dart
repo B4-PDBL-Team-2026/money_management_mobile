@@ -150,10 +150,22 @@ class _ShellContainerState extends State<ShellContainer>
                 _FabMenuItem(
                   animation: _fadeScaleAnim,
                   delay: 0.0,
-                  label: 'Tambah Dalam Batch',
+                  label: 'Tambah dalam Batch',
                   icon: PhosphorIconsRegular.stackPlus,
                   onTap: _onNavigate(
                     () => context.push(AppRouter.addBatchTransaction),
+                  ),
+                  disabled: false,
+                ),
+                const SizedBox(height: 12),
+
+                _FabMenuItem(
+                  animation: _fadeScaleAnim,
+                  delay: 0.0,
+                  label: 'Scan Struk',
+                  icon: PhosphorIconsRegular.scan,
+                  onTap: _onNavigate(
+                    () => context.push(AppRouter.scanReceipt),
                   ),
                   disabled: false,
                 ),
@@ -167,7 +179,7 @@ class _ShellContainerState extends State<ShellContainer>
                   onTap: _onNavigate(
                     () => context.push(AppRouter.addTransaction),
                   ),
-                  disabled: false,
+                  disabled: false ,
                 ),
                 const SizedBox(height: 12),
 

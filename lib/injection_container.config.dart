@@ -99,12 +99,20 @@ import 'features/transaction/data/repositories/transaction_repository_impl.dart'
     as _i16;
 import 'features/transaction/domain/repositories/transaction_repository.dart'
     as _i463;
+import 'features/transaction/domain/services/image_picker_service.dart'
+    as _i612;
+import 'features/transaction/domain/usecases/parse_receipt_transaction_usecase.dart'
+    as _i404;
+import 'features/transaction/infrastructure/services/image_picker_service_impl.dart'
+    as _i627;
 import 'features/transaction/presentation/cubit/add_transaction_cubit.dart'
     as _i1024;
 import 'features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart'
     as _i584;
 import 'features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart'
     as _i13;
+import 'features/transaction/presentation/cubit/receipt_scanner_cubit.dart'
+    as _i528;
 import 'features/transaction/presentation/cubit/transaction_detail_cubit.dart'
     as _i555;
 import 'features/transaction/presentation/cubit/transaction_history_cubit.dart'
@@ -136,6 +144,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i844.CategoryLocalDataSource>(
       () => _i844.CategoryLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i612.ImagePickerService>(
+      () => _i627.ImagePickerServiceImpl(),
     );
     gh.lazySingleton<_i715.FinancialProfileDraftCubit>(
       () => _i715.FinancialProfileDraftCubit(
@@ -287,6 +298,11 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i584.BatchTransactionDetailCubit(gh<_i463.TransactionRepository>()),
     );
+    gh.factory<_i404.ParseReceiptTransactionUseCase>(
+      () => _i404.ParseReceiptTransactionUseCase(
+        gh<_i463.TransactionRepository>(),
+      ),
+    );
     gh.factory<_i1024.AddTransactionCubit>(
       () => _i1024.AddTransactionCubit(
         gh<_i463.TransactionRepository>(),
@@ -323,6 +339,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i557.DashboardRepository>(),
         gh<_i1017.EventBus>(),
       ),
+    );
+    gh.factory<_i528.ReceiptScannerCubit>(
+      () =>
+          _i528.ReceiptScannerCubit(gh<_i404.ParseReceiptTransactionUseCase>()),
     );
     gh.lazySingleton<_i478.CategoryCubit>(
       () => _i478.CategoryCubit(

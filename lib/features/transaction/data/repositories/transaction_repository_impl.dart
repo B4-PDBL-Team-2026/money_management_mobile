@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/data_sources/remote/transaction_remote_data_source.dart';
@@ -91,5 +93,22 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }) async {
     final model = await remoteDataSource.getBatchTransactionDetail(id: id);
     return model.toEntity();
+  }
+
+  @override
+  Future<List<TransactionEntity>> parseReceiptImage(File image) async {
+    final models = await remoteDataSource.parseReceiptImage(image);
+    return models
+        .map(
+          (m) => TransactionEntity(
+            name: m.name,
+            amount: m.amount,
+            type: m.type,
+            categoryId: m.categoryId,
+            transactionAt: DateTime.now(), // default to today
+            note: m.note,
+          ),
+        )
+        .toList();
   }
 }

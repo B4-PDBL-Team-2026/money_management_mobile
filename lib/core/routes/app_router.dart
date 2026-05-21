@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,6 +42,9 @@ import 'package:money_management_mobile/features/transaction/presentation/pages/
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/voice_transaction_page.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/open_camera_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_loading_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/outer_shell.dart';
 
@@ -74,6 +78,8 @@ class AppRouter {
   static const String transactionDetail = '/transaction/:id';
   static const String addBatchTransaction = '/transaction/batch/add';
   static const String batchTransactionDetailBase = '/transaction/batch';
+  static const String scanReceipt = '/transaction/scan';
+  static const String scanLoading = '/transaction/scan-loading';
   static const String batchTransactionDetail = '/transaction/batch/:id';
   static const String voiceTransaction = '/transaction/voice';
 
@@ -253,10 +259,24 @@ class AppRouter {
           ),
           GoRoute(
             path: addBatchTransaction,
-            builder: (context, state) => BlocProvider(
-              create: (context) => getIt<BatchTransactionSubmitCubit>(),
-              child: const BatchTransactionFormPage(),
-            ),
+            builder: (context, state) {
+              final extra = state.extra as List<TransactionEntity>?;
+              return BlocProvider(
+                create: (context) => getIt<BatchTransactionSubmitCubit>(),
+                child: BatchTransactionFormPage(initialItems: extra),
+              );
+            },
+          ),
+          GoRoute(
+            path: scanReceipt,
+            builder: (context, state) => const OpenCameraPage(),
+          ),
+          GoRoute(
+            path: scanLoading,
+            builder: (context, state) {
+              final imageFile = state.extra as File;
+              return ScanLoadingPage(imageFile: imageFile);
+            },
           ),
           GoRoute(
             path: voiceTransaction,

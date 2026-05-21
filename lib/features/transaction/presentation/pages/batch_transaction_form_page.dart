@@ -18,7 +18,9 @@ import 'package:money_management_mobile/features/transaction/presentation/widget
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class BatchTransactionFormPage extends StatefulWidget {
-  const BatchTransactionFormPage({super.key});
+  final List<TransactionEntity>? initialItems;
+
+  const BatchTransactionFormPage({super.key, this.initialItems});
 
   @override
   State<BatchTransactionFormPage> createState() =>
@@ -48,6 +50,22 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
     super.initState();
 
     _dateController.text = _formatDate(DateTime.now());
+    
+    if (widget.initialItems != null) {
+      for (var i = 0; i < widget.initialItems!.length; i++) {
+        final item = widget.initialItems![i];
+        final id = DateTime.now().microsecondsSinceEpoch + i;
+        _transactionItems[id] = TransactionEntity(
+          id: id,
+          name: item.name,
+          amount: item.amount,
+          type: item.type,
+          categoryId: item.categoryId,
+          transactionAt: item.transactionAt,
+          note: item.note,
+        );
+      }
+    }
   }
 
   @override

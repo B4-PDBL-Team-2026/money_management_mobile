@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
@@ -7,6 +8,7 @@ import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/transaction/data/models/add_batch_transaction_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/batch_transaction_detail_model.dart';
+import 'package:money_management_mobile/features/transaction/data/models/batch_transaction_item_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_detail_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_history_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
@@ -362,5 +364,28 @@ class TransactionRemoteDataSource {
         'Ada kendala pas ambil detail batch transaksi. Coba lagi ya.',
       );
     }
+  }
+
+  Future<List<BatchTransactionItemModel>> parseReceiptImage(File image) async {
+    // Simulasi memproses ke backend/LLM endpoint
+    await Future.delayed(const Duration(seconds: 3));
+    
+    // Dummy response dari receipt scanner LLM
+    return [
+      const BatchTransactionItemModel(
+        name: 'Makan Siang Nasi Padang',
+        amount: 35000,
+        categoryId: 1, // Food & Beverage id simulation
+        type: TransactionType.expense,
+        note: 'Struk RM Sederhana',
+      ),
+      const BatchTransactionItemModel(
+        name: 'Es Teh Manis',
+        amount: 5000,
+        categoryId: 1,
+        type: TransactionType.expense,
+        note: 'Struk RM Sederhana',
+      ),
+    ];
   }
 }

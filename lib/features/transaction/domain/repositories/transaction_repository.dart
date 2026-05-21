@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/batch_transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
@@ -29,4 +31,5 @@ abstract class TransactionRepository {
   Future<BatchTransactionDetailEntity> getBatchTransactionDetail({
     required int id,
   });
+  Future<List<TransactionEntity>> parseReceiptImage(File image);
 }
