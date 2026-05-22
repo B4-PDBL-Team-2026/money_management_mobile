@@ -26,6 +26,7 @@ abstract class TransactionRepository {
     String? note,
   });
   Future<void> deleteTransaction({required int id});
+  Future<void> deleteBatchTransaction({required int id});
   Future<PaginatedEntity<TransactionHistoryEntity>> getTransactions({
     int? page,
     String? search,

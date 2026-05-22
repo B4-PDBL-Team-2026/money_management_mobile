@@ -196,6 +196,24 @@ class TransactionRemoteDataSource {
     }
   }
 
+  Future<void> deleteBatchTransaction({required int id}) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.delete('/transaction/batch/$id');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, ' Delete Batch Transaction');
+    } catch (e) {
+      _log.severe('Unexpected error while deleting batch transaction', e);
+      throw UnexpectedException(
+        'Ada kendala pas hapus batch transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
   Future<PaginatedModel<TransactionHistoryModel>> getTransaction({
     int? page,
     String? search,

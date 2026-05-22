@@ -69,12 +69,18 @@ class _BatchTransactionDetailPageState
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        titleSpacing: AppSizes.spacing6,
+        leadingWidth: 72,
         title: const Text(
           'Detail Batch Transaksi',
           style: TextStyle(color: AppColors.bulma),
         ),
         leading: Padding(
-          padding: const EdgeInsets.all(AppSizes.spacing2),
+          padding: const EdgeInsets.only(
+            left: AppSizes.spacing6,
+            top: AppSizes.spacing2,
+            bottom: AppSizes.spacing2,
+          ),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: AppColors.primary,
@@ -91,14 +97,18 @@ class _BatchTransactionDetailPageState
             builder: (context, state) {
               if (state is BatchTransactionDetailSuccess) {
                 return Padding(
-                  padding: const EdgeInsets.all(AppSizes.spacing2),
+                  padding: const EdgeInsets.only(
+                    right: AppSizes.spacing6,
+                    top: AppSizes.spacing2,
+                    bottom: AppSizes.spacing2,
+                  ),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: AppColors.lightPrimary,
                       borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.edit, color: AppColors.gohan),
+                      icon: const Icon(Icons.edit, color: AppColors.primary),
                       onPressed: () {
                         context.push(
                           AppRouter.addBatchTransaction,
@@ -120,42 +130,106 @@ class _BatchTransactionDetailPageState
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.spacing6),
-          child:
-              BlocBuilder<
-                BatchTransactionDetailCubit,
-                BatchTransactionDetailState
-              >(
-                builder: (context, state) {
-                  if (state is BatchTransactionDetailLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+          child: BlocConsumer<
+            BatchTransactionDetailCubit,
+            BatchTransactionDetailState
+          >(
+            listener: (context, state) {
+              if (state is BatchTransactionDetailDeleted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: AppColors.primary,
+                  ),
+                );
+                _goBack();
+                return;
+              }
 
-                  if (state is BatchTransactionDetailError) {
-                    return _ErrorState(
-                      message: state.message,
-                      onRetry: () => context
-                          .read<BatchTransactionDetailCubit>()
-                          .getBatchTransactionDetail(id: widget.batchId),
-                    );
-                  }
+              if (state is BatchTransactionDetailError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: AppColors.danger100,
+                  ),
+                );
+              }
+            },
+            builder: (context, state) {
+              if (state is BatchTransactionDetailLoading || state is BatchTransactionDetailDeleting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                  if (state is BatchTransactionDetailSuccess) {
-                    return _DetailContent(detail: state.detail);
-                  }
+              if (state is BatchTransactionDetailError) {
+                return _ErrorState(
+                  message: state.message,
+                  onRetry: () => context
+                      .read<BatchTransactionDetailCubit>()
+                      .getBatchTransactionDetail(id: widget.batchId),
+                );
+              }
 
-                  return const SizedBox.shrink();
-                },
-              ),
+              if (state is BatchTransactionDetailSuccess) {
+                return _DetailContent(
+                  detail: state.detail,
+                  onDeletePressed: () => _showDeleteConfirmationDialog(state.detail),
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showDeleteConfirmationDialog(
+    BatchTransactionDetailEntity detail,
+  ) async {
+    final isDeleteConfirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Hapus Batch Transaksi?'),
+          content: const Text(
+            'Seluruh transaksi dalam batch ini akan dihapus permanen. Lanjutkan?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text(
+                'Hapus',
+                style: TextStyle(color: AppColors.danger100),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (isDeleteConfirmed != true || !mounted) {
+      return;
+    }
+
+    await context.read<BatchTransactionDetailCubit>().deleteBatchTransaction(
+      id: detail.id,
     );
   }
 }
 
 class _DetailContent extends StatelessWidget {
   final BatchTransactionDetailEntity detail;
+  final VoidCallback onDeletePressed;
 
-  const _DetailContent({required this.detail});
+  const _DetailContent({
+    required this.detail,
+    required this.onDeletePressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -313,6 +387,13 @@ class _DetailContent extends StatelessWidget {
             },
           ),
 
+          const SizedBox(height: AppSizes.spacing6),
+          AppButton(
+            text: 'Hapus',
+            onPressed: onDeletePressed,
+            type: AppButtonType.danger,
+            variant: AppButtonVariant.ghost,
+          ),
           const SizedBox(height: AppSizes.spacing6),
         ],
       ),

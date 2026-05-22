@@ -17,3 +17,11 @@ class BatchTransactionDetailError extends BatchTransactionDetailState {
 
   BatchTransactionDetailError(this.message);
 }
+
+class BatchTransactionDetailDeleting extends BatchTransactionDetailState {}
+
+class BatchTransactionDetailDeleted extends BatchTransactionDetailState {
+  final String message;
+
+  BatchTransactionDetailDeleted(this.message);
+}

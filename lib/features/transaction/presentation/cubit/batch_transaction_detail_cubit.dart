@@ -61,4 +61,33 @@ class BatchTransactionDetailCubit extends Cubit<BatchTransactionDetailState> {
       }
     }
   }
+
+  Future<void> deleteBatchTransaction({required int id}) async {
+    _log.info('Delete batch transaction with id: $id');
+    emit(BatchTransactionDetailDeleting());
+
+    try {
+      await _transactionRepository.deleteBatchTransaction(id: id);
+      emit(BatchTransactionDetailDeleted('Batch transaksi berhasil dihapus.'));
+    } on ServerException catch (e, stackTrace) {
+      _log.severe('Server error deleting batch transaction', e, stackTrace);
+      emit(BatchTransactionDetailError(e.message));
+    } on NetworkException catch (e, stackTrace) {
+      _log.severe('Network error deleting batch transaction', e, stackTrace);
+      emit(BatchTransactionDetailError(e.message));
+    } on NotFoundException catch (e, stackTrace) {
+      _log.severe('Not found deleting batch transaction', e, stackTrace);
+      emit(BatchTransactionDetailError(e.message));
+    } on UnexpectedException catch (e, stackTrace) {
+      _log.severe('Unexpected error deleting batch transaction', e, stackTrace);
+      emit(BatchTransactionDetailError(e.message));
+    } catch (e, stackTrace) {
+      _log.severe('Unhandled error deleting batch transaction', e, stackTrace);
+      if (kDebugMode) {
+        emit(BatchTransactionDetailError('Ada kendala: ${e.toString()}'));
+      } else {
+        emit(BatchTransactionDetailError(AppMessages.unknownError));
+      }
+    }
+  }
 }

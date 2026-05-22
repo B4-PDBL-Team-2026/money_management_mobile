@@ -81,6 +81,11 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
+  Future<void> deleteBatchTransaction({required int id}) async {
+    await remoteDataSource.deleteBatchTransaction(id: id);
+  }
+
+  @override
   Future<PaginatedEntity<TransactionHistoryEntity>> getTransactions({
     int? page,
     String? search,
