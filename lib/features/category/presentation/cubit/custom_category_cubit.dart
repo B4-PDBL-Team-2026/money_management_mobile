@@ -1,8 +1,10 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/custom_category_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
@@ -10,8 +12,9 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 @injectable
 class CustomCategoryCubit extends Cubit<CustomCategoryState> {
   final CategoryRepository _categoryRepository;
+  final EventBus _eventBus;
 
-  CustomCategoryCubit(this._categoryRepository) : super(CustomCategoryInitial());
+  CustomCategoryCubit(this._categoryRepository, this._eventBus) : super(CustomCategoryInitial());
 
   Future<void> fetchCustomCategories() async {
     if (state is CustomCategoryLoading) return;
@@ -52,6 +55,7 @@ class CustomCategoryCubit extends Cubit<CustomCategoryState> {
         type: type,
       );
       await fetchCustomCategories();
+      _eventBus.fire(const RefreshCategoriesEvent());
       return true;
     } catch (e) {
       return false;
@@ -72,6 +76,7 @@ class CustomCategoryCubit extends Cubit<CustomCategoryState> {
         type: type,
       );
       await fetchCustomCategories();
+      _eventBus.fire(const RefreshCategoriesEvent());
       return true;
     } catch (e) {
       return false;
@@ -82,6 +87,7 @@ class CustomCategoryCubit extends Cubit<CustomCategoryState> {
     try {
       await _categoryRepository.deleteCustomCategory(categoryId);
       await fetchCustomCategories();
+      _eventBus.fire(const RefreshCategoriesEvent());
       return true;
     } catch (e) {
       return false;

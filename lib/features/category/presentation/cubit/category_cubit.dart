@@ -21,7 +21,7 @@ class CategoryCubit extends Cubit<CategoryState> {
     : super(CategoryInitial()) {
     _refreshSubscription = _eventBus
         .on<RefreshCategoriesEvent>()
-        .listen((_) => fetchCategories());
+        .listen((_) => refreshCategories());
     
     _sessionExpiredSubscription = _eventBus
         .on<SessionExpiredEvent>()
@@ -29,6 +29,11 @@ class CategoryCubit extends Cubit<CategoryState> {
           // Reset state when session expires to prevent retry loops
           emit(CategoryInitial());
         });
+  }
+
+  Future<void> refreshCategories() async {
+    await clearCategories();
+    await fetchCategories();
   }
 
   Future<void> fetchCategories() async {

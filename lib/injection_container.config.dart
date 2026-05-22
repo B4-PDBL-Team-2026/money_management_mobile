@@ -350,9 +350,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
-    gh.factory<_i504.CustomCategoryCubit>(
-      () => _i504.CustomCategoryCubit(gh<_i5.CategoryRepository>()),
-    );
     gh.lazySingleton<_i1023.DashboardMetricCubit>(
       () => _i1023.DashboardMetricCubit(
         gh<_i83.CalculateDashboardMetricsUsecase>(),
@@ -368,6 +365,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i478.CategoryCubit>(
       () => _i478.CategoryCubit(
+        gh<_i5.CategoryRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i504.CustomCategoryCubit>(
+      () => _i504.CustomCategoryCubit(
         gh<_i5.CategoryRepository>(),
         gh<_i1017.EventBus>(),
       ),
