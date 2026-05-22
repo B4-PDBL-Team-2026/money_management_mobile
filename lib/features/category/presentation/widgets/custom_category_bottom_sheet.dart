@@ -114,8 +114,8 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
 
               // Type Selector (Segmented Control)
               Text(
-                'Tipe Transaksi',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                'Tipe Kategori',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.trunks,
                   fontWeight: FontWeight.w600,
                 ),
@@ -179,7 +179,7 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
               // Icon Grid Picker
               Text(
                 'Pilih Ikon Kategori',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.trunks,
                   fontWeight: FontWeight.w600,
                 ),

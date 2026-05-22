@@ -16,6 +16,7 @@ import 'package:money_management_mobile/features/auth/presentation/pages/forgot_
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/custom_category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/pages/custom_category_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
@@ -249,7 +250,10 @@ class AppRouter {
                       ),
                       GoRoute(
                         path: 'custom-categories',
-                        builder: (context, state) => const CustomCategoryPage(),
+                        builder: (context, state) => BlocProvider(
+                          create: (context) => getIt<CustomCategoryCubit>(),
+                          child: const CustomCategoryPage(),
+                        ),
                       ),
                     ],
                   ),
