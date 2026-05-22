@@ -43,12 +43,18 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        titleSpacing: AppSizes.spacing6,
+        leadingWidth: 72,
         title: const Text(
           'Detail Transaksi',
           style: TextStyle(color: AppColors.bulma),
         ),
         leading: Padding(
-          padding: const EdgeInsets.all(AppSizes.spacing2),
+          padding: const EdgeInsets.only(
+            left: AppSizes.spacing6,
+            top: AppSizes.spacing2,
+            bottom: AppSizes.spacing2,
+          ),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: AppColors.primary,
@@ -60,6 +66,32 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             ),
           ),
         ),
+        actions: [
+          BlocBuilder<TransactionDetailCubit, TransactionDetailState>(
+            builder: (context, state) {
+              if (state is TransactionDetailSuccess) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    right: AppSizes.spacing6,
+                    top: AppSizes.spacing2,
+                    bottom: AppSizes.spacing2,
+                  ),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.lightPrimary,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.edit, color: AppColors.primary),
+                      onPressed: () => _openUpdateDialog(state.transactionDetail),
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -681,40 +713,11 @@ class _DetailContent extends StatelessWidget {
             multiline: true,
           ),
           const SizedBox(height: AppSizes.spacing6),
-          Text(
-            'Aksi',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppColors.bulma,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: AppSizes.spacing3),
-          Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  text: 'Hapus',
-                  onPressed: onDeletePressed,
-                  type: AppButtonType.danger,
-                  variant: AppButtonVariant.ghost,
-                ),
-              ),
-              const SizedBox(width: AppSizes.spacing3),
-              Expanded(
-                child: AppButton(
-                  text: 'Update',
-                  onPressed: onUpdatePressed,
-                  type: AppButtonType.secondary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSizes.spacing2),
-          Text(
-            'Perubahan data akan aktif setelah fitur update tersedia.',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+          AppButton(
+            text: 'Hapus',
+            onPressed: onDeletePressed,
+            type: AppButtonType.danger,
+            variant: AppButtonVariant.ghost,
           ),
         ],
       ),
