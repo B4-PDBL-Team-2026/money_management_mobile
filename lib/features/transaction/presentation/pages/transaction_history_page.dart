@@ -28,6 +28,7 @@ class TransactionHistoryPage extends StatefulWidget {
 class _TransactionHistoryState extends State<TransactionHistoryPage> {
   final _searchDebouncer = Debouncer(milliseconds: 500);
   final _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   late final CategoryEntity _defaultCategory;
 
@@ -53,6 +54,22 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     _year = null;
 
     _selectedCategory = _defaultCategory;
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    const delta = 200.0;
+
+    if (maxScroll - currentScroll <= delta) {
+      final state = context.read<TransactionHistoryCubit>().state;
+      if (state is TransactionHistorySuccess && !state.isLoadingMore) {
+        if (state.currentPage < state.totalPages) {
+          _loadMoreTransactionHistory(state.currentPage + 1);
+        }
+      }
+    }
   }
 
   void _getFreshTransactionHistory({
@@ -81,6 +98,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
     _searchDebouncer.dispose();
     super.dispose();
@@ -141,6 +159,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                         await Future.delayed(const Duration(milliseconds: 500));
                       },
                       child: CustomScrollView(
+                        controller: _scrollController,
                         physics: const AlwaysScrollableScrollPhysics(
                           parent: BouncingScrollPhysics(),
                         ),
@@ -372,17 +391,16 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                     ],
                   ],
                 ),
-                if (state.currentPage < state.totalPages) ...[
+                if (state.isLoadingMore) ...[
                   const SizedBox(height: AppSizes.spacing3),
-                  AppButton(
-                    isLoading: state.isLoadingMore,
-                    text: 'Muat Lebih Banyak',
-                    onPressed: () {
-                      if (!state.isLoadingMore) {
-                        _loadMoreTransactionHistory(state.currentPage + 1);
-                      }
-                    },
-                    variant: AppButtonVariant.ghost,
+                  const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
                   ),
                 ],
               ],
