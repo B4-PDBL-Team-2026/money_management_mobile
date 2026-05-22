@@ -16,6 +16,8 @@ import 'package:money_management_mobile/features/auth/presentation/pages/forgot_
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/custom_category_cubit.dart';
+import 'package:money_management_mobile/features/category/presentation/pages/custom_category_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
@@ -74,6 +76,7 @@ class AppRouter {
   static const String fixedCostsOccurence = '/fixed-costs';
   static const String fixedCostsManagement = '/fixed-costs/manage';
   static const String deleteAccount = '/other/delete-account';
+  static const String customCategories = '/other/custom-categories';
 
   static const String addTransaction = '/transaction/add';
   static const String transactionDetailBase = '/transaction';
@@ -243,6 +246,13 @@ class AppRouter {
                         builder: (context, state) => BlocProvider(
                           create: (context) => getIt<DeleteAccountCubit>(),
                           child: const DeleteAccountPage(),
+                        ),
+                      ),
+                      GoRoute(
+                        path: 'custom-categories',
+                        builder: (context, state) => BlocProvider(
+                          create: (context) => getIt<CustomCategoryCubit>(),
+                          child: const CustomCategoryPage(),
                         ),
                       ),
                     ],

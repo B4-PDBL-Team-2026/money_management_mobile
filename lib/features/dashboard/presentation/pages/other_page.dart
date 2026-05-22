@@ -841,7 +841,32 @@ class _OtherPageState extends State<OtherPage> {
                           ),
                         ),
                 ),
-                const SizedBox(height: AppSizes.spacing8),
+                const SizedBox(height: AppSizes.spacing6),
+
+                // SECTION 1.5: KATEGORI
+                Text(
+                  'KATEGORI',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: AppColors.trunks,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+                const SizedBox(height: AppSizes.spacing4),
+
+                OtherSettingsCard(
+                  children: [
+                    OtherSettingsTile(
+                      icon: PhosphorIconsRegular.tag,
+                      title: 'Kelola Kategori Kustom',
+                      subtitle: 'Tambah atau edit kategori sesuai kebutuhanmu',
+                      iconBackground: AppColors.lightPrimary,
+                      iconColor: AppColors.primary,
+                      onTap: () => context.go(AppRouter.customCategories),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSizes.spacing6),
 
                 // SECTION 2: AKUN
                 Text(
@@ -992,7 +1017,7 @@ class _OtherPageState extends State<OtherPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSizes.spacing8),
+                const SizedBox(height: AppSizes.spacing6),
               ],
             ),
           ),

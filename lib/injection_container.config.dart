@@ -40,6 +40,8 @@ import 'features/category/data/repositories/category_repository_impl.dart'
     as _i44;
 import 'features/category/domain/repositories/category_repository.dart' as _i5;
 import 'features/category/presentation/cubit/category_cubit.dart' as _i478;
+import 'features/category/presentation/cubit/custom_category_cubit.dart'
+    as _i504;
 import 'features/dashboard/data/data_sources/remote/dashboard_remote_data_source.dart'
     as _i553;
 import 'features/dashboard/data/repositories/dashboard_repository_impl.dart'
@@ -363,6 +365,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i478.CategoryCubit>(
       () => _i478.CategoryCubit(
+        gh<_i5.CategoryRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i504.CustomCategoryCubit>(
+      () => _i504.CustomCategoryCubit(
         gh<_i5.CategoryRepository>(),
         gh<_i1017.EventBus>(),
       ),
