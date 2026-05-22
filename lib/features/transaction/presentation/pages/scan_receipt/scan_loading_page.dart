@@ -7,6 +7,7 @@ import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/receipt_scanner_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/receipt_scanner_state.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_receipt_error_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 
 class ScanLoadingPage extends StatelessWidget {
@@ -25,13 +26,29 @@ class ScanLoadingPage extends StatelessWidget {
             if (state is ReceiptScannerSuccess) {
               context.pushReplacement(
                 AppRouter.addBatchTransaction,
-                extra: state.scannedItems,
+                extra: state.scannedBatch,
+              );
+            } else if (state is ReceiptScannerInvalidImage) {
+              context.pushReplacement(
+                AppRouter.scanReceiptError,
+                extra: (
+                  errorType: ScanReceiptErrorType.invalidImage,
+                  message: state.message,
+                ),
+              );
+            } else if (state is ReceiptScannerRateLimited) {
+              context.pushReplacement(
+                AppRouter.scanReceiptError,
+                extra: (
+                  errorType: ScanReceiptErrorType.rateLimited,
+                  message: state.message,
+                ),
               );
             } else if (state is ReceiptScannerError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
               );
-              context.pop(); 
+              context.pop();
             }
           },
           builder: (context, state) {

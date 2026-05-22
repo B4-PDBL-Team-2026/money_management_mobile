@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/data_sources/remote/transaction_remote_data_source.dart';
 import 'package:money_management_mobile/features/transaction/data/models/add_batch_transaction_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
@@ -96,19 +97,45 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<List<TransactionEntity>> parseReceiptImage(File image) async {
-    final models = await remoteDataSource.parseReceiptImage(image);
-    return models
+  Future<AddBatchTransactionEntity> parseReceiptImage(
+    File image, {
+    required List<CategoryEntity> categories,
+  }) async {
+    final result = await remoteDataSource.parseReceiptImage(
+      image,
+      categories: categories,
+    );
+
+    // Parse tanggal dari string Gemini (format: "YYYY-MM-DD" atau kosong)
+    DateTime transactionAt = DateTime.now();
+    final rawDate = result.transactionAt;
+    if (rawDate != null && rawDate.isNotEmpty) {
+      try {
+        transactionAt = DateTime.parse(rawDate);
+      } catch (_) {
+        // fallback ke hari ini jika format tidak dikenali
+      }
+    }
+
+    final items = result.items
         .map(
-          (m) => TransactionEntity(
-            name: m.name,
-            amount: m.amount,
-            type: m.type,
-            categoryId: m.categoryId,
-            transactionAt: DateTime.now(), // default to today
-            note: m.note,
+          (item) => TransactionEntity(
+            name: item.name,
+            amount: item.amount,
+            type: item.type,
+            categoryId: item.categoryId,
+            transactionAt: transactionAt,
+            note: item.note,
           ),
         )
         .toList();
+
+    return AddBatchTransactionEntity(
+      name: result.name ?? '',
+      transactionAt: transactionAt,
+      note: result.note?.trim().isEmpty ?? true ? null : result.note,
+      source: TransactionSource.receiptScan,
+      items: items,
+    );
   }
 }

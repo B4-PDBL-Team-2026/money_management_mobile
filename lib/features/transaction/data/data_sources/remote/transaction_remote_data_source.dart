@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -6,9 +7,12 @@ import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/data/models/paginated_model.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/error/receipt_exceptions.dart';
+import 'package:money_management_mobile/core/services/gemini_scanner_service.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/data/models/add_batch_transaction_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/batch_transaction_detail_model.dart';
-import 'package:money_management_mobile/features/transaction/data/models/batch_transaction_item_model.dart';
+import 'package:money_management_mobile/features/transaction/data/models/scan_receipt_result_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_detail_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_history_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
@@ -17,9 +21,10 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 @LazySingleton()
 class TransactionRemoteDataSource {
   final Dio dio;
+  final GeminiScannerService geminiScannerService;
   final _log = Logger('TransactionRemoteDataSource');
 
-  TransactionRemoteDataSource(this.dio);
+  TransactionRemoteDataSource(this.dio, this.geminiScannerService);
 
   Future<TransactionModel> addTransaction(
     TransactionModel transactionModel,
@@ -366,26 +371,96 @@ class TransactionRemoteDataSource {
     }
   }
 
-  Future<List<BatchTransactionItemModel>> parseReceiptImage(File image) async {
-    // Simulasi memproses ke backend/LLM endpoint
-    await Future.delayed(const Duration(seconds: 3));
-    
-    // Dummy response dari receipt scanner LLM
-    return [
-      const BatchTransactionItemModel(
-        name: 'Makan Siang Nasi Padang',
-        amount: 35000,
-        categoryId: 1, // Food & Beverage id simulation
-        type: TransactionType.expense,
-        note: 'Struk RM Sederhana',
-      ),
-      const BatchTransactionItemModel(
-        name: 'Es Teh Manis',
-        amount: 5000,
-        categoryId: 1,
-        type: TransactionType.expense,
-        note: 'Struk RM Sederhana',
-      ),
-    ];
+  /// Memproses gambar struk menggunakan Gemini AI.
+  ///
+  /// Parameter [categories] digunakan untuk meng-inject daftar kategori ke dalam
+  /// prompt Gemini agar model dapat memetakan item ke kategori yang tepat.
+  ///
+  /// Mengembalikan [ScanReceiptResultModel] lengkap dengan header batch
+  /// (name, transactionAt, note) dan items.
+  ///
+  /// Throws:
+  /// - [InvalidReceiptException] jika gambar bukan struk yang valid.
+  /// - [RateLimitException] jika semua API key Gemini sedang terkena limit.
+  /// - [UnexpectedException] untuk error tak terduga lainnya.
+  Future<ScanReceiptResultModel> parseReceiptImage(
+    File image, {
+    required List<CategoryEntity> categories,
+  }) async {
+    // Bangun daftar kategori untuk di-inject ke prompt
+    final categoryList = categories
+        .map((c) => '- id: ${c.id}, name: "${c.name}", type: "${c.type.value}"')
+        .join('\n');
+
+    final prompt = '''
+Kamu adalah asisten AI yang bertugas mengekstrak informasi dari gambar struk atau bukti transaksi ke dalam format JSON.
+
+ATURAN PENTING:
+1. Nilai pada field `amount` HARUS SELALU berupa angka positif. DILARANG KERAS menggunakan angka minus/negatif (-).
+2. Gunakan field `type` dengan nilai "income" (pemasukan) atau "expense" (pengeluaran) untuk membedakan sifat transaksi tersebut.
+3. Gunakan `categoryId` yang paling sesuai dari daftar yang diberikan.
+
+FORMAT JSON YANG DIHARAPKAN:
+{
+  "name": "",
+  "transactionAt": "",
+  "note": null,
+  "source": "batch",
+  "items": [
+    {
+      "name": "",
+      "amount": 0,
+      "categoryId": 0,
+      "type": "income | expense",
+      "note": null
+    }
+  ]
+}
+
+DAFTAR KATEGORI YANG TERSEDIA:
+$categoryList
+
+KONDISI KHUSUS:
+Jika gambar tidak valid (bukan struk, tidak terbaca, tidak ada transaksi, dll), balas HANYA dengan:
+{"error": "Gambar yang kamu kirim tidak valid!"}
+''';
+
+    try {
+      final rawResponse = await geminiScannerService.scanReceipt(image, prompt);
+
+      // Bersihkan markdown code block jika ada (```json ... ```)
+      final cleanedResponse = rawResponse
+          .replaceAll(RegExp(r'```json\s*'), '')
+          .replaceAll(RegExp(r'```\s*'), '')
+          .trim();
+
+      final Map<String, dynamic> jsonMap =
+          jsonDecode(cleanedResponse) as Map<String, dynamic>;
+
+      final result = ScanReceiptResultModel.fromJson(jsonMap);
+      _log.info('Hasil scan struk: $jsonMap');
+
+      if (result.isError) {
+        throw InvalidReceiptException(
+          result.error ?? 'Gambar yang kamu kirim tidak valid!',
+        );
+      }
+
+      return result;
+    } on InvalidReceiptException {
+      rethrow;
+    } on Exception catch (e) {
+      final message = e.toString().toLowerCase();
+      // GeminiScannerService melempar Exception dengan pesan rate limit
+      if (message.contains('limit') ||
+          message.contains('quota') ||
+          message.contains('cooldown')) {
+        throw const RateLimitException();
+      }
+      _log.severe('Unexpected error saat parse receipt image', e);
+      throw UnexpectedException(
+        'Ada kendala saat membaca struk. Coba lagi ya.',
+      );
+    }
   }
 }

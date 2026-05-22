@@ -31,6 +31,7 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart';
@@ -40,11 +41,11 @@ import 'package:money_management_mobile/features/transaction/presentation/pages/
 import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_detail_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_form_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
-import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
-import 'package:money_management_mobile/features/transaction/presentation/pages/voice_transaction_page.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/open_camera_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_loading_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_receipt_error_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/voice_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:money_management_mobile/outer_shell.dart';
 
@@ -80,6 +81,7 @@ class AppRouter {
   static const String batchTransactionDetailBase = '/transaction/batch';
   static const String scanReceipt = '/transaction/scan';
   static const String scanLoading = '/transaction/scan-loading';
+  static const String scanReceiptError = '/transaction/scan-error';
   static const String batchTransactionDetail = '/transaction/batch/:id';
   static const String voiceTransaction = '/transaction/voice';
 
@@ -260,10 +262,10 @@ class AppRouter {
           GoRoute(
             path: addBatchTransaction,
             builder: (context, state) {
-              final extra = state.extra as List<TransactionEntity>?;
+              final extra = state.extra as AddBatchTransactionEntity?;
               return BlocProvider(
                 create: (context) => getIt<BatchTransactionSubmitCubit>(),
-                child: BatchTransactionFormPage(initialItems: extra),
+                child: BatchTransactionFormPage(initialBatch: extra),
               );
             },
           ),
@@ -276,6 +278,18 @@ class AppRouter {
             builder: (context, state) {
               final imageFile = state.extra as File;
               return ScanLoadingPage(imageFile: imageFile);
+            },
+          ),
+          GoRoute(
+            path: scanReceiptError,
+            builder: (context, state) {
+              final extra =
+                  state.extra
+                      as ({ScanReceiptErrorType errorType, String message});
+              return ScanReceiptErrorPage(
+                errorType: extra.errorType,
+                message: extra.message,
+              );
             },
           ),
           GoRoute(

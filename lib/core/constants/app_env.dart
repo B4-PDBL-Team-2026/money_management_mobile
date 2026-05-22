@@ -30,4 +30,9 @@ class AppEnv {
     'SENTRY_TRACES_SAMPLE_RATE',
     defaultValue: '0.0',
   );
+
+  static const String geminiApiKeys = String.fromEnvironment(
+    'GEMINI_API_KEYS',
+    defaultValue: '',
+  );
 }

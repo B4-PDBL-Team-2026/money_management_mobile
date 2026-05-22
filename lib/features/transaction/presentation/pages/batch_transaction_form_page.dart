@@ -18,9 +18,9 @@ import 'package:money_management_mobile/features/transaction/presentation/widget
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class BatchTransactionFormPage extends StatefulWidget {
-  final List<TransactionEntity>? initialItems;
+  final AddBatchTransactionEntity? initialBatch;
 
-  const BatchTransactionFormPage({super.key, this.initialItems});
+  const BatchTransactionFormPage({super.key, this.initialBatch});
 
   @override
   State<BatchTransactionFormPage> createState() =>
@@ -49,11 +49,16 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
   void initState() {
     super.initState();
 
-    _dateController.text = _formatDate(DateTime.now());
-    
-    if (widget.initialItems != null) {
-      for (var i = 0; i < widget.initialItems!.length; i++) {
-        final item = widget.initialItems![i];
+    final batch = widget.initialBatch;
+    if (batch != null) {
+      // Pre-fill header dari hasil scan Gemini
+      _titleController.text = batch.name;
+      _dateController.text = _formatDate(batch.transactionAt);
+      _noteController.text = batch.note ?? '';
+
+      // Pre-fill items
+      for (var i = 0; i < batch.items.length; i++) {
+        final item = batch.items[i];
         final id = DateTime.now().microsecondsSinceEpoch + i;
         _transactionItems[id] = TransactionEntity(
           id: id,
@@ -65,6 +70,8 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
           note: item.note,
         );
       }
+    } else {
+      _dateController.text = _formatDate(DateTime.now());
     }
   }
 

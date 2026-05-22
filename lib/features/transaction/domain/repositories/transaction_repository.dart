@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:money_management_mobile/core/domain/entities/paginated_entity.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/batch_transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
-import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
 
 abstract class TransactionRepository {
   Future<TransactionEntity> addTransaction(TransactionEntity entity);
@@ -31,5 +32,8 @@ abstract class TransactionRepository {
   Future<BatchTransactionDetailEntity> getBatchTransactionDetail({
     required int id,
   });
-  Future<List<TransactionEntity>> parseReceiptImage(File image);
+  Future<AddBatchTransactionEntity> parseReceiptImage(
+    File image, {
+    required List<CategoryEntity> categories,
+  });
 }
