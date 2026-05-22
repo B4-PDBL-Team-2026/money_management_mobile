@@ -20,6 +20,48 @@ class GlobalConstant {
     'tag': PhosphorIconsRegular.tag,
     'question': PhosphorIconsRegular.question,
     'stack': PhosphorIconsRegular.stack,
+
+    // ===== ICON BARU UNTUK INCOME =====
+    'trending_up': PhosphorIconsRegular.trendUp,
+    'arrow_up': PhosphorIconsRegular.arrowUp,
+    'download': PhosphorIconsRegular.download,
+    'cash_register': PhosphorIconsRegular.cashRegister,
+    'credit_card': PhosphorIconsRegular.creditCard,
+    'bank': PhosphorIconsRegular.bank,
+    'piggy_bank': PhosphorIconsRegular.piggyBank,
+
+    // ===== ICON BARU UNTUK EXPENSE =====
+    'trending_down': PhosphorIconsRegular.trendDown,
+    'arrow_down': PhosphorIconsRegular.arrowDown,
+    'upload': PhosphorIconsRegular.upload,
+    'trash': PhosphorIconsRegular.trash,
+    'calculator': PhosphorIconsRegular.calculator,
+    'receipt': PhosphorIconsRegular.receipt,
+    'car': PhosphorIconsRegular.car,
+    'gas_pump': PhosphorIconsRegular.gasPump,
+    'airplane': PhosphorIconsRegular.airplane,
+    'house': PhosphorIconsRegular.house,
+
+    // ===== ICON BARU UNTUK TRANSFER/MISC =====
+    'arrow_left_right': PhosphorIconsRegular.arrowsLeftRight,
+    'arrows_horizontal': PhosphorIconsRegular.arrowsHorizontal,
+    'swap': PhosphorIconsRegular.swap,
+    'repeat': PhosphorIconsRegular.repeat,
+    'clock': PhosphorIconsRegular.clock,
+    'alarm': PhosphorIconsRegular.alarm,
+
+    // ===== ICON TAMBAHAN UNTUK KATEGORI SPESIFIK =====
+    'pizza': PhosphorIconsRegular.pizza,
+    'wine': PhosphorIconsRegular.wine,
+    'tree': PhosphorIconsRegular.tree,
+    'lightbulb': PhosphorIconsRegular.lightbulb,
+    'waterdrop': PhosphorIconsRegular.drop,
+    'phone': PhosphorIconsRegular.phone,
+    'laptop': PhosphorIconsRegular.laptop,
+    'book': PhosphorIconsRegular.book,
+    'dumbbell': PhosphorIconsRegular.barbell,
+    'hospital': PhosphorIconsRegular.hospital,
+    'graduation_cap': PhosphorIconsRegular.graduationCap,
   };
 
   static final dayMapping = {
