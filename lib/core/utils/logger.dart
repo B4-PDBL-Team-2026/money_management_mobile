@@ -39,7 +39,7 @@ class AppLogger {
         debugPrint(buffer.toString());
       }
 
-      if (!enableSentry || record.level < Level.WARNING) {
+      if (!enableSentry || record.level < Level.SEVERE) {
         return;
       }
 
