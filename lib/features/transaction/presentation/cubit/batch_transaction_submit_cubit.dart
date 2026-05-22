@@ -20,6 +20,7 @@ class BatchTransactionSubmitCubit extends Cubit<BatchTransactionSubmitState> {
     : super(BatchTransactionSubmitInitial());
 
   Future<void> submit({
+    int? id,
     required AddBatchTransactionEntity addBatchTransaction,
   }) async {
     if (addBatchTransaction.items.isEmpty) return;
@@ -27,7 +28,14 @@ class BatchTransactionSubmitCubit extends Cubit<BatchTransactionSubmitState> {
     emit(BatchTransactionSubmitLoading());
 
     try {
-      await _transactionRepository.addBatchTransaction(addBatchTransaction);
+      if (id != null) {
+        await _transactionRepository.updateBatchTransaction(
+          id: id,
+          entity: addBatchTransaction,
+        );
+      } else {
+        await _transactionRepository.addBatchTransaction(addBatchTransaction);
+      }
 
       _eventBus.fire(const TransactionChangesEvent());
       emit(BatchTransactionSubmitSuccess());

@@ -35,6 +35,17 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
+  Future<void> updateBatchTransaction({
+    required int id,
+    required AddBatchTransactionEntity entity,
+  }) async {
+    await remoteDataSource.updateBatchTransaction(
+      id: id,
+      requestModel: AddBatchTransactionModel.fromEntity(entity),
+    );
+  }
+
+  @override
   Future<TransactionDetailEntity> getTransactionDetail({
     required int id,
   }) async {

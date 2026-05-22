@@ -1,8 +1,11 @@
+import 'dart:async';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:money_management_mobile/core/constants/global_constant.dart';
+import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
@@ -11,6 +14,7 @@ import 'package:money_management_mobile/features/transaction/domain/entities/bat
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_state.dart';
+import 'package:money_management_mobile/injection_container.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class BatchTransactionDetailPage extends StatefulWidget {
@@ -25,9 +29,26 @@ class BatchTransactionDetailPage extends StatefulWidget {
 
 class _BatchTransactionDetailPageState
     extends State<BatchTransactionDetailPage> {
+  StreamSubscription<TransactionChangesEvent>? _changesSubscription;
+
   @override
   void initState() {
     super.initState();
+    _fetchDetail();
+    _changesSubscription = getIt<EventBus>().on<TransactionChangesEvent>().listen((_) {
+      if (mounted) {
+        _fetchDetail();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _changesSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _fetchDetail() {
     context.read<BatchTransactionDetailCubit>().getBatchTransactionDetail(
       id: widget.batchId,
     );
@@ -65,6 +86,36 @@ class _BatchTransactionDetailPageState
             ),
           ),
         ),
+        actions: [
+          BlocBuilder<BatchTransactionDetailCubit, BatchTransactionDetailState>(
+            builder: (context, state) {
+              if (state is BatchTransactionDetailSuccess) {
+                return Padding(
+                  padding: const EdgeInsets.all(AppSizes.spacing2),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.edit, color: AppColors.gohan),
+                      onPressed: () {
+                        context.push(
+                          AppRouter.addBatchTransaction,
+                          extra: {
+                            'batchId': state.detail.id,
+                            'initialBatch': state.detail.toAddEntity(),
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(

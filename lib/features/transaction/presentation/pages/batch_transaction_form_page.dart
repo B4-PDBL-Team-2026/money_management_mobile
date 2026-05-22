@@ -18,9 +18,10 @@ import 'package:money_management_mobile/features/transaction/presentation/widget
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class BatchTransactionFormPage extends StatefulWidget {
+  final int? batchId;
   final AddBatchTransactionEntity? initialBatch;
 
-  const BatchTransactionFormPage({super.key, this.initialBatch});
+  const BatchTransactionFormPage({super.key, this.batchId, this.initialBatch});
 
   @override
   State<BatchTransactionFormPage> createState() =>
@@ -190,6 +191,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
     }
 
     await context.read<BatchTransactionSubmitCubit>().submit(
+      id: widget.batchId,
       addBatchTransaction: AddBatchTransactionEntity(
         name: _titleController.text.trim(),
         transactionAt: _transactionDate,
@@ -213,8 +215,10 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
           _resetForm();
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Batch transaksi berhasil disimpan!'),
+            SnackBar(
+              content: Text(widget.batchId != null
+                  ? 'Batch transaksi berhasil diperbarui!'
+                  : 'Batch transaksi berhasil disimpan!'),
               backgroundColor: AppColors.primary,
             ),
           );
@@ -242,7 +246,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
           elevation: 0,
           titleSpacing: AppSizes.spacing4,
           title: Text(
-            'Buat Batch Transaksi',
+            widget.batchId != null ? 'Edit Batch Transaksi' : 'Buat Batch Transaksi',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w700,

@@ -262,10 +262,26 @@ class AppRouter {
           GoRoute(
             path: addBatchTransaction,
             builder: (context, state) {
-              final extra = state.extra as AddBatchTransactionEntity?;
+              final extra = state.extra;
+              int? batchId;
+              AddBatchTransactionEntity? initialBatch;
+
+              if (extra is AddBatchTransactionEntity) {
+                initialBatch = extra;
+              } else if (extra is Map<String, dynamic>) {
+                batchId = extra['batchId'] as int?;
+                initialBatch = extra['initialBatch'] as AddBatchTransactionEntity?;
+              } else if (extra is ({int? batchId, AddBatchTransactionEntity? initialBatch})) {
+                batchId = extra.batchId;
+                initialBatch = extra.initialBatch;
+              }
+
               return BlocProvider(
                 create: (context) => getIt<BatchTransactionSubmitCubit>(),
-                child: BatchTransactionFormPage(initialBatch: extra),
+                child: BatchTransactionFormPage(
+                  batchId: batchId,
+                  initialBatch: initialBatch,
+                ),
               );
             },
           ),

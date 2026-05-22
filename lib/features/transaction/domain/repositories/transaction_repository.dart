@@ -11,6 +11,10 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 abstract class TransactionRepository {
   Future<TransactionEntity> addTransaction(TransactionEntity entity);
   Future<void> addBatchTransaction(AddBatchTransactionEntity entity);
+  Future<void> updateBatchTransaction({
+    required int id,
+    required AddBatchTransactionEntity entity,
+  });
   Future<TransactionDetailEntity> getTransactionDetail({required int id});
   Future<void> updateTransaction({
     required int id,

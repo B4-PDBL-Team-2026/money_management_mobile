@@ -1,4 +1,6 @@
+import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 
 class BatchTransactionDetailItemEntity {
   final int id;
@@ -42,4 +44,24 @@ class BatchTransactionDetailEntity {
     required this.transactionAt,
     required this.items,
   });
+
+  AddBatchTransactionEntity toAddEntity() {
+    return AddBatchTransactionEntity(
+      name: name,
+      transactionAt: transactionAt,
+      source: TransactionSource.manual,
+      note: note,
+      items: items.map((item) {
+        return TransactionEntity(
+          id: item.id,
+          name: item.name,
+          amount: item.amount,
+          type: item.type,
+          categoryId: item.categoryId,
+          transactionAt: item.transactionAt,
+          note: item.note,
+        );
+      }).toList(),
+    );
+  }
 }

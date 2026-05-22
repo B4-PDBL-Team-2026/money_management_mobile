@@ -71,6 +71,31 @@ class TransactionRemoteDataSource {
     }
   }
 
+  Future<void> updateBatchTransaction({
+    required int id,
+    required AddBatchTransactionModel requestModel,
+  }) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.put('/transaction/batch/$id', data: requestModel.toJson());
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Update Batch Transaction',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while updating batch transaction', e);
+      throw UnexpectedException(
+        'Ada kendala pas mengubah batch transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
   Future<TransactionDetailModel> getTransactionDetail({required int id}) async {
     if (AppEnv.useMockApi) {
       await Future.delayed(const Duration(seconds: 1));
