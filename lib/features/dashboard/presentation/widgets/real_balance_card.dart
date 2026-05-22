@@ -43,7 +43,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
                           Flexible(
                             child: Text(
                               'Saldo aman digunakan',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.bulma,
                               ),
@@ -62,7 +62,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
                     const SizedBox(width: AppSizes.spacing2),
                     Text(
                       'Rp ${_isVisible ? CurrencyFormatter.format(widget.safeBalance) : '••••••'}',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.bulma,
                       ),
@@ -120,7 +120,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
               _isVisible
                   ? PhosphorIconsRegular.eye
                   : PhosphorIconsRegular.eyeSlash,
-              size: 28,
+              size: 20,
               color: AppColors.bulma,
             ),
           ),
