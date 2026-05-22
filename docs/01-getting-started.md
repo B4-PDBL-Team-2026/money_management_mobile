@@ -49,6 +49,7 @@ Berikut adalah daftar variabel _environment_ yang tersedia beserta nilai bawaann
 | `APP_ENV`                   | `String` | `development`                 | Status _environment_ saat ini (contoh: `development`, `staging`, `production`). |
 | `APP_RELEASE`               | `String` | `money_management_mobile@dev` | Identifier versi rilis untuk Sentry/Analytics.                                  |
 | `SENTRY_TRACES_SAMPLE_RATE` | `String` | `0.0`                         | Persentase _tracing_ Sentry (dari `0.0` hingga `1.0`).                          |
+| `GEMINI_API_KEYS`           | `String` | `''` (kosong)                 | API key untuk integrasi dengan layanan Gemini.                                  |
 
 ### Cara Menjalankan Aplikasi
 
@@ -59,7 +60,8 @@ flutter run \
   --dart-define=USE_MOCK_API=false \
   --dart-define=API_BASE_URL="[https://api.domain-anda.com/api](https://api.domain-anda.com/api)" \
   --dart-define=SENTRY_DSN="[https://examplePublicKey@o0.ingest.sentry.io/0](https://examplePublicKey@o0.ingest.sentry.io/0)" \
-  --dart-define=APP_ENV="development"
+  --dart-define=APP_ENV="development" \
+  --dart-define=GEMINI_API_KEYS="[YOUR_GEMINI_API_KEY]"
 ```
 
 **Tips untuk VS Code:**
@@ -76,7 +78,8 @@ Agar tidak perlu mengetik panjang setiap kali menjalankan aplikasi, Anda dapat m
 			"toolArgs": [
 				"--dart-define=USE_MOCK_API=false",
 				"--dart-define=API_BASE_URL=http://localhost:8000/api",
-				"--dart-define=APP_ENV=development"
+				"--dart-define=APP_ENV=development",
+				"--dart-define=GEMINI_API_KEYS=[YOUR_GEMINI_API_KEY]"
 			]
 		}
 	]

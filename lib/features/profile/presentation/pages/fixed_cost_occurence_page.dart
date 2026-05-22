@@ -16,103 +16,117 @@ import 'package:money_management_mobile/features/profile/domain/entities/financi
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 // TODO: memindahkan semua kode fixed cost occurences ke fitur fixed cost
-class FixedCostOccurencePage extends StatelessWidget {
+class FixedCostOccurencePage extends StatefulWidget {
   const FixedCostOccurencePage({super.key});
+
+  @override
+  State<FixedCostOccurencePage> createState() => _FixedCostOccurencePageState();
+}
+
+class _FixedCostOccurencePageState extends State<FixedCostOccurencePage> {
+  Future<void> _onRefresh() async {
+    await context.read<UnpaidFixedCostTemplateCubit>().fetchUnpaidFixedCosts();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(
-            AppSizes.spacing6,
-            AppSizes.spacing6,
-            AppSizes.spacing6,
-            AppSizes.spacing8,
-          ),
-          child: Column(
-            children: [
-              _buildHeader(context),
-              BlocConsumer<
-                UnpaidFixedCostTemplateCubit,
-                UnpaidFixedCostTemplateState
-              >(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  if (state is UnpaidFixedCostTemplateInitial ||
-                      state is UnpaidFixedCostTemplateLoading) {
-                    return const _LoadingState();
-                  }
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          color: AppColors.primary,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              AppSizes.spacing6,
+              AppSizes.spacing6,
+              AppSizes.spacing6,
+              AppSizes.spacing8,
+            ),
+            child: Column(
+              children: [
+                _buildHeader(context),
+                BlocConsumer<
+                  UnpaidFixedCostTemplateCubit,
+                  UnpaidFixedCostTemplateState
+                >(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (state is UnpaidFixedCostTemplateInitial ||
+                        state is UnpaidFixedCostTemplateLoading) {
+                      return const _LoadingState();
+                    }
 
-                  if (state is UnpaidFixedCostTemplateError) {
-                    return _ErrorFixedCostState(
-                      message: state.message,
-                      onRetry: () {
-                        context
-                            .read<UnpaidFixedCostTemplateCubit>()
-                            .fetchUnpaidFixedCosts();
-                      },
-                      onManage: () =>
-                          context.push(AppRouter.fixedCostsManagement),
-                    );
-                  }
+                    if (state is UnpaidFixedCostTemplateError) {
+                      return _ErrorFixedCostState(
+                        message: state.message,
+                        onRetry: () {
+                          context
+                              .read<UnpaidFixedCostTemplateCubit>()
+                              .fetchUnpaidFixedCosts();
+                        },
+                        onManage: () =>
+                            context.push(AppRouter.fixedCostsManagement),
+                      );
+                    }
 
-                  final loadedState = state as UnpaidFixedCostTemplateLoaded;
+                    final loadedState = state as UnpaidFixedCostTemplateLoaded;
 
-                  if (loadedState.items.isEmpty) {
-                    return _EmptyFixedCostState(
-                      onManage: () =>
-                          context.push(AppRouter.fixedCostsManagement),
-                    );
-                  }
+                    if (loadedState.items.isEmpty) {
+                      return _EmptyFixedCostState(
+                        onManage: () =>
+                            context.push(AppRouter.fixedCostsManagement),
+                      );
+                    }
 
-                  final now = DateTime.now();
+                    final now = DateTime.now();
 
-                  final weeklyItems = loadedState.items
-                      .where(
-                        (item) =>
-                            item.cycle == FinancialCycle.weekly &&
-                            _isInCurrentWeek(item.dueDate, now),
-                      )
-                      .toList(growable: false);
+                    final weeklyItems = loadedState.items
+                        .where(
+                          (item) =>
+                              item.cycle == FinancialCycle.weekly &&
+                              _isInCurrentWeek(item.dueDate, now),
+                        )
+                        .toList(growable: false);
 
-                  final monthlyItems = loadedState.items
-                      .where(
-                        (item) =>
-                            item.cycle == FinancialCycle.monthly &&
-                            _isInCurrentMonth(item.dueDate, now),
-                      )
-                      .toList(growable: false);
+                    final monthlyItems = loadedState.items
+                        .where(
+                          (item) =>
+                              item.cycle == FinancialCycle.monthly &&
+                              _isInCurrentMonth(item.dueDate, now),
+                        )
+                        .toList(growable: false);
 
-                  if (weeklyItems.isEmpty && monthlyItems.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
+                    if (weeklyItems.isEmpty && monthlyItems.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (weeklyItems.isNotEmpty) ...[
-                        const SizedBox(height: AppSizes.spacing6),
-                        _FixedCostSection(
-                          title: 'Minggu Ini',
-                          items: weeklyItems,
-                          rootContext: context,
-                        ),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (weeklyItems.isNotEmpty) ...[
+                          const SizedBox(height: AppSizes.spacing6),
+                          _FixedCostSection(
+                            title: 'Minggu Ini',
+                            items: weeklyItems,
+                            rootContext: context,
+                          ),
+                        ],
+
+                        if (monthlyItems.isNotEmpty) ...[
+                          const SizedBox(height: AppSizes.spacing6),
+                          _FixedCostSection(
+                            title: 'Bulan Ini',
+                            items: monthlyItems,
+                            rootContext: context,
+                          ),
+                        ],
                       ],
-
-                      if (monthlyItems.isNotEmpty) ...[
-                        const SizedBox(height: AppSizes.spacing6),
-                        _FixedCostSection(
-                          title: 'Bulan Ini',
-                          items: monthlyItems,
-                          rootContext: context,
-                        ),
-                      ],
-                    ],
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

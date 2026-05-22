@@ -258,16 +258,38 @@ class _FixedCostTemplateManagementPageState
             },
             child: CustomScrollView(
               slivers: [
-                  SliverAppBar(
-                  leading: BackButton(
-                    color: AppColors.gohan,
-                    onPressed: () {
-                      context.pop();
-                    },
-                  ),
-                  title: Text('Manajemen Biaya Tetap'),
+                SliverAppBar(
                   pinned: true,
                   elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  titleSpacing: AppSizes.spacing6,
+                  leadingWidth: 72,
+                  title: const Text(
+                    'Manajemen Biaya Tetap',
+                    style: TextStyle(color: AppColors.bulma),
+                  ),
+                  leading: Padding(
+                    padding: const EdgeInsets.only(
+                      left: AppSizes.spacing6,
+                      top: AppSizes.spacing2,
+                      bottom: AppSizes.spacing2,
+                    ),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          color: AppColors.gohan,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 if (items.isEmpty)
                   SliverFillRemaining(

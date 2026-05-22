@@ -16,6 +16,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import 'core/network/http.dart' as _i1026;
+import 'core/services/gemini_scanner_service.dart' as _i680;
 import 'core/utils/event_bus.dart' as _i503;
 import 'core/utils/local_storage.dart' as _i600;
 import 'features/auth/data/data_sources/local/auth_local_data_source.dart'
@@ -101,8 +102,20 @@ import 'features/transaction/data/repositories/transaction_repository_impl.dart'
     as _i16;
 import 'features/transaction/domain/repositories/transaction_repository.dart'
     as _i463;
+import 'features/transaction/domain/services/image_picker_service.dart'
+    as _i612;
+import 'features/transaction/domain/usecases/parse_receipt_transaction_usecase.dart'
+    as _i404;
+import 'features/transaction/infrastructure/services/image_picker_service_impl.dart'
+    as _i627;
 import 'features/transaction/presentation/cubit/add_transaction_cubit.dart'
     as _i1024;
+import 'features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart'
+    as _i584;
+import 'features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart'
+    as _i13;
+import 'features/transaction/presentation/cubit/receipt_scanner_cubit.dart'
+    as _i528;
 import 'features/transaction/presentation/cubit/transaction_detail_cubit.dart'
     as _i555;
 import 'features/transaction/presentation/cubit/transaction_history_cubit.dart'
@@ -124,6 +137,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => localStorage.prefs,
       preResolve: true,
     );
+    gh.lazySingleton<_i680.GeminiScannerService>(
+      () => _i680.GeminiScannerService(),
+    );
     gh.lazySingleton<_i1017.EventBus>(() => eventBusModule.eventBus);
     gh.lazySingleton<_i103.CalculateFinancialProfileUseCase>(
       () => _i103.CalculateFinancialProfileUseCase(),
@@ -134,6 +150,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i844.CategoryLocalDataSource>(
       () => _i844.CategoryLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i612.ImagePickerService>(
+      () => _i627.ImagePickerServiceImpl(),
     );
     gh.lazySingleton<_i715.FinancialProfileDraftCubit>(
       () => _i715.FinancialProfileDraftCubit(
@@ -147,6 +166,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(
       () => http.dio(gh<_i465.AuthLocalDataSource>()),
     );
+    gh.lazySingleton<_i1023.TransactionRemoteDataSource>(
+      () => _i1023.TransactionRemoteDataSource(
+        gh<_i361.Dio>(),
+        gh<_i680.GeminiScannerService>(),
+      ),
+    );
+    gh.lazySingleton<_i463.TransactionRepository>(
+      () => _i16.TransactionRepositoryImpl(
+        gh<_i1023.TransactionRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i300.CategoryRemoteDataSource>(
       () => _i300.CategoryRemoteDataSource(gh<_i361.Dio>()),
     );
@@ -158,9 +188,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i959.ProfileRemoteDataSource>(
       () => _i959.ProfileRemoteDataSource(gh<_i361.Dio>()),
-    );
-    gh.lazySingleton<_i1023.TransactionRemoteDataSource>(
-      () => _i1023.TransactionRemoteDataSource(gh<_i361.Dio>()),
     );
     gh.factory<_i711.AuthRemoteDataSource>(
       () => _i711.AuthRemoteDataSource(gh<_i361.Dio>()),
@@ -174,10 +201,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i545.NotificationRemoteDataSource>(
       () => _i545.NotificationRemoteDataSource(gh<_i361.Dio>()),
     );
+    gh.factory<_i584.BatchTransactionDetailCubit>(
+      () =>
+          _i584.BatchTransactionDetailCubit(gh<_i463.TransactionRepository>()),
+    );
     gh.lazySingleton<_i410.SessionCubit>(
       () => _i410.SessionCubit(
         gh<_i1015.AuthRepository>(),
         gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i404.ParseReceiptTransactionUseCase>(
+      () => _i404.ParseReceiptTransactionUseCase(
+        gh<_i463.TransactionRepository>(),
       ),
     );
     gh.factory<_i801.ResetPasswordCubit>(
@@ -190,10 +226,34 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i448.DashboardRepositoryImpl(gh<_i553.DashboardRemoteDataSource>()),
     );
-    gh.lazySingleton<_i5.CategoryRepository>(
-      () => _i44.CategoryRepositoryImpl(
-        gh<_i300.CategoryRemoteDataSource>(),
-        gh<_i844.CategoryLocalDataSource>(),
+    gh.factory<_i1024.AddTransactionCubit>(
+      () => _i1024.AddTransactionCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i13.BatchTransactionSubmitCubit>(
+      () => _i13.BatchTransactionSubmitCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i555.TransactionDetailCubit>(
+      () => _i555.TransactionDetailCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i966.VoiceTransactionCubit>(
+      () => _i966.VoiceTransactionCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.lazySingleton<_i900.TransactionHistoryCubit>(
+      () => _i900.TransactionHistoryCubit(
+        gh<_i463.TransactionRepository>(),
+        gh<_i1017.EventBus>(),
       ),
     );
     gh.lazySingleton<_i862.NotificationCenterRepository>(
@@ -224,17 +284,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i693.RegisterUseCase>(
       () => _i693.RegisterUseCase(gh<_i1015.AuthRepository>()),
     );
-    gh.lazySingleton<_i478.CategoryCubit>(
-      () => _i478.CategoryCubit(
-        gh<_i5.CategoryRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
-    gh.lazySingleton<_i463.TransactionRepository>(
-      () => _i16.TransactionRepositoryImpl(
-        gh<_i1023.TransactionRemoteDataSource>(),
-      ),
-    );
     gh.lazySingleton<_i324.FixedCostTemplateCubit>(
       () => _i324.FixedCostTemplateCubit(
         gh<_i121.FixedCostTemplateRepository>(),
@@ -247,6 +296,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i410.SessionCubit>(),
         gh<_i1017.EventBus>(),
       ),
+    );
+    gh.lazySingleton<_i5.CategoryRepository>(
+      () => _i44.CategoryRepositoryImpl(gh<_i300.CategoryRemoteDataSource>()),
     );
     gh.lazySingleton<_i356.NotificationCenterCubit>(
       () => _i356.NotificationCenterCubit(
@@ -296,34 +348,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
-    gh.factory<_i1024.AddTransactionCubit>(
-      () => _i1024.AddTransactionCubit(
-        gh<_i463.TransactionRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
-    gh.factory<_i555.TransactionDetailCubit>(
-      () => _i555.TransactionDetailCubit(
-        gh<_i463.TransactionRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
-    gh.factory<_i966.VoiceTransactionCubit>(
-      () => _i966.VoiceTransactionCubit(
-        gh<_i463.TransactionRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
-    gh.lazySingleton<_i900.TransactionHistoryCubit>(
-      () => _i900.TransactionHistoryCubit(
-        gh<_i463.TransactionRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
     gh.lazySingleton<_i1023.DashboardMetricCubit>(
       () => _i1023.DashboardMetricCubit(
         gh<_i83.CalculateDashboardMetricsUsecase>(),
         gh<_i557.DashboardRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i528.ReceiptScannerCubit>(
+      () => _i528.ReceiptScannerCubit(
+        gh<_i404.ParseReceiptTransactionUseCase>(),
+        gh<_i5.CategoryRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i478.CategoryCubit>(
+      () => _i478.CategoryCubit(
+        gh<_i5.CategoryRepository>(),
         gh<_i1017.EventBus>(),
       ),
     );

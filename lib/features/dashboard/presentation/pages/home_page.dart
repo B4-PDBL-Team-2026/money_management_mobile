@@ -9,6 +9,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/d
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_budget_metrics.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_header.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_history_item.dart';
@@ -35,100 +36,119 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _onRefresh() async {
+    await Future.wait([
+      context.read<DashboardMetricCubit>().fetchDashboardMetrics(),
+      context.read<TransactionHistoryCubit>().getFreshTransactionHistory(),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(AppSizes.spacing6),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocListener<DashboardMetricCubit, DashboardMetricState>(
-                listener: (context, state) {
-                  if (state is DashboardMetricError) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(state.message)));
-                  }
-                },
-                child: Column(
-                  children: [
-                    DashboardHeader(),
-                    const SizedBox(height: AppSizes.spacing6),
-                    DashboardBudgetMetrics(),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSizes.spacing6),
-              BlocConsumer<TransactionHistoryCubit, TransactionHistoryState>(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  if (state is! TransactionHistorySuccess) {
-                    return SizedBox.shrink();
-                  }
-
-                  if (state.transactionHistory.isEmpty) {
-                    return SizedBox.shrink();
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          color: AppColors.primary,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.all(AppSizes.spacing6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlocListener<DashboardMetricCubit, DashboardMetricState>(
+                  listener: (context, state) {
+                    if (state is DashboardMetricError) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(state.message)));
+                    }
+                  },
+                  child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Transaksi Terbaru',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.headlineMedium?.copyWith(fontSize: 16),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              context.go(AppRouter.history);
-                            },
-                            child: Text(
-                              'Semua',
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSizes.spacing3),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final item = state.transactionHistory[index];
-
-                          return GestureDetector(
-                            onTap: () {
-                              context.push(
-                                '${AppRouter.transactionDetailBase}/${item.id}',
-                              );
-                            },
-                            child: TransactionHistoryItem(transaction: item),
-                          );
-                        },
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: AppSizes.spacing2),
-                        itemCount: state.transactionHistory.isEmpty
-                            ? 0
-                            : state.transactionHistory.length > 3
-                            ? 3
-                            : state.transactionHistory.length,
-                      ),
+                      DashboardHeader(),
                       const SizedBox(height: AppSizes.spacing6),
+                      DashboardBudgetMetrics(),
                     ],
-                  );
-                },
-              ),
-            ],
+                  ),
+                ),
+                const SizedBox(height: AppSizes.spacing6),
+                BlocConsumer<TransactionHistoryCubit, TransactionHistoryState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (state is! TransactionHistorySuccess) {
+                      return SizedBox.shrink();
+                    }
+
+                    if (state.transactionHistory.isEmpty) {
+                      return SizedBox.shrink();
+                    }
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Transaksi Terbaru',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.headlineMedium?.copyWith(fontSize: 16),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                context.go(AppRouter.history);
+                              },
+                              child: Text(
+                                'Semua',
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSizes.spacing3),
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final item = state.transactionHistory[index];
+
+                            return GestureDetector(
+                              onTap: () {
+                                if (item.feedType ==
+                                    TransactionHistoryFeedType.batch) {
+                                  context.push(
+                                    '${AppRouter.batchTransactionDetailBase}/${item.id}',
+                                  );
+                                } else {
+                                  context.push(
+                                    '${AppRouter.transactionDetailBase}/${item.id}',
+                                  );
+                                }
+                              },
+                              child: TransactionHistoryItem(transaction: item),
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: AppSizes.spacing2),
+                          itemCount: state.transactionHistory.isEmpty
+                              ? 0
+                              : state.transactionHistory.length > 3
+                              ? 3
+                              : state.transactionHistory.length,
+                        ),
+                        const SizedBox(height: AppSizes.spacing6),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

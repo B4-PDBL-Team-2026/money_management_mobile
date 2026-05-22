@@ -19,6 +19,7 @@ class GlobalConstant {
     'arrow_circle_right': PhosphorIconsRegular.arrowCircleRight,
     'tag': PhosphorIconsRegular.tag,
     'question': PhosphorIconsRegular.question,
+    'stack': PhosphorIconsRegular.stack,
   };
 
   static final dayMapping = {
