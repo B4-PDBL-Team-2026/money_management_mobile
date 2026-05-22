@@ -96,6 +96,7 @@ class FixedCostOccurencePage extends StatelessWidget {
                         _FixedCostSection(
                           title: 'Minggu Ini',
                           items: weeklyItems,
+                          rootContext: context,
                         ),
                       ],
 
@@ -104,6 +105,7 @@ class FixedCostOccurencePage extends StatelessWidget {
                         _FixedCostSection(
                           title: 'Bulan Ini',
                           items: monthlyItems,
+                          rootContext: context,
                         ),
                       ],
                     ],
@@ -177,8 +179,78 @@ class FixedCostOccurencePage extends StatelessWidget {
 class _FixedCostSection extends StatelessWidget {
   final String title;
   final List<UnpaidFixedCostTemplateEntity> items;
+  final BuildContext rootContext;
 
-  const _FixedCostSection({required this.title, required this.items});
+  const _FixedCostSection({
+    required this.title,
+    required this.items,
+    required this.rootContext,
+  });
+
+  Future<void> _showFeedbackDialog(
+    BuildContext context,
+    String title,
+    String message, {
+    bool isWarning = false,
+  }) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        final color = isWarning ? AppColors.warning100 : AppColors.success100;
+        final icon = isWarning ? PhosphorIconsFill.info : PhosphorIconsFill.checkCircle;
+
+        return AlertDialog(
+          backgroundColor: AppColors.gohan,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          contentPadding: const EdgeInsets.all(AppSizes.spacing6),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSizes.spacing4),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: PhosphorIcon(
+                  icon,
+                  color: color,
+                  size: 48,
+                ),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.spacing2),
+              Text(
+                message,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.trunks,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.spacing6),
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  text: 'Tutup',
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,33 +278,30 @@ class _FixedCostSection extends StatelessWidget {
                     .read<UnpaidFixedCostTemplateCubit>()
                     .confirmFixedCostOccurrence(item.occurrenceId);
 
-                if (!success || !context.mounted) {
+                if (!success || !rootContext.mounted) {
                   return;
                 }
 
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      backgroundColor: AppColors.success100,
-                      content: Text('Biaya tetap berhasil dibayar'),
-                    ),
-                  );
-                }
+                _showFeedbackDialog(
+                  rootContext,
+                  'Pembayaran Berhasil',
+                  'Tagihan biaya tetap kamu berhasil dibayar.',
+                );
               },
               onCancel: () async {
                 final success = await context
                     .read<UnpaidFixedCostTemplateCubit>()
                     .cancelFixedCostOccurrence(item.occurrenceId);
 
-                if (!success || !context.mounted) {
+                if (!success || !rootContext.mounted) {
                   return;
                 }
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: AppColors.warning100,
-                    content: Text('Biaya tetap berhasil dibatalkan'),
-                  ),
+                _showFeedbackDialog(
+                  rootContext,
+                  'Dibatalkan',
+                  'Tagihan biaya tetap kamu berhasil dilewati.',
+                  isWarning: true,
                 );
               },
             );

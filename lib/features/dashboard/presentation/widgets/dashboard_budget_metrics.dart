@@ -51,13 +51,86 @@ class DashboardBudgetMetrics extends StatelessWidget {
   Widget _buildMetrics(BuildContext context, DashboardMetricsResult metrics) {
     return Column(
       children: [
-        if (metrics.healthScenario != BudgetHealthScenario.deficit) ...[
-          _buildSafeBalanceCard(
-            context,
-            metrics.remainingDaysInCycle,
-            metrics.safeBalance,
+        RealBalanceCard(
+          balance: metrics.balance,
+          safeBalance: metrics.safeBalance,
+        ),
+        const SizedBox(height: AppSizes.spacing3),
+
+        if (metrics.balance == 0 &&
+            metrics.healthScenario == BudgetHealthScenario.deficit) ...[
+          AppContainerCard(
+            width: double.infinity,
+            backgroundColor: AppColors.primary,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Serius!',
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    color: AppColors.gohan,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: AppSizes.spacing2),
+                Text(
+                  'Saldo kamu udah habis, tapi tagihan masih ada nih. Jangan dicuekin ya, yuk pelan-pelan dilunasi.',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.gohan),
+                ),
+              ],
+            ),
           ),
         ] else ...[
+          DailyBudgetCard(
+            dailyExpense: metrics.todaySpent,
+            dailyLimit: metrics.limit,
+            limitName: metrics.limitName,
+            limitState: metrics.limitState,
+            healthScenario: metrics.healthScenario,
+          ),
+        ],
+
+        const SizedBox(height: AppSizes.spacing3),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: MetricCard(
+                  metric: metrics.firstMetric,
+                  backgroundColor:
+                      metrics.limitState == DashboardLimitState.overLastLimit
+                      ? AppColors.danger100
+                      : null,
+                ),
+              ),
+              const SizedBox(width: AppSizes.spacing3),
+              Expanded(
+                child: MetricCard(
+                  metric: metrics.secondMetric,
+                  backgroundColor:
+                      metrics.healthScenario == BudgetHealthScenario.deficit
+                      ? AppColors.danger10
+                      : null,
+                  textColor:
+                      metrics.healthScenario == BudgetHealthScenario.deficit
+                      ? AppColors.danger100
+                      : null,
+                  boxBorder:
+                      metrics.healthScenario == BudgetHealthScenario.deficit
+                      ? Border.all(color: AppColors.danger100)
+                      : null,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        if (metrics.healthScenario == BudgetHealthScenario.deficit &&
+            metrics.totalUnpaidFixedCost > 0) ...[
+          const SizedBox(height: AppSizes.spacing3),
           AppContainerCard(
             backgroundColor: AppColors.danger10,
             border: Border.all(color: AppColors.danger100, width: 1),
@@ -85,99 +158,7 @@ class DashboardBudgetMetrics extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: AppSizes.spacing3),
-        if (metrics.balance == 0 &&
-            metrics.healthScenario == BudgetHealthScenario.deficit) ...[
-          AppContainerCard(
-            width: double.infinity,
-            height: 150,
-            backgroundColor: AppColors.danger100,
-            child: Center(
-              child: Text(
-                'Saldo kamu udah habis',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.gohan,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ] else ...[
-          DailyBudgetCard(
-            dailyExpense: metrics.todaySpent,
-            dailyLimit: metrics.limit,
-            limitName: metrics.limitName,
-            limitState: metrics.limitState,
-            healthScenario: metrics.healthScenario,
-          ),
-          const SizedBox(height: AppSizes.spacing3),
-          if (metrics.healthScenario != BudgetHealthScenario.deficit) ...[
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: MetricCard(metric: metrics.firstMetric)),
-                  const SizedBox(width: AppSizes.spacing3),
-                  Expanded(child: MetricCard(metric: metrics.secondMetric)),
-                ],
-              ),
-            ),
-          ] else ...[
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: MetricCard(metric: metrics.firstMetric)),
-                  const SizedBox(width: AppSizes.spacing3),
-                  Expanded(
-                    child: MetricCard(
-                      metric: metrics.secondMetric,
-                      backgroundColor: AppColors.danger10,
-                      textColor: AppColors.danger100,
-                      boxBorder: Border.all(
-                        color: AppColors.danger100,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-        const SizedBox(height: AppSizes.spacing3),
-        RealBalanceCard(balance: metrics.balance),
       ],
-    );
-  }
-
-  Widget _buildSafeBalanceCard(
-    BuildContext context,
-    int remainingDaysInCycle,
-    int safeBalance,
-  ) {
-    return AppContainerCard(
-      backgroundColor: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          AppHelpTooltip(
-            message:
-                'Estimasi sisa uang Kamu di akhir siklus keuangan saat ini. Sisa jatah harian hari ini akan ditambahkan ke tabungan Kamu untuk cycle berikutnya.',
-            child: Text(
-              'Saldo aman untuk $remainingDaysInCycle hari ',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-          Text(
-            'Rp ${CurrencyFormatter.format(safeBalance)}',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.bulma,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -14,12 +14,12 @@ class BudgetHealthBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: AppSizes.spacing2,
-        vertical: AppSizes.spacing2,
+        horizontal: AppSizes.spacing4,
+        vertical: AppSizes.spacing1,
       ),
       decoration: BoxDecoration(
         color: _getBackgroundColor(status),
-        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+        borderRadius: BorderRadius.circular(AppSizes.radiusNm),
       ),
       child: Text(
         status.value,
