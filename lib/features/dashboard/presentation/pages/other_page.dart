@@ -121,13 +121,55 @@ class _OtherPageState extends State<OtherPage> {
     required String title,
     required String message,
   }) async {
-    await AppConfirmDialog.show(
+    showDialog(
       context: context,
-      title: title,
-      content: '$message\n\nCek inbox atau folder spam ya.',
-      confirmText: 'Mengerti',
-      cancelText: 'Tutup',
-      confirmButtonType: AppButtonType.primary,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColors.gohan,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          contentPadding: const EdgeInsets.all(AppSizes.spacing6),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSizes.spacing4),
+                decoration: BoxDecoration(
+                  color: AppColors.lightPrimary,
+                  shape: BoxShape.circle,
+                ),
+                child: PhosphorIcon(PhosphorIconsFill.info, color: AppColors.primary, size: 48),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.spacing2),
+              Text(
+                message,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppColors.trunks),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.spacing6),
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  text: 'Mengerti',
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -261,7 +303,10 @@ class _OtherPageState extends State<OtherPage> {
                       ? AppContainerCard(
                           key: const ValueKey('edit_mode_card'),
                           backgroundColor: AppColors.gohan,
-                          border: Border.all(color: AppColors.beerus, width: 1.5),
+                          border: Border.all(
+                            color: AppColors.beerus,
+                            width: 1.5,
+                          ),
                           padding: const EdgeInsets.all(AppSizes.spacing5),
                           child: Form(
                             key: _formKey,
@@ -351,7 +396,9 @@ class _OtherPageState extends State<OtherPage> {
                                       return requiredFieldMessage('Batas atas');
                                     }
                                     if (value <= 0) {
-                                      return positiveNumberMessage('Batas atas');
+                                      return positiveNumberMessage(
+                                        'Batas atas',
+                                      );
                                     }
                                     return null;
                                   },
@@ -396,15 +443,20 @@ class _OtherPageState extends State<OtherPage> {
                                   hint: 'Rp. 0',
                                   validator: (value) {
                                     if (value == null) {
-                                      return requiredFieldMessage('Batas bawah');
+                                      return requiredFieldMessage(
+                                        'Batas bawah',
+                                      );
                                     }
                                     if (value <= 0) {
-                                      return positiveNumberMessage('Batas bawah');
+                                      return positiveNumberMessage(
+                                        'Batas bawah',
+                                      );
                                     }
 
-                                    final ceilingLimit = CurrencyFormatter.parse(
-                                      _ceilingController.text,
-                                    );
+                                    final ceilingLimit =
+                                        CurrencyFormatter.parse(
+                                          _ceilingController.text,
+                                        );
                                     if (value > ceilingLimit) {
                                       return 'Batas bawah tidak boleh melebihi batas atas';
                                     }
@@ -420,7 +472,9 @@ class _OtherPageState extends State<OtherPage> {
                                 >(
                                   listener: (context, state) {
                                     if (state is UpdateBudgetLimitsSuccess) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         const SnackBar(
                                           content: Text(
                                             'Batas budget harian berhasil diperbarui.',
@@ -436,7 +490,9 @@ class _OtherPageState extends State<OtherPage> {
                                           .reset();
                                     } else if (state
                                         is UpdateBudgetLimitsFailure) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         SnackBar(
                                           content: Text(state.message),
                                           backgroundColor: AppColors.danger100,
@@ -462,7 +518,9 @@ class _OtherPageState extends State<OtherPage> {
                                                   },
                                           ),
                                         ),
-                                        const SizedBox(width: AppSizes.spacing3),
+                                        const SizedBox(
+                                          width: AppSizes.spacing3,
+                                        ),
                                         Expanded(
                                           child: AppButton(
                                             text: 'Simpan',
@@ -504,7 +562,10 @@ class _OtherPageState extends State<OtherPage> {
                       : AppContainerCard(
                           key: const ValueKey('view_mode_card'),
                           backgroundColor: AppColors.gohan,
-                          border: Border.all(color: AppColors.beerus, width: 1.5),
+                          border: Border.all(
+                            color: AppColors.beerus,
+                            width: 1.5,
+                          ),
                           padding: const EdgeInsets.all(AppSizes.spacing5),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -584,9 +645,13 @@ class _OtherPageState extends State<OtherPage> {
 
                               // 2. Nested Grey Container (Sesuai Gambar 1 Figma, Diselaraskan dengan Gambar 2)
                               Container(
-                                padding: const EdgeInsets.all(AppSizes.spacing4),
+                                padding: const EdgeInsets.all(
+                                  AppSizes.spacing4,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.beerus.withValues(alpha: 0.25),
+                                  color: AppColors.beerus.withValues(
+                                    alpha: 0.25,
+                                  ),
                                   borderRadius: BorderRadius.circular(
                                     AppSizes.radiusLg,
                                   ),
@@ -612,12 +677,13 @@ class _OtherPageState extends State<OtherPage> {
                                               Row(
                                                 children: [
                                                   Container(
-                                                    padding: const EdgeInsets.all(
-                                                      3,
-                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.all(3),
                                                     decoration: BoxDecoration(
                                                       color: AppColors.primary
-                                                          .withValues(alpha: 0.1),
+                                                          .withValues(
+                                                            alpha: 0.1,
+                                                          ),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             4,
@@ -634,8 +700,8 @@ class _OtherPageState extends State<OtherPage> {
                                                           .textTheme
                                                           .bodySmall
                                                           ?.copyWith(
-                                                            color:
-                                                                AppColors.trunks,
+                                                            color: AppColors
+                                                                .trunks,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             fontSize: 10,
@@ -657,7 +723,8 @@ class _OtherPageState extends State<OtherPage> {
                                                       ?.copyWith(
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: AppColors.primary,
+                                                        color:
+                                                            AppColors.primary,
                                                         fontSize: 15,
                                                       ),
                                                 ),
@@ -670,12 +737,13 @@ class _OtherPageState extends State<OtherPage> {
                                               Row(
                                                 children: [
                                                   Container(
-                                                    padding: const EdgeInsets.all(
-                                                      3,
-                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.all(3),
                                                     decoration: BoxDecoration(
                                                       color: AppColors.primary
-                                                          .withValues(alpha: 0.1),
+                                                          .withValues(
+                                                            alpha: 0.1,
+                                                          ),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             4,
@@ -692,8 +760,8 @@ class _OtherPageState extends State<OtherPage> {
                                                           .textTheme
                                                           .bodySmall
                                                           ?.copyWith(
-                                                            color:
-                                                                AppColors.trunks,
+                                                            color: AppColors
+                                                                .trunks,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             fontSize: 10,
@@ -715,7 +783,8 @@ class _OtherPageState extends State<OtherPage> {
                                                       ?.copyWith(
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: AppColors.primary,
+                                                        color:
+                                                            AppColors.primary,
                                                         fontSize: 15,
                                                       ),
                                                 ),
@@ -723,7 +792,9 @@ class _OtherPageState extends State<OtherPage> {
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(width: AppSizes.spacing3),
+                                        const SizedBox(
+                                          width: AppSizes.spacing3,
+                                        ),
 
                                         // Edit Button - Diposisikan di Pojok Kanan Tengah yang Bagus (Sesuai Gambar 1 & Gambar 2)
                                         GestureDetector(
@@ -745,9 +816,10 @@ class _OtherPageState extends State<OtherPage> {
                                               AppSizes.spacing3,
                                             ),
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(
-                                                AppSizes.radiusSm,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                    AppSizes.radiusSm,
+                                                  ),
                                               border: Border.all(
                                                 color: AppColors.primary,
                                                 width: 1.5,
@@ -871,7 +943,9 @@ class _OtherPageState extends State<OtherPage> {
                         }
                       },
                       builder: (context, _) {
-                        final sessionState = context.watch<SessionCubit>().state;
+                        final sessionState = context
+                            .watch<SessionCubit>()
+                            .state;
                         final isVerified =
                             sessionState is SessionAuthenticated &&
                             sessionState.user.emailVerifiedAt != null;
