@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/category/data/data_sources/remote/category_remote_data_sources.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/domain/repositories/category_repository.dart';
@@ -28,34 +29,24 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
     if (_cachedCategories.isEmpty) {
       try {
-        final results = await Future.wait([
-          _remoteDataSource.getSystemCategories(),
-          _remoteDataSource.getCustomCategories(),
-        ]);
-        
-        final systemCategories = results[0];
-        final customCategories = results[1];
-
+        final systemCategories = await _remoteDataSource.getSystemCategories();
         _cachedCategories.addAll(
           systemCategories.map((category) => category.toEntity()),
         );
+      } catch (e) {
+        rethrow;
+      }
+
+      try {
+        final customCategories = await _remoteDataSource.getCustomCategories();
         _cachedCategories.addAll(
           customCategories.map((category) => category.toEntity()),
         );
+      } on UnauthorizedException {
+        // Fallback to swallow only the UnauthorizedException (401) when the user
+        // is not logged in yet at app start, preventing dashboard failures.
       } catch (e) {
-        // Fallback to fetch system categories only if custom categories fetch fails
-        // because at app start, user is not logged in, fetching custom categories
-        // will throw UnauthorizedException (401). If we rethrow, CategoryCubit
-        // will emit CategoryError, showing an error state on the main dashboard.
-        // So we fallback to only fetching system categories if user is not authorized yet.
-        try {
-          final systemCategories = await _remoteDataSource.getSystemCategories();
-          _cachedCategories.addAll(
-            systemCategories.map((category) => category.toEntity()),
-          );
-        } catch (_) {
-          rethrow;
-        }
+        rethrow;
       }
     }
 

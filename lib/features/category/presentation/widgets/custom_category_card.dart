@@ -23,7 +23,6 @@ class CustomCategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     // Get corresponding phosphor icon from mapping
     final iconData =
@@ -62,7 +61,7 @@ class CustomCategoryCard extends StatelessWidget {
           ),
         ),
         child: AppContainerCard(
-          backgroundColor: isDark ? Colors.white : Colors.white,
+          backgroundColor: Colors.white,
           border: Border.all(color: AppColors.beerus, width: 1),
           padding: EdgeInsets.zero,
           child: InkWell(

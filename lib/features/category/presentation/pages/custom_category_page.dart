@@ -206,13 +206,6 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
       );
     }
 
-    if (state is CustomCategoryEmptyState) {
-      return CustomCategoryEmptyState(
-        key: const ValueKey('empty_state'),
-        onAddPressed: _showAddBottomSheet,
-      );
-    }
-
     if (state is CustomCategoryError) {
       return Center(
         key: const ValueKey('error_state'),
