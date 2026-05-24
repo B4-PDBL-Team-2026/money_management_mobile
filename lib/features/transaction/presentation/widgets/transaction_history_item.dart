@@ -20,14 +20,13 @@ class TransactionHistoryItem extends StatelessWidget {
     id: 0,
     name: 'Batch',
     icon: 'stack',
-    // TODO: ini tidak ada gunanya, tidak ada tipe transaksi yang cocok untuk batch
     type: TransactionType.expense,
     isSystem: true,
   );
 
   @override
   Widget build(BuildContext context) {
-    final categoryState = context.read<CategoryCubit>().state;
+    final categoryState = context.watch<CategoryCubit>().state;
     final isCategoryLoaded = categoryState is CategoryLoaded;
     final isBatchTransaction =
         transaction.feedType == TransactionHistoryFeedType.batch;
