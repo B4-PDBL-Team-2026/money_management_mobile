@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
@@ -216,9 +217,11 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(widget.batchId != null
-                  ? 'Batch transaksi berhasil diperbarui!'
-                  : 'Batch transaksi berhasil disimpan!'),
+              content: Text(
+                widget.batchId != null
+                    ? 'Batch transaksi berhasil diperbarui!'
+                    : 'Batch transaksi berhasil disimpan!',
+              ),
               backgroundColor: AppColors.primary,
             ),
           );
@@ -246,7 +249,9 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
           elevation: 0,
           titleSpacing: AppSizes.spacing4,
           title: Text(
-            widget.batchId != null ? 'Edit Batch Transaksi' : 'Buat Batch Transaksi',
+            widget.batchId != null
+                ? 'Edit Batch Transaksi'
+                : 'Buat Batch Transaksi',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w700,
@@ -575,19 +580,7 @@ class _BatchItemCard extends StatelessWidget {
           child: Row(
             children: [
               // Category icon
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                ),
-                child: const PhosphorIcon(
-                  PhosphorIconsRegular.bowlFood,
-                  size: 20,
-                  color: AppColors.bulma,
-                ),
-              ),
+              ?_buildItemCategoryIcon(bgColor, category),
               const SizedBox(width: AppSizes.spacing3),
 
               // Name + category label
@@ -639,6 +632,26 @@ class _BatchItemCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget? _buildItemCategoryIcon(Color bgColor, CategoryEntity? category) {
+    if (category == null) {
+      return null;
+    }
+
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+      ),
+      child: PhosphorIcon(
+        GlobalConstant.categoryIconsMapping[category.icon]!,
+        size: 20,
+        color: AppColors.bulma,
       ),
     );
   }
