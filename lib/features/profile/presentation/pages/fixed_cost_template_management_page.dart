@@ -42,15 +42,7 @@ class _FixedCostTemplateManagementPageState
     final isMainCycleWeekly = await _resolveIsMainCycleWeekly();
 
     if (categories.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: AppColors.danger100,
-          content: Text(
-            'Kategori belum tersedia. Silakan coba lagi.',
-            style: TextStyle(color: AppColors.gohan),
-          ),
-        ),
-      );
+      AppSnackBar.showError(context, 'Kategori belum tersedia. Silakan coba lagi.');
       return;
     }
 

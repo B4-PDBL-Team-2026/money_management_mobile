@@ -99,23 +99,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           child: BlocConsumer<TransactionDetailCubit, TransactionDetailState>(
             listener: (context, state) async {
               if (state is TransactionDetailDeleted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.primary,
-                  ),
-                );
+                AppSnackBar.showSuccess(context, state.message);
                 _goBack();
                 return;
               }
 
               if (state is TransactionDetailError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.danger100,
-                  ),
-                );
+                AppSnackBar.showError(context, state.message);
               }
             },
             builder: (context, state) {
@@ -164,12 +154,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     final categoryState = context.read<CategoryCubit>().state;
 
     if (categoryState is! CategoryLoaded) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Kategori belum siap. Coba lagi sebentar.'),
-          backgroundColor: AppColors.warning100,
-        ),
-      );
+      AppSnackBar.showWarning(context, 'Kategori belum siap. Coba lagi sebentar.');
       return;
     }
 
@@ -184,12 +169,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     final selectedType = detail.type ?? selectedCategory?.type;
 
     if (selectedType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Tipe transaksinya belum cocok buat diupdate.'),
-          backgroundColor: AppColors.warning100,
-        ),
-      );
+      AppSnackBar.showWarning(context, 'Tipe transaksinya belum cocok buat diupdate.');
       return;
     }
 
@@ -230,12 +210,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Transaksi berhasil diperbarui.'),
-        backgroundColor: AppColors.primary,
-      ),
-    );
+    AppSnackBar.showSuccess(context, 'Transaksi berhasil diperbarui.');
   }
 
   Future<void> _showDeleteConfirmationDialog(
@@ -277,13 +252,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       final willBeNegative = dashboardMetricState.metrics.balance - detail.amount < 0;
       
       if (isIncome && willBeNegative) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Penghapusan transaksi ini akan menyebabkan saldo menjadi negatif. Hapus transaksi lain atau tambahkan pemasukan terlebih dahulu.',
-            ),
-            backgroundColor: AppColors.warning100,
-          ),
+        AppSnackBar.showWarning(
+          context,
+          'Penghapusan transaksi ini akan menyebabkan saldo menjadi negatif. Hapus transaksi lain atau tambahkan pemasukan terlebih dahulu.',
         );
 
         return;

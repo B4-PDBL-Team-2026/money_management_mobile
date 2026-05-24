@@ -182,12 +182,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     if (_transactionItems.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Tambahkan minimal satu item transaksi.'),
-          backgroundColor: AppColors.warning100,
-        ),
-      );
+      AppSnackBar.showWarning(context, 'Tambahkan minimal satu item transaksi.');
       return;
     }
 
@@ -215,15 +210,12 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
         if (state is BatchTransactionSubmitSuccess) {
           _resetForm();
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                widget.batchId != null
-                    ? 'Batch transaksi berhasil diperbarui!'
-                    : 'Batch transaksi berhasil disimpan!',
-              ),
-              backgroundColor: AppColors.primary,
-            ),
+          AppSnackBar.show(
+            context: context,
+            message: widget.batchId != null
+                ? 'Batch transaksi berhasil diperbarui!'
+                : 'Batch transaksi berhasil disimpan!',
+            backgroundColor: AppColors.primary,
           );
 
           if (context.canPop()) {
@@ -234,12 +226,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
         }
 
         if (state is BatchTransactionSubmitError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.danger100,
-            ),
-          );
+          AppSnackBar.showError(context, state.message);
         }
       },
       child: Scaffold(

@@ -25,9 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.danger100),
-    );
+    AppSnackBar.showError(context, message);
   }
 
   @override

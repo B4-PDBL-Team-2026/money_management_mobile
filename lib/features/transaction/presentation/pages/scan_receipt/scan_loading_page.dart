@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/receipt_scanner_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/receipt_scanner_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_receipt_error_page.dart';
@@ -45,9 +46,7 @@ class ScanLoadingPage extends StatelessWidget {
                 ),
               );
             } else if (state is ReceiptScannerError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              AppSnackBar.showError(context, state.message);
               context.pop();
             }
           },

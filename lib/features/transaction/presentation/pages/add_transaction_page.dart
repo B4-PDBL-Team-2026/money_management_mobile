@@ -183,29 +183,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         child: BlocConsumer<AddTransactionCubit, AddTransactionState>(
           listener: (context, state) {
             if (state is AddTransactionSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Transaksi berhasil ditambahkan!",
-                    style: TextStyle(color: AppColors.gohan),
-                  ),
-                  backgroundColor: AppColors.primary,
-                ),
-              );
+              AppSnackBar.showSuccess(context, "Transaksi berhasil ditambahkan!");
 
               context.go(AppRouter.dashboard);
             }
 
             if (state is AddTransactionError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.message,
-                    style: TextStyle(color: AppColors.gohan),
-                  ),
-                  backgroundColor: AppColors.danger100,
-                ),
-              );
+              AppSnackBar.showError(context, state.message);
             }
           },
           builder: (context, state) {

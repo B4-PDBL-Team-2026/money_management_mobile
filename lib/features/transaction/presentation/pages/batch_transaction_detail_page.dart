@@ -136,23 +136,13 @@ class _BatchTransactionDetailPageState
           >(
             listener: (context, state) {
               if (state is BatchTransactionDetailDeleted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.primary,
-                  ),
-                );
+                AppSnackBar.showSuccess(context, state.message);
                 _goBack();
                 return;
               }
 
               if (state is BatchTransactionDetailError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.danger100,
-                  ),
-                );
+                AppSnackBar.showError(context, state.message);
               }
             },
             builder: (context, state) {

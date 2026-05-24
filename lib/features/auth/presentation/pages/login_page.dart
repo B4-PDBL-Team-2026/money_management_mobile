@@ -22,9 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   void _showErrorSnackbar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.danger100),
-    );
+    AppSnackBar.showError(context, message);
   }
 
   @override
@@ -32,15 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                "Login berhasil, lanjut yuk!",
-                style: TextStyle(color: AppColors.gohan),
-              ),
-              backgroundColor: AppColors.primary,
-            ),
-          );
+          AppSnackBar.showSuccess(context, "Login berhasil, lanjut yuk!");
 
           if (state.requiresOnboarding) {
             context.go(AppRouter.step1Personalization);

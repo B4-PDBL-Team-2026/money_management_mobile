@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/transaction/domain/services/image_picker_service.dart';
 import 'package:money_management_mobile/injection_container.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -159,9 +160,7 @@ class ScanReceiptErrorPage extends StatelessWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal memilih dari galeri: $e')),
-        );
+        AppSnackBar.showError(context, 'Gagal memilih dari galeri: $e');
       }
     }
   }

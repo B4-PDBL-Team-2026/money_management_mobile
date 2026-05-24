@@ -47,12 +47,7 @@ class _OtherPageState extends State<OtherPage> {
     final sessionState = context.read<SessionCubit>().state;
 
     if (sessionState is! SessionAuthenticated) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sesi kamu udah nggak valid. Login lagi ya.'),
-          backgroundColor: AppColors.danger100,
-        ),
-      );
+      AppSnackBar.showError(context, 'Sesi kamu udah nggak valid. Login lagi ya.');
       return;
     }
 
@@ -65,22 +60,12 @@ class _OtherPageState extends State<OtherPage> {
     final sessionState = context.read<SessionCubit>().state;
 
     if (sessionState is! SessionAuthenticated) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sesi kamu udah nggak valid. Login lagi ya.'),
-          backgroundColor: AppColors.danger100,
-        ),
-      );
+      AppSnackBar.showError(context, 'Sesi kamu udah nggak valid. Login lagi ya.');
       return;
     }
 
     if (sessionState.user.emailVerifiedAt != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email kamu sudah terverifikasi.'),
-          backgroundColor: AppColors.success100,
-        ),
-      );
+      AppSnackBar.showSuccess(context, 'Email kamu sudah terverifikasi.');
       return;
     }
 
@@ -194,14 +179,9 @@ class _OtherPageState extends State<OtherPage> {
         return;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: AppColors.danger100,
-          content: Text(
-            'Gagal batalin pendaftaran perangkat. Logout dibatalkan.',
-            style: TextStyle(color: AppColors.gohan),
-          ),
-        ),
+      AppSnackBar.showError(
+        context,
+        'Gagal batalin pendaftaran perangkat. Logout dibatalkan.',
       );
 
       return;
@@ -218,14 +198,9 @@ class _OtherPageState extends State<OtherPage> {
         return;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: AppColors.danger100,
-          content: Text(
-            'Gagal bersihin kategori. Logout dibatalkan.',
-            style: TextStyle(color: AppColors.gohan),
-          ),
-        ),
+      AppSnackBar.showError(
+        context,
+        'Gagal bersihin kategori. Logout dibatalkan.',
       );
 
       return;
@@ -472,15 +447,9 @@ class _OtherPageState extends State<OtherPage> {
                                 >(
                                   listener: (context, state) {
                                     if (state is UpdateBudgetLimitsSuccess) {
-                                      ScaffoldMessenger.of(
+                                      AppSnackBar.showSuccess(
                                         context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            'Batas budget harian berhasil diperbarui.',
-                                          ),
-                                          backgroundColor: AppColors.success100,
-                                        ),
+                                        'Batas budget harian berhasil diperbarui.',
                                       );
                                       setState(() {
                                         _isEditMode = false;
@@ -490,13 +459,9 @@ class _OtherPageState extends State<OtherPage> {
                                           .reset();
                                     } else if (state
                                         is UpdateBudgetLimitsFailure) {
-                                      ScaffoldMessenger.of(
+                                      AppSnackBar.showError(
                                         context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(state.message),
-                                          backgroundColor: AppColors.danger100,
-                                        ),
+                                        state.message,
                                       );
                                     }
                                   },
@@ -904,15 +869,7 @@ class _OtherPageState extends State<OtherPage> {
 
                         if (state is ResetPasswordError) {
                           _closeDialogIfOpen(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: AppColors.danger100,
-                              content: Text(
-                                state.message,
-                                style: const TextStyle(color: AppColors.gohan),
-                              ),
-                            ),
-                          );
+                          AppSnackBar.showError(context, state.message);
                         }
                       },
                       builder: (context, state) => Column(
@@ -956,15 +913,7 @@ class _OtherPageState extends State<OtherPage> {
 
                         if (state is VerifyEmailError) {
                           _closeDialogIfOpen(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: AppColors.danger100,
-                              content: Text(
-                                state.message,
-                                style: const TextStyle(color: AppColors.gohan),
-                              ),
-                            ),
-                          );
+                          AppSnackBar.showError(context, state.message);
                         }
                       },
                       builder: (context, _) {

@@ -124,12 +124,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
               }
 
               if (state is TransactionHistoryError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.danger100,
-                  ),
-                );
+                AppSnackBar.showError(context, state.message);
               }
             },
             builder: (context, state) {

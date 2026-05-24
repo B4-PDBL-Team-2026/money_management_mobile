@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_management_mobile/core/theme/app_colors.dart';
-import 'package:money_management_mobile/core/theme/app_sizes.dart';
-import 'package:money_management_mobile/core/widgets/app_button.dart';
-import 'package:money_management_mobile/core/widgets/app_text_field.dart';
+import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_state.dart';
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
@@ -81,15 +79,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                     Navigator.of(context).pop();
                   } else if (state is DeleteAccountError) {
                     _closeDialogIfOpen(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: AppColors.danger100,
-                        content: Text(
-                          state.message,
-                          style: const TextStyle(color: AppColors.gohan),
-                        ),
-                      ),
-                    );
+                    AppSnackBar.showError(context, state.message);
                   }
                 },
                 builder: (context, state) {
@@ -156,18 +146,9 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                                         return;
                                       }
 
-                                      ScaffoldMessenger.of(
+                                      AppSnackBar.showError(
                                         context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: AppColors.danger100,
-                                          content: const Text(
-                                            'Gagal membatalkan pendaftaran perangkat. Silakan coba lagi.',
-                                            style: TextStyle(
-                                              color: AppColors.gohan,
-                                            ),
-                                          ),
-                                        ),
+                                        'Gagal membatalkan pendaftaran perangkat. Silakan coba lagi.',
                                       );
                                     }
                                   }

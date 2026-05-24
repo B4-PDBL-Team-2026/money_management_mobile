@@ -41,17 +41,12 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
             .addCustomCategory(name: name, icon: iconKey, type: type);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                success
-                    ? 'Kategori "$name" berhasil ditambahkan!'
-                    : 'Gagal menambahkan kategori kustom.',
-              ),
-              backgroundColor: success
-                  ? AppColors.success100
-                  : AppColors.danger100,
-            ),
+          AppSnackBar.show(
+            context: context,
+            message: success
+                ? 'Kategori "$name" berhasil ditambahkan!'
+                : 'Gagal menambahkan kategori kustom.',
+            backgroundColor: success ? AppColors.success100 : AppColors.danger100,
           );
         }
       },
@@ -73,17 +68,12 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
             );
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                success
-                    ? 'Perubahan kategori "$name" berhasil disimpan!'
-                    : 'Gagal memperbarui kategori kustom.',
-              ),
-              backgroundColor: success
-                  ? AppColors.success100
-                  : AppColors.danger100,
-            ),
+          AppSnackBar.show(
+            context: context,
+            message: success
+                ? 'Perubahan kategori "$name" berhasil disimpan!'
+                : 'Gagal memperbarui kategori kustom.',
+            backgroundColor: success ? AppColors.success100 : AppColors.danger100,
           );
         }
       },
@@ -110,15 +100,12 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
         .deleteCustomCategory(category.id);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? 'Kategori "$name" berhasil dihapus!'
-                : 'Gagal menghapus kategori kustom.',
-          ),
-          backgroundColor: success ? AppColors.success100 : AppColors.danger100,
-        ),
+      AppSnackBar.show(
+        context: context,
+        message: success
+            ? 'Kategori "$name" berhasil dihapus!'
+            : 'Gagal menghapus kategori kustom.',
+        backgroundColor: success ? AppColors.success100 : AppColors.danger100,
       );
     }
   }

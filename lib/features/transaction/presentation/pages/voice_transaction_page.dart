@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
@@ -61,11 +62,7 @@ class VoiceTransactionPage extends StatelessWidget {
     return BlocConsumer<VoiceTransactionCubit, VoiceTransactionState>(
       listener: (context, state) {
         if (state is VoiceTransactionError) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(state.message,
-                style: const TextStyle(color: AppColors.gohan)),
-            backgroundColor: AppColors.danger100,
-          ));
+          AppSnackBar.showError(context, state.message);
         }
       },
       builder: (context, state) {
