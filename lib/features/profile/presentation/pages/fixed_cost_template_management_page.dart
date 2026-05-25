@@ -335,11 +335,11 @@ class _FixedCostTemplateManagementPageState
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddFixedCostBottomSheet,
         backgroundColor: AppColors.secondary,
+        elevation: 4.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(AppSizes.radiusLg)),
-          side: BorderSide(color: AppColors.bulma, width: 1),
         ),
-        child: Icon(Icons.add, color: AppColors.bulma),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

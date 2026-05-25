@@ -160,13 +160,13 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
                 return FloatingActionButton(
                   onPressed: _showAddBottomSheet,
                   backgroundColor: AppColors.secondary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(
+                  elevation: 4.0,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
                       Radius.circular(AppSizes.radiusLg),
                     ),
-                    side: const BorderSide(color: AppColors.bulma, width: 1),
                   ),
-                  child: const Icon(Icons.add, color: AppColors.bulma),
+                  child: const Icon(Icons.add, color: Colors.white),
                 );
               }
               return const SizedBox.shrink();
