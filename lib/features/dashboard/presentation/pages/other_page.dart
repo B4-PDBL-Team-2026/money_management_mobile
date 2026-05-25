@@ -20,7 +20,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/widgets/
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/update_budget_limits_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/update_budget_limits_state.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class OtherPage extends StatefulWidget {
   const OtherPage({super.key});
@@ -124,7 +124,7 @@ class _OtherPageState extends State<OtherPage> {
                   color: AppColors.lightPrimary,
                   shape: BoxShape.circle,
                 ),
-                child: PhosphorIcon(PhosphorIconsFill.info, color: AppColors.primary, size: 48),
+                child: Icon(PiconsFill.info, color: AppColors.primary, size: 48),
               ),
               const SizedBox(height: AppSizes.spacing4),
               Text(
@@ -822,7 +822,7 @@ class _OtherPageState extends State<OtherPage> {
                 OtherSettingsCard(
                   children: [
                     OtherSettingsTile(
-                      icon: PhosphorIconsRegular.tag,
+                      icon: PiconsRegular.tag,
                       title: 'Kelola Kategori Kustom',
                       subtitle: 'Tambah atau edit kategori sesuai kebutuhanmu',
                       iconBackground: AppColors.lightPrimary,
@@ -949,7 +949,7 @@ class _OtherPageState extends State<OtherPage> {
                       },
                     ),
                     OtherSettingsTile(
-                      icon: PhosphorIconsRegular.userMinus,
+                      icon: PiconsRegular.userMinus,
                       title: 'Hapus Akun',
                       subtitle: 'Hapus akun ini secara permanen',
                       iconBackground: AppColors.danger10,

@@ -10,7 +10,7 @@ import 'package:money_management_mobile/features/category/presentation/widgets/c
 import 'package:money_management_mobile/features/category/presentation/widgets/custom_category_card.dart';
 import 'package:money_management_mobile/features/category/presentation/widgets/custom_category_empty_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class CustomCategoryPage extends StatefulWidget {
   const CustomCategoryPage({super.key});
@@ -207,8 +207,8 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
                   color: AppColors.danger10.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: PhosphorIcon(
-                  PhosphorIconsRegular.warningOctagon,
+                child: Icon(
+                  PiconsRegular.warningOctagon,
                   size: 56,
                   color: AppColors.danger100,
                 ),
@@ -259,8 +259,8 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
                   color: AppColors.danger10.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: PhosphorIcon(
-                  PhosphorIconsRegular.warningOctagon,
+                child: Icon(
+                  PiconsRegular.warningOctagon,
                   size: 56,
                   color: AppColors.danger100,
                 ),
@@ -381,8 +381,8 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
                                   color: AppColors.lightPrimary,
                                   shape: BoxShape.circle,
                                 ),
-                                child: PhosphorIcon(
-                                  PhosphorIconsRegular.tag,
+                                child: Icon(
+                                  PiconsRegular.tag,
                                   size: 32,
                                   color: AppColors.primary,
                                 ),

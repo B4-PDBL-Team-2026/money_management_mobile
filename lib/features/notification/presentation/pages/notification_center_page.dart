@@ -9,7 +9,7 @@ import 'package:money_management_mobile/features/notification/presentation/cubit
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_center_state.dart';
 import 'package:money_management_mobile/features/notification/presentation/widgets/notification_item_card.dart';
 import 'package:money_management_mobile/injection_container.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class NotificationCenterPage extends StatefulWidget {
   const NotificationCenterPage({super.key});
@@ -271,8 +271,8 @@ class _NotificationCenterEmptyState extends StatelessWidget {
                 color: AppColors.lightPrimary,
                 borderRadius: BorderRadius.circular(AppSizes.radius2xl),
               ),
-              child: const PhosphorIcon(
-                PhosphorIconsRegular.bellSlash,
+              child: const Icon(
+                PiconsRegular.bellSlash,
                 color: AppColors.primary,
                 size: 36,
               ),

@@ -15,7 +15,7 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_state.dart';
 import 'package:money_management_mobile/injection_container.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class BatchTransactionDetailPage extends StatefulWidget {
   final int batchId;
@@ -271,8 +271,8 @@ class _DetailContent extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    const PhosphorIcon(
-                      PhosphorIconsRegular.stack,
+                    const Icon(
+                      PiconsRegular.stack,
                       color: AppColors.gohan,
                     ),
                   ],
@@ -404,7 +404,7 @@ class _BatchItemCard extends StatelessWidget {
     final amountPrefix = isExpense ? '-' : '+';
     final categoryIcon =
         GlobalConstant.categoryIconsMapping[item.categoryIcon] ??
-        PhosphorIconsRegular.question;
+        PiconsRegular.question;
 
     return GestureDetector(
       onTap: () {
@@ -423,7 +423,7 @@ class _BatchItemCard extends StatelessWidget {
                 color: chipBgColor,
                 borderRadius: BorderRadius.circular(AppSizes.radiusSm),
               ),
-              child: PhosphorIcon(
+              child: Icon(
                 categoryIcon,
                 color: AppColors.bulma,
                 size: 24,

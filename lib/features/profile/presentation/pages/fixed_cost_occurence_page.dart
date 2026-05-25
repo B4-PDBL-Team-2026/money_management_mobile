@@ -13,7 +13,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/u
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/unpaid_fixed_cost_card.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 // TODO: memindahkan semua kode fixed cost occurences ke fitur fixed cost
 class FixedCostOccurencePage extends StatefulWidget {
@@ -153,8 +153,8 @@ class _FixedCostOccurencePageState extends State<FixedCostOccurencePage> {
                 Radius.circular(AppSizes.radiusSm),
               ),
             ),
-            child: PhosphorIcon(
-              PhosphorIconsRegular.pencil,
+            child: Icon(
+              PiconsRegular.pencil,
               color: Colors.white,
             ),
           ),
@@ -211,7 +211,7 @@ class _FixedCostSection extends StatelessWidget {
       context: context,
       builder: (context) {
         final color = isWarning ? AppColors.warning100 : AppColors.success100;
-        final icon = isWarning ? PhosphorIconsFill.info : PhosphorIconsFill.checkCircle;
+        final icon = isWarning ? PiconsFill.info : PiconsFill.checkCircle;
 
         return AlertDialog(
           backgroundColor: AppColors.gohan,
@@ -228,7 +228,7 @@ class _FixedCostSection extends StatelessWidget {
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: PhosphorIcon(
+                child: Icon(
                   icon,
                   color: color,
                   size: 48,
@@ -362,8 +362,8 @@ class _EmptyFixedCostState extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: PhosphorIcon(
-              PhosphorIconsLight.receipt,
+            child: Icon(
+              PiconsLight.receipt,
               size: 48,
               color: AppColors.primary,
             ),
@@ -434,8 +434,8 @@ class _ErrorFixedCostState extends StatelessWidget {
               color: AppColors.danger100.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: PhosphorIcon(
-              PhosphorIconsLight.warning,
+            child: Icon(
+              PiconsLight.warning,
               size: 48,
               color: AppColors.danger100,
             ),

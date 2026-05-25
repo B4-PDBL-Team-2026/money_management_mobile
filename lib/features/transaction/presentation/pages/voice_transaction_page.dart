@@ -143,7 +143,7 @@ class VoiceTransactionPage extends StatelessWidget {
       VoiceTransactionParsed(parsedData: final d) => VoiceParsedView(
         key: const ValueKey('parsed'),
         data: d,
-        // Pass the real backend category list — view resolves/validates internally
+        // Pass the real backend category list â€” view resolves/validates internally
         categories: _categoriesFor(context, d.type),
         onShowCategoryPicker: (currentId) =>
             _showCategoryPicker(context, d.type, currentId),

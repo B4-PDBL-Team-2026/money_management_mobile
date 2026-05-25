@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class CustomCategoryEmptyState extends StatelessWidget {
   final VoidCallback onAddPressed;
@@ -24,8 +24,8 @@ class CustomCategoryEmptyState extends StatelessWidget {
                 color: AppColors.lightPrimary,
                 shape: BoxShape.circle,
               ),
-              child: PhosphorIcon(
-                PhosphorIconsRegular.tag,
+              child: Icon(
+                PiconsRegular.tag,
                 size: 64,
                 color: AppColors.primary,
               ),

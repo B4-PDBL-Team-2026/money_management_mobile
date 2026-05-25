@@ -7,14 +7,14 @@ import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/transaction/domain/services/image_picker_service.dart';
 import 'package:money_management_mobile/injection_container.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 /// Jenis error yang terjadi saat scan struk.
 enum ScanReceiptErrorType {
-  /// Gambar tidak valid — berikan 3 pilihan: ambil ulang, galeri, manual.
+  /// Gambar tidak valid â€” berikan 3 pilihan: ambil ulang, galeri, manual.
   invalidImage,
 
-  /// Semua API key limit — hanya berikan 1 pilihan: kembali ke beranda.
+  /// Semua API key limit â€” hanya berikan 1 pilihan: kembali ke beranda.
   rateLimited,
 }
 
@@ -73,10 +73,10 @@ class ScanReceiptErrorPage extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: Center(
-        child: PhosphorIcon(
+        child: Icon(
           isRateLimit
-              ? PhosphorIconsRegular.clock
-              : PhosphorIconsRegular.imageSquare,
+              ? PiconsRegular.clock
+              : PiconsRegular.imageSquare,
           color:
               isRateLimit
                   ? AppColors.warning100
@@ -113,7 +113,7 @@ class ScanReceiptErrorPage extends StatelessWidget {
 
   Widget _buildRateLimitActions(BuildContext context) {
     return _ActionButton(
-      icon: PhosphorIconsRegular.house,
+      icon: PiconsRegular.house,
       label: 'Kembali ke Beranda',
       backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
@@ -125,7 +125,7 @@ class ScanReceiptErrorPage extends StatelessWidget {
     return Column(
       children: [
         _ActionButton(
-          icon: PhosphorIconsRegular.camera,
+          icon: PiconsRegular.camera,
           label: 'Ambil Foto Ulang',
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
@@ -133,7 +133,7 @@ class ScanReceiptErrorPage extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _ActionButton(
-          icon: PhosphorIconsRegular.image,
+          icon: PiconsRegular.image,
           label: 'Pilih Gambar Baru',
           backgroundColor: AppColors.lightPrimary,
           foregroundColor: AppColors.primary,
@@ -141,7 +141,7 @@ class ScanReceiptErrorPage extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _ActionButton(
-          icon: PhosphorIconsRegular.pencilSimple,
+          icon: PiconsRegular.pencilSimple,
           label: 'Tambah Manual',
           backgroundColor: AppColors.gohan,
           foregroundColor: AppColors.bulma,
@@ -196,7 +196,7 @@ class _ActionButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                PhosphorIcon(icon, color: foregroundColor, size: 20),
+                Icon(icon, color: foregroundColor, size: 20),
                 const SizedBox(width: 10),
                 Text(
                   label,

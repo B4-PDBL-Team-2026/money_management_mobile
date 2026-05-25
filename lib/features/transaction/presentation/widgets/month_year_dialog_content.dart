@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class MonthYearDialogContent extends StatefulWidget {
   final int initialMonth;
@@ -84,8 +84,8 @@ class _MonthYearDialogContentState extends State<MonthYearDialogContent> {
               ),
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: PhosphorIcon(
-                  PhosphorIconsRegular.x,
+                icon: Icon(
+                  PiconsRegular.x,
                   color: AppColors.bulma,
                   size: 20,
                 ),

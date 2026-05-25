@@ -16,7 +16,7 @@ import 'package:money_management_mobile/features/transaction/presentation/widget
 import 'package:money_management_mobile/features/transaction/presentation/widgets/summary_card.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_components.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_history_item.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   const TransactionHistoryPage({super.key});
@@ -260,8 +260,8 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
             controller: _searchController,
             hint: 'Cari nama transaksi...',
             withBorder: false,
-            prefixIcon: const PhosphorIcon(
-              PhosphorIconsRegular.magnifyingGlass,
+            prefixIcon: const Icon(
+              PiconsRegular.magnifyingGlass,
               color: Colors.grey,
             ),
             onChanged: (value) {
@@ -280,7 +280,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                       : _month == null
                       ? 'Semua Bulan $_year'
                       : '${GlobalConstant.monthMapping[_month]} $_year',
-                  leadingIcon: PhosphorIconsRegular.calendarBlank,
+                  leadingIcon: PiconsRegular.calendarBlank,
                   onPressed: _openMonthYearPicker,
                   variant: AppButtonVariant.ghost,
                   fontSize: 14,
@@ -294,7 +294,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                   leadingIcon:
                       GlobalConstant.categoryIconsMapping[_selectedCategory
                           .icon] ??
-                      PhosphorIconsRegular.squaresFour,
+                      PiconsRegular.squaresFour,
                   onPressed: _openCategoryPicker,
                   variant: AppButtonVariant.ghost,
                   fontSize: 14,

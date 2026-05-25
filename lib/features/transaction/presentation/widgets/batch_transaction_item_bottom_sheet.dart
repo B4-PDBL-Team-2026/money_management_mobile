@@ -5,7 +5,7 @@ import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 /// The mode that determines how the bottom sheet renders and behaves.
 enum BatchItemMode { add, edit }
@@ -214,9 +214,9 @@ class _BatchTransactionItemBottomSheetState
                       value: cat.id,
                       child: Row(
                         children: [
-                          PhosphorIcon(
+                          Icon(
                             GlobalConstant.categoryIconsMapping[cat.icon] ??
-                                PhosphorIconsRegular.tag,
+                                PiconsRegular.tag,
                             size: 16,
                             color: AppColors.trunks,
                           ),

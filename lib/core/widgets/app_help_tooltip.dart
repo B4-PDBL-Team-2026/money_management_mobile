@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
-/// A reusable help tooltip widget that displays an info icon (ℹ️)
+/// A reusable help tooltip widget that displays an info icon (â„¹ï¸)
 /// which, when tapped, shows a tooltip bubble with a help message.
 ///
 /// The tooltip appears as a blue bubble over a semi-transparent overlay,
@@ -146,8 +146,8 @@ class _AppHelpTooltipState extends State<AppHelpTooltip>
             behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: const EdgeInsets.all(2.0),
-              child: PhosphorIcon(
-                PhosphorIconsFill.info,
+              child: Icon(
+                PiconsFill.info,
                 size: widget.iconSize,
                 color: widget.iconColor ?? AppColors.trunks,
               ),
@@ -163,8 +163,8 @@ class _AppHelpTooltipState extends State<AppHelpTooltip>
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.spacing1),
-        child: PhosphorIcon(
-          PhosphorIconsFill.info,
+        child: Icon(
+          PiconsFill.info,
           size: widget.iconSize,
           color: widget.iconColor ?? AppColors.trunks,
         ),
@@ -199,7 +199,7 @@ class _TooltipBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate horizontal position — center the bubble on the icon,
+    // Calculate horizontal position â€” center the bubble on the icon,
     // but clamp to keep within screen bounds.
     final iconCenterX = iconPosition.dx + iconSize.width / 2;
     double left = iconCenterX - maxWidth / 2;

@@ -16,7 +16,7 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_state.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class TransactionDetailPage extends StatefulWidget {
   final int transactionId;
@@ -718,19 +718,19 @@ class _DetailContent extends StatelessWidget {
   ) {
     if (category?.icon != null) {
       return GlobalConstant.categoryIconsMapping[category!.icon] ??
-          PhosphorIconsRegular.question;
+          PiconsRegular.question;
     }
 
     if (detail.categoryIcon != null) {
       return GlobalConstant.categoryIconsMapping[detail.categoryIcon!] ??
-          PhosphorIconsRegular.question;
+          PiconsRegular.question;
     }
 
     if (category == null) {
-      return PhosphorIconsRegular.question;
+      return PiconsRegular.question;
     }
 
-    return PhosphorIconsRegular.question;
+    return PiconsRegular.question;
   }
 
   // TODO: refactor ini di masa depan menggunakan enum terpisah di entitas transaction detail agar lebih type-safe dan mudah di-maintain

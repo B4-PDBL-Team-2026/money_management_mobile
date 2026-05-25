@@ -7,7 +7,7 @@ import 'package:money_management_mobile/features/category/domain/entities/catego
 import 'package:money_management_mobile/features/category/presentation/cubit/category_cubit.dart';
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class CategoryDialogContent extends StatefulWidget {
   final CategoryEntity selectedCategory;
@@ -68,7 +68,7 @@ class _CategoryDialogContentState extends State<CategoryDialogContent> {
 
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const PhosphorIcon(PhosphorIconsRegular.x),
+                icon: const Icon(PiconsRegular.x),
                 iconSize: 20,
               ),
             ],
@@ -137,10 +137,10 @@ class _CategoryDialogContentState extends State<CategoryDialogContent> {
                             AppSizes.radiusMd,
                           ),
                         ),
-                        child: PhosphorIcon(
+                        child: Icon(
                           GlobalConstant.categoryIconsMapping[activeList[index]
                                   .icon] ??
-                              PhosphorIconsRegular.question,
+                              PiconsRegular.question,
                           color: iconColor,
                           size: 28,
                         ),

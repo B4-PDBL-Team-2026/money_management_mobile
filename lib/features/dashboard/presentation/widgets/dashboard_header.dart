@@ -12,7 +12,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/widgets/
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_center_cubit.dart';
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_center_state.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({super.key});
@@ -91,8 +91,8 @@ class DashboardHeader extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primaryContainer,
                   shape: BoxShape.circle,
                 ),
-                child: PhosphorIcon(
-                  PhosphorIconsRegular.bell,
+                child: Icon(
+                  PiconsRegular.bell,
                   size: 28,
                   color: AppColors.primary,
                 ),
@@ -146,7 +146,7 @@ class DashboardHeader extends StatelessWidget {
       if (limitState == DashboardLimitState.underFirstLimit) {
         return 'Saldo lagi mepet banget! Tetap di mode Hemat Ekstrem biar cukup sampai akhir bulan.';
       } else if (limitState == DashboardLimitState.overFirstLimit) {
-        return 'Mode Hemat Ekstremnya kelewatan. Sekarang kamu pakai jatah “Bertahan Hidup”.';
+        return 'Mode Hemat Ekstremnya kelewatan. Sekarang kamu pakai jatah â€œBertahan Hidupâ€.';
       } else {
         return 'Batas harian aktualnya udah kelewatan, mending stop belanja dulu hari ini!';
       }

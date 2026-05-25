@@ -4,7 +4,6 @@ import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CustomCategoryCard extends StatelessWidget {
   final CategoryEntity category;
@@ -81,7 +80,7 @@ class CustomCategoryCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
                     child: Center(
-                      child: PhosphorIcon(
+                      child: Icon(
                         iconData,
                         color: isExpense
                             ? AppColors.danger100

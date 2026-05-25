@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class RealBalanceCard extends StatefulWidget {
   final int balance;
@@ -61,7 +61,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
                     ),
                     const SizedBox(width: AppSizes.spacing2),
                     Text(
-                      'Rp ${_isVisible ? CurrencyFormatter.format(widget.safeBalance) : '••••••'}',
+                      'Rp ${_isVisible ? CurrencyFormatter.format(widget.safeBalance) : 'â€¢â€¢â€¢â€¢â€¢â€¢'}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.bulma,
@@ -97,7 +97,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
                       ),
                       const SizedBox(width: AppSizes.spacing2),
                       Text(
-                        'Rp ${_isVisible ? CurrencyFormatter.format(widget.balance) : '••••••'}',
+                        'Rp ${_isVisible ? CurrencyFormatter.format(widget.balance) : 'â€¢â€¢â€¢â€¢â€¢â€¢'}',
                         style: Theme.of(
                           context,
                         ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
@@ -116,10 +116,10 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
                 _isVisible = !_isVisible;
               });
             },
-            child: PhosphorIcon(
+            child: Icon(
               _isVisible
-                  ? PhosphorIconsRegular.eye
-                  : PhosphorIconsRegular.eyeSlash,
+                  ? PiconsRegular.eye
+                  : PiconsRegular.eyeSlash,
               size: 20,
               color: AppColors.bulma,
             ),
