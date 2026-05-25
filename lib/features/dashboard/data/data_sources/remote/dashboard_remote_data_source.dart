@@ -27,8 +27,8 @@ class DashboardRemoteDataSource {
           categoryIcon: 'shopping_bag',
           name: 'Sewa Kos',
           amount: 100000,
-          cycle: FinancialCycle.monthly,
-          dueDate: DateTime(2026, 4, 30),
+          cycle: FinancialCycle.weekly,
+          dueDate: DateTime.now(),
         ),
         UnpaidFixedCostModel(
           occurrenceId: 2,
@@ -38,7 +38,7 @@ class DashboardRemoteDataSource {
           name: 'Listrik',
           amount: 50000,
           cycle: FinancialCycle.monthly,
-          dueDate: DateTime(2026, 4, 28),
+          dueDate: DateTime.now(),
         ),
       ];
     }
@@ -69,7 +69,7 @@ class DashboardRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while fetching unpaid fixed costs', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengambil fixed cost yang belum dibayar',
+        'Terjadi kesalahan sistem saat mengambil biaya tetap yang belum dibayar',
       );
     }
   }
@@ -79,7 +79,7 @@ class DashboardRemoteDataSource {
       return BudgetSnapshotModel(
         timestamp:
             DateTime.now(), // Pakai waktu sekarang agar selalu relevan saat di-test di device
-        balance: 750000, // Saldo yang cukup aman
+        balance: 150000000, // Saldo 3 digit (ratusan juta / 9 angka) untuk test overlap
         budgetCycle: FinancialCycle.monthly,
         safetyCeiling: 50000, // Batas atas / Target harian
         safetyFlooring: 30000, // Batas bawah / Survival
@@ -95,8 +95,8 @@ class DashboardRemoteDataSource {
             categoryIcon: 'shopping_bag',
             name: 'Sewa Kos',
             amount: 100000,
-            cycle: FinancialCycle.monthly,
-            dueDate: DateTime(2026, 4, 30),
+            cycle: FinancialCycle.weekly,
+            dueDate: DateTime.now(),
           ),
           UnpaidFixedCostModel(
             occurrenceId: 2,
@@ -106,7 +106,7 @@ class DashboardRemoteDataSource {
             name: 'Listrik',
             amount: 50000,
             cycle: FinancialCycle.monthly,
-            dueDate: DateTime(2026, 4, 28),
+            dueDate: DateTime.now(),
           ),
         ],
       );
@@ -150,7 +150,7 @@ class DashboardRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while confirming fixed cost occurrence', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat konfirmasi pembayaran fixed cost',
+        'Terjadi kesalahan sistem saat konfirmasi pembayaran biaya tetap',
       );
     }
   }
@@ -172,7 +172,7 @@ class DashboardRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while cancelling fixed cost occurrence', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat membatalkan fixed cost',
+        'Terjadi kesalahan sistem saat membatalkan biaya tetap',
       );
     }
   }

@@ -24,7 +24,7 @@ class VoiceErrorView extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: AppColors.danger100.withOpacity(0.12),
+              color: AppColors.danger100.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(Icons.warning_rounded,
@@ -34,7 +34,7 @@ class VoiceErrorView extends StatelessWidget {
           const SizedBox(height: 24),
 
           Text(
-            'Maaf, Format Tidak\nSesuai',
+            'Waduh, formatnya\nbelum pas',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: AppColors.bulma,
@@ -53,8 +53,7 @@ class VoiceErrorView extends StatelessWidget {
                 height: 1.6,
               ),
               children: [
-                const TextSpan(
-                    text: 'Kami belum bisa memproses kalimat\nseperti '),
+                const TextSpan(text: 'Kami belum bisa memproses kalimat\nseperti '),
                 if (rawInput.isNotEmpty)
                   TextSpan(
                     text: '"$rawInput"',
@@ -66,7 +65,7 @@ class VoiceErrorView extends StatelessWidget {
                   ),
                 const TextSpan(
                   text:
-                  '. Mohon ikuti\nstruktur standar agar pencatatan\nkeuangan Anda lebih akurat.',
+                  '. Coba pakai format standar ya biar pencatatan\nkeuangan kamu lebih akurat.',
                 ),
               ],
             ),
@@ -83,7 +82,7 @@ class VoiceErrorView extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 12,
                 ),
               ],
@@ -95,7 +94,7 @@ class VoiceErrorView extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.08),
+                    color: AppColors.primary.withValues(alpha: 0.08),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.lightbulb_outline_rounded,
@@ -107,7 +106,7 @@ class VoiceErrorView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Gunakan format berikut:',
+                        'Pakai format berikut ya:',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.bulma,
                           fontWeight: FontWeight.w600,

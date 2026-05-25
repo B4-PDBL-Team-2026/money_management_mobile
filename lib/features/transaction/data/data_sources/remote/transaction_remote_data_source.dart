@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
@@ -5,6 +7,12 @@ import 'package:money_management_mobile/core/constants/app_env.dart';
 import 'package:money_management_mobile/core/data/models/paginated_model.dart';
 import 'package:money_management_mobile/core/error/error_handler.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
+import 'package:money_management_mobile/core/error/receipt_exceptions.dart';
+import 'package:money_management_mobile/core/services/gemini_scanner_service.dart';
+import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
+import 'package:money_management_mobile/features/transaction/data/models/add_batch_transaction_model.dart';
+import 'package:money_management_mobile/features/transaction/data/models/batch_transaction_detail_model.dart';
+import 'package:money_management_mobile/features/transaction/data/models/scan_receipt_result_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_detail_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_history_model.dart';
 import 'package:money_management_mobile/features/transaction/data/models/transaction_model.dart';
@@ -13,9 +21,10 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 @LazySingleton()
 class TransactionRemoteDataSource {
   final Dio dio;
+  final GeminiScannerService geminiScannerService;
   final _log = Logger('TransactionRemoteDataSource');
 
-  TransactionRemoteDataSource(this.dio);
+  TransactionRemoteDataSource(this.dio, this.geminiScannerService);
 
   Future<TransactionModel> addTransaction(
     TransactionModel transactionModel,
@@ -33,7 +42,56 @@ class TransactionRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while adding transaction', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat menambah transaksi',
+        'Ada kendala pas nambah transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
+  Future<void> addBatchTransaction(
+    AddBatchTransactionModel requestModel,
+  ) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.post('/transaction/batch', data: requestModel.toJson());
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        ' Add Batch Transaction',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while adding batch transaction', e);
+      throw UnexpectedException(
+        'Ada kendala pas nambah batch transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
+  Future<void> updateBatchTransaction({
+    required int id,
+    required AddBatchTransactionModel requestModel,
+  }) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.put('/transaction/batch/$id', data: requestModel.toJson());
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Update Batch Transaction',
+      );
+    } catch (e) {
+      _log.severe('Unexpected error while updating batch transaction', e);
+      throw UnexpectedException(
+        'Ada kendala pas mengubah batch transaksi. Coba lagi ya.',
       );
     }
   }
@@ -62,7 +120,7 @@ class TransactionRemoteDataSource {
       final data = responseData?['data'] as Map<String, dynamic>?;
 
       if (data == null) {
-        throw UnexpectedException('Data detail transaksi tidak ditemukan.');
+        throw UnexpectedException('Detail transaksi belum ketemu.');
       }
 
       return TransactionDetailModel.fromJson(data);
@@ -79,7 +137,7 @@ class TransactionRemoteDataSource {
 
       _log.severe('Unexpected error while fetching transaction detail', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengambil detail transaksi',
+        'Ada kendala pas ambil detail transaksi. Coba lagi ya.',
       );
     }
   }
@@ -115,7 +173,7 @@ class TransactionRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while updating transaction', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat memperbarui transaksi',
+        'Ada kendala pas update transaksi. Coba lagi ya.',
       );
     }
   }
@@ -133,7 +191,25 @@ class TransactionRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while deleting transaction', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat menghapus transaksi',
+        'Ada kendala pas hapus transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
+  Future<void> deleteBatchTransaction({required int id}) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return;
+    }
+
+    try {
+      await dio.delete('/transaction/batch/$id');
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, ' Delete Batch Transaction');
+    } catch (e) {
+      _log.severe('Unexpected error while deleting batch transaction', e);
+      throw UnexpectedException(
+        'Ada kendala pas hapus batch transaksi. Coba lagi ya.',
       );
     }
   }
@@ -160,8 +236,6 @@ class TransactionRemoteDataSource {
           categoryId: 11,
           name: 'Gaji Bulanan',
           transactionAt: now,
-          createdAt: now,
-          updatedAt: now,
           type: TransactionType.income,
         ),
         TransactionHistoryModel(
@@ -170,8 +244,6 @@ class TransactionRemoteDataSource {
           categoryId: 1,
           name: 'Makan Siang (Nasi Padang)',
           transactionAt: now,
-          createdAt: now,
-          updatedAt: now,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -180,8 +252,6 @@ class TransactionRemoteDataSource {
           categoryId: 2,
           name: 'Ojek Online',
           transactionAt: now,
-          createdAt: now,
-          updatedAt: now,
           type: TransactionType.expense,
         ),
 
@@ -192,8 +262,6 @@ class TransactionRemoteDataSource {
           categoryId: 6,
           name: 'Belanja Mingguan',
           transactionAt: yesterday,
-          createdAt: yesterday,
-          updatedAt: yesterday,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -202,8 +270,6 @@ class TransactionRemoteDataSource {
           categoryId: 13,
           name: 'Hadiah Ulang Tahun',
           transactionAt: yesterday,
-          createdAt: yesterday,
-          updatedAt: yesterday,
           type: TransactionType.income,
         ),
         TransactionHistoryModel(
@@ -212,8 +278,6 @@ class TransactionRemoteDataSource {
           categoryId: 5,
           name: 'Tiket Bioskop',
           transactionAt: yesterday,
-          createdAt: yesterday,
-          updatedAt: yesterday,
           type: TransactionType.expense,
         ),
 
@@ -224,8 +288,6 @@ class TransactionRemoteDataSource {
           categoryId: 3,
           name: 'Bayar Listrik & WiFi',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -234,8 +296,6 @@ class TransactionRemoteDataSource {
           categoryId: 14,
           name: 'Dividen Saham',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.income,
         ),
         TransactionHistoryModel(
@@ -244,8 +304,6 @@ class TransactionRemoteDataSource {
           categoryId: 8,
           name: 'Donasi Panti Asuhan',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -254,8 +312,6 @@ class TransactionRemoteDataSource {
           categoryId: 7,
           name: 'Beli Obat Flu',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.expense,
         ),
         TransactionHistoryModel(
@@ -264,8 +320,6 @@ class TransactionRemoteDataSource {
           categoryId: 15,
           name: 'Pinjaman Cair',
           transactionAt: threeDaysAgo,
-          createdAt: threeDaysAgo,
-          updatedAt: threeDaysAgo,
           type: TransactionType.income,
         ),
       ];
@@ -286,7 +340,7 @@ class TransactionRemoteDataSource {
           'search': search,
           'categoryId': categoryId,
           'month': month,
-          'year': year
+          'year': year,
         },
       );
 
@@ -299,7 +353,156 @@ class TransactionRemoteDataSource {
     } catch (e) {
       _log.severe('Unexpected error while fetching transaction', e);
       throw UnexpectedException(
-        'Terjadi kesalahan sistem saat mengambil transaksi',
+        'Ada kendala pas ambil data transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
+  Future<BatchTransactionDetailModel> getBatchTransactionDetail({
+    required int id,
+  }) async {
+    if (AppEnv.useMockApi) {
+      await Future.delayed(const Duration(seconds: 1));
+      return BatchTransactionDetailModel(
+        id: id,
+        name: 'Mock Batch Transaksi',
+        note: null,
+        totalAmount: 50000,
+        transactionAt: DateTime.now(),
+        items: [
+          BatchTransactionDetailItemModel(
+            id: 1,
+            name: 'Mock Item Batch',
+            amount: 50000,
+            type: TransactionType.income,
+            source: 'manual',
+            note: null,
+            transactionAt: DateTime.now(),
+            categoryId: 11,
+            categoryName: 'Gaji',
+            categoryIcon: 'wallet',
+          ),
+        ],
+      );
+    }
+
+    try {
+      final response = await dio.get('/transaction/batch/$id');
+      final responseData = response.data as Map<String, dynamic>?;
+      final data = responseData?['data'] as Map<String, dynamic>?;
+
+      if (data == null) {
+        throw UnexpectedException('Detail batch transaksi belum ketemu.');
+      }
+
+      return BatchTransactionDetailModel.fromJson(data);
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(
+        e,
+        _log,
+        'Get Batch Transaction Detail',
+      );
+    } catch (e) {
+      if (e is UnexpectedException) rethrow;
+      _log.severe(
+        'Unexpected error while fetching batch transaction detail',
+        e,
+      );
+      throw UnexpectedException(
+        'Ada kendala pas ambil detail batch transaksi. Coba lagi ya.',
+      );
+    }
+  }
+
+  /// Memproses gambar struk menggunakan Gemini AI.
+  ///
+  /// Parameter [categories] digunakan untuk meng-inject daftar kategori ke dalam
+  /// prompt Gemini agar model dapat memetakan item ke kategori yang tepat.
+  ///
+  /// Mengembalikan [ScanReceiptResultModel] lengkap dengan header batch
+  /// (name, transactionAt, note) dan items.
+  ///
+  /// Throws:
+  /// - [InvalidReceiptException] jika gambar bukan struk yang valid.
+  /// - [RateLimitException] jika semua API key Gemini sedang terkena limit.
+  /// - [UnexpectedException] untuk error tak terduga lainnya.
+  Future<ScanReceiptResultModel> parseReceiptImage(
+    File image, {
+    required List<CategoryEntity> categories,
+  }) async {
+    // Bangun daftar kategori untuk di-inject ke prompt
+    final categoryList = categories
+        .map((c) => '- id: ${c.id}, name: "${c.name}", type: "${c.type.value}"')
+        .join('\n');
+
+    final prompt = '''
+Kamu adalah asisten AI yang bertugas mengekstrak informasi dari gambar struk atau bukti transaksi ke dalam format JSON.
+
+ATURAN PENTING:
+1. Nilai pada field `amount` HARUS SELALU berupa angka positif. DILARANG KERAS menggunakan angka minus/negatif (-).
+2. Gunakan field `type` dengan nilai "income" (pemasukan) atau "expense" (pengeluaran) untuk membedakan sifat transaksi tersebut.
+3. Gunakan `categoryId` yang paling sesuai dari daftar yang diberikan.
+
+FORMAT JSON YANG DIHARAPKAN:
+{
+  "name": "",
+  "transactionAt": "",
+  "note": null,
+  "source": "batch",
+  "items": [
+    {
+      "name": "",
+      "amount": 0,
+      "categoryId": 0,
+      "type": "income | expense",
+      "note": null
+    }
+  ]
+}
+
+DAFTAR KATEGORI YANG TERSEDIA:
+$categoryList
+
+KONDISI KHUSUS:
+Jika gambar tidak valid (bukan struk, tidak terbaca, tidak ada transaksi, dll), balas HANYA dengan:
+{"error": "Gambar yang kamu kirim tidak valid!"}
+''';
+
+    try {
+      final rawResponse = await geminiScannerService.scanReceipt(image, prompt);
+
+      // Bersihkan markdown code block jika ada (```json ... ```)
+      final cleanedResponse = rawResponse
+          .replaceAll(RegExp(r'```json\s*'), '')
+          .replaceAll(RegExp(r'```\s*'), '')
+          .trim();
+
+      final Map<String, dynamic> jsonMap =
+          jsonDecode(cleanedResponse) as Map<String, dynamic>;
+
+      final result = ScanReceiptResultModel.fromJson(jsonMap);
+      _log.info('Hasil scan struk: $jsonMap');
+
+      if (result.isError) {
+        throw InvalidReceiptException(
+          result.error ?? 'Gambar yang kamu kirim tidak valid!',
+        );
+      }
+
+      return result;
+    } on InvalidReceiptException {
+      rethrow;
+    } on Exception catch (e) {
+      final message = e.toString().toLowerCase();
+      // GeminiScannerService melempar Exception dengan pesan rate limit
+      if (message.contains('limit') ||
+          message.contains('quota') ||
+          message.contains('cooldown')) {
+        throw const RateLimitException();
+      }
+      _log.severe('Unexpected error saat parse receipt image', e);
+      throw UnexpectedException(
+        'Ada kendala saat membaca struk. Coba lagi ya.',
       );
     }
   }

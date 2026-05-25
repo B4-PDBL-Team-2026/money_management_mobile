@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +16,8 @@ import 'package:money_management_mobile/features/auth/presentation/pages/forgot_
 import 'package:money_management_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:money_management_mobile/features/auth/presentation/pages/welcome_page.dart';
+import 'package:money_management_mobile/features/category/presentation/cubit/custom_category_cubit.dart';
+import 'package:money_management_mobile/features/category/presentation/pages/custom_category_page.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/delete_account_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/layouts/shell_container.dart';
@@ -24,17 +27,26 @@ import 'package:money_management_mobile/features/dashboard/presentation/pages/ot
 import 'package:money_management_mobile/features/notification/presentation/pages/notification_center_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/financial_profile_draft_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/cubit/submit_financial_profile_cubit.dart';
+import 'package:money_management_mobile/features/profile/presentation/cubit/update_budget_limits_cubit.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_occurence_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/fixed_cost_template_management_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step1_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step2_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart';
+import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/voice_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/add_transaction_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_detail_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_form_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/open_camera_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_loading_page.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_receipt_error_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/transaction_history_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/voice_transaction_page.dart';
 import 'package:money_management_mobile/injection_container.dart';
@@ -64,11 +76,18 @@ class AppRouter {
   static const String fixedCostsOccurence = '/fixed-costs';
   static const String fixedCostsManagement = '/fixed-costs/manage';
   static const String deleteAccount = '/other/delete-account';
+  static const String customCategories = '/other/custom-categories';
 
   static const String addTransaction = '/transaction/add';
-  static const String voiceTransaction = '/transaction/voice';
   static const String transactionDetailBase = '/transaction';
   static const String transactionDetail = '/transaction/:id';
+  static const String addBatchTransaction = '/transaction/batch/add';
+  static const String batchTransactionDetailBase = '/transaction/batch';
+  static const String scanReceipt = '/transaction/scan';
+  static const String scanLoading = '/transaction/scan-loading';
+  static const String scanReceiptError = '/transaction/scan-error';
+  static const String batchTransactionDetail = '/transaction/batch/:id';
+  static const String voiceTransaction = '/transaction/voice';
 
   static final SessionCubit _sessionCubit = getIt<SessionCubit>();
 
@@ -163,14 +182,7 @@ class AppRouter {
               return ShellContainer(navigationShell: navigationShell);
             },
             branches: [
-              StatefulShellBranch(
-                routes: [
-                  GoRoute(
-                    path: history,
-                    builder: (context, state) => const TransactionHistoryPage(),
-                  ),
-                ],
-              ),
+              // INDEX 0: Home
               StatefulShellBranch(
                 routes: [
                   GoRoute(
@@ -186,6 +198,7 @@ class AppRouter {
                   ),
                 ],
               ),
+              // INDEX 1: Fixed Cost
               StatefulShellBranch(
                 routes: [
                   GoRoute(
@@ -201,6 +214,16 @@ class AppRouter {
                   ),
                 ],
               ),
+              // INDEX 2: History
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: history,
+                    builder: (context, state) => const TransactionHistoryPage(),
+                  ),
+                ],
+              ),
+              // INDEX 3: Profile/Other
               StatefulShellBranch(
                 routes: [
                   GoRoute(
@@ -211,6 +234,9 @@ class AppRouter {
                           create: (_) => getIt<ResetPasswordCubit>(),
                         ),
                         BlocProvider(create: (_) => getIt<VerifyEmailCubit>()),
+                        BlocProvider(
+                          create: (_) => getIt<UpdateBudgetLimitsCubit>(),
+                        ),
                       ],
                       child: const OtherPage(),
                     ),
@@ -222,6 +248,13 @@ class AppRouter {
                           child: const DeleteAccountPage(),
                         ),
                       ),
+                      GoRoute(
+                        path: 'custom-categories',
+                        builder: (context, state) => BlocProvider(
+                          create: (context) => getIt<CustomCategoryCubit>(),
+                          child: const CustomCategoryPage(),
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -231,7 +264,7 @@ class AppRouter {
 
           // transaction module
           GoRoute(
-            path: '/transaction/add',
+            path: addTransaction,
             builder: (context, state) => MultiBlocProvider(
               providers: [
                 BlocProvider(create: (_) => getIt<AddTransactionCubit>()),
@@ -241,11 +274,78 @@ class AppRouter {
             ),
           ),
           GoRoute(
+            path: addBatchTransaction,
+            builder: (context, state) {
+              final extra = state.extra;
+              int? batchId;
+              AddBatchTransactionEntity? initialBatch;
+
+              if (extra is AddBatchTransactionEntity) {
+                initialBatch = extra;
+              } else if (extra is Map<String, dynamic>) {
+                batchId = extra['batchId'] as int?;
+                initialBatch = extra['initialBatch'] as AddBatchTransactionEntity?;
+              } else if (extra is ({int? batchId, AddBatchTransactionEntity? initialBatch})) {
+                batchId = extra.batchId;
+                initialBatch = extra.initialBatch;
+              }
+
+              return BlocProvider(
+                create: (context) => getIt<BatchTransactionSubmitCubit>(),
+                child: BatchTransactionFormPage(
+                  batchId: batchId,
+                  initialBatch: initialBatch,
+                ),
+              );
+            },
+          ),
+          GoRoute(
+            path: scanReceipt,
+            builder: (context, state) => const OpenCameraPage(),
+          ),
+          GoRoute(
+            path: scanLoading,
+            builder: (context, state) {
+              final imageFile = state.extra as File;
+              return ScanLoadingPage(imageFile: imageFile);
+            },
+          ),
+          GoRoute(
+            path: scanReceiptError,
+            builder: (context, state) {
+              final extra =
+                  state.extra
+                      as ({ScanReceiptErrorType errorType, String message});
+              return ScanReceiptErrorPage(
+                errorType: extra.errorType,
+                message: extra.message,
+              );
+            },
+          ),
+          GoRoute(
             path: voiceTransaction,
             builder: (context, state) => BlocProvider(
               create: (_) => getIt<VoiceTransactionCubit>(),
               child: const VoiceTransactionPage(),
             ),
+          ),
+          GoRoute(
+            path: batchTransactionDetail,
+            builder: (context, state) {
+              final idParam = state.pathParameters['id'];
+              final id = int.tryParse(idParam ?? '');
+
+              if (id == null) {
+                return const Scaffold(
+                  body: Center(child: Text('ID batch transaksi tidak valid.')),
+                );
+              }
+
+              return BlocProvider<BatchTransactionDetailCubit>(
+                create: (_) => getIt<BatchTransactionDetailCubit>(),
+                child: BatchTransactionDetailPage(batchId: id),
+              );
+            },
           ),
           GoRoute(
             path: transactionDetail,

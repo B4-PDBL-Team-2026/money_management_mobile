@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
@@ -27,7 +28,7 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
   VoiceTransactionCubit(this._transactionRepository, this._eventBus)
       : super(VoiceTransactionInitial());
 
-  // ── Speech ───────────────────────────────────────────────────────────────────
+  // â”€â”€ Speech â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<bool> _initSpeech() async {
     if (_speechInitialized) return true;
@@ -44,7 +45,7 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
     final available = await _initSpeech();
     if (!available) {
       emit(VoiceTransactionError(
-          message: 'Mikrofon tidak tersedia di perangkat ini.'));
+          message: 'Mikrofon belum tersedia di perangkat ini.'));
       return;
     }
 
@@ -97,14 +98,14 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
     _parseTranscript(transcript);
   }
 
-  // ── Text input ────────────────────────────────────────────────────────────────
+  // â”€â”€ Text input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void submitTextInput(String text) {
     if (text.trim().isEmpty) return;
     _parseTranscript(text.trim());
   }
 
-  // ── Parse ─────────────────────────────────────────────────────────────────────
+  // â”€â”€ Parse â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _parseTranscript(String transcript) {
     emit(VoiceTransactionParsing(transcript: transcript));
@@ -125,7 +126,7 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
 
   void overrideParsedData(ParsedTransactionData updated) {
     emit(VoiceTransactionParsed(parsedData: updated));
-    // Save right away — the user already confirmed by tapping "Simpan"
+    // Save right away â€” the user already confirmed by tapping "Simpan"
     saveTransaction();
   }
 
@@ -157,17 +158,15 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
     } on NetworkException catch (e) {
       emit(VoiceTransactionError(message: e.message));
     } on ValidationException catch (e) {
-      emit(VoiceTransactionError(
-          message:
-          e.fieldErrors?.values.first?.toString() ?? 'Validasi gagal'));
+      emit(VoiceTransactionError(message: e.message));
     } on UnexpectedException catch (e) {
       emit(VoiceTransactionError(message: e.message));
     } catch (e) {
       _log.severe('Unexpected error saving voice transaction', e);
       emit(VoiceTransactionError(
         message: kDebugMode
-            ? 'Error: ${e.toString()}'
-            : 'Terjadi kesalahan. Silakan coba lagi.',
+            ? 'Ada kendala: ${e.toString()}'
+            : AppMessages.unknownError,
       ));
     }
   }

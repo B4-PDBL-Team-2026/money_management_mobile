@@ -3,14 +3,14 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 
 class TransactionHistoryModel extends TransactionHistoryEntity {
   TransactionHistoryModel({
-    required super.id,
     required super.name,
     required super.amount,
-    required super.type,
-    required super.categoryId,
     required super.transactionAt,
-    required super.createdAt,
-    required super.updatedAt,
+    required super.id,
+    super.feedType,
+    super.source,
+    super.categoryId,
+    super.type,
     super.note,
   });
 
@@ -49,21 +49,17 @@ class TransactionHistoryModel extends TransactionHistoryEntity {
         (category is Map<String, dynamic> ? category['id'] : null);
 
     final transactionAt = json['transactionAt'] ?? json['transaction_at'];
-    final createdAt = json['createdAt'] ?? json['created_at'];
-    final updatedAt = json['updatedAt'] ?? json['updated_at'];
 
     return TransactionHistoryModel(
       id: json['id'] as int,
       name: json['name'] as String,
       amount: parseAmount(json['amount']),
-      type: json['type'] == 'income'
-          ? TransactionType.income
-          : TransactionType.expense,
-      categoryId: (categoryId as num?)?.toInt() ?? 0,
+      type: TransactionType.fromValue(json['type']),
+      categoryId: (categoryId as num?)?.toInt(),
       transactionAt: (readDate(transactionAt) ?? now).toLocal(),
-      createdAt: readDate(createdAt) ?? now,
-      updatedAt: readDate(updatedAt) ?? now,
       note: json['note'] as String?,
+      feedType: TransactionHistoryFeedType.fromValue(json['feedType']),
+      source: TransactionSource.fromValue(json['source']),
     );
   }
 
@@ -75,9 +71,9 @@ class TransactionHistoryModel extends TransactionHistoryEntity {
       type: type,
       categoryId: categoryId,
       transactionAt: transactionAt,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
       note: note,
+      feedType: feedType,
+      source: source,
     );
   }
 }

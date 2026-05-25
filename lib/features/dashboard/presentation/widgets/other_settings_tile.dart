@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class OtherSettingsTile extends StatelessWidget {
   final IconData icon;
@@ -37,7 +36,7 @@ class OtherSettingsTile extends StatelessWidget {
                   color: iconBackground,
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 ),
-                child: PhosphorIcon(icon, size: 20, color: iconColor),
+                child: Icon(icon, size: 20, color: iconColor),
               ),
               const SizedBox(width: AppSizes.spacing3),
               Expanded(

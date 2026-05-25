@@ -12,7 +12,7 @@ import 'package:money_management_mobile/features/dashboard/presentation/widgets/
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_center_cubit.dart';
 import 'package:money_management_mobile/features/notification/presentation/cubit/notification_center_state.dart';
 import 'package:money_management_mobile/features/profile/domain/usecases/calculate_financial_profile_usecase.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({super.key});
@@ -57,12 +57,12 @@ class DashboardHeader extends StatelessWidget {
           ),
         ] else if (dashboardState is DashboardMetricLoading) ...[
           Text(
-            'Memuat data dashboard...',
+            'Lagi muat data dashboard...',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ] else ...[
           Text(
-            'Gagal memuat data dashboard',
+            'Data dashboard belum bisa dimuat nih',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(context).colorScheme.error,
             ),
@@ -91,8 +91,8 @@ class DashboardHeader extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primaryContainer,
                   shape: BoxShape.circle,
                 ),
-                child: PhosphorIcon(
-                  PhosphorIconsRegular.bell,
+                child: Icon(
+                  PiconsRegular.bell,
                   size: 28,
                   color: AppColors.primary,
                 ),
@@ -125,42 +125,42 @@ class DashboardHeader extends StatelessWidget {
   ) {
     if (scenario == BudgetHealthScenario.surplus) {
       if (limitState == DashboardLimitState.underFirstLimit) {
-        return 'Sedang di jalur hemat! Pertahankan agar tabungan maksimal.';
+        return 'Lagi di jalur hemat! Pertahankan biar tabungan makin aman.';
       } else if (limitState == DashboardLimitState.overFirstLimit) {
-        return 'Limit optimal terlewati! Jatah tabungan akan berkurang seiring transaksi bertambah.';
+        return 'Limit optimalnya kelewatan! Jatah tabungan bakal berkurang kalau transaksi makin banyak.';
       } else {
-        return 'Melewati batas, jatah harian aktual besok akan berkurang!';
+        return 'Kelewatan batas nih, jatah harian aktual besok bakal berkurang!';
       }
     }
 
     if (scenario == BudgetHealthScenario.moderate) {
       if (limitState == DashboardLimitState.underFirstLimit ||
           limitState == DashboardLimitState.overFirstLimit) {
-        return 'Kondisi aman. Jaga pengeluaran tetap di bawah batas harian aktual.';
+        return 'Kondisinya aman. Jaga pengeluaran tetap di bawah batas harian aktual ya.';
       } else {
-        return 'Batas harian aktual terlewati, sebaiknya berhenti belanja hari ini!';
+        return 'Batas harian aktualnya udah kelewatan, mending stop belanja dulu hari ini!';
       }
     }
 
     if (scenario == BudgetHealthScenario.critical) {
       if (limitState == DashboardLimitState.underFirstLimit) {
-        return 'Saldo sangat terbatas! Tetap di mode Hemat Ekstrem agar cukup sampai akhir bulan.';
+        return 'Saldo lagi mepet banget! Tetap di mode Hemat Ekstrem biar cukup sampai akhir bulan.';
       } else if (limitState == DashboardLimitState.overFirstLimit) {
-        return 'Mode Hemat Ekstrem terlewati. Anda sekarang menggunakan jatah “Bertahan Hidup”.';
+        return 'Mode Hemat Ekstremnya kelewatan. Sekarang kamu pakai jatah â€œBertahan Hidupâ€.';
       } else {
-        return 'Batas harian aktual terlewati, sebaiknya berhenti belanja hari ini!';
+        return 'Batas harian aktualnya udah kelewatan, mending stop belanja dulu hari ini!';
       }
     }
 
     if (scenario == BudgetHealthScenario.deficit) {
       if (balance <= 0 && totalUnpaidFixedCost > 0) {
-        return 'Anda tidak memiliki saldo untuk membayar fixed cost dan jajan harian!';
+        return 'Kamu udah nggak punya saldo buat bayar biaya tetap dan jajan harian!';
       }
 
-      return 'Saldo Anda sudah minus. Setiap pengeluaran hari ini akan memperbesar total defisit Anda.';
+      return 'Saldo kamu udah minus. Setiap pengeluaran hari ini bakal bikin defisit makin besar.';
     }
 
-    return 'Status tidak dikenal.';
+    return 'Statusnya belum ketemu.';
   }
 
   String _resolveUsername(String username) {

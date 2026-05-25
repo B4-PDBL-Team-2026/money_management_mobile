@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/constants/global_constant.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class CategoryGridItem extends StatelessWidget {
   final String categoryName;
@@ -32,9 +32,9 @@ class CategoryGridItem extends StatelessWidget {
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             ),
-            child: PhosphorIcon(
+            child: Icon(
               GlobalConstant.categoryIconsMapping[categoryIcon] ??
-                  PhosphorIconsRegular.tag,
+                  PiconsRegular.tag,
               color: isSelected ? AppColors.gohan : AppColors.trunks,
               size: AppSizes.spacing6,
             ),

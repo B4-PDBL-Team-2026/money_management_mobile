@@ -71,12 +71,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
         if (state is ResetPasswordError) {
           _closeDialogIfOpen(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.danger100,
-            ),
-          );
+          AppSnackBar.showError(context, state.message);
         }
       },
       child: Scaffold(
@@ -131,7 +126,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       ),
                       const SizedBox(height: AppSizes.spacing4),
                       Text(
-                        'Masukkan email Anda untuk menerima instruksi pemulihan akun.',
+                        'Masukkan email Kamu untuk menerima instruksi pemulihan akun.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.trunks,
@@ -148,7 +143,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Email wajib diisi';
+                            return 'Email jangan dikosongin ya';
                           }
 
                           final emailRegex = RegExp(
@@ -156,7 +151,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           );
 
                           if (!emailRegex.hasMatch(value.trim())) {
-                            return 'Format email tidak valid';
+                            return 'Format emailnya belum pas nih';
                           }
 
                           return null;

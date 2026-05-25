@@ -16,7 +16,7 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_detail_state.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class TransactionDetailPage extends StatefulWidget {
   final int transactionId;
@@ -43,12 +43,18 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        titleSpacing: AppSizes.spacing6,
+        leadingWidth: 72,
         title: const Text(
           'Detail Transaksi',
           style: TextStyle(color: AppColors.bulma),
         ),
         leading: Padding(
-          padding: const EdgeInsets.all(AppSizes.spacing2),
+          padding: const EdgeInsets.only(
+            left: AppSizes.spacing6,
+            top: AppSizes.spacing2,
+            bottom: AppSizes.spacing2,
+          ),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: AppColors.primary,
@@ -60,6 +66,32 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             ),
           ),
         ),
+        actions: [
+          BlocBuilder<TransactionDetailCubit, TransactionDetailState>(
+            builder: (context, state) {
+              if (state is TransactionDetailSuccess) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    right: AppSizes.spacing6,
+                    top: AppSizes.spacing2,
+                    bottom: AppSizes.spacing2,
+                  ),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.lightPrimary,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.edit, color: AppColors.primary),
+                      onPressed: () => _openUpdateDialog(state.transactionDetail),
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -67,23 +99,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           child: BlocConsumer<TransactionDetailCubit, TransactionDetailState>(
             listener: (context, state) async {
               if (state is TransactionDetailDeleted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.primary,
-                  ),
-                );
+                AppSnackBar.showSuccess(context, state.message);
                 _goBack();
                 return;
               }
 
               if (state is TransactionDetailError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.danger100,
-                  ),
-                );
+                AppSnackBar.showError(context, state.message);
               }
             },
             builder: (context, state) {
@@ -132,12 +154,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     final categoryState = context.read<CategoryCubit>().state;
 
     if (categoryState is! CategoryLoaded) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Kategori belum siap. Coba lagi sebentar.'),
-          backgroundColor: AppColors.warning100,
-        ),
-      );
+      AppSnackBar.showWarning(context, 'Kategori belum siap. Coba lagi sebentar.');
       return;
     }
 
@@ -152,12 +169,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     final selectedType = detail.type ?? selectedCategory?.type;
 
     if (selectedType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Tipe transaksi tidak valid untuk update.'),
-          backgroundColor: AppColors.warning100,
-        ),
-      );
+      AppSnackBar.showWarning(context, 'Tipe transaksinya belum cocok buat diupdate.');
       return;
     }
 
@@ -198,12 +210,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Transaksi berhasil diperbarui.'),
-        backgroundColor: AppColors.primary,
-      ),
-    );
+    AppSnackBar.showSuccess(context, 'Transaksi berhasil diperbarui.');
   }
 
   Future<void> _showDeleteConfirmationDialog(
@@ -245,13 +252,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       final willBeNegative = dashboardMetricState.metrics.balance - detail.amount < 0;
       
       if (isIncome && willBeNegative) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Penghapusan transaksi ini akan menyebabkan saldo menjadi negatif. Hapus transaksi lain atau tambahkan pemasukan terlebih dahulu.',
-            ),
-            backgroundColor: AppColors.warning100,
-          ),
+        AppSnackBar.showWarning(
+          context,
+          'Penghapusan transaksi ini akan menyebabkan saldo menjadi negatif. Hapus transaksi lain atau tambahkan pemasukan terlebih dahulu.',
         );
 
         return;
@@ -344,13 +347,14 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
   @override
   Widget build(BuildContext context) {
     final categories = _categoriesByType(_selectedType);
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
 
     return Padding(
       padding: EdgeInsets.only(
         left: AppSizes.spacing6,
         right: AppSizes.spacing6,
         top: AppSizes.spacing6,
-        bottom: MediaQuery.of(context).viewInsets.bottom + AppSizes.spacing6,
+        bottom: MediaQuery.of(context).viewInsets.bottom + bottomPadding + AppSizes.spacing6,
       ),
       child: Form(
         key: _formKey,
@@ -681,40 +685,11 @@ class _DetailContent extends StatelessWidget {
             multiline: true,
           ),
           const SizedBox(height: AppSizes.spacing6),
-          Text(
-            'Aksi',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppColors.bulma,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: AppSizes.spacing3),
-          Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  text: 'Hapus',
-                  onPressed: onDeletePressed,
-                  type: AppButtonType.danger,
-                  variant: AppButtonVariant.ghost,
-                ),
-              ),
-              const SizedBox(width: AppSizes.spacing3),
-              Expanded(
-                child: AppButton(
-                  text: 'Update',
-                  onPressed: onUpdatePressed,
-                  type: AppButtonType.secondary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSizes.spacing2),
-          Text(
-            'Perubahan data akan aktif setelah fitur update tersedia.',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
+          AppButton(
+            text: 'Hapus',
+            onPressed: onDeletePressed,
+            type: AppButtonType.danger,
+            variant: AppButtonVariant.ghost,
           ),
         ],
       ),
@@ -743,26 +718,26 @@ class _DetailContent extends StatelessWidget {
   ) {
     if (category?.icon != null) {
       return GlobalConstant.categoryIconsMapping[category!.icon] ??
-          PhosphorIconsRegular.question;
+          PiconsRegular.question;
     }
 
     if (detail.categoryIcon != null) {
       return GlobalConstant.categoryIconsMapping[detail.categoryIcon!] ??
-          PhosphorIconsRegular.question;
+          PiconsRegular.question;
     }
 
     if (category == null) {
-      return PhosphorIconsRegular.question;
+      return PiconsRegular.question;
     }
 
-    return PhosphorIconsRegular.question;
+    return PiconsRegular.question;
   }
 
   // TODO: refactor ini di masa depan menggunakan enum terpisah di entitas transaction detail agar lebih type-safe dan mudah di-maintain
   String _resolveSourceText(String source) {
     return switch (source) {
       'manual' => 'Pencatatan Manual',
-      'fixed_cost_payment' => 'Pembayaran Fixed Cost',
+      'fixed_cost_payment' => 'Pembayaran Biaya Tetap',
       'initial_balance' => 'Saldo Awal',
       _ => source,
     };
@@ -843,14 +818,14 @@ class _ErrorState extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Gagal memuat detail transaksi',
+            'Detail transaksi belum bisa dimuat nih',
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: AppColors.bulma),
           ),
           const SizedBox(height: AppSizes.spacing4),
           AppButton(
-            text: 'Coba Lagi',
+            text: 'Coba lagi',
             onPressed: onRetry,
             variant: AppButtonVariant.ghost,
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/features/auth/domain/repositories/auth_repository.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_state.dart';
@@ -32,13 +33,9 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
     } catch (e) {
       _log.severe('Unhandled error while sending verification email', e);
       if (kDebugMode) {
-        emit(ResetPasswordError('Terjadi kesalahan: ${e.toString()}'));
+        emit(ResetPasswordError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          ResetPasswordError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(ResetPasswordError(AppMessages.unknownError));
       }
     }
   }

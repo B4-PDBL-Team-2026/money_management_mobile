@@ -42,15 +42,7 @@ class _FixedCostTemplateManagementPageState
     final isMainCycleWeekly = await _resolveIsMainCycleWeekly();
 
     if (categories.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: AppColors.danger100,
-          content: Text(
-            'Kategori belum tersedia. Silakan coba lagi.',
-            style: TextStyle(color: AppColors.gohan),
-          ),
-        ),
-      );
+      AppSnackBar.showError(context, 'Kategori belum tersedia. Silakan coba lagi.');
       return;
     }
 
@@ -191,9 +183,9 @@ class _FixedCostTemplateManagementPageState
   ) async {
     final isConfirmed = await AppConfirmDialog.show(
       context: context,
-      title: 'Hapus fixed cost?',
+      title: 'Hapus biaya tetap?',
       content:
-          'Fixed cost ${fixedCost.name} akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.',
+          'Biaya tetap ${fixedCost.name} akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.',
       confirmText: 'Hapus',
       cancelText: 'Batal',
       confirmButtonType: AppButtonType.danger,
@@ -259,15 +251,37 @@ class _FixedCostTemplateManagementPageState
             child: CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  leading: BackButton(
-                    color: AppColors.gohan,
-                    onPressed: () {
-                      context.pop();
-                    },
-                  ),
-                  title: Text('Fixed Cost Management'),
                   pinned: true,
                   elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  titleSpacing: AppSizes.spacing6,
+                  leadingWidth: 72,
+                  title: const Text(
+                    'Manajemen Biaya Tetap',
+                    style: TextStyle(color: AppColors.bulma),
+                  ),
+                  leading: Padding(
+                    padding: const EdgeInsets.only(
+                      left: AppSizes.spacing6,
+                      top: AppSizes.spacing2,
+                      bottom: AppSizes.spacing2,
+                    ),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          color: AppColors.gohan,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 if (items.isEmpty)
                   SliverFillRemaining(
@@ -276,7 +290,7 @@ class _FixedCostTemplateManagementPageState
                       child: Padding(
                         padding: const EdgeInsets.all(AppSizes.spacing6),
                         child: Text(
-                          'Belum ada fixed cost',
+                          'Belum ada biaya tetap',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
@@ -321,11 +335,11 @@ class _FixedCostTemplateManagementPageState
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddFixedCostBottomSheet,
         backgroundColor: AppColors.secondary,
+        elevation: 4.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(AppSizes.radiusLg)),
-          side: BorderSide(color: AppColors.bulma, width: 1),
         ),
-        child: Icon(Icons.add, color: AppColors.bulma),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

@@ -25,3 +25,7 @@ class NotificationCenterChangesEvent {
 class NotificationInitializeEvent {
   const NotificationInitializeEvent();
 }
+
+class BudgetLimitsChangesEvent {
+  const BudgetLimitsChangesEvent();
+}

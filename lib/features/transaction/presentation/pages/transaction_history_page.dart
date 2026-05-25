@@ -8,6 +8,7 @@ import 'package:money_management_mobile/core/utils/utils.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/transaction_history_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_dialog_content.dart';
@@ -15,7 +16,7 @@ import 'package:money_management_mobile/features/transaction/presentation/widget
 import 'package:money_management_mobile/features/transaction/presentation/widgets/summary_card.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_components.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/transaction_history_item.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   const TransactionHistoryPage({super.key});
@@ -27,6 +28,7 @@ class TransactionHistoryPage extends StatefulWidget {
 class _TransactionHistoryState extends State<TransactionHistoryPage> {
   final _searchDebouncer = Debouncer(milliseconds: 500);
   final _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   late final CategoryEntity _defaultCategory;
 
@@ -52,6 +54,22 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     _year = null;
 
     _selectedCategory = _defaultCategory;
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    const delta = 200.0;
+
+    if (maxScroll - currentScroll <= delta) {
+      final state = context.read<TransactionHistoryCubit>().state;
+      if (state is TransactionHistorySuccess && !state.isLoadingMore) {
+        if (state.currentPage < state.totalPages) {
+          _loadMoreTransactionHistory(state.currentPage + 1);
+        }
+      }
+    }
   }
 
   void _getFreshTransactionHistory({
@@ -80,6 +98,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
     _searchDebouncer.dispose();
     super.dispose();
@@ -105,72 +124,82 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
               }
 
               if (state is TransactionHistoryError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.danger100,
-                  ),
-                );
+                AppSnackBar.showError(context, state.message);
               }
             },
             builder: (context, state) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Riwayat Transaksi',
-                        style: Theme.of(context).textTheme.headlineLarge
-                            ?.copyWith(color: AppColors.primary),
-                      ),
-
-                      AnimatedRotation(
-                        duration: const Duration(milliseconds: 500),
-                        turns: state is TransactionHistoryLoading ? 1 : 0,
-                        child: IconButton(
-                          onPressed: () {
-                            if (state is! TransactionHistoryLoading) {
-                              context
-                                  .read<TransactionHistoryCubit>()
-                                  .getFreshTransactionHistory();
-                            }
-                          },
-                          icon: PhosphorIcon(
-                            PhosphorIconsRegular.arrowClockwise,
-                          ),
-                        ),
-                      ),
-                    ],
+                  // Title Section
+                  Text(
+                    'Riwayat Transaksi',
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      color: AppColors.primary,
+                    ),
                   ),
 
                   const SizedBox(height: AppSizes.spacing6),
+
+                  // Filter Section (Fixed / Sticky Position)
                   _buildFilterSection(),
                   const SizedBox(height: AppSizes.spacing3),
 
-                  if (state is TransactionHistorySuccess) ...[
-                    _buildSummarySection(),
-                    const SizedBox(height: AppSizes.spacing3),
-                  ],
+                  // Scrollable Main Content area wrapped with Pull-to-Refresh
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        _getFreshTransactionHistory();
+                        // Memberikan sedikit jeda animasi saat refresh (opsional)
+                        await Future.delayed(const Duration(milliseconds: 500));
+                      },
+                      child: CustomScrollView(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        slivers: [
+                          if (state is TransactionHistorySuccess) ...[
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: AppSizes.spacing3,
+                                ),
+                                child: _buildSummarySection(),
+                              ),
+                            ),
+                          ],
 
-                  if (state is TransactionHistoryLoading) ...[
-                    _buildLoadingState(),
-                  ] else if (state is TransactionHistorySuccess) ...[
-                    if (state.totalItems == 0) ...[
-                      Expanded(child: const EmptyState()),
-                    ] else ...[
-                      Expanded(
-                        child: state.transactionHistory.isNotEmpty
-                            ? _buildDataList(state)
-                            : const EmptyState(),
+                          if (state is TransactionHistoryLoading) ...[
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: _buildLoadingState(),
+                            ),
+                          ] else if (state is TransactionHistorySuccess) ...[
+                            if (state.totalItems == 0 ||
+                                state.transactionHistory.isEmpty) ...[
+                              const SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: EmptyState(),
+                              ),
+                            ] else ...[
+                              _buildSliverDataList(state),
+                            ],
+                          ] else if (state is TransactionHistoryError) ...[
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: _buildErrorState(context),
+                            ),
+                          ] else ...[
+                            const SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: EmptyState(),
+                            ),
+                          ],
+                        ],
                       ),
-                    ],
-                  ] else if (state is TransactionHistoryError) ...[
-                    _buildErrorState(context),
-                  ] else ...[
-                    Expanded(child: const EmptyState()),
-                  ],
+                    ),
+                  ),
                 ],
               );
             },
@@ -180,23 +209,23 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     );
   }
 
-  SizedBox _buildLoadingState() {
-    return SizedBox(
+  Widget _buildLoadingState() {
+    return const SizedBox(
       height: 350,
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 8),
-            Text('Memuat data transaksi...'),
+            Text('Lagi muat data transaksi...'),
           ],
         ),
       ),
     );
   }
 
-  SizedBox _buildErrorState(BuildContext context) {
+  Widget _buildErrorState(BuildContext context) {
     return SizedBox(
       height: 350,
       child: Center(
@@ -204,11 +233,11 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Gagal memuat data transaksi'),
+            const Text('Data transaksi belum bisa dimuat nih'),
             const SizedBox(height: AppSizes.spacing4),
             AppButton(
               width: 120,
-              text: 'Coba Lagi',
+              text: 'Coba lagi',
               onPressed: () {
                 context
                     .read<TransactionHistoryCubit>()
@@ -231,8 +260,8 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
             controller: _searchController,
             hint: 'Cari nama transaksi...',
             withBorder: false,
-            prefixIcon: PhosphorIcon(
-              PhosphorIconsRegular.magnifyingGlass,
+            prefixIcon: const Icon(
+              PiconsRegular.magnifyingGlass,
               color: Colors.grey,
             ),
             onChanged: (value) {
@@ -251,7 +280,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                       : _month == null
                       ? 'Semua Bulan $_year'
                       : '${GlobalConstant.monthMapping[_month]} $_year',
-                  leadingIcon: PhosphorIconsRegular.calendarBlank,
+                  leadingIcon: PiconsRegular.calendarBlank,
                   onPressed: _openMonthYearPicker,
                   variant: AppButtonVariant.ghost,
                   fontSize: 14,
@@ -265,7 +294,7 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
                   leadingIcon:
                       GlobalConstant.categoryIconsMapping[_selectedCategory
                           .icon] ??
-                      PhosphorIconsRegular.squaresFour,
+                      PiconsRegular.squaresFour,
                   onPressed: _openCategoryPicker,
                   variant: AppButtonVariant.ghost,
                   fontSize: 14,
@@ -299,15 +328,11 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
     );
   }
 
-  Widget _buildDataList(TransactionHistorySuccess state) {
+  Widget _buildSliverDataList(TransactionHistorySuccess state) {
     final transactionList = state.transactionHistory;
 
-    return ListView.separated(
-      physics: const BouncingScrollPhysics(),
-      itemCount: transactionList.length,
-      separatorBuilder: (context, index) =>
-          const SizedBox(height: AppSizes.spacing3),
-      itemBuilder: (context, index) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
         final item = transactionList[index];
         final previousItem = index > 0 ? transactionList[index - 1] : null;
 
@@ -317,63 +342,71 @@ class _TransactionHistoryState extends State<TransactionHistoryPage> {
             item.transactionAt.month != previousItem.transactionAt.month ||
             item.transactionAt.year != previousItem.transactionAt.year;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (showHeader) ...[
-              const SizedBox(height: AppSizes.spacing3),
-              DateHeader(date: item.transactionAt),
-              const SizedBox(height: AppSizes.spacing3),
-            ],
-            GestureDetector(
-              onTap: () {
-                context.push('${AppRouter.transactionDetailBase}/${item.id}');
-              },
-              child: TransactionHistoryItem(transaction: item),
-            ),
-
-            if (index == transactionList.length - 1) ...[
-              const SizedBox(height: AppSizes.spacing6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Total transaksi: ${state.totalItems}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-
-                  if (transactionList.length < state.totalItems) ...[
-                    const SizedBox(width: AppSizes.spacing3),
-                    Text(
-                      'Total transaksi tersisa: ${state.totalItems - transactionList.length}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ],
+        return Padding(
+          // Padding bawah ini berfungsi sebagai pengganti property separator pada ListView.separated
+          padding: const EdgeInsets.only(bottom: AppSizes.spacing3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showHeader) ...[
+                if (index != 0) const SizedBox(height: AppSizes.spacing3),
+                DateHeader(date: item.transactionAt),
+                const SizedBox(height: AppSizes.spacing3),
+              ],
+              GestureDetector(
+                onTap: () {
+                  if (item.feedType == TransactionHistoryFeedType.batch) {
+                    context.push(
+                      '${AppRouter.batchTransactionDetailBase}/${item.id}',
+                    );
+                  } else {
+                    context.push(
+                      '${AppRouter.transactionDetailBase}/${item.id}',
+                    );
+                  }
+                },
+                child: TransactionHistoryItem(transaction: item),
               ),
 
-              if (state.currentPage < state.totalPages) ...[
-                const SizedBox(height: AppSizes.spacing3),
-                AppButton(
-                  isLoading: state.isLoadingMore,
-                  text: 'Muat Lebih Banyak',
-                  onPressed: () {
-                    if (!state.isLoadingMore) {
-                      _loadMoreTransactionHistory(state.currentPage + 1);
-                    }
-                  },
-                  variant: AppButtonVariant.ghost,
+              if (index == transactionList.length - 1) ...[
+                const SizedBox(height: AppSizes.spacing6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Total transaksi: ${state.totalItems}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    if (transactionList.length < state.totalItems) ...[
+                      const SizedBox(width: AppSizes.spacing3),
+                      Text(
+                        'Total transaksi tersisa: ${state.totalItems - transactionList.length}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ],
                 ),
+                if (state.isLoadingMore) ...[
+                  const SizedBox(height: AppSizes.spacing3),
+                  const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ],
-          ],
+          ),
         );
-      },
+      }, childCount: transactionList.length),
     );
   }
 
   Future<void> _openMonthYearPicker() async {
-    // tuple: (month, year)
     final result = await showDialog<(int?, int?)>(
       context: context,
       builder: (context) => Dialog(

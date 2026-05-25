@@ -47,4 +47,9 @@ class NotificationCenterRepositoryImpl implements NotificationCenterRepository {
 
     await _remoteDataSource.registerNotificationToken(model);
   }
+
+  @override
+  Future<void> unregisterDeviceForNotifications(String deviceId) async {
+    await _remoteDataSource.unregisterDevice(deviceId);
+  }
 }

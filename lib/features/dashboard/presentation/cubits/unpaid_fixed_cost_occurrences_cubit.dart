@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
@@ -57,15 +58,9 @@ class UnpaidFixedCostTemplateCubit
     } catch (e) {
       _log.severe('Error fetching unpaid fixed cost occurrences', e);
       if (kDebugMode) {
-        emit(
-          UnpaidFixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'),
-        );
+        emit(UnpaidFixedCostTemplateError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          UnpaidFixedCostTemplateError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(UnpaidFixedCostTemplateError(AppMessages.unknownError));
       }
     }
   }
@@ -91,15 +86,9 @@ class UnpaidFixedCostTemplateCubit
     } catch (e) {
       _log.severe('Error confirming fixed cost occurrence', e);
       if (kDebugMode) {
-        emit(
-          UnpaidFixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'),
-        );
+        emit(UnpaidFixedCostTemplateError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          UnpaidFixedCostTemplateError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(UnpaidFixedCostTemplateError(AppMessages.unknownError));
       }
       return false;
     }
@@ -126,15 +115,9 @@ class UnpaidFixedCostTemplateCubit
     } catch (e) {
       _log.severe('Error cancelling fixed cost occurrence', e);
       if (kDebugMode) {
-        emit(
-          UnpaidFixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'),
-        );
+        emit(UnpaidFixedCostTemplateError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          UnpaidFixedCostTemplateError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(UnpaidFixedCostTemplateError(AppMessages.unknownError));
       }
       return false;
     }

@@ -4,6 +4,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/fixed_cost_template_entity.dart';
@@ -53,7 +54,7 @@ class FixedCostTemplateCubit extends Cubit<FixedCostTemplateState> {
       emit(FixedCostTemplateError(e.message));
     } catch (e) {
       _log.severe('Unexpected error while fetching fixed cost occurrences', e);
-      emit(FixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'));
+      emit(FixedCostTemplateError(AppMessages.unknownError));
     }
   }
 
@@ -72,12 +73,12 @@ class FixedCostTemplateCubit extends Cubit<FixedCostTemplateState> {
     } on UnauthorizedException catch (e) {
       emit(FixedCostTemplateError(e.message));
     } on ValidationException catch (e) {
-      emit(FixedCostTemplateError(e.toString()));
+      emit(FixedCostTemplateError(e.message));
     } on UnexpectedException catch (e) {
       emit(FixedCostTemplateError(e.message));
     } catch (e) {
       _log.severe('Unexpected error while creating fixed cost', e);
-      emit(FixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'));
+      emit(FixedCostTemplateError(AppMessages.unknownError));
     }
   }
 
@@ -103,7 +104,7 @@ class FixedCostTemplateCubit extends Cubit<FixedCostTemplateState> {
       emit(FixedCostTemplateError(e.message));
     } catch (e) {
       _log.severe('Unexpected error while deleting fixed cost', e);
-      emit(FixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'));
+      emit(FixedCostTemplateError(AppMessages.unknownError));
     }
   }
 
@@ -133,7 +134,7 @@ class FixedCostTemplateCubit extends Cubit<FixedCostTemplateState> {
       emit(FixedCostTemplateError(e.message));
     } catch (e) {
       _log.severe('Unexpected error while updating fixed cost', e);
-      emit(FixedCostTemplateError('Terjadi kesalahan: ${e.toString()}'));
+      emit(FixedCostTemplateError(AppMessages.unknownError));
     }
   }
 

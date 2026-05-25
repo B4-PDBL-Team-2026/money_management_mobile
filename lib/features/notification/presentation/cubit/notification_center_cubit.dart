@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/notification/domain/entities/notification_entity.dart';
@@ -60,13 +61,9 @@ class NotificationCenterCubit extends Cubit<NotificationCenterState> {
     } catch (e) {
       _log.severe('Unexpected error while fetching notifications', e);
       if (kDebugMode) {
-        emit(NotificationCenterError('Terjadi kesalahan: ${e.toString()}'));
+        emit(NotificationCenterError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          NotificationCenterError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(NotificationCenterError(AppMessages.unknownError));
       }
     }
   }
@@ -107,13 +104,9 @@ class NotificationCenterCubit extends Cubit<NotificationCenterState> {
     } catch (e) {
       _log.severe('Error fetching more notifications', e);
       if (kDebugMode) {
-        emit(NotificationCenterError('Terjadi kesalahan: ${e.toString()}'));
+        emit(NotificationCenterError('Ada kendala: ${e.toString()}'));
       } else {
-        emit(
-          NotificationCenterError(
-            'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
-          ),
-        );
+        emit(NotificationCenterError(AppMessages.unknownError));
       }
     }
   }

@@ -13,104 +13,120 @@ import 'package:money_management_mobile/features/dashboard/presentation/cubits/u
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/unpaid_fixed_cost_occurrences_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/unpaid_fixed_cost_card.dart';
 import 'package:money_management_mobile/features/profile/domain/entities/financial_profile_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 // TODO: memindahkan semua kode fixed cost occurences ke fitur fixed cost
-class FixedCostOccurencePage extends StatelessWidget {
+class FixedCostOccurencePage extends StatefulWidget {
   const FixedCostOccurencePage({super.key});
+
+  @override
+  State<FixedCostOccurencePage> createState() => _FixedCostOccurencePageState();
+}
+
+class _FixedCostOccurencePageState extends State<FixedCostOccurencePage> {
+  Future<void> _onRefresh() async {
+    await context.read<UnpaidFixedCostTemplateCubit>().fetchUnpaidFixedCosts();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(
-            AppSizes.spacing6,
-            AppSizes.spacing6,
-            AppSizes.spacing6,
-            AppSizes.spacing8,
-          ),
-          child: Column(
-            children: [
-              _buildHeader(context),
-              BlocConsumer<
-                UnpaidFixedCostTemplateCubit,
-                UnpaidFixedCostTemplateState
-              >(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  if (state is UnpaidFixedCostTemplateInitial ||
-                      state is UnpaidFixedCostTemplateLoading) {
-                    return const _LoadingState();
-                  }
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          color: AppColors.primary,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              AppSizes.spacing6,
+              AppSizes.spacing6,
+              AppSizes.spacing6,
+              AppSizes.spacing8,
+            ),
+            child: Column(
+              children: [
+                _buildHeader(context),
+                BlocConsumer<
+                  UnpaidFixedCostTemplateCubit,
+                  UnpaidFixedCostTemplateState
+                >(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (state is UnpaidFixedCostTemplateInitial ||
+                        state is UnpaidFixedCostTemplateLoading) {
+                      return const _LoadingState();
+                    }
 
-                  if (state is UnpaidFixedCostTemplateError) {
-                    return _ErrorFixedCostState(
-                      message: state.message,
-                      onRetry: () {
-                        context
-                            .read<UnpaidFixedCostTemplateCubit>()
-                            .fetchUnpaidFixedCosts();
-                      },
-                      onManage: () =>
-                          context.push(AppRouter.fixedCostsManagement),
-                    );
-                  }
+                    if (state is UnpaidFixedCostTemplateError) {
+                      return _ErrorFixedCostState(
+                        message: state.message,
+                        onRetry: () {
+                          context
+                              .read<UnpaidFixedCostTemplateCubit>()
+                              .fetchUnpaidFixedCosts();
+                        },
+                        onManage: () =>
+                            context.push(AppRouter.fixedCostsManagement),
+                      );
+                    }
 
-                  final loadedState = state as UnpaidFixedCostTemplateLoaded;
+                    final loadedState = state as UnpaidFixedCostTemplateLoaded;
 
-                  if (loadedState.items.isEmpty) {
-                    return _EmptyFixedCostState(
-                      onManage: () =>
-                          context.push(AppRouter.fixedCostsManagement),
-                    );
-                  }
+                    if (loadedState.items.isEmpty) {
+                      return _EmptyFixedCostState(
+                        onManage: () =>
+                            context.push(AppRouter.fixedCostsManagement),
+                      );
+                    }
 
-                  final now = DateTime.now();
+                    final now = DateTime.now();
 
-                  final weeklyItems = loadedState.items
-                      .where(
-                        (item) =>
-                            item.cycle == FinancialCycle.weekly &&
-                            _isInCurrentWeek(item.dueDate, now),
-                      )
-                      .toList(growable: false);
+                    final weeklyItems = loadedState.items
+                        .where(
+                          (item) =>
+                              item.cycle == FinancialCycle.weekly &&
+                              _isInCurrentWeek(item.dueDate, now),
+                        )
+                        .toList(growable: false);
 
-                  final monthlyItems = loadedState.items
-                      .where(
-                        (item) =>
-                            item.cycle == FinancialCycle.monthly &&
-                            _isInCurrentMonth(item.dueDate, now),
-                      )
-                      .toList(growable: false);
+                    final monthlyItems = loadedState.items
+                        .where(
+                          (item) =>
+                              item.cycle == FinancialCycle.monthly &&
+                              _isInCurrentMonth(item.dueDate, now),
+                        )
+                        .toList(growable: false);
 
-                  if (weeklyItems.isEmpty && monthlyItems.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
+                    if (weeklyItems.isEmpty && monthlyItems.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (weeklyItems.isNotEmpty) ...[
-                        const SizedBox(height: AppSizes.spacing6),
-                        _FixedCostSection(
-                          title: 'Minggu Ini',
-                          items: weeklyItems,
-                        ),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (weeklyItems.isNotEmpty) ...[
+                          const SizedBox(height: AppSizes.spacing6),
+                          _FixedCostSection(
+                            title: 'Minggu Ini',
+                            items: weeklyItems,
+                            rootContext: context,
+                          ),
+                        ],
+
+                        if (monthlyItems.isNotEmpty) ...[
+                          const SizedBox(height: AppSizes.spacing6),
+                          _FixedCostSection(
+                            title: 'Bulan Ini',
+                            items: monthlyItems,
+                            rootContext: context,
+                          ),
+                        ],
                       ],
-
-                      if (monthlyItems.isNotEmpty) ...[
-                        const SizedBox(height: AppSizes.spacing6),
-                        _FixedCostSection(
-                          title: 'Bulan Ini',
-                          items: monthlyItems,
-                        ),
-                      ],
-                    ],
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -137,8 +153,8 @@ class FixedCostOccurencePage extends StatelessWidget {
                 Radius.circular(AppSizes.radiusSm),
               ),
             ),
-            child: PhosphorIcon(
-              PhosphorIconsRegular.pencil,
+            child: Icon(
+              PiconsRegular.pencil,
               color: Colors.white,
             ),
           ),
@@ -177,8 +193,78 @@ class FixedCostOccurencePage extends StatelessWidget {
 class _FixedCostSection extends StatelessWidget {
   final String title;
   final List<UnpaidFixedCostTemplateEntity> items;
+  final BuildContext rootContext;
 
-  const _FixedCostSection({required this.title, required this.items});
+  const _FixedCostSection({
+    required this.title,
+    required this.items,
+    required this.rootContext,
+  });
+
+  Future<void> _showFeedbackDialog(
+    BuildContext context,
+    String title,
+    String message, {
+    bool isWarning = false,
+  }) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        final color = isWarning ? AppColors.warning100 : AppColors.success100;
+        final icon = isWarning ? PiconsFill.info : PiconsFill.checkCircle;
+
+        return AlertDialog(
+          backgroundColor: AppColors.gohan,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          contentPadding: const EdgeInsets.all(AppSizes.spacing6),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSizes.spacing4),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 48,
+                ),
+              ),
+              const SizedBox(height: AppSizes.spacing4),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.spacing2),
+              Text(
+                message,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.trunks,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.spacing6),
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  text: 'Tutup',
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,33 +292,30 @@ class _FixedCostSection extends StatelessWidget {
                     .read<UnpaidFixedCostTemplateCubit>()
                     .confirmFixedCostOccurrence(item.occurrenceId);
 
-                if (!success || !context.mounted) {
+                if (!success || !rootContext.mounted) {
                   return;
                 }
 
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      backgroundColor: AppColors.success100,
-                      content: Text('Fixed cost berhasil dibayar'),
-                    ),
-                  );
-                }
+                _showFeedbackDialog(
+                  rootContext,
+                  'Pembayaran Berhasil',
+                  'Tagihan biaya tetap kamu berhasil dibayar.',
+                );
               },
               onCancel: () async {
                 final success = await context
                     .read<UnpaidFixedCostTemplateCubit>()
                     .cancelFixedCostOccurrence(item.occurrenceId);
 
-                if (!success || !context.mounted) {
+                if (!success || !rootContext.mounted) {
                   return;
                 }
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: AppColors.warning100,
-                    content: Text('Fixed cost berhasil dibatalkan'),
-                  ),
+                _showFeedbackDialog(
+                  rootContext,
+                  'Dibatalkan',
+                  'Tagihan biaya tetap kamu berhasil dilewati.',
+                  isWarning: true,
                 );
               },
             );
@@ -279,8 +362,8 @@ class _EmptyFixedCostState extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: PhosphorIcon(
-              PhosphorIconsLight.receipt,
+            child: Icon(
+              PiconsLight.receipt,
               size: 48,
               color: AppColors.primary,
             ),
@@ -293,7 +376,7 @@ class _EmptyFixedCostState extends StatelessWidget {
           ),
           SizedBox(height: AppSizes.spacing2),
           Text(
-            'Anda belum memiliki biaya tetap yang dijadwalkan untuk minggu atau bulan ini.',
+            'Kamu belum memiliki biaya tetap yang dijadwalkan untuk minggu atau bulan ini.',
             style: AppTextStyles.bodyMain.copyWith(color: AppColors.bulma),
             textAlign: TextAlign.center,
           ),
@@ -351,15 +434,15 @@ class _ErrorFixedCostState extends StatelessWidget {
               color: AppColors.danger100.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: PhosphorIcon(
-              PhosphorIconsLight.warning,
+            child: Icon(
+              PiconsLight.warning,
               size: 48,
               color: AppColors.danger100,
             ),
           ),
           SizedBox(height: AppSizes.spacing6),
           Text(
-            'Gagal memuat biaya tetap',
+            'Biaya tetap belum bisa dimuat nih',
             style: AppTextStyles.h2.copyWith(color: AppColors.primary),
             textAlign: TextAlign.center,
           ),
