@@ -347,13 +347,14 @@ class _UpdateTransactionSheetState extends State<_UpdateTransactionSheet> {
   @override
   Widget build(BuildContext context) {
     final categories = _categoriesByType(_selectedType);
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
 
     return Padding(
       padding: EdgeInsets.only(
         left: AppSizes.spacing6,
         right: AppSizes.spacing6,
         top: AppSizes.spacing6,
-        bottom: MediaQuery.of(context).viewInsets.bottom + AppSizes.spacing6,
+        bottom: MediaQuery.of(context).viewInsets.bottom + bottomPadding + AppSizes.spacing6,
       ),
       child: Form(
         key: _formKey,

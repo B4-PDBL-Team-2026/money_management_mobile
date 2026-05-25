@@ -65,6 +65,7 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final keyboardPadding = MediaQuery.of(context).viewInsets.bottom;
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -79,7 +80,7 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
         AppSizes.spacing6,
         AppSizes.spacing6,
         AppSizes.spacing6,
-        AppSizes.spacing6 + keyboardPadding,
+        AppSizes.spacing6 + keyboardPadding + bottomPadding,
       ),
       child: Form(
         key: _formKey,

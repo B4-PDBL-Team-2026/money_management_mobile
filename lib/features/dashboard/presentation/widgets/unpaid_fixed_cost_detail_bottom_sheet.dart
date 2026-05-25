@@ -22,12 +22,13 @@ class UnpaidFixedCostDetailBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
     return Container(
       padding: EdgeInsets.only(
         left: AppSizes.spacing6,
         right: AppSizes.spacing6,
         top: AppSizes.spacing6,
-        bottom: MediaQuery.of(context).viewInsets.bottom + AppSizes.spacing6,
+        bottom: MediaQuery.of(context).viewInsets.bottom + bottomPadding + AppSizes.spacing6,
       ),
       decoration: const BoxDecoration(
         color: AppColors.gohan,

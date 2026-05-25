@@ -96,9 +96,10 @@ class _AddFixedCostBottomSheetState extends State<AddFixedCostBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
     return Container(
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+        bottom: MediaQuery.of(context).viewInsets.bottom + bottomPadding,
       ),
       decoration: const BoxDecoration(
         color: AppColors.gohan,

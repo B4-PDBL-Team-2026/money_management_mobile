@@ -108,13 +108,14 @@ class _BatchTransactionItemBottomSheetState
   @override
   Widget build(BuildContext context) {
     final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
         AppSizes.spacing6,
         AppSizes.spacing3,
         AppSizes.spacing6,
-        keyboardHeight + AppSizes.spacing6,
+        keyboardHeight + bottomPadding + AppSizes.spacing6,
       ),
       decoration: const BoxDecoration(
         color: AppColors.gohan,
