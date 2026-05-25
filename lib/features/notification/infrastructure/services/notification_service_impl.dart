@@ -275,6 +275,7 @@ class NotificationServiceImpl implements NotificationService {
     );
   }
 
+  @override
   @disposeMethod
   void dispose() {
     _onForegroundMessageSubscription?.cancel();

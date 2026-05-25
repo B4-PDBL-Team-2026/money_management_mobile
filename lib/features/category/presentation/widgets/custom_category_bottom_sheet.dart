@@ -4,7 +4,7 @@ import 'package:money_management_mobile/core/theme/theme.dart';
 import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/category/domain/entities/category_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class CustomCategoryBottomSheet extends StatefulWidget {
   final CategoryEntity? initialCategory;
@@ -65,6 +65,7 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final keyboardPadding = MediaQuery.of(context).viewInsets.bottom;
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -79,7 +80,7 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
         AppSizes.spacing6,
         AppSizes.spacing6,
         AppSizes.spacing6,
-        AppSizes.spacing6 + keyboardPadding,
+        AppSizes.spacing6 + keyboardPadding + bottomPadding,
       ),
       child: Form(
         key: _formKey,
@@ -128,11 +129,11 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
                     label: 'Pengeluaran',
                     selectedBackgroundColor: AppColors.danger100,
                     selectedTextColor: AppColors.gohan,
-                    unselectedIcon: PhosphorIcon(
-                      PhosphorIconsRegular.arrowCircleUp,
+                    unselectedIcon: Icon(
+                      PiconsRegular.arrowCircleUp,
                     ),
-                    selectedIcon: PhosphorIcon(
-                      PhosphorIconsFill.arrowCircleUp,
+                    selectedIcon: Icon(
+                      PiconsFill.arrowCircleUp,
                       color: AppColors.gohan,
                     ),
                   ),
@@ -141,11 +142,11 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
                     label: 'Pemasukan',
                     selectedBackgroundColor: AppColors.success100,
                     selectedTextColor: AppColors.gohan,
-                    unselectedIcon: PhosphorIcon(
-                      PhosphorIconsRegular.arrowCircleDown,
+                    unselectedIcon: Icon(
+                      PiconsRegular.arrowCircleDown,
                     ),
-                    selectedIcon: PhosphorIcon(
-                      PhosphorIconsFill.arrowCircleDown,
+                    selectedIcon: Icon(
+                      PiconsFill.arrowCircleDown,
                       color: AppColors.gohan,
                     ),
                   ),
@@ -231,7 +232,7 @@ class _CustomCategoryBottomSheetState extends State<CustomCategoryBottomSheet> {
                           ),
                         ),
                         child: Center(
-                          child: PhosphorIcon(
+                          child: Icon(
                             iconData,
                             color: isSelected
                                 ? AppColors.gohan

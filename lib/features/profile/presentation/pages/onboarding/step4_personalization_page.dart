@@ -32,12 +32,7 @@ class Step4PersonalizationPage extends StatelessWidget {
         }
 
         if (state is SubmitFinancialProfileFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.danger100,
-            ),
-          );
+          AppSnackBar.showError(context, state.message);
         }
       },
       builder: (context, submitState) {

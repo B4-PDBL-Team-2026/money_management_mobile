@@ -71,12 +71,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
         if (state is ResetPasswordError) {
           _closeDialogIfOpen(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.danger100,
-            ),
-          );
+          AppSnackBar.showError(context, state.message);
         }
       },
       child: Scaffold(

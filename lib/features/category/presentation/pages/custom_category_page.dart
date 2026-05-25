@@ -10,7 +10,7 @@ import 'package:money_management_mobile/features/category/presentation/widgets/c
 import 'package:money_management_mobile/features/category/presentation/widgets/custom_category_card.dart';
 import 'package:money_management_mobile/features/category/presentation/widgets/custom_category_empty_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class CustomCategoryPage extends StatefulWidget {
   const CustomCategoryPage({super.key});
@@ -41,17 +41,12 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
             .addCustomCategory(name: name, icon: iconKey, type: type);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                success
-                    ? 'Kategori "$name" berhasil ditambahkan!'
-                    : 'Gagal menambahkan kategori kustom.',
-              ),
-              backgroundColor: success
-                  ? AppColors.success100
-                  : AppColors.danger100,
-            ),
+          AppSnackBar.show(
+            context: context,
+            message: success
+                ? 'Kategori "$name" berhasil ditambahkan!'
+                : 'Gagal menambahkan kategori kustom.',
+            backgroundColor: success ? AppColors.success100 : AppColors.danger100,
           );
         }
       },
@@ -73,17 +68,12 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
             );
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                success
-                    ? 'Perubahan kategori "$name" berhasil disimpan!'
-                    : 'Gagal memperbarui kategori kustom.',
-              ),
-              backgroundColor: success
-                  ? AppColors.success100
-                  : AppColors.danger100,
-            ),
+          AppSnackBar.show(
+            context: context,
+            message: success
+                ? 'Perubahan kategori "$name" berhasil disimpan!'
+                : 'Gagal memperbarui kategori kustom.',
+            backgroundColor: success ? AppColors.success100 : AppColors.danger100,
           );
         }
       },
@@ -110,15 +100,12 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
         .deleteCustomCategory(category.id);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? 'Kategori "$name" berhasil dihapus!'
-                : 'Gagal menghapus kategori kustom.',
-          ),
-          backgroundColor: success ? AppColors.success100 : AppColors.danger100,
-        ),
+      AppSnackBar.show(
+        context: context,
+        message: success
+            ? 'Kategori "$name" berhasil dihapus!'
+            : 'Gagal menghapus kategori kustom.',
+        backgroundColor: success ? AppColors.success100 : AppColors.danger100,
       );
     }
   }
@@ -173,13 +160,13 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
                 return FloatingActionButton(
                   onPressed: _showAddBottomSheet,
                   backgroundColor: AppColors.secondary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: const BorderRadius.all(
+                  elevation: 4.0,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
                       Radius.circular(AppSizes.radiusLg),
                     ),
-                    side: const BorderSide(color: AppColors.bulma, width: 1),
                   ),
-                  child: const Icon(Icons.add, color: AppColors.bulma),
+                  child: const Icon(Icons.add, color: Colors.white),
                 );
               }
               return const SizedBox.shrink();
@@ -220,8 +207,8 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
                   color: AppColors.danger10.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: PhosphorIcon(
-                  PhosphorIconsRegular.warningOctagon,
+                child: Icon(
+                  PiconsRegular.warningOctagon,
                   size: 56,
                   color: AppColors.danger100,
                 ),
@@ -272,8 +259,8 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
                   color: AppColors.danger10.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: PhosphorIcon(
-                  PhosphorIconsRegular.warningOctagon,
+                child: Icon(
+                  PiconsRegular.warningOctagon,
                   size: 56,
                   color: AppColors.danger100,
                 ),
@@ -394,8 +381,8 @@ class _CustomCategoryPageState extends State<CustomCategoryPage> {
                                   color: AppColors.lightPrimary,
                                   shape: BoxShape.circle,
                                 ),
-                                child: PhosphorIcon(
-                                  PhosphorIconsRegular.tag,
+                                child: Icon(
+                                  PiconsRegular.tag,
                                   size: 32,
                                   color: AppColors.primary,
                                 ),

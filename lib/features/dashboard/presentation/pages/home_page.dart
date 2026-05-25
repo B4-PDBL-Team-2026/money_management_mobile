@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
+import 'package:money_management_mobile/core/widgets/widgets.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/widgets/dashboard_budget_metrics.dart';
@@ -59,9 +60,7 @@ class _HomePageState extends State<HomePage> {
                 BlocListener<DashboardMetricCubit, DashboardMetricState>(
                   listener: (context, state) {
                     if (state is DashboardMetricError) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(state.message)));
+                      AppSnackBar.showError(context, state.message);
                     }
                   },
                   child: Column(

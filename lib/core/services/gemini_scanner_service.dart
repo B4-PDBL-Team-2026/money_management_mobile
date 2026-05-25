@@ -24,7 +24,7 @@ class ApiKeyData {
 class GeminiScannerService {
   final Logger _log = Logger('GeminiScannerService');
 
-  /// Dio khusus untuk Gemini — bersih tanpa interceptor auth backend.
+  /// Dio khusus untuk Gemini â€” bersih tanpa interceptor auth backend.
   /// Dibuat sendiri agar tidak terkontaminasi Bearer token dari backend API.
   late final Dio _dio;
 

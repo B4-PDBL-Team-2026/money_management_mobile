@@ -42,15 +42,7 @@ class _FixedCostTemplateManagementPageState
     final isMainCycleWeekly = await _resolveIsMainCycleWeekly();
 
     if (categories.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: AppColors.danger100,
-          content: Text(
-            'Kategori belum tersedia. Silakan coba lagi.',
-            style: TextStyle(color: AppColors.gohan),
-          ),
-        ),
-      );
+      AppSnackBar.showError(context, 'Kategori belum tersedia. Silakan coba lagi.');
       return;
     }
 
@@ -343,11 +335,11 @@ class _FixedCostTemplateManagementPageState
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddFixedCostBottomSheet,
         backgroundColor: AppColors.secondary,
+        elevation: 4.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(AppSizes.radiusLg)),
-          side: BorderSide(color: AppColors.bulma, width: 1),
         ),
-        child: Icon(Icons.add, color: AppColors.bulma),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

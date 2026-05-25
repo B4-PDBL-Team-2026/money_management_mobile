@@ -38,15 +38,16 @@ class _CategoryBottomSheetState extends State<CategoryBottomSheet> {
         .toList();
 
     final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
     final availableHeight =
-        MediaQuery.sizeOf(context).height * 0.85 - keyboardHeight;
+        MediaQuery.sizeOf(context).height * 0.85 - keyboardHeight - bottomPadding;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
         AppSizes.spacing6,
         AppSizes.spacing3,
         AppSizes.spacing6,
-        keyboardHeight + AppSizes.spacing6,
+        keyboardHeight + bottomPadding + AppSizes.spacing6,
       ),
       child: SizedBox(
         height: availableHeight.clamp(0.0, double.infinity),

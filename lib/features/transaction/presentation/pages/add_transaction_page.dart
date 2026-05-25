@@ -17,7 +17,7 @@ import 'package:money_management_mobile/features/transaction/presentation/cubit/
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_bottom_sheet.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/category_grid_item.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class AddTransactionPage extends StatefulWidget {
   const AddTransactionPage({super.key});
@@ -183,29 +183,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         child: BlocConsumer<AddTransactionCubit, AddTransactionState>(
           listener: (context, state) {
             if (state is AddTransactionSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Transaksi berhasil ditambahkan!",
-                    style: TextStyle(color: AppColors.gohan),
-                  ),
-                  backgroundColor: AppColors.primary,
-                ),
-              );
+              AppSnackBar.showSuccess(context, "Transaksi berhasil ditambahkan!");
 
               context.go(AppRouter.dashboard);
             }
 
             if (state is AddTransactionError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.message,
-                    style: TextStyle(color: AppColors.gohan),
-                  ),
-                  backgroundColor: AppColors.danger100,
-                ),
-              );
+              AppSnackBar.showError(context, state.message);
             }
           },
           builder: (context, state) {
@@ -229,11 +213,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             label: 'Pengeluaran',
                             selectedBackgroundColor: AppColors.danger100,
                             selectedTextColor: AppColors.gohan,
-                            unselectedIcon: PhosphorIcon(
-                              PhosphorIconsRegular.arrowCircleUp,
+                            unselectedIcon: Icon(
+                              PiconsRegular.arrowCircleUp,
                             ),
-                            selectedIcon: PhosphorIcon(
-                              PhosphorIconsFill.arrowCircleUp,
+                            selectedIcon: Icon(
+                              PiconsFill.arrowCircleUp,
                               color: AppColors.gohan,
                             ),
                           ),
@@ -242,11 +226,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             label: 'Pemasukan',
                             selectedBackgroundColor: AppColors.success100,
                             selectedTextColor: AppColors.gohan,
-                            unselectedIcon: PhosphorIcon(
-                              PhosphorIconsRegular.arrowCircleDown,
+                            unselectedIcon: Icon(
+                              PiconsRegular.arrowCircleDown,
                             ),
-                            selectedIcon: PhosphorIcon(
-                              PhosphorIconsFill.arrowCircleDown,
+                            selectedIcon: Icon(
+                              PiconsFill.arrowCircleDown,
                               color: AppColors.gohan,
                             ),
                           ),
@@ -398,8 +382,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         controller: _dateController,
                         readOnly: true,
                         onTap: () => _pickDate(context),
-                        prefixIcon: const PhosphorIcon(
-                          PhosphorIconsRegular.calendarBlank,
+                        prefixIcon: const Icon(
+                          PiconsRegular.calendarBlank,
                         ),
                         errorText: serverErrors?['transactionAt']?[0],
                         isDisabled: state is AddTransactionLoading,

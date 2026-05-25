@@ -28,7 +28,7 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
   VoiceTransactionCubit(this._transactionRepository, this._eventBus)
       : super(VoiceTransactionInitial());
 
-  // ── Speech ───────────────────────────────────────────────────────────────────
+  // â”€â”€ Speech â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   Future<bool> _initSpeech() async {
     if (_speechInitialized) return true;
@@ -98,14 +98,14 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
     _parseTranscript(transcript);
   }
 
-  // ── Text input ────────────────────────────────────────────────────────────────
+  // â”€â”€ Text input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void submitTextInput(String text) {
     if (text.trim().isEmpty) return;
     _parseTranscript(text.trim());
   }
 
-  // ── Parse ─────────────────────────────────────────────────────────────────────
+  // â”€â”€ Parse â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _parseTranscript(String transcript) {
     emit(VoiceTransactionParsing(transcript: transcript));
@@ -126,7 +126,7 @@ class VoiceTransactionCubit extends Cubit<VoiceTransactionState> {
 
   void overrideParsedData(ParsedTransactionData updated) {
     emit(VoiceTransactionParsed(parsedData: updated));
-    // Save right away — the user already confirmed by tapping "Simpan"
+    // Save right away â€” the user already confirmed by tapping "Simpan"
     saveTransaction();
   }
 

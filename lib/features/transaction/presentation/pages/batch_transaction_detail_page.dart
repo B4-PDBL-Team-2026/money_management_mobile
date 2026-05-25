@@ -15,7 +15,7 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_state.dart';
 import 'package:money_management_mobile/injection_container.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class BatchTransactionDetailPage extends StatefulWidget {
   final int batchId;
@@ -136,23 +136,13 @@ class _BatchTransactionDetailPageState
           >(
             listener: (context, state) {
               if (state is BatchTransactionDetailDeleted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.primary,
-                  ),
-                );
+                AppSnackBar.showSuccess(context, state.message);
                 _goBack();
                 return;
               }
 
               if (state is BatchTransactionDetailError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.danger100,
-                  ),
-                );
+                AppSnackBar.showError(context, state.message);
               }
             },
             builder: (context, state) {
@@ -281,8 +271,8 @@ class _DetailContent extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    const PhosphorIcon(
-                      PhosphorIconsRegular.stack,
+                    const Icon(
+                      PiconsRegular.stack,
                       color: AppColors.gohan,
                     ),
                   ],
@@ -414,7 +404,7 @@ class _BatchItemCard extends StatelessWidget {
     final amountPrefix = isExpense ? '-' : '+';
     final categoryIcon =
         GlobalConstant.categoryIconsMapping[item.categoryIcon] ??
-        PhosphorIconsRegular.question;
+        PiconsRegular.question;
 
     return GestureDetector(
       onTap: () {
@@ -433,7 +423,7 @@ class _BatchItemCard extends StatelessWidget {
                 color: chipBgColor,
                 borderRadius: BorderRadius.circular(AppSizes.radiusSm),
               ),
-              child: PhosphorIcon(
+              child: Icon(
                 categoryIcon,
                 color: AppColors.bulma,
                 size: 24,
@@ -514,7 +504,7 @@ class _SummaryChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

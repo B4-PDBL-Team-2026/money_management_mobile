@@ -9,7 +9,6 @@ import 'package:money_management_mobile/features/category/presentation/cubit/cat
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class TransactionHistoryItem extends StatelessWidget {
   final TransactionHistoryEntity transaction;
@@ -119,7 +118,7 @@ class TransactionHistoryItem extends StatelessWidget {
         color: _getBackgroundColor(isExpense, isBatchTransaction),
         borderRadius: BorderRadius.circular(AppSizes.radiusSm),
       ),
-      child: PhosphorIcon(
+      child: Icon(
         GlobalConstant.categoryIconsMapping[category.icon]!,
         color: AppColors.bulma,
         size: 24,

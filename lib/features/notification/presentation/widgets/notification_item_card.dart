@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class NotificationItemCard extends StatelessWidget {
   const NotificationItemCard({
@@ -35,8 +35,8 @@ class NotificationItemCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            PhosphorIcon(
-              PhosphorIconsRegular.trash,
+            Icon(
+              PiconsRegular.trash,
               color: AppColors.danger100,
               size: 28,
             ),
@@ -70,7 +70,7 @@ class NotificationItemCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                   border: Border.all(color: iconBorderColor, width: 1),
                 ),
-                child: PhosphorIcon(
+                child: Icon(
                   icon ?? defaultIcon,
                   color: iconColor,
                   size: 22,
@@ -125,5 +125,5 @@ class NotificationItemCard extends StatelessWidget {
   Color get iconColor => AppColors.secondary;
   Color get iconBorderColor => AppColors.secondary;
   IconData get defaultIcon =>
-      isRead ? PhosphorIconsRegular.bell : PhosphorIconsRegular.bellRinging;
+      isRead ? PiconsRegular.bell : PiconsRegular.bellRinging;
 }

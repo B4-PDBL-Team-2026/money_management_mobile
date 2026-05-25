@@ -16,7 +16,7 @@ import 'package:money_management_mobile/features/transaction/domain/entities/tra
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_submit_state.dart';
 import 'package:money_management_mobile/features/transaction/presentation/widgets/batch_transaction_item_bottom_sheet.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class BatchTransactionFormPage extends StatefulWidget {
   final int? batchId;
@@ -182,12 +182,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     if (_transactionItems.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Tambahkan minimal satu item transaksi.'),
-          backgroundColor: AppColors.warning100,
-        ),
-      );
+      AppSnackBar.showWarning(context, 'Tambahkan minimal satu item transaksi.');
       return;
     }
 
@@ -215,15 +210,12 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
         if (state is BatchTransactionSubmitSuccess) {
           _resetForm();
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                widget.batchId != null
-                    ? 'Batch transaksi berhasil diperbarui!'
-                    : 'Batch transaksi berhasil disimpan!',
-              ),
-              backgroundColor: AppColors.primary,
-            ),
+          AppSnackBar.show(
+            context: context,
+            message: widget.batchId != null
+                ? 'Batch transaksi berhasil diperbarui!'
+                : 'Batch transaksi berhasil disimpan!',
+            backgroundColor: AppColors.primary,
           );
 
           if (context.canPop()) {
@@ -234,12 +226,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
         }
 
         if (state is BatchTransactionSubmitError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.danger100,
-            ),
-          );
+          AppSnackBar.showError(context, state.message);
         }
       },
       child: Scaffold(
@@ -294,7 +281,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ── Header fields ──────────────────────────────
+                      // â”€â”€ Header fields â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                       AppTextField(
                         label: 'Judul / Nama Transaksi',
                         hint: 'Gaji Bulan April',
@@ -313,14 +300,14 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
                         controller: _dateController,
                         readOnly: true,
                         onTap: _pickDate,
-                        prefixIcon: const PhosphorIcon(
-                          PhosphorIconsRegular.calendarBlank,
+                        prefixIcon: const Icon(
+                          PiconsRegular.calendarBlank,
                           color: AppColors.trunks,
                         ),
                       ),
                       const SizedBox(height: AppSizes.spacing6),
 
-                      // ── Item list header ───────────────────────────
+                      // â”€â”€ Item list header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                       Row(
                         children: [
                           Expanded(
@@ -352,7 +339,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
                       ),
                       const SizedBox(height: AppSizes.spacing4),
 
-                      // ── Empty state ────────────────────────────────
+                      // â”€â”€ Empty state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                       if (_transactionItems.isEmpty)
                         _EmptyItemsPlaceholder(onTap: _openAddItemSheet)
                       else
@@ -365,7 +352,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
 
                       const SizedBox(height: AppSizes.spacing6),
 
-                      // ── Grand total ────────────────────────────────
+                      // â”€â”€ Grand total â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                       if (_transactionItems.isNotEmpty) ...[
                         _GrandTotalCard(grandTotal: grandTotal),
                         const SizedBox(height: AppSizes.spacing4),
@@ -382,7 +369,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
                 ),
               ),
 
-              // ── Bottom action ──────────────────────────────────────
+              // â”€â”€ Bottom action â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
               BlocBuilder<
                 BatchTransactionSubmitCubit,
                 BatchTransactionSubmitState
@@ -415,7 +402,7 @@ class _BatchTransactionFormPageState extends State<BatchTransactionFormPage> {
   }
 }
 
-// ── Private sub-widgets ───────────────────────────────────────────────────────
+// â”€â”€ Private sub-widgets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _AddItemButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -456,8 +443,8 @@ class _EmptyItemsPlaceholder extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const PhosphorIcon(
-              PhosphorIconsRegular.receiptX,
+            const Icon(
+              PiconsRegular.receiptX,
               size: 40,
               color: AppColors.trunks,
             ),
@@ -551,8 +538,8 @@ class _BatchItemCard extends StatelessWidget {
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            PhosphorIcon(
-              PhosphorIconsRegular.trash,
+            Icon(
+              PiconsRegular.trash,
               color: AppColors.danger100,
               size: 24,
             ),
@@ -648,7 +635,7 @@ class _BatchItemCard extends StatelessWidget {
         color: bgColor,
         borderRadius: BorderRadius.circular(AppSizes.radiusSm),
       ),
-      child: PhosphorIcon(
+      child: Icon(
         GlobalConstant.categoryIconsMapping[category.icon]!,
         size: 20,
         color: AppColors.bulma,
@@ -687,7 +674,7 @@ class _GrandTotalCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-            border: Border.all(color: color.withOpacity(0.3)),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
           ),
           child: Text(
             display,

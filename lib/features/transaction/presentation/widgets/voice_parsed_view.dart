@@ -57,7 +57,7 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
   /// Falls back to the first item so the UI always shows a valid category.
   CategoryEntity _resolveCategory() {
     if (widget.categories.isEmpty) {
-      // No categories loaded yet — use inferred data as a placeholder.
+      // No categories loaded yet â€” use inferred data as a placeholder.
       return _syntheticCategory(
         widget.data.categoryId,
         widget.data.categoryName,
@@ -79,7 +79,7 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
     );
   }
 
-  // Date picker — mirrors AddTransactionPage._pickDate
+  // Date picker â€” mirrors AddTransactionPage._pickDate
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -180,7 +180,7 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -188,7 +188,7 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
             ),
             child: Column(
               children: [
-                // Type — read-only
+                // Type â€” read-only
                 _DetailRow(
                   icon: isExpense
                       ? Icons.arrow_circle_up_rounded
@@ -201,7 +201,7 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
                 ),
                 const Divider(height: 1, indent: 72),
 
-                // Category — tappable
+                // Category â€” tappable
                 _TappableRow(
                   icon: Icons.grid_view_rounded,
                   iconColor: AppColors.primary,
@@ -211,7 +211,7 @@ class _VoiceParsedViewState extends State<VoiceParsedView> {
                 ),
                 const Divider(height: 1, indent: 72),
 
-                // Date — tappable, opens native date picker
+                // Date â€” tappable, opens native date picker
                 _TappableRow(
                   icon: Icons.calendar_today_rounded,
                   iconColor: AppColors.primary,
@@ -339,7 +339,7 @@ class _TappableRow extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Row(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:money_management_mobile/core/routes/app_router.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:picons/picons.dart';
 
 class ShellContainer extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -100,26 +100,26 @@ class _ShellContainerState extends State<ShellContainer>
             unselectedFontSize: 12,
             items: const [
               BottomNavigationBarItem(
-                icon: PhosphorIcon(PhosphorIconsRegular.house),
-                activeIcon: PhosphorIcon(PhosphorIconsFill.house),
+                icon: Icon(PiconsRegular.house),
+                activeIcon: Icon(PiconsFill.house),
                 label: 'Beranda',
                 tooltip: 'Beranda',
               ),
               BottomNavigationBarItem(
-                icon: PhosphorIcon(PhosphorIconsRegular.invoice),
-                activeIcon: PhosphorIcon(PhosphorIconsFill.invoice),
+                icon: Icon(PiconsRegular.invoice),
+                activeIcon: Icon(PiconsFill.invoice),
                 label: 'Biaya tetap',
                 tooltip: 'Biaya tetap',
               ),
               BottomNavigationBarItem(
-                icon: PhosphorIcon(PhosphorIconsRegular.receipt),
-                activeIcon: PhosphorIcon(PhosphorIconsFill.receipt),
+                icon: Icon(PiconsRegular.receipt),
+                activeIcon: Icon(PiconsFill.receipt),
                 label: 'Riwayat',
                 tooltip: 'Riwayat transaksi',
               ),
               BottomNavigationBarItem(
-                icon: PhosphorIcon(PhosphorIconsRegular.dotsThreeCircle),
-                activeIcon: PhosphorIcon(PhosphorIconsFill.dotsThreeCircle),
+                icon: Icon(PiconsRegular.dotsThreeCircle),
+                activeIcon: Icon(PiconsFill.dotsThreeCircle),
                 label: 'Lainnya',
                 tooltip: 'Profil dan pengaturan',
               ),
@@ -127,7 +127,7 @@ class _ShellContainerState extends State<ShellContainer>
           ),
         ),
 
-        // Scrim — tapping outside closes the menu
+        // Scrim â€” tapping outside closes the menu
         if (_isExpanded)
           Positioned.fill(
             child: GestureDetector(
@@ -151,7 +151,7 @@ class _ShellContainerState extends State<ShellContainer>
                   animation: _fadeScaleAnim,
                   delay: 0.0,
                   label: 'Tambah dalam Batch',
-                  icon: PhosphorIconsRegular.stackPlus,
+                  icon: PiconsRegular.stackPlus,
                   onTap: _onNavigate(
                     () => context.push(AppRouter.addBatchTransaction),
                   ),
@@ -163,7 +163,7 @@ class _ShellContainerState extends State<ShellContainer>
                   animation: _fadeScaleAnim,
                   delay: 0.0,
                   label: 'Scan Struk',
-                  icon: PhosphorIconsRegular.scan,
+                  icon: PiconsRegular.scan,
                   onTap: _onNavigate(
                     () => context.push(AppRouter.scanReceipt),
                   ),
@@ -175,7 +175,7 @@ class _ShellContainerState extends State<ShellContainer>
                   animation: _fadeScaleAnim,
                   delay: 0.0,
                   label: 'Tambah Manual',
-                  icon: PhosphorIconsRegular.pencilSimple,
+                  icon: PiconsRegular.pencilSimple,
                   onTap: _onNavigate(
                     () => context.push(AppRouter.addTransaction),
                   ),
@@ -188,7 +188,7 @@ class _ShellContainerState extends State<ShellContainer>
                   animation: _fadeScaleAnim,
                   delay: 0.3,
                   label: 'Voice',
-                  icon: PhosphorIconsRegular.microphone,
+                  icon: PiconsRegular.microphone,
                   onTap: _onNavigate(
                     () => context.push(AppRouter.voiceTransaction),
                   ),
@@ -202,15 +202,15 @@ class _ShellContainerState extends State<ShellContainer>
                   child: FloatingActionButton(
                     onPressed: _toggle,
                     backgroundColor: AppColors.secondary,
+                    elevation: 4.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(AppSizes.radiusLg),
                       ),
-                      side: BorderSide(color: AppColors.bulma, width: 1),
                     ),
                     child: Icon(
                       _isExpanded ? Icons.close : Icons.add,
-                      color: AppColors.bulma,
+                      color: Colors.white,
                     ),
                   ),
                 ),

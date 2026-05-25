@@ -100,9 +100,10 @@ class _ManageFixedCostBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
     return Container(
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+        bottom: MediaQuery.of(context).viewInsets.bottom + bottomPadding,
       ),
       decoration: const BoxDecoration(
         color: AppColors.gohan,
@@ -243,7 +244,7 @@ class _ManageFixedCostBottomSheetState
               ],
               const SizedBox(height: AppSizes.spacing4),
               DropdownButtonFormField<int>(
-                value: _selectedCategoryId == 0 ? null : _selectedCategoryId,
+                initialValue: _selectedCategoryId == 0 ? null : _selectedCategoryId,
                 decoration: _dropdownDecoration(context, 'Kategori'),
                 items: widget.categories
                     .map(

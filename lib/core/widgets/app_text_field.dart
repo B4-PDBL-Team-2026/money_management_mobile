@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_mobile/core/theme/theme.dart';
 
-import '../theme/app_colors.dart';
 
 class AppTextField extends StatefulWidget {
   final String hint;
