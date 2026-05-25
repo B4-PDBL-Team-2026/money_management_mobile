@@ -244,7 +244,7 @@ class _ManageFixedCostBottomSheetState
               ],
               const SizedBox(height: AppSizes.spacing4),
               DropdownButtonFormField<int>(
-                value: _selectedCategoryId == 0 ? null : _selectedCategoryId,
+                initialValue: _selectedCategoryId == 0 ? null : _selectedCategoryId,
                 decoration: _dropdownDecoration(context, 'Kategori'),
                 items: widget.categories
                     .map(

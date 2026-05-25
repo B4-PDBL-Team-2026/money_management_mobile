@@ -24,7 +24,7 @@ class VoiceErrorView extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: AppColors.danger100.withOpacity(0.12),
+              color: AppColors.danger100.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(Icons.warning_rounded,
@@ -82,7 +82,7 @@ class VoiceErrorView extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 12,
                 ),
               ],
@@ -94,7 +94,7 @@ class VoiceErrorView extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.08),
+                    color: AppColors.primary.withValues(alpha: 0.08),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.lightbulb_outline_rounded,

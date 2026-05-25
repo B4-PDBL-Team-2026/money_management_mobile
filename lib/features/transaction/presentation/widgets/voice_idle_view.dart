@@ -67,7 +67,7 @@ class _VoiceIdleViewState extends State<VoiceIdleView> {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -86,7 +86,7 @@ class _VoiceIdleViewState extends State<VoiceIdleView> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.secondary.withOpacity(0.4),
+                          color: AppColors.secondary.withValues(alpha: 0.4),
                           blurRadius: 24,
                           spreadRadius: 4,
                         ),
@@ -110,7 +110,7 @@ class _VoiceIdleViewState extends State<VoiceIdleView> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Expanded(child: Divider(color: AppColors.trunks.withOpacity(0.2))),
+                      Expanded(child: Divider(color: AppColors.trunks.withValues(alpha: 0.2))),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
@@ -122,7 +122,7 @@ class _VoiceIdleViewState extends State<VoiceIdleView> {
                           ),
                         ),
                       ),
-                      Expanded(child: Divider(color: AppColors.trunks.withOpacity(0.2))),
+                      Expanded(child: Divider(color: AppColors.trunks.withValues(alpha: 0.2))),
                     ],
                   ),
                 ),
@@ -244,7 +244,7 @@ class _ExampleCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8),
         ],
       ),
       child: Row(

@@ -85,8 +85,8 @@ class VoiceListeningView extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  AppColors.secondary.withOpacity(0.15),
-                  AppColors.primary.withOpacity(0.10),
+                  AppColors.secondary.withValues(alpha: 0.15),
+                  AppColors.primary.withValues(alpha: 0.10),
                   Colors.transparent,
                 ],
               ),
