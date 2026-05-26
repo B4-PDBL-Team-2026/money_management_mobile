@@ -136,6 +136,51 @@ class AuthRemoteDataSource {
     }
   }
 
+  Future<(UserModel, String, bool)> loginWithGoogle(String googleToken) async {
+    if (AppEnv.useMockApi) {
+      _log.info('USE_MOCK_API enabled, returning dummy Google login response');
+      await Future.delayed(const Duration(seconds: 1));
+
+      final dummyUser = UserModel(
+        id: 1,
+        name: 'Google User',
+        email: 'google@moco.dev',
+        emailVerifiedAt: DateTime.now().toUtc(),
+        goal: null,
+        cycleType: null,
+        cycleStart: null,
+        balance: null,
+        profileUrl: null,
+        createdAt: DateTime.now().toUtc(),
+        updatedAt: DateTime.now().toUtc(),
+      );
+
+      return (dummyUser, 'dev-google-token', false);
+    }
+
+    try {
+      final response = await dio.post(
+        '/auth/login/google',
+        data: {'google_token': googleToken},
+      );
+
+      final data = response.data['data'] as Map<String, dynamic>;
+      final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      final token = data['token'] as String;
+      final requiresOnboarding = _parseRequiresOnboarding(
+        data['requiresOnboarding'],
+        defaultValue: false,
+      );
+
+      return (user, token, requiresOnboarding);
+    } on DioException catch (e) {
+      throw ErrorHandler.handleRemoteException(e, _log, 'Google Login');
+    } catch (e) {
+      _log.severe('Unexpected Google login error', e);
+      throw UnexpectedException('Ada kendala pas masuk lewat Google. Coba lagi ya.');
+    }
+  }
+
   Future<void> logout() async {
     if (AppEnv.useMockApi) {
       _log.info('USE_MOCK_API enabled, simulating logout response');

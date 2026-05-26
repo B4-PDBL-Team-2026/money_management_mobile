@@ -26,6 +26,7 @@ import 'features/auth/data/data_sources/remote/auth_remote_data_source.dart'
 import 'features/auth/data/repositories/auth_repository_impl.dart' as _i111;
 import 'features/auth/domain/repositories/auth_repository.dart' as _i1015;
 import 'features/auth/domain/usecases/login_usecase.dart' as _i206;
+import 'features/auth/domain/usecases/login_with_google_usecase.dart' as _i893;
 import 'features/auth/domain/usecases/register_usecase.dart' as _i693;
 import 'features/auth/presentation/cubit/login_cubit.dart' as _i250;
 import 'features/auth/presentation/cubit/register_cubit.dart' as _i622;
@@ -283,19 +284,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i206.LoginUseCase>(
       () => _i206.LoginUseCase(gh<_i1015.AuthRepository>()),
     );
+    gh.factory<_i893.LoginWithGoogleUseCase>(
+      () => _i893.LoginWithGoogleUseCase(gh<_i1015.AuthRepository>()),
+    );
     gh.factory<_i693.RegisterUseCase>(
       () => _i693.RegisterUseCase(gh<_i1015.AuthRepository>()),
     );
     gh.lazySingleton<_i324.FixedCostTemplateCubit>(
       () => _i324.FixedCostTemplateCubit(
         gh<_i121.FixedCostTemplateRepository>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
-    gh.factory<_i622.RegisterCubit>(
-      () => _i622.RegisterCubit(
-        gh<_i693.RegisterUseCase>(),
-        gh<_i410.SessionCubit>(),
         gh<_i1017.EventBus>(),
       ),
     );
@@ -331,13 +328,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
-    gh.factory<_i250.LoginCubit>(
-      () => _i250.LoginCubit(
-        gh<_i206.LoginUseCase>(),
-        gh<_i410.SessionCubit>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
     gh.factory<_i83.CalculateDashboardMetricsUsecase>(
       () => _i83.CalculateDashboardMetricsUsecase(
         gh<_i557.DashboardRepository>(),
@@ -350,10 +340,26 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
+    gh.factory<_i250.LoginCubit>(
+      () => _i250.LoginCubit(
+        gh<_i206.LoginUseCase>(),
+        gh<_i893.LoginWithGoogleUseCase>(),
+        gh<_i410.SessionCubit>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
     gh.lazySingleton<_i1023.DashboardMetricCubit>(
       () => _i1023.DashboardMetricCubit(
         gh<_i83.CalculateDashboardMetricsUsecase>(),
         gh<_i557.DashboardRepository>(),
+        gh<_i1017.EventBus>(),
+      ),
+    );
+    gh.factory<_i622.RegisterCubit>(
+      () => _i622.RegisterCubit(
+        gh<_i693.RegisterUseCase>(),
+        gh<_i893.LoginWithGoogleUseCase>(),
+        gh<_i410.SessionCubit>(),
         gh<_i1017.EventBus>(),
       ),
     );

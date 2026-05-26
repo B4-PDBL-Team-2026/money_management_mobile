@@ -179,6 +179,21 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                     ),
+                    const SizedBox(height: AppSizes.spacing4),
+                    AppButton(
+                      text: 'Masuk dengan Google',
+                      variant: AppButtonVariant.outlined,
+                      type: AppButtonType.primary,
+                      leadingWidget: SvgPicture.asset(
+                        'assets/svg/google-logo.svg',
+                        height: 20,
+                        width: 20,
+                      ),
+                      isLoading: state is LoginLoading,
+                      onPressed: () {
+                        context.read<LoginCubit>().loginWithGoogle();
+                      },
+                    ),
                     const SizedBox(height: AppSizes.spacing6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
