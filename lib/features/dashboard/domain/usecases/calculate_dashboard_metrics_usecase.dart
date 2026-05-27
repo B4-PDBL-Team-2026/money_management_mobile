@@ -74,7 +74,7 @@ class CalculateDashboardMetricsUsecase {
 
         if (todaySpent <= safetyCeiling) {
           limit = safetyCeiling;
-          limitName = 'Batas optimal';
+          limitName = 'Batas harian optimal';
           firstMetric = DashboardMetric(
             name: 'Sisa Target',
             value: limit - todaySpent,

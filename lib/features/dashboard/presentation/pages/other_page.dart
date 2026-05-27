@@ -562,16 +562,26 @@ class _OtherPageState extends State<OtherPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Batas Budget Harian',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.bulma,
+                                        Row(
+                                            children: [
+                                              Text(
+                                                'Batas Budget Harian',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: AppColors.bulma,
+                                                    ),
                                               ),
-                                        ),
+                                              const SizedBox(width: 6),
+                                              const AppHelpTooltip(
+                                                message: 'Tentukan batas maksimal uang yang ideal untuk kamu keluarkan setiap harinya agar saldo tetap aman.',
+                                                iconSize: 16,
+                                                iconColor: AppColors.bulma,
+                                              ),
+                                            ],
+                                          ),
                                         const SizedBox(height: 1),
                                         GestureDetector(
                                           onTap: () {
