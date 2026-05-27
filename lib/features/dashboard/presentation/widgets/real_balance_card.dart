@@ -61,7 +61,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
                     ),
                     const SizedBox(width: AppSizes.spacing2),
                     Text(
-                      'Rp ${_isVisible ? CurrencyFormatter.format(widget.safeBalance) : 'â€¢â€¢â€¢â€¢â€¢â€¢'}',
+                      'Rp ${_isVisible ? CurrencyFormatter.format(widget.safeBalance) : '•••••••'}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.bulma,
@@ -97,7 +97,7 @@ class _RealBalanceCardState extends State<RealBalanceCard> {
                       ),
                       const SizedBox(width: AppSizes.spacing2),
                       Text(
-                        'Rp ${_isVisible ? CurrencyFormatter.format(widget.balance) : 'â€¢â€¢â€¢â€¢â€¢â€¢'}',
+                        'Rp ${_isVisible ? CurrencyFormatter.format(widget.balance) : '•••••••'}',
                         style: Theme.of(
                           context,
                         ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
