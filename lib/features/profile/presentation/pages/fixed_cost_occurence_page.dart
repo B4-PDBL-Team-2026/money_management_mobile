@@ -6,6 +6,7 @@ import 'package:money_management_mobile/core/theme/app_colors.dart';
 import 'package:money_management_mobile/core/theme/app_sizes.dart';
 import 'package:money_management_mobile/core/theme/app_text_styles.dart';
 import 'package:money_management_mobile/core/widgets/app_button.dart';
+import 'package:money_management_mobile/core/widgets/app_help_tooltip.dart';
 import 'package:money_management_mobile/features/dashboard/domain/entities/unpaid_fixed_cost_entity.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_cubit.dart';
 import 'package:money_management_mobile/features/dashboard/presentation/cubits/dashboard_metric_state.dart';
@@ -133,27 +134,32 @@ class _FixedCostOccurencePageState extends State<FixedCostOccurencePage> {
     );
   }
 
-  Row _buildHeader(BuildContext context) {
+Row _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Biaya tetap',
-          style: AppTextStyles.h1.copyWith(color: AppColors.primary),
+        AppHelpTooltip(
+          message: 'Tagihan tidak akan terpotong otomatis. Anda tetap pegang kendali penuh buat catat manual. Notifikasi akan muncul sebagai pengingat.',
+          maxTooltipWidth: 280,
+          iconSize: 24, // Diperbesar sedikit agar seimbang dengan ukuran h1
+          child: Text(
+            'Biaya tetap',
+            style: AppTextStyles.h1.copyWith(color: AppColors.primary),
+          ),
         ),
         GestureDetector(
           onTap: () {
             context.push(AppRouter.fixedCostsManagement);
           },
           child: Container(
-            padding: EdgeInsets.all(6),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(6),
+            decoration: const BoxDecoration(
               color: AppColors.primary,
               borderRadius: BorderRadius.all(
                 Radius.circular(AppSizes.radiusSm),
               ),
             ),
-            child: Icon(
+            child: const Icon(
               PiconsRegular.pencil,
               color: Colors.white,
             ),

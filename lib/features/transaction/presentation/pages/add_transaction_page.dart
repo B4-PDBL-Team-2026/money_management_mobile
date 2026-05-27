@@ -441,9 +441,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                 if (isAlreadyOverBudget || willBeOverBudget) {
                                   shouldProceed = await AppConfirmDialog.show(
                                     context: context,
-                                    title: 'Over Budget!',
+                                    title: 'Pengeluaran Berlebihan!',
                                     content:
-                                        'Yakin ingin menambah transaksi pengeluaran lagi? kamu sudah overbudget!',
+                                        'Yakin ingin menambah transaksi pengeluaran lagi? pengeluaran kamu sudah melebihi batas normal!',
                                     confirmText: 'Yakin',
                                     cancelText: 'Batal',
                                     confirmButtonType: AppButtonType.danger,
