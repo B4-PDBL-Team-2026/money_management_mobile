@@ -43,14 +43,14 @@ class WelcomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSizes.spacing12),
                     AppButton(
-                      text: 'Login',
+                      text: 'Masuk',
                       onPressed: () {
                         context.go(AppRouter.login);
                       },
                     ),
                     const SizedBox(height: AppSizes.spacing4),
                     AppButton(
-                      text: "Register",
+                      text: "Daftar",
                       onPressed: () {
                         context.go(AppRouter.registration);
                       },
