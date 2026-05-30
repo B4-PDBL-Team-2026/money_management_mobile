@@ -16,6 +16,7 @@ class AppTextField extends StatefulWidget {
   final VoidCallback? onTap;
   final int? maxLines;
   final String? errorText;
+  final int? errorMaxLines;
   final bool? isDisabled;
   final bool? withBorder;
 
@@ -34,6 +35,7 @@ class AppTextField extends StatefulWidget {
     this.onTap,
     this.maxLines = 1,
     this.errorText,
+    this.errorMaxLines = 5,
     this.isDisabled = false,
     this.withBorder = true,
   });
@@ -81,6 +83,7 @@ class _AppTextFieldState extends State<AppTextField> {
           enabled: widget.isDisabled != true,
           decoration: InputDecoration(
             errorText: widget.errorText,
+            errorMaxLines: widget.errorMaxLines,
             errorStyle: Theme.of(
               context,
             ).textTheme.bodySmall?.copyWith(color: AppColors.danger100),

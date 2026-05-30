@@ -324,26 +324,10 @@ class _ManageFixedCostBottomSheetState
                     return null;
                   },
                 ),
-              const SizedBox(height: AppSizes.spacing2),
-              Row(
-                children: [
-                  Text(
-                    'Jatuh tempo yang lewat akan diabaikan.',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColors.trunks),
-                  ),
-                  const SizedBox(width: AppSizes.spacing1),
-                  const Tooltip(
-                    message:
-                        'Jika tanggal sudah terlewat dalam siklus aktif, biaya tetap tidak dihitung untuk proyeksi saat ini.',
-                    child: Icon(
-                      Icons.info_outline,
-                      size: 16,
-                      color: AppColors.trunks,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: AppSizes.spacing4),
+              const AppAlert(
+                message:
+                    'Biaya tetap hanya akan muncul jika tanggal jatuh temponya belum terlewat hari ini. Kalau sudah lewat, biaya ini otomatis diikutkan lagi di siklus berikutnya.',
               ),
               const SizedBox(height: AppSizes.spacing5),
               AppButton(
