@@ -216,21 +216,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                       isLoading: state is RegisterLoading,
                     ),
-                    const SizedBox(height: AppSizes.spacing4),
-                    AppButton(
-                      text: 'Daftar dengan Google',
-                      variant: AppButtonVariant.outlined,
-                      type: AppButtonType.primary,
-                      leadingWidget: SvgPicture.asset(
-                        'assets/svg/google-logo.svg',
-                        height: 20,
-                        width: 20,
-                      ),
-                      isLoading: state is RegisterLoading,
-                      onPressed: () {
-                        context.read<RegisterCubit>().loginWithGoogle();
-                      },
-                    ),
                     const SizedBox(height: AppSizes.spacing6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
