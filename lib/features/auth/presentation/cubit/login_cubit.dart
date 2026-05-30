@@ -1,11 +1,9 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
-import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/login_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 
@@ -14,17 +12,11 @@ import 'login_state.dart';
 @Injectable()
 class LoginCubit extends Cubit<LoginState> {
   final LoginUseCase loginUseCase;
-
   final SessionCubit sessionCubit;
-  final EventBus _eventBus;
 
   final _log = Logger('LoginCubit');
 
-  LoginCubit(
-    this.loginUseCase,
-    this.sessionCubit,
-    this._eventBus,
-  ) : super(LoginInitial());
+  LoginCubit(this.loginUseCase, this.sessionCubit) : super(LoginInitial());
 
   Future<void> login(String email, String password) async {
     _log.info('Login initiated for email: $email');
@@ -41,10 +33,6 @@ class LoginCubit extends Cubit<LoginState> {
         token: token,
         requiresOnboarding: requiresOnboarding,
       );
-      _eventBus.fire(const RefreshCategoriesEvent());
-      _eventBus.fire(const TransactionChangesEvent());
-      _eventBus.fire(const FixedCostTemplateChangesEvent());
-      _eventBus.fire(const FixedCostOccurrencesChangesEvent());
       emit(LoginSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {
       emit(LoginError(e.message));
@@ -61,9 +49,9 @@ class LoginCubit extends Cubit<LoginState> {
       emit(LoginError(e.message));
     } catch (e) {
       if (kDebugMode) {
-            emit(LoginError('Ada kendala: ${e.toString()}'));
+        emit(LoginError('Ada kendala: ${e.toString()}'));
       } else {
-            emit(LoginError(AppMessages.unknownError));
+        emit(LoginError(AppMessages.unknownError));
       }
     }
   }

@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "520920693154-4vi1lrh2vtnbvctseh17r1dq9gbej3vk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moco.moneycontrol",
+            "certificate_hash": "a3ff2ff5486d4e103097a3238c196081f08a89e1"
+          }
+        },
+        {
           "client_id": "520920693154-6vol02hhj287vr4jlrbrgamuqgblvvmt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

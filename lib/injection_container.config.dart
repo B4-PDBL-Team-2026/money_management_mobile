@@ -301,7 +301,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i622.RegisterCubit(
         gh<_i693.RegisterUseCase>(),
         gh<_i410.SessionCubit>(),
-        gh<_i1017.EventBus>(),
       ),
     );
     gh.lazySingleton<_i5.CategoryRepository>(
@@ -336,13 +335,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
-    gh.factory<_i250.LoginCubit>(
-      () => _i250.LoginCubit(
-        gh<_i206.LoginUseCase>(),
-        gh<_i410.SessionCubit>(),
-        gh<_i1017.EventBus>(),
-      ),
-    );
     gh.factory<_i83.CalculateDashboardMetricsUsecase>(
       () => _i83.CalculateDashboardMetricsUsecase(
         gh<_i557.DashboardRepository>(),
@@ -355,11 +347,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1017.EventBus>(),
       ),
     );
+    gh.factory<_i250.LoginCubit>(
+      () =>
+          _i250.LoginCubit(gh<_i206.LoginUseCase>(), gh<_i410.SessionCubit>()),
+    );
     gh.factory<_i1010.GoogleAuthCubit>(
       () => _i1010.GoogleAuthCubit(
         gh<_i893.LoginWithGoogleUseCase>(),
         gh<_i410.SessionCubit>(),
-        gh<_i1017.EventBus>(),
       ),
     );
     gh.lazySingleton<_i1023.DashboardMetricCubit>(

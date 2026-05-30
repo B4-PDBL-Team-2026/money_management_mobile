@@ -48,6 +48,7 @@ class SessionCubit extends Cubit<SessionState> {
         requiresOnboarding: requiresOnboarding,
       ),
     );
+    _onAuthenticated();
   }
 
   void authenticate({
@@ -63,6 +64,15 @@ class SessionCubit extends Cubit<SessionState> {
         requiresOnboarding: requiresOnboarding,
       ),
     );
+    _onAuthenticated();
+  }
+
+  void _onAuthenticated() {
+    _eventBus.fire(const RefreshCategoriesEvent());
+    _eventBus.fire(const TransactionChangesEvent());
+    _eventBus.fire(const FixedCostTemplateChangesEvent());
+    _eventBus.fire(const FixedCostOccurrencesChangesEvent());
+    _eventBus.fire(const NotificationCenterChangesEvent());
   }
 
   Future<void> markOnboardingAsDone() async {

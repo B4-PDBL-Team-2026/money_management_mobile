@@ -57,6 +57,15 @@ Future<void> _bootstrapAndRunApp({required bool enableSentry}) async {
   AppLogger.init(enableSentry: enableSentry);
   localTimezone = await FlutterTimezone.getLocalTimezone();
 
+  // Pre-initialize singleton cubits so they are registered with EventBus
+  // and ready to receive events when restoreSession() is called.
+  getIt<CategoryCubit>();
+  getIt<TransactionHistoryCubit>();
+  getIt<FixedCostTemplateCubit>();
+  getIt<UnpaidFixedCostTemplateCubit>();
+  getIt<DashboardMetricCubit>();
+  getIt<NotificationCenterCubit>();
+
   await Future.wait([
     Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     initializeDateFormatting('id_ID'),
@@ -77,21 +86,13 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: getIt<SessionCubit>()),
-        BlocProvider.value(value: getIt<CategoryCubit>()..fetchCategories()),
-        BlocProvider.value(
-          value: getIt<TransactionHistoryCubit>()..getFreshTransactionHistory(),
-        ),
+        BlocProvider.value(value: getIt<CategoryCubit>()),
+        BlocProvider.value(value: getIt<TransactionHistoryCubit>()),
         BlocProvider.value(value: getIt<FixedCostTemplateCubit>()),
         BlocProvider.value(value: getIt<NotificationCubit>()),
-        BlocProvider.value(
-          value: getIt<UnpaidFixedCostTemplateCubit>()..fetchUnpaidFixedCosts(),
-        ),
-        BlocProvider.value(
-          value: getIt<DashboardMetricCubit>()..fetchDashboardMetrics(),
-        ),
-        BlocProvider.value(
-          value: getIt<NotificationCenterCubit>()..fetchNotifications(),
-        ),
+        BlocProvider.value(value: getIt<UnpaidFixedCostTemplateCubit>()),
+        BlocProvider.value(value: getIt<DashboardMetricCubit>()),
+        BlocProvider.value(value: getIt<NotificationCenterCubit>()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

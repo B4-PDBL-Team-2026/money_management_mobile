@@ -1,10 +1,8 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
-import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/register_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 
@@ -13,15 +11,10 @@ import 'register_state.dart';
 @Injectable()
 class RegisterCubit extends Cubit<RegisterState> {
   final RegisterUseCase registerUseCase;
-
   final SessionCubit sessionCubit;
-  final EventBus _eventBus;
 
-  RegisterCubit(
-    this.registerUseCase,
-    this.sessionCubit,
-    this._eventBus,
-  ) : super(RegisterInitial());
+  RegisterCubit(this.registerUseCase, this.sessionCubit)
+    : super(RegisterInitial());
 
   Future<void> register(
     String name,
@@ -44,7 +37,6 @@ class RegisterCubit extends Cubit<RegisterState> {
         token: token,
         requiresOnboarding: requiresOnboarding,
       );
-      _eventBus.fire(const RefreshCategoriesEvent());
 
       emit(RegisterSuccess(requiresOnboarding: requiresOnboarding));
     } on ServerException catch (e) {

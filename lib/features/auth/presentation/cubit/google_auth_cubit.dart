@@ -1,4 +1,3 @@
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,7 +5,6 @@ import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:money_management_mobile/core/constants/app_messages.dart';
 import 'package:money_management_mobile/core/error/execeptions.dart';
-import 'package:money_management_mobile/core/events/app_events.dart';
 import 'package:money_management_mobile/features/auth/domain/usecases/login_with_google_usecase.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/session_cubit.dart';
 
@@ -16,15 +14,11 @@ import 'google_auth_state.dart';
 class GoogleAuthCubit extends Cubit<GoogleAuthState> {
   final LoginWithGoogleUseCase loginWithGoogleUseCase;
   final SessionCubit sessionCubit;
-  final EventBus _eventBus;
 
   final _log = Logger('GoogleAuthCubit');
 
-  GoogleAuthCubit(
-    this.loginWithGoogleUseCase,
-    this.sessionCubit,
-    this._eventBus,
-  ) : super(GoogleAuthInitial());
+  GoogleAuthCubit(this.loginWithGoogleUseCase, this.sessionCubit)
+    : super(GoogleAuthInitial());
 
   Future<void> signInWithGoogle() async {
     _log.info('Google Sign-In initiated');
@@ -41,18 +35,14 @@ class GoogleAuthCubit extends Cubit<GoogleAuthState> {
         return;
       }
 
-      final (user, token, requiresOnboarding) =
-          await loginWithGoogleUseCase.execute(idToken);
+      final (user, token, requiresOnboarding) = await loginWithGoogleUseCase
+          .execute(idToken);
 
       sessionCubit.authenticate(
         user: user,
         token: token,
         requiresOnboarding: requiresOnboarding,
       );
-      _eventBus.fire(const RefreshCategoriesEvent());
-      _eventBus.fire(const TransactionChangesEvent());
-      _eventBus.fire(const FixedCostTemplateChangesEvent());
-      _eventBus.fire(const FixedCostOccurrencesChangesEvent());
       emit(GoogleAuthSuccess(requiresOnboarding: requiresOnboarding));
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
@@ -60,8 +50,11 @@ class GoogleAuthCubit extends Cubit<GoogleAuthState> {
         emit(GoogleAuthInitial());
       } else {
         _log.severe('Google Sign-In failed: ${e.toString()}');
-        emit(GoogleAuthError(
-            'Google Sign-In gagal: ${e.description ?? e.toString()}'));
+        emit(
+          GoogleAuthError(
+            'Google Sign-In gagal: ${e.description ?? e.toString()}',
+          ),
+        );
       }
     } on ServerException catch (e) {
       emit(GoogleAuthError(e.message));

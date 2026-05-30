@@ -101,7 +101,15 @@ class ErrorHandler {
 
       if (statusCode == 401) {
         log.warning('$context failed: Unauthorized (401)', e);
-        getIt<EventBus>().fire(const SessionExpiredEvent());
+        final hasAuthHeader = e.requestOptions.headers.containsKey('Authorization');
+
+        if (hasAuthHeader) {
+          log.warning('401 response has Authorization header. Firing SessionExpiredEvent.');
+          getIt<EventBus>().fire(const SessionExpiredEvent());
+        } else {
+          log.info('401 response does not have Authorization header. Skipping SessionExpiredEvent (likely a pre-login check or stale request).');
+        }
+        
         return UnauthorizedException(
           message.isNotEmpty
               ? message
