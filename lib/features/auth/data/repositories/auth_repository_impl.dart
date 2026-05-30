@@ -42,6 +42,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<(UserEntity, String, bool)> loginWithGoogle(String googleToken) async {
+    final (user, token, requiresOnboarding) = await remoteDataSource.loginWithGoogle(
+      googleToken,
+    );
+
+    return (user, token, requiresOnboarding);
+  }
+
+  @override
   Future<void> saveSession(
     UserEntity user,
     String token, {

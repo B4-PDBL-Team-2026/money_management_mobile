@@ -12,7 +12,28 @@
           "package_name": "com.moco.moneycontrol"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "520920693154-6vol02hhj287vr4jlrbrgamuqgblvvmt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moco.moneycontrol",
+            "certificate_hash": "9a6b90985c5b858b40a9d77ec0ec7138b95ade53"
+          }
+        },
+        {
+          "client_id": "520920693154-u9kokjl75aibv3ukmml9hr5slu9lrg9m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moco.moneycontrol",
+            "certificate_hash": "92f8e4e87f420d01e5cae22a1557dcfb1a15eee4"
+          }
+        },
+        {
+          "client_id": "520920693154-kkcp2opf69370qe0qr2rsk1po406nast.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBJ7bQeDXGfshXckrOPJyUF0Knbo7GPLL4"
@@ -20,7 +41,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "520920693154-kkcp2opf69370qe0qr2rsk1po406nast.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "520920693154-qv32hm49t2vhdcslb0r8uore3djoc0np.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.moco.moneycontrol"
+              }
+            }
+          ]
         }
       }
     }

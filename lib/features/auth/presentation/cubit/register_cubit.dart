@@ -17,8 +17,11 @@ class RegisterCubit extends Cubit<RegisterState> {
   final SessionCubit sessionCubit;
   final EventBus _eventBus;
 
-  RegisterCubit(this.registerUseCase, this.sessionCubit, this._eventBus)
-    : super(RegisterInitial());
+  RegisterCubit(
+    this.registerUseCase,
+    this.sessionCubit,
+    this._eventBus,
+  ) : super(RegisterInitial());
 
   Future<void> register(
     String name,

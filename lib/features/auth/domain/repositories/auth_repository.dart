@@ -8,6 +8,7 @@ abstract class AuthRepository {
     String passwordConfirmation,
   );
   Future<(UserEntity, String, bool)> login(String email, String password);
+  Future<(UserEntity, String, bool)> loginWithGoogle(String googleToken);
   Future<void> saveSession(
     UserEntity user,
     String token, {
