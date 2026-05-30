@@ -57,17 +57,11 @@ Future<void> _bootstrapAndRunApp({required bool enableSentry}) async {
   AppLogger.init(enableSentry: enableSentry);
   localTimezone = await FlutterTimezone.getLocalTimezone();
 
-  final googleClientId = AppEnv.googleClientId.isNotEmpty
-      ? AppEnv.googleClientId
-      : '520920693154-9kq6ge7puun708c3elpsi8j9i494oa27.apps.googleusercontent.com';
-
   await Future.wait([
     Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     initializeDateFormatting('id_ID'),
     getIt<SessionCubit>().restoreSession(),
-    GoogleSignIn.instance.initialize(
-      serverClientId: googleClientId,
-    ),
+    GoogleSignIn.instance.initialize(),
   ]);
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

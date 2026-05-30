@@ -35,9 +35,4 @@ class AppEnv {
     'GEMINI_API_KEYS',
     defaultValue: '',
   );
-
-  static const String googleClientId = String.fromEnvironment(
-    'GOOGLE_CLIENT_ID',
-    defaultValue: '',
-  );
 }
