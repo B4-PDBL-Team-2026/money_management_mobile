@@ -13,6 +13,7 @@ class AppButton extends StatelessWidget {
   final AppButtonType type;
   final AppButtonVariant variant;
   final IconData? leadingIcon;
+  final Widget? leadingWidget;
   final IconData? trailingIcon;
   final double iconSize;
   final double? fontSize;
@@ -27,6 +28,7 @@ class AppButton extends StatelessWidget {
     this.type = AppButtonType.primary,
     this.variant = AppButtonVariant.filled,
     this.leadingIcon,
+    this.leadingWidget,
     this.trailingIcon,
     this.iconSize = 18,
     this.fontSize,
@@ -109,7 +111,10 @@ class AppButton extends StatelessWidget {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (leadingIcon != null) ...[
+                  if (leadingWidget != null) ...[
+                    leadingWidget!,
+                    const SizedBox(width: AppSizes.spacing2),
+                  ] else if (leadingIcon != null) ...[
                     Icon(leadingIcon, size: iconSize, color: _foregroundColor),
                     const SizedBox(width: AppSizes.spacing2),
                   ],

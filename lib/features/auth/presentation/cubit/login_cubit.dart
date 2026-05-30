@@ -20,8 +20,11 @@ class LoginCubit extends Cubit<LoginState> {
 
   final _log = Logger('LoginCubit');
 
-  LoginCubit(this.loginUseCase, this.sessionCubit, this._eventBus)
-    : super(LoginInitial());
+  LoginCubit(
+    this.loginUseCase,
+    this.sessionCubit,
+    this._eventBus,
+  ) : super(LoginInitial());
 
   Future<void> login(String email, String password) async {
     _log.info('Login initiated for email: $email');

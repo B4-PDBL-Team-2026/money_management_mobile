@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
+import 'package:money_management_mobile/features/auth/presentation/cubit/google_auth_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/login_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/register_cubit.dart';
 import 'package:money_management_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
@@ -101,7 +102,10 @@ class AppRouter {
           // auth module
           GoRoute(
             path: '/welcome',
-            builder: (context, state) => const WelcomePage(),
+            builder: (context, state) => BlocProvider(
+              create: (_) => getIt<GoogleAuthCubit>(),
+              child: const WelcomePage(),
+            ),
             routes: [
               GoRoute(
                 path: 'login',
