@@ -252,68 +252,58 @@ class _FabMenuItem extends StatelessWidget {
           parent: animation,
           curve: Interval(delay, 1.0, curve: Curves.easeIn),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Label pill
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                color: disabled
-                    ? Colors.white.withValues(alpha: 0.7)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.bulma.withValues(
-                      alpha: disabled ? 0.04 : 0.10,
-                    ),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
+        child: GestureDetector(
+          onTap: disabled ? null : onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            decoration: BoxDecoration(
+              color: disabled
+                  ? Colors.white.withValues(alpha: 0.7)
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.bulma.withValues(
+                    alpha: disabled ? 0.04 : 0.12,
                   ),
-                ],
-              ),
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: disabled
-                      ? const Color(0xFFB0B8C9)
-                      : const Color(0xFF1A1A2E),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
-              ),
+              ],
             ),
-            const SizedBox(width: 10),
-            // Icon circle
-            GestureDetector(
-              onTap: disabled ? null : onTap,
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: disabled ? const Color(0xFFF0F0F0) : Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.bulma.withValues(
-                        alpha: disabled ? 0.04 : 0.12,
-                      ),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: disabled
+                        ? const Color(0xFFF3F6F9)
+                        : AppColors.bulma.withValues(alpha: 0.06),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: disabled ? const Color(0xFFB0B8C9) : const Color(0xFF1A3A6B),
+                    size: 20,
+                  ),
                 ),
-                child: Icon(
-                  icon,
-                  color: disabled
-                      ? const Color(0xFFB0B8C9)
-                      : const Color(0xFF1A3A6B),
-                  size: 22,
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: disabled
+                        ? const Color(0xFFB0B8C9)
+                        : const Color(0xFF1A1A2E),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
