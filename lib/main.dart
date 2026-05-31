@@ -70,7 +70,7 @@ Future<void> _bootstrapAndRunApp({required bool enableSentry}) async {
     Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
     initializeDateFormatting('id_ID'),
     getIt<SessionCubit>().restoreSession(),
-    GoogleSignIn.instance.initialize(),
+    if (PlatformSpecify.isAndroid()) ...[GoogleSignIn.instance.initialize()],
   ]);
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
