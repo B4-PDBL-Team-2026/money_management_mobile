@@ -255,7 +255,7 @@ class _FabMenuItem extends StatelessWidget {
         child: GestureDetector(
           onTap: disabled ? null : onTap,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
               color: disabled
                   ? Colors.white.withValues(alpha: 0.7)
@@ -289,7 +289,7 @@ class _FabMenuItem extends StatelessWidget {
                     size: 20,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 Text(
                   label,
                   style: TextStyle(
@@ -300,6 +300,7 @@ class _FabMenuItem extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                const SizedBox(width: 8),
               ],
             ),
           ),
