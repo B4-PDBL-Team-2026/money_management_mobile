@@ -23,7 +23,7 @@ class CategoryLoaded extends CategoryState {
     orElse: () => CategoryEntity(
       id: 0,
       name: 'Tidak Diketahui',
-      icon: 'default',
+      icon: 'question',
       type: TransactionType.expense,
       isSystem: true,
     ),

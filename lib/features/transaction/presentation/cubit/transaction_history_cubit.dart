@@ -51,7 +51,8 @@ class TransactionHistoryCubit extends Cubit<TransactionHistoryState> {
         year: year,
       );
 
-      final transactionHistory = result.items;
+      final transactionHistory = result.items.toList()
+        ..sort((a, b) => b.transactionAt.compareTo(a.transactionAt));
       final totalItems = result.totalItems;
       final totalPages = result.totalPages;
       final currentPage = result.currentPage;
@@ -113,9 +114,14 @@ class TransactionHistoryCubit extends Cubit<TransactionHistoryState> {
         final totalPages = result.totalPages;
         final currentPage = result.currentPage;
 
+        final mergedHistory = [
+          ...currentState.transactionHistory,
+          ...transactionHistory,
+        ]..sort((a, b) => b.transactionAt.compareTo(a.transactionAt));
+
         emit(
           TransactionHistorySuccess(
-            [...currentState.transactionHistory, ...transactionHistory],
+            mergedHistory,
             currentPage,
             totalPages,
             totalItems,

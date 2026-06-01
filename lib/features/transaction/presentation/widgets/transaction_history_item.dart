@@ -9,6 +9,7 @@ import 'package:money_management_mobile/features/category/presentation/cubit/cat
 import 'package:money_management_mobile/features/category/presentation/cubit/category_state.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/transaction_history_entity.dart';
+import 'package:picons/picons.dart';
 
 class TransactionHistoryItem extends StatelessWidget {
   final TransactionHistoryEntity transaction;
@@ -119,7 +120,7 @@ class TransactionHistoryItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.radiusSm),
       ),
       child: Icon(
-        GlobalConstant.categoryIconsMapping[category.icon]!,
+        GlobalConstant.categoryIconsMapping[category.icon] ?? PiconsRegular.question,
         color: AppColors.bulma,
         size: 24,
       ),

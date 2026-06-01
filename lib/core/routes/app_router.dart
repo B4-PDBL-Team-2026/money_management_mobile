@@ -36,6 +36,7 @@ import 'package:money_management_mobile/features/profile/presentation/pages/onbo
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step3_personalization_page.dart';
 import 'package:money_management_mobile/features/profile/presentation/pages/onboarding/step4_personalization_page.dart';
 import 'package:money_management_mobile/features/transaction/domain/entities/add_batch_transaction_entity.dart';
+import 'package:money_management_mobile/features/transaction/domain/entities/transaction_detail_entity.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/add_transaction_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_detail_cubit.dart';
 import 'package:money_management_mobile/features/transaction/presentation/cubit/batch_transaction_submit_cubit.dart';
@@ -45,6 +46,7 @@ import 'package:money_management_mobile/features/transaction/presentation/pages/
 import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_detail_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/batch_transaction_form_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/detail_transaction.dart';
+import 'package:money_management_mobile/features/transaction/presentation/pages/edit_transaction_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/open_camera_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_loading_page.dart';
 import 'package:money_management_mobile/features/transaction/presentation/pages/scan_receipt/scan_receipt_error_page.dart';
@@ -89,6 +91,7 @@ class AppRouter {
   static const String scanReceiptError = '/transaction/scan-error';
   static const String batchTransactionDetail = '/transaction/batch/:id';
   static const String voiceTransaction = '/transaction/voice';
+  static const String editTransaction = '/transaction/:id/edit';
 
   static final SessionCubit _sessionCubit = getIt<SessionCubit>();
 
@@ -368,6 +371,30 @@ class AppRouter {
                 child: TransactionDetailPage(transactionId: id),
               );
             },
+            routes: [
+              GoRoute(
+                path: 'edit',
+                builder: (context, state) {
+                  final idParam = state.pathParameters['id'];
+                  final id = int.tryParse(idParam ?? '');
+                  final detail = state.extra as TransactionDetailEntity?;
+
+                  if (id == null || detail == null) {
+                    return const Scaffold(
+                      body: Center(child: Text('Data transaksi tidak valid.')),
+                    );
+                  }
+
+                  return BlocProvider.value(
+                    value: getIt<TransactionDetailCubit>(),
+                    child: EditTransactionPage(
+                      transactionId: id,
+                      transactionDetail: detail,
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),
